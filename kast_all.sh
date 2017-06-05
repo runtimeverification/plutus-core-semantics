@@ -1,3 +1,7 @@
 for file in `ls test/*.plcore`;
-  do kast $file
+  do
+    echo "Running $file..."
+    echo "------------------------------------------------------------------------"
+    kast $file
+    echo ""
 done
