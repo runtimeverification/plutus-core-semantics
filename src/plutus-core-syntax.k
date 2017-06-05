@@ -1,4 +1,8 @@
+require "domains.k"
+
 module PLUTUS-CORE-SYNTAX
+  import INT-SYNTAX
+  import FLOAT-SYNTAX
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
