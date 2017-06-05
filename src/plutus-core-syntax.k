@@ -14,7 +14,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                           [token]
 
   // Integer literal.
-  syntax Integer ::= r"[+-]?[0-9]+"
+  syntax Integer ::= r"[0-9]+"                                          [token]
 
   // Float literal.
   syntax Float   ::= r"[+-]?[0-9]+(.[0-9]+e{0,1})e"                     [token]
@@ -53,7 +53,8 @@ module PLUTUS-CORE-SYNTAX
                         // Application.
                       | "[" Tm Tm "]"                             [klabel(app)]
                       | "(" "case" Tm QualCList ")" // Case.
-                      | "(" "builtin" Name TmList ")" // Built-in function.
+                       // Built-in function.
+                      | "(" "builtin" Name "(" TmList ")" ")"
                       | Val
 
 // Case clause.
