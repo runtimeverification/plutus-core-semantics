@@ -38,27 +38,51 @@ module PLUTUS-CORE-SYNTAX
   /***************************************************************************/
 
   // Qualified name and constructor.
-  syntax QualN   ::= Mod "." Name
-  syntax QualC   ::= Mod "." Con
+  syntax QualN      ::= Mod "." Name
+  syntax QualC      ::= Mod "." Con
 
-  syntax TmList     ::= List{Tm, " "}
-  syntax QualCList  ::= List{QualC, " "}
+  syntax TmList     ::= List{Tm     ,  " "}
+  syntax VarList    ::= List{Var    ,  " "}
+  syntax QualCList  ::= List{QualC  ,  " "}
+  syntax DefList    ::= List{Def    ,  " "}
+  syntax ModList    ::= List{Mod    ,  " "}
 
-  syntax Tm      ::= Var
-                   | "(" "let" Tm Var Tm ")" // Local declaration.
-                   | "(" "lam" Var Tm ")" // λ abstraction
-                   | "[" Tm Tm "]" // Application
-                   | "(" "con" QualC TmList ")" // Constructed data
-                   | "(" "case" Tm QualCList ")" // Case
-                   | "(" "success" Tm ")" // Success
-                   | "(" "failure" ")" // Failure
-                   | "(" "txhash"  ")" // Transaction hash
-                   | "(" "blocknum" ")" // Block number
-                   | "(" "blocktime" ")" // Block time
-                   | "(" "bind" Tm Var Tm ")" // Computation bind
-                   | Integer // Primitive integer
-                   | Float   // Primitive float
-                   | ByStr   // Primitive bytestring
-                   | "(" "builtin" Name TmList ")" // Built-in function
+  syntax Tm         ::= Var
+                      | "(" "let" Tm Var Tm ")" // Local declaration.
+                      | "[" Tm Tm "]" // Application.
+                      | "(" "case" Tm QualCList ")" // Case.
+                      | "(" "builtin" Name TmList ")" // Built-in function.
+                      | Val
+
+// Case clause.
+syntax Cl           ::= "(" "cl" QualC "(" VarList ")" Tm ")"
+
+// Program.
+syntax Prg          ::= "(" "program" ModList ")"
+
+// Module.
+syntax Mod          ::= "(" "module" Mod ImpD ExpD LocD DefList ")"
+
+// Import declarations.
+syntax ImpD         ::= "(" "imported" ModList ")"
+
+// Export declarations.
+syntax ExpD         ::= "TODO"
+
+syntax LocD         ::= "TODO"
+
+syntax Def          ::= "(" "define" Name Val ")"
+
+syntax Val          ::= "(" "lam" Var Tm ")" // λ abstraction.
+                      | "(" "con" QualC TmList ")" // Constructed data.
+                      | "(" "success" Tm ")" // Success.
+                      | "(" "failure" ")" // Failure.
+                      | "(" "txhash"  ")" // Transaction hash.
+                      | "(" "blocknum" ")" // Block number.
+                      | "(" "blocktime" ")" // Block time.
+                      | "(" "bind" Tm Var Tm ")" // Computation bind.
+                      | Integer // Primitive integer.
+                      | Float   // Primitive float.
+                      | ByStr   // Primitive bytestring.
 
 endmodule
