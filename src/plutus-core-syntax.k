@@ -48,8 +48,10 @@ module PLUTUS-CORE-SYNTAX
   syntax ModList    ::= List{Mod    ,  " "}
 
   syntax Tm         ::= Var
-                      | "(" "let" Tm Var Tm ")" // Local declaration.
-                      | "[" Tm Tm "]" // Application.
+                        // Local declaration.
+                      | "(" "let" Tm Var Tm ")"
+                        // Application.
+                      | "[" Tm Tm "]"                             [klabel(app)]
                       | "(" "case" Tm QualCList ")" // Case.
                       | "(" "builtin" Name TmList ")" // Built-in function.
                       | Val
