@@ -13,7 +13,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Integer ::= r"[+-]?[0-9]+"
 
   // Float literal.
-  syntax Float   ::= r"(+|-)[0-9]+(.[0-9]+e{0, 1})e"                    [token]
+  syntax Float   ::= r"[+-]?[0-9]+(.[0-9]+e{0, 1})e"                    [token]
 
   // Exponent.
   syntax Exp     ::= r"[eE][+-]?[0-9]+"                                 [token]
