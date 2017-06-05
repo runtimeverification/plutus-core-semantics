@@ -1,0 +1,1 @@
+(bind (lam x x) id [f f])
