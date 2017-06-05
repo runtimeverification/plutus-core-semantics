@@ -14,10 +14,12 @@ module PLUTUS-CORE-SYNTAX
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                           [token]
 
   // Integer literal.
+  // NOTE: K's builtin `Int` sort is based on exactly the same regular
+  // expression as that in the Plutus Core specification.
   syntax Integer ::= Int
 
-  // Float literal.
-  syntax Float   ::= r"[+-]?[0-9]+(.[0-9]+e{0,1})e"                     [token]
+  /* TODO: Make sure that K's built-in Float is compatible with PlFloat*/
+  /* syntax Float ::= ... */
 
   // Exponent.
   syntax Exp     ::= r"[eE][+-]?[0-9]+"                                 [token]
