@@ -15,7 +15,7 @@ module PLUTUS-CORE-EXECUTION
     /*when I2 =/=K 0*/
   /*rule ( builtin remainderInt:Name ( I1:Int I2:Int ) ) => I1 %Int I2*/
     /*when I2 =/=K 0*/
-  /*rule ( builtin lessThanInt:Name  ( I1:Int I2:Int ) ) => I1 <Int I2*/
+  rule ( builtin lessThanInt:Name  ( I1:Int I2:Int ) ) => I1 <Int I2
   /*rule ( builtin equalsInt:Name    ( I1:Int I2:Int ) ) => I1 ==K I2*/
 
 endmodule
