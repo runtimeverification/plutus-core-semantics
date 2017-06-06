@@ -49,7 +49,7 @@ module PLUTUS-CORE-SYNTAX
   syntax QualC      ::= Mod "." Con
 
   syntax NameList   ::= List{Name   ,  " "}
-  syntax TmList     ::= List{Tm     ,  " "}
+  syntax TmList     ::= "TODO"
   syntax VarList    ::= List{Var    ,  " "}
   syntax QualCList  ::= List{QualC  ,  " "}
   syntax DefList    ::= List{Def    ,  " "}
@@ -65,37 +65,40 @@ module PLUTUS-CORE-SYNTAX
                       | "[" Tm Tm "]"                             [klabel(app)]
                       | "(" "case" Tm QualCList ")" // Case.
                        // Built-in function.
-                      | "(" "builtin" Name "(" TmList ")" ")"
+                      | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
+                      | "(" "builtin" Name "(" Tm Tm ")" ")"     [strict(2, 3)]
                       | Val
 
-// Case clause.
-syntax Cl           ::= "(" "cl" QualC "(" VarList ")" Tm ")"
+  // Case clause.
+  syntax Cl           ::= "(" "cl" QualC "(" VarList ")" Tm ")"
 
-// Program.
-syntax Prg          ::= "(" "program" ModList ")"
+  // Program.
+  syntax Prg          ::= "(" "program" ModList ")"
 
-// Module.
-syntax Mod          ::= "(" "module" Mod ImpD ExpD LocD DefList ")"
+  // Module.
+  syntax Mod          ::= "(" "module" Mod ImpD ExpD LocD DefList ")"
 
-// Import declarations.
-syntax ImpD         ::= "(" "imported" ModList ")"
+  // Import declarations.
+  syntax ImpD         ::= "(" "imported" ModList ")"
 
-// Export and local declarations.
-syntax ExpD         ::= "(" "exported" "(" ConArList ")" "(" NameList ")" ")"
-syntax LocD         ::= "(" "local"    "(" ConArList ")" "(" NameList ")" ")"
+  // Export and local declarations.
+  syntax ExpD         ::= "(" "exported" "(" ConArList ")" "(" NameList ")" ")"
+  syntax LocD         ::= "(" "local"    "(" ConArList ")" "(" NameList ")" ")"
 
-syntax Def          ::= "(" "define" Name Val ")"
+  syntax Def          ::= "(" "define" Name Val ")"
 
-syntax Val          ::= "(" "lam" Var Tm ")" // Lambda abstraction.
-                      | "(" "con" QualC TmList ")" // Constructed data.
-                      | "(" "success" Tm ")" // Success.
-                      | "(" "failure" ")" // Failure.
-                      | "(" "txhash"  ")" // Transaction hash.
-                      | "(" "blocknum" ")" // Block number.
-                      | "(" "blocktime" ")" // Block time.
-                      | "(" "bind" Tm Var Tm ")" // Computation bind.
-                      | Int // Primitive integer.
-                      | Float   // Primitive float.
-                      | ByStr   // Primitive bytestring.
+  syntax Val          ::= "(" "lam" Var Tm ")" // Lambda abstraction.
+                        | "(" "con" QualC TmList ")" // Constructed data.
+                        | "(" "success" Tm ")" // Success.
+                        | "(" "failure" ")" // Failure.
+                        | "(" "txhash"  ")" // Transaction hash.
+                        | "(" "blocknum" ")" // Block number.
+                        | "(" "blocktime" ")" // Block time.
+                        | "(" "bind" Tm Var Tm ")" // Computation bind.
+                        | Int // Primitive integer.
+                        | Float   // Primitive float.
+                        | ByStr   // Primitive bytestring.
+
+  syntax KResult    ::= Val
 
 endmodule
