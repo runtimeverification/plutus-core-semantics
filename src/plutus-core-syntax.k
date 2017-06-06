@@ -86,7 +86,7 @@ syntax LocD         ::= "(" "local"    "(" ConArList ")" "(" NameList ")" ")"
 
 syntax Def          ::= "(" "define" Name Val ")"
 
-syntax Val          ::= "(" "lam" Var Tm ")" // λ abstraction.
+syntax Val          ::= "(" "lam" Var Tm ")" // Lambda abstraction.
                       | "(" "con" QualC TmList ")" // Constructed data.
                       | "(" "success" Tm ")" // Success.
                       | "(" "failure" ")" // Failure.
