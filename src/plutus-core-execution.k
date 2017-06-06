@@ -2,7 +2,6 @@ require "plutus-core-syntax.k"
 
 module PLUTUS-CORE-EXECUTION
   imports PLUTUS-CORE-SYNTAX
-  imports INT
 
   /***************************************************************************/
   /***********************  BUILT-IN REDUCTIONS   ****************************/
@@ -25,7 +24,7 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin lessThanFloat:Name ( I1:Float I2:Float ) ) => I1 <Float I2
   rule ( builtin equalsFloat:Name   ( I1:Float I2:Float ) ) => I1 ==Float I2
 
-  /* TODO: rule ( builtin ceil:Name  ( I1:Float ) ) => ceilFloat(I1)*/
+   /* rule ( builtin ceil:Name  ( I1:Float ) ) => ceilFloat(I1)*/
   /* TODO: rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F)*/
   /* TODO: rule ( builtin round:Name ( F:Float ) ) => roundFloat(F) */
 

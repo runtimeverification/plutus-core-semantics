@@ -1,7 +1,7 @@
 require "domains.k"
 
 module PLUTUS-CORE-SYNTAX
-  import INT-SYNTAX
+  imports INT
   imports FLOAT
   /*import FLOAT-SYNTAX*/
 
