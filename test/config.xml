@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2017 K Team. All Rights Reserved. -->
+
+<tests>
+  <test
+    definition="../src/plutus-core.k"
+    programs="."
+    extension="plcore"
+    results=".">
+    <kompile-option name="--syntax-module" value="HASKELL-CORE-SYNTAX"/>
+  </test>
+</tests>
