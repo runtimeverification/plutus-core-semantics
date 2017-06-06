@@ -12,6 +12,7 @@ before_install:
   - export PATH="$HOME/.linuxbrew/bin:$PATH"
   - export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
   - export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
+  - cd $(brew --prefix) && git fetch && git reset --hard origin/master
   - brew install jdk
   - cd ~
   - git clone https://github.com/kframework/k/
