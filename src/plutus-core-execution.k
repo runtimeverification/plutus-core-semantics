@@ -24,8 +24,8 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => F1 <Float F2
   rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => F1 ==Float F2
 
-  /*rule ( builtin ceil:Name  ( I1:Float ) ) => ceilFloat(I1:Float)*/
-  /* TODO: rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F)*/
-  /* TODO: rule ( builtin round:Name ( F:Float ) ) => roundFloat(F) */
+  rule ( builtin ceil:Name  ( F:Float ) ) => ceilFloat(F:Float)
+  rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F:Float)
+  /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
 
 endmodule
