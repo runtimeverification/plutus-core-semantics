@@ -1,0 +1,18 @@
+branches:
+  only:
+    - master
+
+sudo: false
+
+before_install:
+  - cd ~
+  - git clone https://github.com/kframework/k/
+  - cd k
+  - mvn package -DskipTests
+
+install:
+  - make
+
+script:
+  - cd test
+  - ktest config.xml
