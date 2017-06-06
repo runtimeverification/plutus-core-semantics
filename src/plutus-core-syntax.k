@@ -2,7 +2,7 @@ require "domains.k"
 
 module PLUTUS-CORE-SYNTAX
   import INT-SYNTAX
-  import FLOAT-SYNTAX
+  /*import FLOAT-SYNTAX*/
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
@@ -20,10 +20,9 @@ module PLUTUS-CORE-SYNTAX
   // Integer literal.
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
   // expression as that in the Plutus Core specification.
-  syntax Integer ::= Int
 
   /* TODO: Make sure that K's built-in Float is compatible with PlFloat*/
-  /* syntax Float ::= ... */
+   syntax Float ::= "TODO"
 
   // Exponent.
   syntax Exp     ::= r"[eE][+-]?[0-9]+"                                 [token]
@@ -34,6 +33,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax Char    ::= r"\".\""                                           [token]
 
+  // Arity.
   syntax Arity   ::= r"[0-9]+"                                          [token]
 
   // Variable.
@@ -47,11 +47,15 @@ module PLUTUS-CORE-SYNTAX
   syntax QualN      ::= Mod "." Name
   syntax QualC      ::= Mod "." Con
 
+  syntax NameList   ::= List{Name   ,  " "}
   syntax TmList     ::= List{Tm     ,  " "}
   syntax VarList    ::= List{Var    ,  " "}
   syntax QualCList  ::= List{QualC  ,  " "}
   syntax DefList    ::= List{Def    ,  " "}
   syntax ModList    ::= List{Mod    ,  " "}
+
+  syntax ConArList  ::= ""
+                      | "(" Con Arity ")" ConArList
 
   syntax Tm         ::= Var
                         // Local declaration.
@@ -75,10 +79,9 @@ syntax Mod          ::= "(" "module" Mod ImpD ExpD LocD DefList ")"
 // Import declarations.
 syntax ImpD         ::= "(" "imported" ModList ")"
 
-// Export declarations.
-syntax ExpD         ::= "TODO"
-
-syntax LocD         ::= "TODO"
+// Export and local declarations.
+syntax ExpD         ::= "(" "exported" "(" ConArList ")" "(" NameList ")" ")"
+syntax LocD         ::= "(" "local"    "(" ConArList ")" "(" NameList ")" ")"
 
 syntax Def          ::= "(" "define" Name Val ")"
 
@@ -90,7 +93,7 @@ syntax Val          ::= "(" "lam" Var Tm ")" // λ abstraction.
                       | "(" "blocknum" ")" // Block number.
                       | "(" "blocktime" ")" // Block time.
                       | "(" "bind" Tm Var Tm ")" // Computation bind.
-                      | Integer // Primitive integer.
+                      | Int // Primitive integer.
                       | Float   // Primitive float.
                       | ByStr   // Primitive bytestring.
 
