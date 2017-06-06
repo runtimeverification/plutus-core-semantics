@@ -13,9 +13,10 @@ before_install:
   - git clone https://github.com/kframework/k/
   - cd k
   - mvn package -DskipTests
-  - export PATH=$PATH:$(realpath k-distribution/target/release/k/bin)
+  - export PATH=$PATH:$(pwd)/k-distribution/target/release/k/bin
 
 install:
+  - pwd
   - make
 
 script:
