@@ -1,3 +1,5 @@
+language: java
+
 branches:
   only:
     - master
@@ -9,6 +11,7 @@ before_install:
   - git clone https://github.com/kframework/k/
   - cd k
   - mvn package -DskipTests
+  - export PATH=$PATH:$(realpath k-distribution/target/release/k/bin)
 
 install:
   - make
