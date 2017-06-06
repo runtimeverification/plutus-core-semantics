@@ -2,6 +2,7 @@ require "domains.k"
 
 module PLUTUS-CORE-SYNTAX
   import INT-SYNTAX
+  imports FLOAT
   /*import FLOAT-SYNTAX*/
 
   /***************************************************************************/
@@ -22,7 +23,7 @@ module PLUTUS-CORE-SYNTAX
   // expression as that in the Plutus Core specification.
 
   /* TODO: Make sure that K's built-in Float is compatible with PlFloat*/
-   syntax Float ::= "TODO"
+   /*syntax Float ::= "TODO"*/
 
   // Exponent.
   syntax Exp     ::= r"[eE][+-]?[0-9]+"                                 [token]
