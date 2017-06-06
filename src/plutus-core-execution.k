@@ -23,6 +23,6 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin multiplyFloat:Name ( I1:Float I2:Float ) ) => I1 *Float I2
   rule ( builtin divideFloat:Name   ( I1:Float I2:Float ) ) => I1 /Float I2
   rule ( builtin lessThanFloat:Name ( I1:Float I2:Float ) ) => I1 <Float I2
-  rule ( builtin equalsFloat:Name ( I1:Float I2:Float ) )   => I1 ==Float I2
+  rule ( builtin equalsFloat:Name   ( I1:Float I2:Float ) ) => I1 ==Float I2
 
 endmodule
