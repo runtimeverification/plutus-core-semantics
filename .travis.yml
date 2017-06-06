@@ -17,7 +17,7 @@ install:
   - make
 
 jdk:
-  - opendjdk6
+  - openjdk6
 
 script:
   - cd test
