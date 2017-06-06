@@ -17,7 +17,7 @@ install:
   - make
 
 jdk:
-  - oraclejdk7
+  - oraclejdk8
 
 script:
   - cd test
