@@ -22,3 +22,7 @@ install:
 script:
   - cd test
   - ktest config.xml
+
+notifications:
+  email:
+    - tosun2@illinois.edu
