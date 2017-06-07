@@ -10,13 +10,13 @@ module PLUTUS-CORE-SYNTAX
   /***************************************************************************/
 
   // Name.
-  syntax Name    ::= r"[a-z][a-zA-Z0-9\\_']*"                           [token]
+  syntax Name    ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Module name.
-  syntax Mod     ::= r"[A-Z][a-zA-Z0-9\\_']*"                           [token]
+  syntax Mod     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Constructor name.
-  syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                           [token]
+  syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Integer literal.
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
@@ -50,10 +50,12 @@ module PLUTUS-CORE-SYNTAX
 
   syntax NameList   ::= List{Name   ,  " "}
   syntax TmList     ::= "TODO"
+  syntax ValList    ::= List{Val    ,  " "}
   syntax VarList    ::= List{Var    ,  " "}
   syntax QualCList  ::= List{QualC  ,  " "}
   syntax DefList    ::= List{Def    ,  " "}
   syntax ModList    ::= List{Mod    ,  " "}
+  syntax ClList     ::= List{Cl     ,  " "}
 
   syntax ConArList  ::= ""
                       | "(" Con Arity ")" ConArList
