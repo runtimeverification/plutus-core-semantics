@@ -32,7 +32,7 @@ module PLUTUS-CORE-EXECUTION
                | "(" "let" Ctx Var Tm ")"
                | "[" Ctx Tm  "]"
                | "[" Val Ctx "]"
-               | "(" "con" QualC ValList Ctx Tm ")"
+               | "(" "con" QualC ValList Ctx TmList ")"
                | "(" "case" Ctx ClList ")"
                | "(" "success" Ctx ")"
                | "(" "bind" Ctx Var Tm ")"
@@ -40,8 +40,13 @@ module PLUTUS-CORE-EXECUTION
                | Ctx "{" Tm "}"
 
   rule EmptyCtx                             { N:Tm } => N
-  rule ( let K:Ctx X:Var M:Tm ) { N:Tm } => ( let K { N } X M )
-  rule [ K:Ctx M:Tm   ] { N:Tm }           => [ K { N } M ]
-  rule [ M:Val  K:Ctx ] { N:Tm }           => [ M K { N } ]
+  rule ( let K:Ctx X:Var M:Tm )  { N:Tm } => ( let K { N } X M )
+  rule [ K:Ctx M:Tm   ]          { N:Tm } => [ K { N } M ]
+  rule [ M:Val  K:Ctx ]          { N:Tm } => [ M K { N } ]
+  rule ( case K:Ctx CS:ClList )  { N:Tm } => ( case ( K { N } ) CS )
+  rule ( success K:Ctx )         { N:Tm } => ( success K { N } )
+  rule ( bind K:Ctx X:Var M:Tm ) { N:Tm } => ( bind ( K { N } ) X M )
+  rule ( con Q:QualC VS:ValList K:Ctx L:TmList ) { N }
+    => ( con Q VS ( K { N } ) L )
 
 endmodule
