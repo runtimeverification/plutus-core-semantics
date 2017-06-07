@@ -18,7 +18,7 @@ before_install:
 
 cache:
   directories:
-    - $HOME/k
+    - $HOME/.m2/repository
 
 
 install:
