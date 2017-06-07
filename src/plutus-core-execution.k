@@ -46,6 +46,8 @@ module PLUTUS-CORE-EXECUTION
   rule ( case K:Ctx CS:ClList )  { N:Tm } => ( case ( K { N } ) CS )
   rule ( success K:Ctx )         { N:Tm } => ( success K { N } )
   rule ( bind K:Ctx X:Var M:Tm ) { N:Tm } => ( bind ( K { N } ) X M )
+  rule ( builtin NM:Name VS:ValList K:Ctx MS:TmList ) { N }
+    => ( builtin NM VS K { N } MS )
   rule ( con Q:QualC VS:ValList K:Ctx L:TmList ) { N }
     => ( con Q VS ( K { N } ) L )
 
