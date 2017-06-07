@@ -101,6 +101,6 @@ module PLUTUS-CORE-SYNTAX
                         | Float   // Primitive float.
                         | ByStr   // Primitive bytestring.
 
-  syntax KResult    ::= Val
+  syntax KResult      ::= Val
 
 endmodule
