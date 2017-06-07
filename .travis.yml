@@ -9,12 +9,17 @@ branches:
 sudo: false
 
 before_install:
-  - cd ~
+  - cd $HOME
   - git clone https://github.com/kframework/k/
   - cd k
   - mvn package -DskipTests
   - export PATH=$PATH:$(pwd)/k-distribution/target/release/k/bin
   - cd project
+
+cache:
+  directories:
+    - $HOME/k
+
 
 install:
   - make
