@@ -28,4 +28,15 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F:Float)
   /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
 
+  syntax Ctx ::= "EmptyCtx"
+               | "(" "let" Ctx Var Tm ")"
+               | "[" Ctx Tm  "]"
+               | "[" Val Ctx "]"
+               | "(" "con" QualC ValList Ctx Tm ")"
+               | "(" "case" Ctx ClList ")"
+               | "(" "success" Ctx ")"
+               | "(" "bind" Ctx Var Tm ")"
+               | "(" "builtin" Name ValList Ctx TmList ")"
+               | Ctx "{" Tm "}"
+
 endmodule
