@@ -31,3 +31,4 @@ script:
 notifications:
   email:
     - tosun2@illinois.edu
+    - lpena7@illinois.edu
