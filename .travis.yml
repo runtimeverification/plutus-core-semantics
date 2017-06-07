@@ -10,7 +10,7 @@ sudo: false
 
 before_install:
   - cd $HOME
-  - if [ ! -d k ];
+  - if [ ! -d k ]; then
       git clone https://github.com/kframework/k/;
       cd k;
       mvn package -DskipTests;
