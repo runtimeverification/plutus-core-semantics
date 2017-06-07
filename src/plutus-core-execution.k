@@ -49,4 +49,12 @@ module PLUTUS-CORE-EXECUTION
   rule ( con Q:QualC VS:ValList K:Ctx L:TmList ) { N }
     => ( con Q VS ( K { N } ) L )
 
+
+  syntax Instr ::= "(" "success" Val ")"
+                 | "(" "failure" ")"
+                 | "(" "txhash" ")"
+                 | "(" "blocknum" ")"
+                 | "(" "blocktime" ")"
+                 | "(" "bind" Tm Var Tm ")"
+
 endmodule
