@@ -15,7 +15,8 @@ before_install:
       cd k;
       mvn package -DskipTests;
     fi
-  - ls
+  - cd k
+  - mvn package -DskipTests
   - export PATH=$PATH:$(pwd)/k-distribution/target/release/k/bin
   - cd $TRAVIS_BUILD_DIR
 
