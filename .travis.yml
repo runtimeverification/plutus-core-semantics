@@ -30,5 +30,8 @@ script:
 
 notifications:
   email:
+    recipients:
     - tosun2@illinois.edu
     - lpena7@illinois.edu
+    on_success: always # default: change
+    on_failure: always # default: always
