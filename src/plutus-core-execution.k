@@ -45,6 +45,8 @@ module PLUTUS-CORE-EXECUTION
                | Ctx "{" Tm "}"
 
   // Context insertion.
+  syntax CtxInsrt ::= Ctx "{" Tm "}"
+
   rule EmptyCtx                             { N:Tm } => N
   rule ( let K:Ctx X:Var M:Tm )  { N:Tm } => ( let K { N } X M )
   rule [ K:Ctx M:Tm   ]          { N:Tm } => [ K { N } M ]
