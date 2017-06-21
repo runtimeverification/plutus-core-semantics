@@ -52,7 +52,7 @@ module PLUTUS-CORE-SYNTAX
   syntax NameList   ::= List{Name   ,  " "}
   syntax TmList     ::= "TODO"
   syntax ValList    ::= List{Val    ,  " "}
-  syntax VarList    ::= List{Var    ,  " "}
+  syntax VarList    ::= "TODO"
   syntax QualCList  ::= List{QualC  ,  " "}
   syntax DefList    ::= List{Def    ,  " "}
   syntax ModList    ::= List{Mod    ,  " "}
@@ -65,13 +65,13 @@ module PLUTUS-CORE-SYNTAX
                         // Local declaration.
                       | "(" "let" Tm Var Tm ")"
                         // Application.
-                      | "[" Tm Tm "]"                             [klabel(app)]
+                      | "[" Tm Tm "]"
                       | "(" "case" Tm QualCList ")" // Case.
                        // Built-in function.
                       | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
                       | "(" "builtin" Name "(" Tm Tm ")" ")"     [strict(2, 3)]
                       // Lambda abstraction.
-                      | "(" "lam" Var Tm ")"                           [binder]
+                      | "(" "lam" Var Tm ")"           [klabel(lamExp), binder]
                       | "(" "con" QualC TmList ")" // Constructed data.
                       | "(" "success" Tm ")" // Success.
                       | "(" "failure" ")" // Failure.
@@ -102,17 +102,19 @@ module PLUTUS-CORE-SYNTAX
 
   syntax Def          ::= "(" "define" Name Val ")"
 
-  syntax Val          ::= "(" "lam" Var Tm ")" // Lambda abstraction.
-                        | "(" "con" QualC TmList ")" // Constructed data.
-                        | "(" "success" Tm ")" // Success.
-                        | "(" "failure" ")" // Failure.
-                        | "(" "txhash"  ")" // Transaction hash.
-                        | "(" "blocknum" ")" // Block number.
-                        | "(" "blocktime" ")" // Block time.
-                        | "(" "bind" Tm Var Tm ")" // Computation bind.
-                        | Int // Primitive integer.
-                        | Float   // Primitive float.
-                        | ByStr   // Primitive bytestring.
+  // Lambda abstraction.
+  syntax Val          ::= "(" "lam" Var Tm ")" [klabel(lamV)]
+                        // Constructed data.
+                        | "(" "con" QualC TmList ")" [klabel(conV)]
+                        | "(" "success" Tm ")" [klabel(successV)] // Success.
+                        | "(" "failure" ")" [klabel(failureV)] // Failure.
+                        | "(" "txhash"  ")" [klabel(txhashV)]// Transaction hash.
+                        | "(" "blocknum" ")" [klabel(blocknumV)] // Block number.
+                        | "(" "blocktime" ")" [klabel(blocktimeV)] // Block time.
+                        | "(" "bind" Tm Var Tm ")" [klabel(bindV)] // Computation bind.
+                        | Int [klabel(intV)]// Primitive integer.
+                        | Float [klabel(floatV)]  // Primitive float.
+                        | ByStr  [klabel(byStrV)]// Primitive bytestring.
 
   syntax KVariable    ::= Var
   syntax KResult      ::= Val
