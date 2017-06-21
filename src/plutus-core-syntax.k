@@ -3,6 +3,7 @@ require "domains.k"
 module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
+  imports SUBSTITUTION
   /*import FLOAT-SYNTAX*/
 
   /***************************************************************************/
@@ -69,7 +70,8 @@ module PLUTUS-CORE-SYNTAX
                        // Built-in function.
                       | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
                       | "(" "builtin" Name "(" Tm Tm ")" ")"     [strict(2, 3)]
-                      | "(" "lam" Var Tm ")" // Lambda abstraction.
+                      // Lambda abstraction.
+                      | "(" "lam" Var Tm ")"                           [binder]
                       | "(" "con" QualC TmList ")" // Constructed data.
                       | "(" "success" Tm ")" // Success.
                       | "(" "failure" ")" // Failure.
@@ -112,6 +114,7 @@ module PLUTUS-CORE-SYNTAX
                         | Float   // Primitive float.
                         | ByStr   // Primitive bytestring.
 
+  syntax KVariable    ::= Var
   syntax KResult      ::= Val
 
 endmodule
