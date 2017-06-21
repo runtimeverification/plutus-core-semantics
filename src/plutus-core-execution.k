@@ -1,7 +1,9 @@
 require "plutus-core-syntax.k"
+require "substitution.k"
 
 module PLUTUS-CORE-EXECUTION
   imports PLUTUS-CORE-SYNTAX
+  imports SUBSTITUTION
 
   configuration
     <T> <k> $PGM:Tm </k> </T>
@@ -61,5 +63,8 @@ module PLUTUS-CORE-EXECUTION
                  | "(" "blocknum" ")"
                  | "(" "blocktime" ")"
                  | "(" "bind" Tm Var Tm ")"
+
+  // Local reductions.
+  rule [ ( lam X M ) (V:Var) ] => M[V / X]
 
 endmodule
