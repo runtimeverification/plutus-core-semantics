@@ -69,7 +69,18 @@ module PLUTUS-CORE-SYNTAX
                        // Built-in function.
                       | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
                       | "(" "builtin" Name "(" Tm Tm ")" ")"     [strict(2, 3)]
-                      | Val
+                      | "(" "lam" Var Tm ")" // Lambda abstraction.
+                      | "(" "con" QualC TmList ")" // Constructed data.
+                      | "(" "success" Tm ")" // Success.
+                      | "(" "failure" ")" // Failure.
+                      | "(" "txhash"  ")" // Transaction hash.
+                      | "(" "blocknum" ")" // Block number.
+                      | "(" "blocktime" ")" // Block time.
+                      | "(" "bind" Tm Var Tm ")" // Computation bind.
+                      | Int // Primitive integer.
+                      | Float   // Primitive float.
+                      | ByStr   // Primitive bytestring.
+
 
   // Case clause.
   syntax Cl           ::= "(" "cl" QualC "(" VarList ")" Tm ")"
