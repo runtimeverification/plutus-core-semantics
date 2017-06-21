@@ -3,6 +3,9 @@ require "plutus-core-syntax.k"
 module PLUTUS-CORE-EXECUTION
   imports PLUTUS-CORE-SYNTAX
 
+  configuration
+    <T> <k> $PGM:Tm </k> </T>
+
   /***************************************************************************/
   /***********************  BUILT-IN REDUCTIONS   ****************************/
   /***************************************************************************/
@@ -50,7 +53,6 @@ module PLUTUS-CORE-EXECUTION
     => ( builtin NM VS K { N } MS )
   rule ( con Q:QualC VS:ValList K:Ctx L:TmList ) { N }
     => ( con Q VS ( K { N } ) L )
-
 
   syntax Instr ::= "(" "success" Val ")"
                  | "(" "failure" ")"
