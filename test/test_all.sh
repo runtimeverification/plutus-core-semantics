@@ -1,9 +1,9 @@
 for file in `ls *.plcore`;
   do
-    krun -d .. $file | diff $file.out -;
+    krun -d .. $file | diff $file.out - > /dev/null;
     if [ $? != 0 ]
     then
-      printf "Running \x1B[1m%-30s\x1B[0m  \x1B[31m%-30s\e[0m\n" $file "FAILURE"
+      printf "Running \x1B[1m%-30s\x1B[0m \x1B[31m%-30s\e[0m\n" $file "FAILURE"
     else
       printf "Running \x1B[1m%-30s\x1B[0m \x1B[32m%-30s\e[0m\n" $file "SUCCESS"
     fi
