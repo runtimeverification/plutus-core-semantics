@@ -68,5 +68,6 @@ module PLUTUS-CORE-EXECUTION
 
   // Local reductions.
   rule [ ( lam X M ) (N:Tm) ] => M[N / X]
+  rule failureE => failureV
 
 endmodule

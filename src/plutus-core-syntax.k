@@ -74,7 +74,7 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "lam" Var Tm ")"           [klabel(lamExp), binder]
                       | "(" "con" QualC TmList ")" // Constructed data.
                       | "(" "success" Tm ")" // Success.
-                      | "(" "failure" ")" // Failure.
+                      | "(" "failure" ")" [klabel(failureE)]// Failure.
                       | "(" "txhash"  ")" // Transaction hash.
                       | "(" "blocknum" ")" // Block number.
                       | "(" "blocktime" ")" // Block time.
@@ -106,15 +106,15 @@ module PLUTUS-CORE-SYNTAX
   syntax Val          ::= "(" "lam" Var Tm ")"
                         // Constructed data.
                         | "(" "con" QualC TmList ")"
-                        | "(" "success" Tm ")"
-                        | "(" "failure" ")"
+                        | "(" "success" Val ")"
+                        | "(" "failure" ")" [failureV]
                         | "(" "txhash"  ")"
                         | "(" "blocknum" ")"
                         | "(" "blocktime" ")"
                         | "(" "bind" Tm Var Tm ")"
                         | Int
                         | Float
-                        | ByStr 
+                        | ByStr
 
   syntax KVariable    ::= Var
   syntax KResult      ::= Val
