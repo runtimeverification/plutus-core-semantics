@@ -47,8 +47,4 @@ module PLUTUS-CORE-EXECUTION
     <k> (( define N:Name V:Val ) => .K) ~> _ </k>
     <env> E => E[N <- V] </env>
 
-  rule
-    <k> N:Name => V </k>
-    <env> ... N |-> V:Val ... </env>
-
 endmodule
