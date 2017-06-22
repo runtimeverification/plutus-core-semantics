@@ -90,7 +90,7 @@ module PLUTUS-CORE-SYNTAX
   syntax ExpD         ::= "(" "exported" "(" ConArList ")" "(" NameList ")" ")"
   syntax LocD         ::= "(" "local"    "(" ConArList ")" "(" NameList ")" ")"
 
-  syntax Def          ::= "(" "define" Name Val ")"
+  syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
 
   // Lambda abstraction.
   syntax Val          ::= "(" "lam" Var Tm ")"

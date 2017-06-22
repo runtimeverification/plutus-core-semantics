@@ -6,7 +6,10 @@ module PLUTUS-CORE-EXECUTION
   imports SUBSTITUTION
 
   configuration
-    <T> <k> $PGM:Tm </k> </T>
+    <T>
+      <k> $PGM:Tm </k>
+      <env> .Map </env>
+    </T>
 
   /***************************************************************************/
   /***********************  BUILT-IN REDUCTIONS   ****************************/
@@ -32,10 +35,14 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin ceil:Name  ( F:Float ) ) => ceilFloat(F:Float)
   rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F:Float)
   /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
-  
+
   // Local reductions.
   rule [ ( lam X M ) (N:Tm) ]  => M[N / X]
   rule ( let N:Tm X:Var M:Tm ) => M[N / X]
   rule failureE => failureV
+
+  rule
+    <k> ( define N:Name M:Tm ) </k>
+    <env> E => E[N <- M] </env>
 
 endmodule
