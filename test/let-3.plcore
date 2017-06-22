@@ -1,0 +1,5 @@
+(define result
+ (let 4 four
+ (let 10 ten
+ (let (lam x (lam y (builtin multiplyInt (x y)))) times
+   [[times 4] 10]))))
