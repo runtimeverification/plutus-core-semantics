@@ -1,1 +1,1 @@
-<T> <k> 2e+00 </k> <env> .Map </env> </T>
+<T> <k> .DefList </k> <env> result |-> 2e+00 </env> </T>

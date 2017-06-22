@@ -1,1 +1,1 @@
-(builtin floor (2.5))
+(define result (builtin floor (2.5)))
