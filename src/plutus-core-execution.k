@@ -7,7 +7,7 @@ module PLUTUS-CORE-EXECUTION
 
   configuration
     <T>
-      <k> $PGM:Tm </k>
+      <k> $PGM:DefList </k>
       <env> .Map </env>
     </T>
 
@@ -41,8 +41,14 @@ module PLUTUS-CORE-EXECUTION
   rule ( let N:Tm X:Var M:Tm ) => M[N / X]
   rule failureE => failureV
 
+  rule D:Def DS:DefList => D ~> DS
+
   rule
-    <k> ( define N:Name M:Tm ) </k>
-    <env> E => E[N <- M] </env>
+    <k> (( define N:Name V:Val ) => .K) ~> _ </k>
+    <env> E => E[N <- V] </env>
+
+  rule
+    <k> N:Name => V </k>
+    <env> ... N |-> V:Val ... </env>
 
 endmodule
