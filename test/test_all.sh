@@ -2,9 +2,9 @@ COUNT=1
 function report () {
   if [ $1 == 0 ]
   then
-    printf "\x1B[94m%-6s\x1B[0m Running \x1B[1m%-30s\x1B[0m \x1B[32m%-30s\e[0m\n" "[$COUNT]" $2 "SUCCESS"
+    printf "\x1B[94m%-2s\x1B[0m %-1s Running \x1B[1m%-30s\x1B[0m \x1B[32m%-30s\e[0m\n" "$COUNT" "|" $2 "SUCCESS"
   else
-    printf "\x1B[94m%-6s\x1B[0m Running \x1B[1m%-30s\x1B[0m \x1B[31m%-30s\e[0m\n" "[$COUNT]" $2 "FAILURE"
+    printf "\x1B[94m%-2s\x1B[0m %-1s Running \x1B[1m%-30s\x1B[0m \x1B[31m%-30s\e[0m\n" "$COUNT" "|" $2 "FAILURE"
   fi
 }
 
