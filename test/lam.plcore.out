@@ -1,1 +1,1 @@
-<T> <k> ( lam x x ) </k> </T>
+<T> <k> ( lam x x ) </k> <env> .Map </env> </T>
