@@ -103,18 +103,18 @@ module PLUTUS-CORE-SYNTAX
   syntax Def          ::= "(" "define" Name Val ")"
 
   // Lambda abstraction.
-  syntax Val          ::= "(" "lam" Var Tm ")" [klabel(lamV)]
+  syntax Val          ::= "(" "lam" Var Tm ")"
                         // Constructed data.
-                        | "(" "con" QualC TmList ")" [klabel(conV)]
-                        | "(" "success" Tm ")" [klabel(successV)] // Success.
-                        | "(" "failure" ")" [klabel(failureV)] // Failure.
-                        | "(" "txhash"  ")" [klabel(txhashV)]// Transaction hash.
-                        | "(" "blocknum" ")" [klabel(blocknumV)] // Block number.
-                        | "(" "blocktime" ")" [klabel(blocktimeV)] // Block time.
-                        | "(" "bind" Tm Var Tm ")" [klabel(bindV)] // Computation bind.
-                        | Int [klabel(intV)]// Primitive integer.
-                        | Float [klabel(floatV)]  // Primitive float.
-                        | ByStr  [klabel(byStrV)]// Primitive bytestring.
+                        | "(" "con" QualC TmList ")"
+                        | "(" "success" Tm ")"
+                        | "(" "failure" ")"
+                        | "(" "txhash"  ")"
+                        | "(" "blocknum" ")"
+                        | "(" "blocktime" ")"
+                        | "(" "bind" Tm Var Tm ")"
+                        | Int
+                        | Float
+                        | ByStr 
 
   syntax KVariable    ::= Var
   syntax KResult      ::= Val
