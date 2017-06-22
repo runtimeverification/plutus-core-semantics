@@ -63,7 +63,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax Tm         ::= Var
                         // Local declaration.
-                      | "(" "let" Tm Var Tm ")"                  [strict(3, 1)]
+                      | "(" "let" Tm Var Tm ")"                  [strict(1, 3)]
                         // Application.
                       | "[" Tm Tm "]"                            [strict(1, 2)]
                       | "(" "case" Tm QualCList ")" // Case.
@@ -108,7 +108,7 @@ module PLUTUS-CORE-SYNTAX
                         | "(" "blocktime" ")"
                         | "(" "bind" Tm Var Tm ")"
 
-  syntax KResult      ::= Val | Var | Instr
+  syntax KResult      ::= Val | Var
   syntax KVariable    ::= Var
 
 endmodule
