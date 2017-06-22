@@ -1,1 +1,1 @@
-<T> <k> 6 </k> <env> .Map </env> </T>
+<T> <k> .DefList </k> <env> result |-> 6 </env> </T>
