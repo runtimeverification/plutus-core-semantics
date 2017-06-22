@@ -1,1 +1,1 @@
-(builtin addInt (2 2))
+(define result (builtin addInt (2 2)))
