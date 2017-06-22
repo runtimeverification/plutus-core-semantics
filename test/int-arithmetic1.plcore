@@ -1,1 +1,1 @@
-(builtin addInt ((builtin multiplyInt (3 3)) (builtin multiplyInt (4 3))))
+<T> <k> .DefList </k> <env> .Map </env> </T>
