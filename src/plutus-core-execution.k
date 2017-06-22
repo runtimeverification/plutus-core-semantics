@@ -67,6 +67,6 @@ module PLUTUS-CORE-EXECUTION
                  | "(" "bind" Tm Var Tm ")"
 
   // Local reductions.
-  rule [ ( lam X M ) (V:Var) ] => M[V / X]
+  rule [ ( lam X M ) (N:Tm) ] => M[N / X]
 
 endmodule
