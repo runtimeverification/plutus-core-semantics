@@ -94,19 +94,21 @@ module PLUTUS-CORE-SYNTAX
 
   // Lambda abstraction.
   syntax Val          ::= "(" "lam" Var Tm ")"
+                        | Instr
                         // Constructed data.
                         | "(" "con" QualC TmList ")"
-                        | "(" "success" Val ")"
-                        | "(" "failure" ")" [failureV]
-                        | "(" "txhash"  ")"
-                        | "(" "blocknum" ")"
-                        | "(" "blocktime" ")"
-                        | "(" "bind" Tm Var Tm ")"
                         | Int
                         | Float
                         | ByStr
 
-  syntax KResult      ::= Val | Var
+  syntax Instr        ::= "(" "success" Tm ")"                      [strict(1)]
+                        | "(" "failure" ")"                          [failureV]
+                        | "(" "txhash"  ")"
+                        | "(" "blocknum" ")"
+                        | "(" "blocktime" ")"
+                        | "(" "bind" Tm Var Tm ")"
+
+  syntax KResult      ::= Val | Var | Instr
   syntax KVariable    ::= Var
 
 endmodule
