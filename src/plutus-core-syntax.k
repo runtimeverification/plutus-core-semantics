@@ -63,25 +63,15 @@ module PLUTUS-CORE-SYNTAX
 
   syntax Tm         ::= Var
                         // Local declaration.
-                      | "(" "let" Tm Var Tm ")"
+                      | "(" "let" Tm Var Tm ")"                  [strict(3, 1)]
                         // Application.
-                      | "[" Tm Tm "]"
+                      | "[" Tm Tm "]"                            [strict(1, 2)]
                       | "(" "case" Tm QualCList ")" // Case.
                        // Built-in function.
                       | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
                       | "(" "builtin" Name "(" Tm Tm ")" ")"     [strict(2, 3)]
                       // Lambda abstraction.
-                      | "(" "lam" Var Tm ")"           [klabel(lamExp), binder]
-                      | "(" "con" QualC TmList ")" // Constructed data.
-                      | "(" "success" Tm ")" // Success.
-                      | "(" "failure" ")" [klabel(failureE)]// Failure.
-                      | "(" "txhash"  ")" // Transaction hash.
-                      | "(" "blocknum" ")" // Block number.
-                      | "(" "blocktime" ")" // Block time.
-                      | "(" "bind" Tm Var Tm ")" // Computation bind.
-                      | Int // Primitive integer.
-                      | Float   // Primitive float.
-                      | ByStr   // Primitive bytestring.
+                      | Val
 
 
   // Case clause.
@@ -116,7 +106,7 @@ module PLUTUS-CORE-SYNTAX
                         | Float
                         | ByStr
 
+  syntax KResult      ::= Val | Var
   syntax KVariable    ::= Var
-  syntax KResult      ::= Val
 
 endmodule
