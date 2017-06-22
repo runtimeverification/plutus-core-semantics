@@ -1,1 +1,1 @@
-( lam x x )
+(define result ( lam x x ))

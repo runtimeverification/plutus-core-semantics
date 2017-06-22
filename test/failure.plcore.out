@@ -1,1 +1,1 @@
-<T> <k> ( failure ) </k> <env> .Map </env> </T>
+<T> <k> .DefList </k> <env> result |-> ( failure ) </env> </T>

@@ -1,1 +1,1 @@
-(success (lam x x))
+(define result (success (lam x x)))

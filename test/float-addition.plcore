@@ -1,1 +1,1 @@
-(builtin addFloat (2.0 2.0))
+(define result (builtin addFloat (2.0 2.0)))

@@ -1,1 +1,1 @@
-<T> <k> ( success ( lam x x ) ) </k> <env> .Map </env> </T>
+<T> <k> .DefList </k> <env> result |-> ( success ( lam x x ) ) </env> </T>

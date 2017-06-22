@@ -1,1 +1,0 @@
-(builtin equalsInt ((builtin subtractInt (40 30)) (builtin addInt (5 5))))

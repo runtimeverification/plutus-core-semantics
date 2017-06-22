@@ -1,1 +1,1 @@
-<T> <k> ( lam x x ) </k> <env> .Map </env> </T>
+<T> <k> .DefList </k> <env> result |-> ( lam x x ) </env> </T>
