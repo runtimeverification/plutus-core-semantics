@@ -19,6 +19,7 @@ before_install:
 cache:
   directories:
     - $HOME/k
+    - !$HOME/k/k-distribution/target/archive-tmp
     - $HOME/.m2
 
 install:
