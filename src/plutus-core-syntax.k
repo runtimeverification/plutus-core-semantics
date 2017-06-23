@@ -51,7 +51,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax NameList   ::= List{Name   ,  " "}
   syntax TmList     ::= "TODO"
-  syntax ValList    ::= List{Val    ,  " "}
+  syntax ValList    ::= "TODO"
   syntax VarList    ::= "TODO"
   syntax QualCList  ::= List{QualC  ,  " "}
   syntax DefList    ::= List{Def    ,  " "}
@@ -61,9 +61,7 @@ module PLUTUS-CORE-SYNTAX
   syntax ConArList  ::= ""
                       | "(" Con Arity ")" ConArList
 
-  syntax Tm         ::= Var
-                        // Local declaration.
-                      | "(" "let" Tm Var Tm ")"               [seqstrict(1, 3)]
+  syntax Tm         ::= "(" "let" Tm Var Tm ")"               [seqstrict(1, 3)]
                         // Application.
                       | "[" Tm Tm "]"                         [seqstrict(1, 2)]
                       | "(" "case" Tm QualCList ")" // Case.
@@ -93,7 +91,8 @@ module PLUTUS-CORE-SYNTAX
   syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
 
   // Lambda abstraction.
-  syntax Val          ::= "(" "lam" Var Tm ")"
+  syntax Val          ::= Var
+                        | "(" "lam" Var Tm ")"                         [binder]
                         | Instr
                         // Constructed data.
                         | "(" "con" QualC TmList ")"
@@ -108,7 +107,7 @@ module PLUTUS-CORE-SYNTAX
                         | "(" "blocktime" ")"
                         | "(" "bind" Tm Var Tm ")"
 
-  syntax KResult      ::= Val | Var
+  syntax KResult      ::= Val
   syntax KVariable    ::= Var
 
 endmodule
