@@ -108,6 +108,8 @@ module PLUTUS-CORE-SYNTAX
   syntax KResult      ::= Val
   syntax KVariable    ::= Var
 
-  syntax String       ::= toString(ByStr) [function, hook(STRING.token2string)]
+  syntax String       ::= toStringVerbatim(ByStr)  [ function
+                                                   , hook(STRING.token2string)]
+                        | toString(ByStr)                            [function]
 
 endmodule

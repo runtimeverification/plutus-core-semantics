@@ -39,10 +39,18 @@ module PLUTUS-CORE-EXECUTION
   syntax ByStr ::= toByStr ( String ) [function]
   rule toByStr(S:String) => #parseToken("ByStr@PLUTUS-CORE-SYNTAX", S)
 
-  rule ( builtin take:Name ( N:Int B:ByStr ) )
-    => toByStr("#" +String substrString(toString(B), 1, N +Int 1))
+  rule toString(B:ByStr)
+    => substrString(toStringVerbatim(B), 1, lengthString(toStringVerbatim(B)))
 
-  // Local reductions.
+  rule ( builtin take:Name ( N:Int B:ByStr ) )
+    => toByStr("#" +String substrString(toString(B), 0, N))
+  rule ( builtin concatenate:Name ( B1:ByStr B2:ByStr ) )
+    => toByStr("#" +String toString(B1) +String toString(B2))
+
+  /***************************************************************************/
+  /************************   LOCAL REDUCTIONS   *****************************/
+  /***************************************************************************/
+
   rule [ ( lam X M ) (N:Tm) ]  => M[N / X]
   rule ( let N:Tm X:Var M:Tm ) => M[N / X]
 
