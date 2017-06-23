@@ -61,13 +61,13 @@ module PLUTUS-CORE-SYNTAX
   syntax ConArList  ::= ""
                       | "(" Con Arity ")" ConArList
 
-  syntax Tm         ::= "(" "let" Tm Var Tm ")"               [seqstrict(1, 3)]
+  syntax Tm         ::= "(" "let" Tm Var Tm ")"               [strict(1)]
                         // Application.
-                      | "[" Tm Tm "]"                         [seqstrict(1, 2)]
+                      | "[" Tm Tm "]"                         [strict(1, 2)]
                       | "(" "case" Tm QualCList ")" // Case.
                        // Built-in function.
                       | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
-                      | "(" "builtin" Name "(" Tm Tm ")" ")"  [seqstrict(2, 3)]
+                      | "(" "builtin" Name "(" Tm Tm ")" ")"  [strict(2, 3)]
                       // Lambda abstraction.
                       | Val
 
