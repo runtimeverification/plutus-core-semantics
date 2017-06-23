@@ -39,7 +39,6 @@ module PLUTUS-CORE-EXECUTION
   // Local reductions.
   rule [ ( lam X M ) (N:Tm) ]  => M[N / X]
   rule ( let N:Tm X:Var M:Tm ) => M[N / X]
-  rule failureE => failureV
 
   rule D:Def DS:DefList => D ~> DS
 
