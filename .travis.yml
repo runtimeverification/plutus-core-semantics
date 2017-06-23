@@ -24,9 +24,11 @@ cache:
 install:
   - make
 
+before_script:
+  - kserver &
+
 script:
   - cd test
-  - kserver &
   - ./test_all.sh
 
 notifications:
