@@ -36,6 +36,12 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F:Float)
   /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
 
+  syntax ByStr ::= toByStr ( String ) [function]
+  rule toByStr(S:String) => #parseToken("ByStr@PLUTUS-CORE-SYNTAX", S)
+
+  rule ( builtin take:Name ( N:Int B:ByStr ) )
+    => toByStr("#" +String substrString(toString(B), 1, N +Int 1))
+
   // Local reductions.
   rule [ ( lam X M ) (N:Tm) ]  => M[N / X]
   rule ( let N:Tm X:Var M:Tm ) => M[N / X]

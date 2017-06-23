@@ -1,5 +1,3 @@
-require "domains.k"
-
 module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
@@ -30,7 +28,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Exp     ::= r"[eE][+-]?[0-9]+"                                 [token]
 
   // Hex bytestring.
-  syntax ByStr   ::= r"#([a-fA-F0-9][a-fA-F0-9])+"                      [token]
+  syntax ByStr   ::= r"\\#[a-fA-F0-9]([a-fA-F0-9])*"                    [token]
                    | "#\".\""                                           [token]
 
   syntax Char    ::= r"\".\""                                           [token]
@@ -55,7 +53,7 @@ module PLUTUS-CORE-SYNTAX
   syntax VarList    ::= "TODO"
   syntax QualCList  ::= List{QualC  ,  " "}
   syntax DefList    ::= List{Def    ,  " "}
-  syntax ModList    ::= List{Mod    ,  " "}
+  syntax ModList    ::= "TODO"
   syntax ClList     ::= List{Cl     ,  " "}
 
   syntax ConArList  ::= ""
@@ -109,5 +107,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax KResult      ::= Val
   syntax KVariable    ::= Var
+
+  syntax String       ::= toString(ByStr) [function, hook(STRING.token2string)]
 
 endmodule
