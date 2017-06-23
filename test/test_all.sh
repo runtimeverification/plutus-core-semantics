@@ -3,17 +3,17 @@ NUM_ERRORS=0
 
 function report_case () {
   if [ $1 == 0 ]
-  then printf "\x1B[94m%-2s\x1B[0m %-1s Running \x1B[1m%-30s\x1B[0m \x1B[32m%-30s\e[0m\n" "$COUNT" "|" $2 "SUCCESS"
+  then printf "\e[94m%-2s\e[0m %-1s Running \e[1m%-30s\e[0m \e[32m%-30s\e[0m\n" "$COUNT" "|" $2 "SUCCESS"
   else
-    printf "\x1B[94m%-2s\x1B[0m %-1s Running \x1B[1m%-30s\x1B[0m \x1B[31m%-30s\e[0m\n" "$COUNT" "|" $2 "FAILURE";
+    printf "\e[94m%-2s\e[0m %-1s Running \e[1m%-30s\e[0m \e[31m%-30s\e[0m\n" "$COUNT" "|" $2 "FAILURE";
     (( NUM_ERRORS += 1 ));
   fi
 }
 
 function final_report () {
   if [ $NUM_ERRORS == 0 ]
-  then (echo "    \x1B[1m\x1B[32m$(( COUNT-1 )) programs have been successfully run.\x1B[0m"; exit 0)
-  else (echo "    \x1B[1m\x1B[31m$NUM_ERRORS out of $(( COUNT-1 )) programs did not match the expected output."; exit 1)
+  then (printf "    \e[1m\e[32m$(( COUNT-1 )) programs have been successfully run.\e[0m\n"; exit 0)
+  else (printf "    \e[1m\e[31m$NUM_ERRORS out of $(( COUNT-1 )) programs did not match the expected output."; exit 1)
   fi
 }
 
