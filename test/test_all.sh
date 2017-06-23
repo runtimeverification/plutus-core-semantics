@@ -12,8 +12,8 @@ function report_case () {
 
 function final_report () {
   if [ $NUM_ERRORS == 0 ]
-  then (echo "\x1B[1m\x1B[32m$(( COUNT-1 )) programs have been successfully run.\x1B[0m"; exit 0)
-  else (echo "$NUM_ERRORS out of $(( COUNT-1 )) programs did not match the expected output."; exit 1)
+  then (echo "    \x1B[1m\x1B[32m$(( COUNT-1 )) programs have been successfully run.\x1B[0m"; exit 0)
+  else (echo "    \x1B[1m\x1B[31m$NUM_ERRORS out of $(( COUNT-1 )) programs did not match the expected output."; exit 1)
   fi
 }
 
