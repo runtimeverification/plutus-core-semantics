@@ -1,4 +1,1 @@
-<T>
- <k> .DefList </k>
- <env> b1 |-> #1 b2 |-> #12 b3 |-> #123 </env>
-</T>
+<T> <k> .DefList </k> <env> b3 |-> #123 b1 |-> #1 b2 |-> #12 </env> </T>
