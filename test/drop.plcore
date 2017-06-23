@@ -1,0 +1,5 @@
+(define b1 (builtin drop (1 #123456)))
+
+(define b2 (builtin drop (2 #123456)))
+
+(define b3 (builtin drop (3 #123456)))
