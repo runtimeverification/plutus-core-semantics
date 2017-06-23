@@ -1,5 +1,10 @@
-(define result
+(define four
   (let (lam s (lam z [s z]))           one
   (let (lam s (lam z [s [s [s z]]]))   three
   (let (lam x (builtin addInt (x 1))) addOne
   (builtin addInt ([[one addOne] 0] [[three addOne] 0]))))))
+
+(define six
+  (let (lam s (lam z [s [s [s z]]]))   three
+  (let (lam x (builtin addInt (x 1))) addOne
+  (builtin addInt ([[three addOne] 0] [[three addOne] 0])))))
