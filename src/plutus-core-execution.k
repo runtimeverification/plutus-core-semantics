@@ -44,6 +44,10 @@ module PLUTUS-CORE-EXECUTION
 
   rule ( builtin take:Name ( N:Int B:ByStr ) )
     => toByStr("#" +String substrString(toString(B), 0, N))
+
+  rule ( builtin drop:Name ( N:Int B:ByStr ) )
+    => toByStr("#" +String substrString(toString(B), N, lengthString(toString(B))))
+
   rule ( builtin concatenate:Name ( B1:ByStr B2:ByStr ) )
     => toByStr("#" +String toString(B1) +String toString(B2))
 
