@@ -99,7 +99,7 @@ module PLUTUS-CORE-SYNTAX
                         | ByStr
 
   syntax Instr        ::= "(" "success" Tm ")"                      [strict(1)]
-                        | "(" "failure" ")"                          [failureV]
+                        | "(" "failure" ")"                          
                         | "(" "txhash"  ")"
                         | "(" "blocknum" ")"
                         | "(" "blocktime" ")"
