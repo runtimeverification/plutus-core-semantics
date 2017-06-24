@@ -59,7 +59,8 @@ module PLUTUS-CORE-SYNTAX
   syntax ConArList  ::= ""
                       | "(" Con Arity ")" ConArList
 
-  syntax Tm         ::= "(" "let" Tm Var Tm ")"               [strict(1)]
+  syntax Tm         ::= Var
+                      | "(" "let" Tm Var Tm ")"               [strict(1)]
                         // Application.
                       | "[" Tm Tm "]"                         [strict(1, 2)]
                       | "(" "case" Tm QualCList ")" // Case.
@@ -89,8 +90,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
 
   // Lambda abstraction.
-  syntax Val          ::= Var
-                        | "(" "lam" Var Tm ")"                         [binder]
+  syntax Val          ::= "(" "lam" Var Tm ")"                         [binder]
                         | Instr
                         // Constructed data.
                         | "(" "con" QualC TmList ")"
@@ -99,7 +99,7 @@ module PLUTUS-CORE-SYNTAX
                         | ByStr
 
   syntax Instr        ::= "(" "success" Tm ")"                      [strict(1)]
-                        | "(" "failure" ")"                          
+                        | "(" "failure" ")"
                         | "(" "txhash"  ")"
                         | "(" "blocknum" ")"
                         | "(" "blocktime" ")"
