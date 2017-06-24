@@ -36,20 +36,21 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F:Float)
   /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
 
-  syntax ByStr ::= toByStr ( String ) [function]
-  rule toByStr(S:String) => #parseToken("ByStr@PLUTUS-CORE-SYNTAX", S)
+  syntax ByStr ::= toByStrVerbatim ( String ) [function]
+  rule toByStr(S:String)
+    => #parseToken("ByStr@PLUTUS-CORE-SYNTAX", ("#" +String S))
 
   rule toString(B:ByStr)
     => substrString(toStringVerbatim(B), 1, lengthString(toStringVerbatim(B)))
 
   rule ( builtin take:Name ( N:Int B:ByStr ) )
-    => toByStr("#" +String substrString(toString(B), 0, N))
+    => toByStr(substrString(toString(B), 0, N))
 
   rule ( builtin drop:Name ( N:Int B:ByStr ) )
-    => toByStr("#" +String substrString(toString(B), N, lengthString(toString(B))))
+    => toByStr(substrString(toString(B), N, lengthString(toString(B))))
 
   rule ( builtin concatenate:Name ( B1:ByStr B2:ByStr ) )
-    => toByStr("#" +String toString(B1) +String toString(B2))
+    => toByStr(toString(B1) +String toString(B2))
 
   /***************************************************************************/
   /************************   LOCAL REDUCTIONS   *****************************/
