@@ -13,7 +13,7 @@ function report_case () {
 function final_report () {
   if [ $NUM_ERRORS == 0 ]
   then (printf "    \e[1m\e[32m$(( COUNT-1 )) programs have been successfully run.\e[0m\n"; exit 0)
-  else (printf "    \e[1m\e[31m$NUM_ERRORS out of $(( COUNT-1 )) programs did not match the expected output."; exit 1)
+  else (printf "    \e[1m\e[31m$NUM_ERRORS out of $(( COUNT-1 )) programs did not match the expected output.\n"; exit 1)
   fi
 }
 
