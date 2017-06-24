@@ -7,7 +7,7 @@ module PLUTUS-CORE-EXECUTION
 
   configuration
     <T>
-      <k> $PGM:DefList </k>
+      <k> $PGM:Mod </k>
       <env> .Map </env>
     </T>
 
