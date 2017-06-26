@@ -47,16 +47,18 @@ module PLUTUS-CORE-SYNTAX
   syntax QualN      ::= ModName "." Name
   syntax QualC      ::= ModName "." Con
 
-  syntax NameList   ::= "TODO"
-  syntax TmList     ::= "TODO"
-  syntax ValList    ::= "TODO"
-  syntax VarList    ::= "TODO"
+  syntax NameList   ::= "TODONameList"
+  syntax TmList     ::= "TODOTmList"
+  syntax ValList    ::= "TODOValList"
+  syntax VarList    ::= "TODOVarList"
   syntax QualCList  ::= List{QualC  ,  " "}
-  syntax DefList    ::= "TODO"
-  syntax ModList    ::= "TODO"
+
+  syntax DefList    ::= List{Def    ,  " "}
+
+  syntax ModList    ::= "TODOModList"
   syntax ClList     ::= List{Cl     ,  " "}
 
-  syntax ConArList  ::= "TODO"
+  syntax ConArList  ::= "TODOConArList"
 
   syntax Tm         ::= Var
                       | "(" "let" Tm Var Tm ")"               [strict(1)]
@@ -78,6 +80,7 @@ module PLUTUS-CORE-SYNTAX
 
   // Module.
   syntax Mod          ::= "(" "module" ModName ImpD ExpD LocD DefList ")"
+                                                                    [strict(5)]
 
   // Import declarations.
   syntax ImpD         ::= "(" "imported" ModList ")"
