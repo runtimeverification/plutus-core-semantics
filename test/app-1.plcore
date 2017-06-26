@@ -1,5 +1,3 @@
-(module Foo (imported TODOModList)
-            (exported (TODOConArList) (TODONameList))
-            (local (TODOConArList) (TODONameList))
+(module Foo (imported) (exported () ()) (local () ())
   (define result
     (let (lam x (builtin addInt (x 5))) addFive [addFive 10])))
