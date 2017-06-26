@@ -12,7 +12,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Name    ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Module name.
-  syntax Mod     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+  syntax ModName ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Constructor name.
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
