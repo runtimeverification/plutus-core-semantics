@@ -108,7 +108,7 @@ module PLUTUS-CORE-SYNTAX
                         | "(" "blocktime" ")"
                         | "(" "bind" Tm Var Tm ")"
 
-  syntax KResult      ::= Val
+  syntax KResult      ::= Val | ".DefList"
   syntax KVariable    ::= Var
 
   syntax String       ::= toStringVerbatim(ByStr)  [ function

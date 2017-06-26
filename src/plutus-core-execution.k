@@ -65,4 +65,7 @@ module PLUTUS-CORE-EXECUTION
     <k> (( define N:Name V:Val ) => .K) ~> _ </k>
     <env> E => E[N <- V] </env>
 
+  rule ( module MN:ModName ( _ ) ( _ ) ( _ ) .DefList )
+    => .ModList
+
 endmodule
