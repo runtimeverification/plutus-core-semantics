@@ -1,0 +1,5 @@
+(module Foo (imported) (exported () ()) (local () ())
+  (define result
+    (case (con Nat.S 1)
+          (cl Nat.S (x)  x)
+          (cl Nat.Z ()  -1))))

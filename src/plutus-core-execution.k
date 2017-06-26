@@ -32,8 +32,8 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => F1 <Float F2
   rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => F1 ==Float F2
 
-  rule ( builtin ceil:Name  ( F:Float ) ) => ceilFloat(F:Float)
-  rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F:Float)
+  rule ( builtin ceil:Name  ( F:Float ) ) => ceilFloat(F)
+  rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F)
   /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
 
   syntax ByStr ::= toByStrVerbatim ( String ) [function]
@@ -69,5 +69,17 @@ module PLUTUS-CORE-EXECUTION
 
   rule ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS )
   rule (.DefList ~> _:ModF ) => .K
+
+  /***************************************************************************/
+  /************************   LOCAL REDUCTIONS   *****************************/
+  /***************************************************************************/
+
+  syntax Map ::= manySubst(VarList, TmList) [function]
+  rule manySubst(.VarList, .TmList) => .Map
+  rule manySubst(X:Var ; XS:VarList, M:Tm ; MS:TmList)
+    => manySubst(XS, MS)[X <- M]
+
+  rule ( case ( con QC:QualC MS:TmList ) ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
+    => M[manySubst(XS, MS)]
 
 endmodule

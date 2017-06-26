@@ -48,9 +48,9 @@ module PLUTUS-CORE-SYNTAX
   syntax QualC      ::= ModName "." Con
 
   syntax NameList   ::= List{Name, " "}
-  syntax TmList     ::= "TODOTmList"
+  syntax TmList     ::= List{Tm, ";"}                     [klabel(tmList)]
   syntax ValList    ::= "TODOValList"
-  syntax VarList    ::= "TODOVarList"
+  syntax VarList    ::= List{Var, ";"}
   syntax QualCList  ::= List{QualC  ,  " "}
 
   syntax DefList    ::= List{Def    ,  " "}
@@ -58,18 +58,20 @@ module PLUTUS-CORE-SYNTAX
   syntax ModList    ::= List{ModName , " "}
   syntax ClList     ::= List{Cl     ,  " "}
 
-  syntax ConArity      ::= "(" Con Arity ")"
-  syntax CAList  ::= List{ConArity, " "}
+  syntax ConArity   ::= "(" Con Arity ")"
+  syntax CAList     ::= List{ConArity, " "}
 
   syntax Tm         ::= Var
-                      | "(" "let" Tm Var Tm ")"               [strict(1)]
+                      | "(" "let" Tm Var Tm ")"                [strict(1)]
                         // Application.
-                      | "[" Tm Tm "]"                         [strict(1, 2)]
-                      | "(" "case" Tm QualCList ")" // Case.
-                       // Built-in function.
-                      | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
-                      | "(" "builtin" Name "(" Tm Tm ")" ")"  [strict(2, 3)]
-                      // Lambda abstraction.
+                      | "[" Tm Tm "]"                       [strict(1, 2)]
+                      | "(" "case" Tm ClList ")"               [strict(1)]
+                        // Built-in function.
+                      | "(" "builtin" Name "(" Tm ")" ")"
+                                                       [strict(2), prefer]
+                      | "(" "builtin" Name "(" Tm Tm ")" ")"
+                                                            [strict(2, 3)]
+                        // Lambda abstraction.
                       | Val
 
 
@@ -95,7 +97,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Val          ::= "(" "lam" Var Tm ")"                    [binder]
                         | Instr
                         // Constructed data.
-                        | "(" "con" QualC TmList ")"
+                        | "(" "con" QualC TmList ")"           [strict(2)]
                         | Int
                         | Float
                         | ByStr
