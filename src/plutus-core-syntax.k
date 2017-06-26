@@ -58,7 +58,8 @@ module PLUTUS-CORE-SYNTAX
   syntax ModList    ::= List{ModName , " "}
   syntax ClList     ::= List{Cl     ,  " "}
 
-  syntax ConArList  ::= "TODOConArList"
+  syntax ConArity      ::= "(" Con Arity ")"
+  syntax CAList  ::= List{ConArity, " "}
 
   syntax Tm         ::= Var
                       | "(" "let" Tm Var Tm ")"               [strict(1)]
@@ -86,8 +87,8 @@ module PLUTUS-CORE-SYNTAX
   syntax ImpD         ::= "(" "imported" ModList ")"
 
   // Export and local declarations.
-  syntax ExpD         ::= "(" "exported" "(" ConArList ")" "(" NameList ")" ")"
-  syntax LocD         ::= "(" "local"    "(" ConArList ")" "(" NameList ")" ")"
+  syntax ExpD         ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
+  syntax LocD         ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
 
   syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
 
