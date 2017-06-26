@@ -81,7 +81,6 @@ module PLUTUS-CORE-SYNTAX
 
   // Module.
   syntax Mod          ::= "(" "module" ModName ImpD ExpD LocD DefList ")"
-                                                                    [strict(5)]
 
   // Import declarations.
   syntax ImpD         ::= "(" "imported" ModList ")"
@@ -90,10 +89,10 @@ module PLUTUS-CORE-SYNTAX
   syntax ExpD         ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
   syntax LocD         ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
 
-  syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
+  syntax Def          ::= "(" "define" Name Tm ")"             [strict(2)]
 
   // Lambda abstraction.
-  syntax Val          ::= "(" "lam" Var Tm ")"                         [binder]
+  syntax Val          ::= "(" "lam" Var Tm ")"                    [binder]
                         | Instr
                         // Constructed data.
                         | "(" "con" QualC TmList ")"
@@ -101,14 +100,14 @@ module PLUTUS-CORE-SYNTAX
                         | Float
                         | ByStr
 
-  syntax Instr        ::= "(" "success" Tm ")"                      [strict(1)]
+  syntax Instr        ::= "(" "success" Tm ")"                 [strict(1)]
                         | "(" "failure" ")"
                         | "(" "txhash"  ")"
                         | "(" "blocknum" ")"
                         | "(" "blocktime" ")"
                         | "(" "bind" Tm Var Tm ")"
 
-  syntax KResult      ::= Val | ".DefList"
+  syntax KResult      ::= Val
   syntax KVariable    ::= Var
 
   syntax String       ::= toStringVerbatim(ByStr)  [ function
