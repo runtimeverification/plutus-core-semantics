@@ -1,3 +1,4 @@
 (module Foo (imported) (exported () ()) (local () ())
   (define result
-    (let (lam x (builtin addInt (x 5))) addFive [addFive 10])))
+  (let (lam x (builtin addInt (x 5))) addFive [addFive 10]))
+)

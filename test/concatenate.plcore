@@ -1,5 +1,7 @@
+(module Foo (imported) (exported () ()) (local () ())
 (define b1 (builtin concatenate (#ABC #DEF)))
 
 (define b3 (builtin concatenate (#123 #456)))
 
 (define b2 (builtin concatenate (#A #BBB)))
+)
