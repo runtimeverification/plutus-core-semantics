@@ -47,7 +47,7 @@ module PLUTUS-CORE-SYNTAX
   syntax QualN      ::= ModName "." Name
   syntax QualC      ::= ModName "." Con
 
-  syntax NameList   ::= List{Name   ,  " "}
+  syntax NameList   ::= "TODO"
   syntax TmList     ::= "TODO"
   syntax ValList    ::= "TODO"
   syntax VarList    ::= "TODO"
