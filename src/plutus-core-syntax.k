@@ -44,20 +44,19 @@ module PLUTUS-CORE-SYNTAX
   /***************************************************************************/
 
   // Qualified name and constructor.
-  syntax QualN      ::= Mod "." Name
-  syntax QualC      ::= Mod "." Con
+  syntax QualN      ::= ModName "." Name
+  syntax QualC      ::= ModName "." Con
 
   syntax NameList   ::= List{Name   ,  " "}
   syntax TmList     ::= "TODO"
   syntax ValList    ::= "TODO"
   syntax VarList    ::= "TODO"
   syntax QualCList  ::= List{QualC  ,  " "}
-  syntax DefList    ::= List{Def    ,  " "}
+  syntax DefList    ::= "TODO"
   syntax ModList    ::= "TODO"
   syntax ClList     ::= List{Cl     ,  " "}
 
-  syntax ConArList  ::= ""
-                      | "(" Con Arity ")" ConArList
+  syntax ConArList  ::= "TODO"
 
   syntax Tm         ::= Var
                       | "(" "let" Tm Var Tm ")"               [strict(1)]
@@ -78,7 +77,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Prg          ::= "(" "program" ModList ")"
 
   // Module.
-  syntax Mod          ::= "(" "module" Mod ImpD ExpD LocD DefList ")"
+  syntax Mod          ::= "(" "module" ModName ImpD ExpD LocD DefList ")"
 
   // Import declarations.
   syntax ImpD         ::= "(" "imported" ModList ")"
