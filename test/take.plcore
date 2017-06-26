@@ -1,5 +1,7 @@
+(module Foo (imported) (exported () ()) (local () ())
 (define b1 (builtin take (1 #123456)))
 
 (define b2 (builtin take (2 #123456)))
 
 (define b3 (builtin take (3 #123456)))
+)

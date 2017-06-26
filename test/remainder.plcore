@@ -1,1 +1,3 @@
+(module Foo (imported) (exported () ()) (local () ())
 (define result (builtin remainderInt (27 3)))
+)

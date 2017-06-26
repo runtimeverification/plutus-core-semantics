@@ -1,1 +1,3 @@
+(module Foo (imported) (exported () ()) (local () ())
 (define result ( lam x x ))
+)

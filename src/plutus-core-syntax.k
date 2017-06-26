@@ -12,7 +12,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Name    ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Module name.
-  syntax Mod     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+  syntax ModName ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Constructor name.
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
@@ -44,20 +44,22 @@ module PLUTUS-CORE-SYNTAX
   /***************************************************************************/
 
   // Qualified name and constructor.
-  syntax QualN      ::= Mod "." Name
-  syntax QualC      ::= Mod "." Con
+  syntax QualN      ::= ModName "." Name
+  syntax QualC      ::= ModName "." Con
 
-  syntax NameList   ::= List{Name   ,  " "}
-  syntax TmList     ::= "TODO"
-  syntax ValList    ::= "TODO"
-  syntax VarList    ::= "TODO"
+  syntax NameList   ::= List{Name, " "}
+  syntax TmList     ::= "TODOTmList"
+  syntax ValList    ::= "TODOValList"
+  syntax VarList    ::= "TODOVarList"
   syntax QualCList  ::= List{QualC  ,  " "}
+
   syntax DefList    ::= List{Def    ,  " "}
-  syntax ModList    ::= "TODO"
+
+  syntax ModList    ::= List{ModName , " "}
   syntax ClList     ::= List{Cl     ,  " "}
 
-  syntax ConArList  ::= ""
-                      | "(" Con Arity ")" ConArList
+  syntax ConArity      ::= "(" Con Arity ")"
+  syntax CAList  ::= List{ConArity, " "}
 
   syntax Tm         ::= Var
                       | "(" "let" Tm Var Tm ")"               [strict(1)]
@@ -78,19 +80,19 @@ module PLUTUS-CORE-SYNTAX
   syntax Prg          ::= "(" "program" ModList ")"
 
   // Module.
-  syntax Mod          ::= "(" "module" Mod ImpD ExpD LocD DefList ")"
+  syntax Mod          ::= "(" "module" ModName ImpD ExpD LocD DefList ")"
 
   // Import declarations.
   syntax ImpD         ::= "(" "imported" ModList ")"
 
   // Export and local declarations.
-  syntax ExpD         ::= "(" "exported" "(" ConArList ")" "(" NameList ")" ")"
-  syntax LocD         ::= "(" "local"    "(" ConArList ")" "(" NameList ")" ")"
+  syntax ExpD         ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
+  syntax LocD         ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
 
-  syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
+  syntax Def          ::= "(" "define" Name Tm ")"             [strict(2)]
 
   // Lambda abstraction.
-  syntax Val          ::= "(" "lam" Var Tm ")"                         [binder]
+  syntax Val          ::= "(" "lam" Var Tm ")"                    [binder]
                         | Instr
                         // Constructed data.
                         | "(" "con" QualC TmList ")"
@@ -98,7 +100,7 @@ module PLUTUS-CORE-SYNTAX
                         | Float
                         | ByStr
 
-  syntax Instr        ::= "(" "success" Tm ")"                      [strict(1)]
+  syntax Instr        ::= "(" "success" Tm ")"                 [strict(1)]
                         | "(" "failure" ")"
                         | "(" "txhash"  ")"
                         | "(" "blocknum" ")"

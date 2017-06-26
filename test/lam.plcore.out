@@ -1,1 +1,1 @@
-<T> <k> .DefList </k> <env> result |-> ( lam x x ) </env> </T>
+<T> <k> . </k> <env> result |-> ( lam x x ) </env> </T>
