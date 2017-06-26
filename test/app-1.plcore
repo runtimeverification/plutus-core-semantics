@@ -1,2 +1,5 @@
-(define result
-  (let (lam x (builtin addInt (x 5))) addFive [addFive 10]))
+(module Foo (imported TODOModList)
+            (exported (TODOConArList) (TODONameList))
+            (local (TODOConArList) (TODONameList))
+  (define result
+    (let (lam x (builtin addInt (x 5))) addFive [addFive 10])))
