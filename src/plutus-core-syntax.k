@@ -55,7 +55,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax DefList    ::= List{Def    ,  " "}
 
-  syntax ModList    ::= "TODOModList"
+  syntax ModList    ::= List{ModName , " "}
   syntax ClList     ::= List{Cl     ,  " "}
 
   syntax ConArList  ::= "TODOConArList"
