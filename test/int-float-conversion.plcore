@@ -1,0 +1,3 @@
+(module Foo (imported) (exported () ()) (local () ())
+  (define f1 (builtin intToFloat (2)))
+)
