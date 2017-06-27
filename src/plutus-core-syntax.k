@@ -48,30 +48,35 @@ module PLUTUS-CORE-SYNTAX
   syntax QualC      ::= ModName "." Con
 
   syntax NameList   ::= List{Name, " "}
-  syntax TmList     ::= "TODOTmList"
-  syntax ValList    ::= "TODOValList"
-  syntax VarList    ::= "TODOVarList"
+  syntax TmList     ::= List{Tm, " "}                          [klabel(tmList)]
+  syntax ValList    ::= List{Val, " "}                        [klabel(valList)]
+  syntax VarList    ::= List{Var, " "}
   syntax QualCList  ::= List{QualC  ,  " "}
 
-  syntax DefList    ::= List{Def    ,  " "}
+  syntax DefList    ::= List{Def    ,  " "}                   [klabel(defList)]
 
   syntax ModList    ::= List{ModName , " "}
   syntax ClList     ::= List{Cl     ,  " "}
 
-  syntax ConArity      ::= "(" Con Arity ")"
-  syntax CAList  ::= List{ConArity, " "}
+  syntax ConArity   ::= "(" Con Arity ")"
+  syntax CAList     ::= List{ConArity, " "}
 
   syntax Tm         ::= Var
-                      | "(" "let" Tm Var Tm ")"               [strict(1)]
+                      | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
-                      | "[" Tm Tm "]"                         [strict(1, 2)]
-                      | "(" "case" Tm QualCList ")" // Case.
-                       // Built-in function.
-                      | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
-                      | "(" "builtin" Name "(" Tm Tm ")" ")"  [strict(2, 3)]
-                      // Lambda abstraction.
+                      | "[" Tm Tm "]"                            [strict(1, 2)]
+                      | "(" "case" Tm ClList ")"                    [strict(1)]
+                      | "(" "con" QualC TmList ")"                  [strict(2)]
+                        // Built-in function.
+                      | "(" "builtin" Name "(" Tm ")" ")"
+                                                            [strict(2), prefer]
+                      | "(" "builtin" Name "(" Tm Tm ")" ")"
+                                                                 [strict(2, 3)]
+                      | "(" "success" Tm ")"                        [strict(1)]
+                      | "(" "bind" Tm Var Tm ")"                    [strict(1)]
+                        // Lambda abstraction.
                       | Val
-
+                      | #tmHolder(Float)
 
   // Case clause.
   syntax Cl           ::= "(" "cl" QualC "(" VarList ")" Tm ")"
@@ -89,23 +94,23 @@ module PLUTUS-CORE-SYNTAX
   syntax ExpD         ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
   syntax LocD         ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
 
-  syntax Def          ::= "(" "define" Name Tm ")"             [strict(2)]
+  syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
 
   // Lambda abstraction.
-  syntax Val          ::= "(" "lam" Var Tm ")"                    [binder]
-                        | Instr
-                        // Constructed data.
-                        | "(" "con" QualC TmList ")"
+  syntax Val          ::= "(" "lam" Var Tm ")"                         [binder]
+                          // Constructed data.
+                        | "(" "con" QualC ValList ")"                  [prefer]
+                        | InstrVal
                         | Int
                         | Float
                         | ByStr
 
-  syntax Instr        ::= "(" "success" Tm ")"                 [strict(1)]
-                        | "(" "failure" ")"
-                        | "(" "txhash"  ")"
-                        | "(" "blocknum" ")"
-                        | "(" "blocktime" ")"
-                        | "(" "bind" Tm Var Tm ")"
+  syntax InstrVal   ::= "(" "success" Val ")"
+                      | "(" "failure" ")"
+                      | "(" "txhash"  ")"
+                      | "(" "blocknum" ")"
+                      | "(" "blocktime" ")"
+                      | "(" "bind" Val Var Tm ")"
 
   syntax KResult      ::= Val
   syntax KVariable    ::= Var

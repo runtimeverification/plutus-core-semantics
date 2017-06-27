@@ -1,0 +1,5 @@
+(module Foo (imported) (exported () ()) (local () ())
+  (define result
+    (case (con SomeMod.Foo 1)
+          (cl SomeMod.Foo (x)  (builtin addInt (10 x)))
+          (cl SomeMod.NotThis ()  -1))))

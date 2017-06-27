@@ -1,0 +1,9 @@
+(module Foo (imported) (exported () ()) (local () ())
+  (define result
+    (let
+      (lam x
+        (case x
+          (cl Bool.True  () (con Bool.False))
+          (cl Bool.False () (con Bool.True))))
+        negate
+        [negate [negate (con Bool.True)]])))
