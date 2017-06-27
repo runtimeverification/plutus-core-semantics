@@ -36,7 +36,7 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F)
   /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
 
-  syntax ByStr ::= toByStrVerbatim ( String ) [function]
+  syntax ByStr ::= toByStrVerbatim ( String )                        [function]
   rule toByStr(S:String)
     => #parseToken("ByStr@PLUTUS-CORE-SYNTAX", ("#" +String S))
 

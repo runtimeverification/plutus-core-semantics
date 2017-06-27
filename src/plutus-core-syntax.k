@@ -62,16 +62,27 @@ module PLUTUS-CORE-SYNTAX
   syntax CAList     ::= List{ConArity, " "}
 
   syntax Tm         ::= Var
-                      | "(" "let" Tm Var Tm ")"                [strict(1)]
+<<<<<<< HEAD
+                      | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
-                      | "[" Tm Tm "]"                       [strict(1, 2)]
-                      | "(" "case" Tm ClList ")"               [strict(1)]
+                      | "[" Tm Tm "]"                            [strict(1, 2)]
+                      | "(" "case" Tm ClList ")"                    [strict(1)]
                         // Built-in function.
                       | "(" "builtin" Name "(" Tm ")" ")"
-                                                       [strict(2), prefer]
+                                                            [strict(2), prefer]
                       | "(" "builtin" Name "(" Tm Tm ")" ")"
-                                                            [strict(2, 3)]
+                                                                 [strict(2, 3)]
                         // Lambda abstraction.
+=======
+                      | "(" "let" Tm Var Tm ")"                     [strict(1)]
+                        // Application.
+                      | "[" Tm Tm "]"                            [strict(1, 2)]
+                      | "(" "case" Tm QualCList ")" // Case.
+                       // Built-in function.
+                      | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
+                      | "(" "builtin" Name "(" Tm Tm ")" ")"     [strict(2, 3)]
+                      // Lambda abstraction.
+>>>>>>> minor-stuff
                       | Val
 
 
@@ -91,10 +102,10 @@ module PLUTUS-CORE-SYNTAX
   syntax ExpD         ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
   syntax LocD         ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
 
-  syntax Def          ::= "(" "define" Name Tm ")"             [strict(2)]
+  syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
 
   // Lambda abstraction.
-  syntax Val          ::= "(" "lam" Var Tm ")"                    [binder]
+  syntax Val          ::= "(" "lam" Var Tm ")"                         [binder]
                         | Instr
                         // Constructed data.
                         | "(" "con" QualC TmList ")"           [strict(2)]
@@ -102,7 +113,7 @@ module PLUTUS-CORE-SYNTAX
                         | Float
                         | ByStr
 
-  syntax Instr        ::= "(" "success" Tm ")"                 [strict(1)]
+  syntax Instr        ::= "(" "success" Tm ")"                      [strict(1)]
                         | "(" "failure" ")"
                         | "(" "txhash"  ")"
                         | "(" "blocknum" ")"
