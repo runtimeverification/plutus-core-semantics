@@ -39,3 +39,4 @@ notifications:
     - lpena7@illinois.edu
     on_success: change # default: change
     on_failure: always # default: always
+  slack: formal-systems-lab:2Yic9kM7aEPTLX3Ti4AklBmL
