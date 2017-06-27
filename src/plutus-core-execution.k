@@ -81,7 +81,11 @@ module PLUTUS-CORE-EXECUTION
 
   syntax K ::= substTerm(Tm, Map)
 
-  rule ( case ( con QC:QualC MS:TmList ) ( cl QC ( XS:VarList ) M:Tm ) _:ClList ) => substTerm(M, manySubst(XS, MS))
+  rule ( case ( con QC:QualC MS:TmList ) ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
+    => substTerm(M, manySubst(XS, MS))
+  rule ( case ( con QC:QualC MS:TmList ) ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
+    => ( case ( con QC:QualC MS:TmList ) CL )
+    when QC =/=K QC'
 
   rule substTerm(T:Tm, M:Map) => T[M]
 
