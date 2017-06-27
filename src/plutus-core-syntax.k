@@ -62,7 +62,6 @@ module PLUTUS-CORE-SYNTAX
   syntax CAList     ::= List{ConArity, " "}
 
   syntax Tm         ::= Var
-<<<<<<< HEAD
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
                       | "[" Tm Tm "]"                            [strict(1, 2)]
@@ -73,16 +72,6 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "builtin" Name "(" Tm Tm ")" ")"
                                                                  [strict(2, 3)]
                         // Lambda abstraction.
-=======
-                      | "(" "let" Tm Var Tm ")"                     [strict(1)]
-                        // Application.
-                      | "[" Tm Tm "]"                            [strict(1, 2)]
-                      | "(" "case" Tm QualCList ")" // Case.
-                       // Built-in function.
-                      | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
-                      | "(" "builtin" Name "(" Tm Tm ")" ")"     [strict(2, 3)]
-                      // Lambda abstraction.
->>>>>>> minor-stuff
                       | Val
 
 
