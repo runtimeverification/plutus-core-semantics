@@ -1,0 +1,1 @@
+<T> <k> . </k> <env> result |-> ( con Nat . Z .TmList ) </env> <subst> .Map </subst> </T>
