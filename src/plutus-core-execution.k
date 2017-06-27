@@ -9,7 +9,6 @@ module PLUTUS-CORE-EXECUTION
     <T>
       <k> $PGM:Mod </k>
       <env> .Map </env>
-      <subst> .Map </subst>
     </T>
 
   /***************************************************************************/
@@ -80,12 +79,10 @@ module PLUTUS-CORE-EXECUTION
   rule manySubst(X:Var ; XS:VarList, M:Tm ; MS:TmList)
     => manySubst(XS, MS)[X <- M]
 
-  syntax K ::= substTerm(Tm)
+  syntax K ::= substTerm(Tm, Map)
 
-  rule <k> ( case ( con QC:QualC MS:TmList ) ( cl QC ( XS:VarList ) M:Tm ) _:ClList ) => substTerm(M) ... </k>
-       <subst> _ => manySubst(XS, MS) </subst>
+  rule ( case ( con QC:QualC MS:TmList ) ( cl QC ( XS:VarList ) M:Tm ) _:ClList ) => substTerm(M, manySubst(XS, MS))
 
-  rule <k> substTerm(M:Tm) => M[S] ... </k>
-       <subst> S:Map => .Map </subst>
+  rule substTerm(T:Tm, M:Map) => T[M]
 
 endmodule
