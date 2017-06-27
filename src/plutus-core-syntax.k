@@ -62,13 +62,13 @@ module PLUTUS-CORE-SYNTAX
   syntax CAList  ::= List{ConArity, " "}
 
   syntax Tm         ::= Var
-                      | "(" "let" Tm Var Tm ")"               [strict(1)]
+                      | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
-                      | "[" Tm Tm "]"                         [strict(1, 2)]
+                      | "[" Tm Tm "]"                            [strict(1, 2)]
                       | "(" "case" Tm QualCList ")" // Case.
                        // Built-in function.
                       | "(" "builtin" Name "(" Tm ")" ")"   [strict(2), prefer]
-                      | "(" "builtin" Name "(" Tm Tm ")" ")"  [strict(2, 3)]
+                      | "(" "builtin" Name "(" Tm Tm ")" ")"     [strict(2, 3)]
                       // Lambda abstraction.
                       | Val
 
@@ -89,10 +89,10 @@ module PLUTUS-CORE-SYNTAX
   syntax ExpD         ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
   syntax LocD         ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
 
-  syntax Def          ::= "(" "define" Name Tm ")"             [strict(2)]
+  syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
 
   // Lambda abstraction.
-  syntax Val          ::= "(" "lam" Var Tm ")"                    [binder]
+  syntax Val          ::= "(" "lam" Var Tm ")"                         [binder]
                         | Instr
                         // Constructed data.
                         | "(" "con" QualC TmList ")"
@@ -100,7 +100,7 @@ module PLUTUS-CORE-SYNTAX
                         | Float
                         | ByStr
 
-  syntax Instr        ::= "(" "success" Tm ")"                 [strict(1)]
+  syntax Instr        ::= "(" "success" Tm ")"                      [strict(1)]
                         | "(" "failure" ")"
                         | "(" "txhash"  ")"
                         | "(" "blocknum" ")"
