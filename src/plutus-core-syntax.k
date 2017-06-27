@@ -48,7 +48,7 @@ module PLUTUS-CORE-SYNTAX
   syntax QualC      ::= ModName "." Con
 
   syntax NameList   ::= List{Name, " "}
-  syntax TmList     ::= List{Tm, ";"}                     [klabel(tmList)]
+  syntax TmList     ::= List{Tm, " "}                     
   syntax ValList    ::= "TODOValList"
   syntax VarList    ::= List{Var, ";"}
   syntax QualCList  ::= List{QualC  ,  " "}
@@ -73,7 +73,7 @@ module PLUTUS-CORE-SYNTAX
                                                                  [strict(2, 3)]
                         // Lambda abstraction.
                       | Val
-
+                      | #tmHolder(Float)
 
   // Case clause.
   syntax Cl           ::= "(" "cl" QualC "(" VarList ")" Tm ")"
