@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> result |-> ( con Bool . True .TmList ) </env> </T>
+<T> <k> . </k> <env> result |-> ( con Bool . True .ValList ) </env> </T>

@@ -32,15 +32,16 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => F1 <Float F2
   rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => F1 ==Float F2
 
-  rule ( builtin ceil:Name  ( F:Float ) ) => ceilFloat(F)
-  rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F)
+  rule ( builtin ceil:Name  ( F:Float ) ) => #tmHolder(ceilFloat(F))
+  rule ( builtin floor:Name ( F:Float ) ) => #tmHolder(floorFloat(F))
+  rule #tmHolder(F:Float) => F
   /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
 
   syntax ByStr ::= toByStrVerbatim ( String )                        [function]
   rule toByStr(S:String)
     => #parseToken("ByStr@PLUTUS-CORE-SYNTAX", ("#" +String S))
 
-  rule toString(B:ByStr)
+  rule toString(B:ByStr):String
     => substrString(toStringVerbatim(B), 1, lengthString(toStringVerbatim(B)))
 
   rule ( builtin take:Name ( N:Int B:ByStr ) )
@@ -57,7 +58,7 @@ module PLUTUS-CORE-EXECUTION
   /***************************************************************************/
 
   rule [ ( lam X M ) (N:Tm) ]  => M[N / X]
-  rule ( let N:Tm X:Var M:Tm ) => M[N / X]
+  rule ( let N:Tm X:Var M:Tm ):Tm => M[N / X]
 
   rule D:Def DS:DefList => D ~> DS
 
@@ -74,17 +75,17 @@ module PLUTUS-CORE-EXECUTION
   /************************   PATTERN MATCHING   *****************************/
   /***************************************************************************/
 
-  syntax Map ::= manySubst(VarList, TmList) [function]
-  rule manySubst(.VarList, .TmList) => .Map
-  rule manySubst(X:Var ; XS:VarList, M:Tm ; MS:TmList)
-    => manySubst(XS, MS)[X <- M]
+  syntax Map ::= manySubst(VarList, ValList) [function]
+  rule manySubst(.VarList, .ValList) => .Map
+  rule manySubst(X:Var XS:VarList, V:Val VS:ValList)
+    => manySubst(XS, VS)[X <- V]
 
   syntax K ::= substTerm(Tm, Map)
 
-  rule ( case ( con QC:QualC MS:TmList ) ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
+  rule ( case ( con QC:QualC MS:ValList ) ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
     => substTerm(M, manySubst(XS, MS))
-  rule ( case ( con QC:QualC MS:TmList ) ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
-    => ( case ( con QC:QualC MS:TmList ) CL )
+  rule ( case ( con QC:QualC MS:ValList ) ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
+    => ( case ( con QC:QualC MS:ValList ) CL )
     when QC =/=K QC'
 
   rule substTerm(T:Tm, M:Map) => T[M]

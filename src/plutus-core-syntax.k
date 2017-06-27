@@ -48,12 +48,12 @@ module PLUTUS-CORE-SYNTAX
   syntax QualC      ::= ModName "." Con
 
   syntax NameList   ::= List{Name, " "}
-  syntax TmList     ::= List{Tm, " "}                     
-  syntax ValList    ::= "TODOValList"
-  syntax VarList    ::= List{Var, ";"}
+  syntax TmList     ::= List{Tm, " "}                          [klabel(tmList)]
+  syntax ValList    ::= List{Val, " "}                        [klabel(valList)]
+  syntax VarList    ::= List{Var, " "}
   syntax QualCList  ::= List{QualC  ,  " "}
 
-  syntax DefList    ::= List{Def    ,  " "}
+  syntax DefList    ::= List{Def    ,  " "}                   [klabel(defList)]
 
   syntax ModList    ::= List{ModName , " "}
   syntax ClList     ::= List{Cl     ,  " "}
@@ -66,11 +66,14 @@ module PLUTUS-CORE-SYNTAX
                         // Application.
                       | "[" Tm Tm "]"                            [strict(1, 2)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
+                      | "(" "con" QualC TmList ")"                  [strict(2)]
                         // Built-in function.
                       | "(" "builtin" Name "(" Tm ")" ")"
                                                             [strict(2), prefer]
                       | "(" "builtin" Name "(" Tm Tm ")" ")"
                                                                  [strict(2, 3)]
+                      | "(" "success" Tm ")"                        [strict(1)]
+                      | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                         // Lambda abstraction.
                       | Val
                       | #tmHolder(Float)
@@ -95,19 +98,19 @@ module PLUTUS-CORE-SYNTAX
 
   // Lambda abstraction.
   syntax Val          ::= "(" "lam" Var Tm ")"                         [binder]
-                        | Instr
-                        // Constructed data.
-                        | "(" "con" QualC TmList ")"           [strict(2)]
+                          // Constructed data.
+                        | "(" "con" QualC ValList ")"                  [prefer]
+                        | InstrVal
                         | Int
                         | Float
                         | ByStr
 
-  syntax Instr        ::= "(" "success" Tm ")"                      [strict(1)]
-                        | "(" "failure" ")"
-                        | "(" "txhash"  ")"
-                        | "(" "blocknum" ")"
-                        | "(" "blocktime" ")"
-                        | "(" "bind" Tm Var Tm ")"
+  syntax InstrVal   ::= "(" "success" Val ")"
+                      | "(" "failure" ")"
+                      | "(" "txhash"  ")"
+                      | "(" "blocknum" ")"
+                      | "(" "blocktime" ")"
+                      | "(" "bind" Val Var Tm ")"
 
   syntax KResult      ::= Val
   syntax KVariable    ::= Var
