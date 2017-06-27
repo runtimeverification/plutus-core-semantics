@@ -24,6 +24,8 @@ module PLUTUS-CORE-EXECUTION
     when I2 =/=Int 0
   rule ( builtin lessThanInt:Name  ( I1:Int I2:Int ) ) => I1 <Int I2
   rule ( builtin equalsInt:Name    ( I1:Int I2:Int ) ) => I1 ==Int I2
+  // TODO: Figure out _why_ 53 and 11.
+  rule ( builtin intToFloat:Name   ( I:Int ) ) => Int2Float(I, 53, 11)
 
   rule ( builtin addFloat:Name      ( F1:Float F2:Float ) ) => F1 +Float F2
   rule ( builtin subtractFloat:Name ( F1:Float F2:Float ) ) => F1 -Float F2
@@ -34,7 +36,7 @@ module PLUTUS-CORE-EXECUTION
 
   rule ( builtin ceil:Name  ( F:Float ) ) => ceilFloat(F:Float)
   rule ( builtin floor:Name ( F:Float ) ) => floorFloat(F:Float)
-  /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
+  /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float, 1)*/
 
   syntax ByStr ::= toByStrVerbatim ( String ) [function]
   rule toByStr(S:String)
