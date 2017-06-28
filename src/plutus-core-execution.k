@@ -57,8 +57,7 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin concatenate:Name ( B1:ByStr B2:ByStr ) )
     => toByStr(toString(B1) +String toString(B2))
 
-  rule ( builtin sha3_256:Name ( B1:ByStr ) )
-    => toByStr(Keccak256(toString(B1)))
+  rule ( builtin sha3_256:Name ( B:ByStr ) ) => toByStr(Sha3256(toString(B)))
 
   /***************************************************************************/
   /************************   LOCAL REDUCTIONS   *****************************/
