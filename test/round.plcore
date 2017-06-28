@@ -1,4 +1,4 @@
 (module Foo (imported) (exported () ()) (local () ())
   (define f1 (builtin round (2.7)))
   (define f2 (builtin round (2.3)))
-  )
+  (define f3 (builtin round (0.49999))))
