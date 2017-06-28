@@ -37,7 +37,8 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin ceil:Name  ( F:Float ) ) => #tmHolder(ceilFloat(F))
   rule ( builtin floor:Name ( F:Float ) ) => #tmHolder(floorFloat(F))
   rule #tmHolder(F:Float) => F
-  /*rule ( builtin round:Name ( F:Float ) ) => roundFloat(F:Float)*/
+  rule ( builtin round:Name ( F:Float ) )
+    => Float2Int(roundFloat(F:Float, 2, 2))
 
   syntax ByStr ::= toByStrVerbatim ( String )                        [function]
   rule toByStr(S:String)
