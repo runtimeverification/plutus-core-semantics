@@ -45,7 +45,7 @@ module PLUTUS-CORE-EXECUTION
   // TODO: Figure out _why_ 53 and 11.
   rule ( builtin intToFloat:Name   ( I:Int ) ) => Int2Float(I, 53, 11)
 
-  rule ( builtin intToByteString:Name ( 0 ) )    => toByStr(#toHex(I))
+  rule ( builtin intToByteString:Name ( 0 ) )    => toByStr("0")
   rule ( builtin intToByteString:Name ( I:Int )) => toByStr(#toHex(I))
     when I =/=Int 0
 
@@ -63,8 +63,8 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => #primFalse
     when F1 =/=Float F2
 
-  syntax String ::= #toHex(Int)      [function]
-                 | #hex(Int) [function]
+  syntax String ::= #toHex(Int)                                      [function]
+                  | #hex(Int)                                        [function]
 
   rule #hex(0)  => "0"
   rule #hex(1)  => "1"
