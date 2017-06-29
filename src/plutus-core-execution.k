@@ -58,6 +58,7 @@ module PLUTUS-CORE-EXECUTION
     => toByStr(toString(B1) +String toString(B2))
 
   rule ( builtin sha3_256:Name ( B:ByStr ) ) => toByStr(Sha3256(toString(B)))
+  rule ( builtin sha2_256:Name ( B:ByStr ) ) => toByStr(Sha256(toString(B)))
 
   /***************************************************************************/
   /************************   LOCAL REDUCTIONS   *****************************/
