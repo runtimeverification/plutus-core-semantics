@@ -45,7 +45,9 @@ module PLUTUS-CORE-EXECUTION
   // TODO: Figure out _why_ 53 and 11.
   rule ( builtin intToFloat:Name   ( I:Int ) ) => Int2Float(I, 53, 11)
 
+  rule ( builtin intToByteString:Name ( 0 ) )    => toByStr(#toHex(I))
   rule ( builtin intToByteString:Name ( I:Int )) => toByStr(#toHex(I))
+    when I =/=Int 0
 
   rule ( builtin addFloat:Name      ( F1:Float F2:Float ) ) => F1 +Float F2
   rule ( builtin subtractFloat:Name ( F1:Float F2:Float ) ) => F1 -Float F2
@@ -81,6 +83,8 @@ module PLUTUS-CORE-EXECUTION
   rule #hex(14) => "E"
   rule #hex(15) => "F"
 
+  // This will fail on 0, so should not be used by itself. See the rules for
+  // `(builtin intToByteString (...))`.
   rule #toHex(0) => ""
   rule #toHex(N:Int) => #toHex(N /Int 16) +String #hex(N %Int 16)
     when N =/=Int 0
