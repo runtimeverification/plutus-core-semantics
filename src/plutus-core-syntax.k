@@ -47,19 +47,19 @@ module PLUTUS-CORE-SYNTAX
   syntax QualN      ::= ModName "." Name
   syntax QualC      ::= ModName "." Con
 
-  syntax NameList   ::= List{Name, " "}
-  syntax TmList     ::= List{Tm, " "}                          [klabel(tmList)]
-  syntax ValList    ::= List{Val, " "}                        [klabel(valList)]
-  syntax VarList    ::= List{Var, " "}
-  syntax QualCList  ::= List{QualC  ,  " "}
+  syntax NameList   ::= List{Name, ""}
+  syntax TmList     ::= List{Tm, ""}                          [klabel(tmList)]
+  syntax ValList    ::= List{Val, ""}                        [klabel(valList)]
+  syntax VarList    ::= List{Var, ""}
+  syntax QualCList  ::= List{QualC  ,  ""}
 
-  syntax DefList    ::= List{Def    ,  " "}                   [klabel(defList)]
+  syntax DefList    ::= List{Def    ,  ""}                   [klabel(defList)]
 
-  syntax ModList    ::= List{ModName , " "}
-  syntax ClList     ::= List{Cl     ,  " "}
+  syntax ModList    ::= List{ModName , ""}
+  syntax ClList     ::= List{Cl     ,  ""}
 
   syntax ConArity   ::= "(" Con Arity ")"
-  syntax CAList     ::= List{ConArity, " "}
+  syntax CAList     ::= List{ConArity, ""}
 
   syntax Tm         ::= Var
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
