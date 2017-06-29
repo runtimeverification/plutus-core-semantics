@@ -23,8 +23,17 @@ module PLUTUS-CORE-EXECUTION
     when I2 =/=Int 0
   rule ( builtin remainderInt:Name ( I1:Int I2:Int ) ) => I1 %Int I2
     when I2 =/=Int 0
+
   rule ( builtin lessThanInt:Name  ( I1:Int I2:Int ) ) => I1 <Int I2
-  rule ( builtin equalsInt:Name    ( I1:Int I2:Int ) ) => I1 ==Int I2
+
+  syntax Tm ::= conHolder(K, K)
+
+  rule conHolder(MN, C) => ( con (MN . C) .ValList )
+
+  rule ( builtin equalsInt:Name    ( I:Int I:Int ) )
+    => conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
+                 #parseToken("Con@PLUTUS-CORE-SYNTAX", "True"))
+
   // TODO: Figure out _why_ 53 and 11.
   rule ( builtin intToFloat:Name   ( I:Int ) ) => Int2Float(I, 53, 11)
 
