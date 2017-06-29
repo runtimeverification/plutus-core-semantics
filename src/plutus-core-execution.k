@@ -26,13 +26,18 @@ module PLUTUS-CORE-EXECUTION
 
   rule ( builtin lessThanInt:Name  ( I1:Int I2:Int ) ) => I1 <Int I2
 
-  syntax Tm ::= conHolder(K, K)
+  syntax Tm ::= #conHolder(K, K)
+  rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
-  rule conHolder(MN, C) => ( con (MN . C) .ValList )
+  syntax Prim ::= "#primTrue" | "#primFalse"
+  rule #primTrue => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
+                              #parseToken("Con@PLUTUS-CORE-SYNTAX", "True"))
+  rule #primFalse => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
+                              #parseToken("Con@PLUTUS-CORE-SYNTAX", "False"))
 
-  rule ( builtin equalsInt:Name    ( I:Int I:Int ) )
-    => conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
-                 #parseToken("Con@PLUTUS-CORE-SYNTAX", "True"))
+  rule ( builtin equalsInt:Name ( I:Int I:Int ) ) => #primTrue
+  rule ( builtin equalsInt:Name ( I1:Int I2:Int ) ) => #primFalse
+    when I1 =/=Int I2
 
   // TODO: Figure out _why_ 53 and 11.
   rule ( builtin intToFloat:Name   ( I:Int ) ) => Int2Float(I, 53, 11)
@@ -41,8 +46,16 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin subtractFloat:Name ( F1:Float F2:Float ) ) => F1 -Float F2
   rule ( builtin multiplyFloat:Name ( F1:Float F2:Float ) ) => F1 *Float F2
   rule ( builtin divideFloat:Name   ( F1:Float F2:Float ) ) => F1 /Float F2
-  rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => F1 <Float F2
-  rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => F1 ==Float F2
+
+  rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => #primTrue
+    when F1 <Float F2
+  /*rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => #primFalse*/
+    /*when not (F1 <Float F2)*/
+  rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => #primTrue
+    when F1 ==Float F2
+  rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => #primFalse
+    when F1 =/=Float F2
+
 
   rule ( builtin ceil:Name  ( F:Float ) ) => #tmHolder(ceilFloat(F))
   rule ( builtin floor:Name ( F:Float ) ) => #tmHolder(floorFloat(F))
@@ -68,6 +81,11 @@ module PLUTUS-CORE-EXECUTION
 
   rule ( builtin sha3_256:Name ( B:ByStr ) ) => toByStr(Sha3256(toString(B)))
   rule ( builtin sha2_256:Name ( B:ByStr ) ) => toByStr(Sha256(toString(B)))
+
+  rule ( builtin equalsByteString:Name ( B1:ByStr B2:ByStr ) ) => #primTrue
+    when toString(B1) ==String toString(B2)
+  rule ( builtin equalsByteString:Name ( B1:ByStr B2:ByStr ) ) => #primFalse
+    when toString(B1) =/=String toString(B2)
 
   /***************************************************************************/
   /************************   LOCAL REDUCTIONS   *****************************/
