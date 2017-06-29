@@ -1,0 +1,8 @@
+(module Foo (imported) (exported () ()) (local () ())
+  (define r1 (builtin equalsInt (2 2)))
+  (define r2 (builtin equalsInt (2 3)))
+  (define r3 (builtin equalsFloat (2.0 2.0)))
+  (define r4 (builtin equalsFloat (2.0 3.0)))
+  (define r5 (builtin equalsByteString (#AAA #AAA)))
+  (define r6 (builtin equalsByteString (#AAA #111)))
+)
