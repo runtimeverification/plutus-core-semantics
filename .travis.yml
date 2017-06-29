@@ -12,7 +12,7 @@ before_install:
   - cd $HOME
   - (git clone https://github.com/kframework/k || true)
   - cd k
-  - git checkout origin/sha3
+  - git fetch --all
   - mvn package -DskipTests;
   - export PATH=$PATH:$(pwd)/k-distribution/target/release/k/bin
   - cd $TRAVIS_BUILD_DIR
