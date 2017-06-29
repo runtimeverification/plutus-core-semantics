@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> r1 |-> ( con Nat . True .ValList ) r2 |-> ( con Nat . False .ValList ) r3 |-> ( con Nat . True .ValList ) r4 |-> ( con Nat . False .ValList ) </env> </T>
+<T> <k> . </k> <env> r1 |-> ( con Nat . True .ValList ) r2 |-> ( con Nat . False .ValList ) r3 |-> ( con Nat . True .ValList ) r4 |-> ( con Nat . False .ValList ) r5 |-> ( con Nat . True .ValList ) r6 |-> ( con Nat . False .ValList ) </env> </T>
