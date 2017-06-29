@@ -24,8 +24,6 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin remainderInt:Name ( I1:Int I2:Int ) ) => I1 %Int I2
     when I2 =/=Int 0
 
-  rule ( builtin lessThanInt:Name  ( I1:Int I2:Int ) ) => I1 <Int I2
-
   syntax Tm ::= #conHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
@@ -39,6 +37,11 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin equalsInt:Name ( I1:Int I2:Int ) ) => #primFalse
     when I1 =/=Int I2
 
+  rule ( builtin lessThanInt:Name ( I1:Int I2:Int ) ) => #primTrue
+    when I1 <Int I2
+  rule ( builtin lessThanInt:Name ( I1:Int I2:Int ) ) => #primFalse
+    when notBool (I1 <Int I2)
+
   // TODO: Figure out _why_ 53 and 11.
   rule ( builtin intToFloat:Name   ( I:Int ) ) => Int2Float(I, 53, 11)
 
@@ -49,8 +52,8 @@ module PLUTUS-CORE-EXECUTION
 
   rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => #primTrue
     when F1 <Float F2
-  /*rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => #primFalse*/
-    /*when not (F1 <Float F2)*/
+  rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => #primFalse
+    when notBool (F1 <Float F2)
   rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => #primTrue
     when F1 ==Float F2
   rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => #primFalse
