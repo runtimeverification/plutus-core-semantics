@@ -72,9 +72,9 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "case" Tm ClList ")"                    [strict(1)]
                       | "(" "con" QualC TmList ")"                  [strict(2)]
                         // Built-in function.
-                      | "(" "builtin" Name "(" Tm ")" ")"
+                      | "(" "builtin" Name Tm ")"
                                                             [strict(2), prefer]
-                      | "(" "builtin" Name "(" Tm Tm ")" ")"
+                      | "(" "builtin" Name Tm Tm ")"
                                                                  [strict(2, 3)]
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]

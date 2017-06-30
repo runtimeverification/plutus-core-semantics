@@ -17,12 +17,12 @@ module PLUTUS-CORE-EXECUTION
   /***********************  BUILT-IN REDUCTIONS   ****************************/
   /***************************************************************************/
 
-  rule ( builtin addInt:Name       ( I1:Int I2:Int ) ) => I1 +Int I2
-  rule ( builtin subtractInt:Name  ( I1:Int I2:Int ) ) => I1 -Int I2
-  rule ( builtin multiplyInt:Name  ( I1:Int I2:Int ) ) => I1 *Int I2
-  rule ( builtin divideInt:Name    ( I1:Int I2:Int ) ) => I1 /Int I2
+  rule ( builtin addInt:Name       I1:Int I2:Int ) => I1 +Int I2
+  rule ( builtin subtractInt:Name  I1:Int I2:Int ) => I1 -Int I2
+  rule ( builtin multiplyInt:Name  I1:Int I2:Int ) => I1 *Int I2
+  rule ( builtin divideInt:Name    I1:Int I2:Int ) => I1 /Int I2
     when I2 =/=Int 0
-  rule ( builtin remainderInt:Name ( I1:Int I2:Int ) ) => I1 %Int I2
+  rule ( builtin remainderInt:Name I1:Int I2:Int ) => I1 %Int I2
     when I2 =/=Int 0
 
   syntax Tm ::= #conHolder(K, K)
@@ -35,34 +35,34 @@ module PLUTUS-CORE-EXECUTION
   rule #primFalse => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
                               #parseToken("Con@PLUTUS-CORE-SYNTAX", "False"))
 
-  rule ( builtin equalsInt:Name ( I:Int I:Int ) ) => #primTrue
-  rule ( builtin equalsInt:Name ( I1:Int I2:Int ) ) => #primFalse
+  rule ( builtin equalsInt:Name I:Int I:Int ) => #primTrue
+  rule ( builtin equalsInt:Name I1:Int I2:Int ) => #primFalse
     when I1 =/=Int I2
 
-  rule ( builtin lessThanInt:Name ( I1:Int I2:Int ) ) => #primTrue
+  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primTrue
     when I1 <Int I2
-  rule ( builtin lessThanInt:Name ( I1:Int I2:Int ) ) => #primFalse
+  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primFalse
     when notBool (I1 <Int I2)
 
   // TODO: Figure out _why_ 53 and 11.
-  rule ( builtin intToFloat:Name   ( I:Int ) ) => Int2Float(I, 53, 11)
+  rule ( builtin intToFloat:Name   I:Int ) => Int2Float(I, 53, 11)
 
-  rule ( builtin intToByteString:Name ( 0 ) )    => toByStr("0")
-  rule ( builtin intToByteString:Name ( I:Int )) => toByStr(#toHex(I))
+  rule ( builtin intToByteString:Name 0 )    => toByStr("0")
+  rule ( builtin intToByteString:Name I:Int) => toByStr(#toHex(I))
     when I =/=Int 0
 
-  rule ( builtin addFloat:Name      ( F1:Float F2:Float ) ) => F1 +Float F2
-  rule ( builtin subtractFloat:Name ( F1:Float F2:Float ) ) => F1 -Float F2
-  rule ( builtin multiplyFloat:Name ( F1:Float F2:Float ) ) => F1 *Float F2
-  rule ( builtin divideFloat:Name   ( F1:Float F2:Float ) ) => F1 /Float F2
+  rule ( builtin addFloat:Name      F1:Float F2:Float ) => F1 +Float F2
+  rule ( builtin subtractFloat:Name F1:Float F2:Float ) => F1 -Float F2
+  rule ( builtin multiplyFloat:Name F1:Float F2:Float ) => F1 *Float F2
+  rule ( builtin divideFloat:Name   F1:Float F2:Float ) => F1 /Float F2
 
-  rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => #primTrue
+  rule ( builtin lessThanFloat:Name F1:Float F2:Float ) => #primTrue
     when F1 <Float F2
-  rule ( builtin lessThanFloat:Name ( F1:Float F2:Float ) ) => #primFalse
+  rule ( builtin lessThanFloat:Name F1:Float F2:Float ) => #primFalse
     when notBool (F1 <Float F2)
-  rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => #primTrue
+  rule ( builtin equalsFloat:Name   F1:Float F2:Float ) => #primTrue
     when F1 ==Float F2
-  rule ( builtin equalsFloat:Name   ( F1:Float F2:Float ) ) => #primFalse
+  rule ( builtin equalsFloat:Name   F1:Float F2:Float ) => #primFalse
     when F1 =/=Float F2
 
   syntax String ::= #toHex(Int)                                      [function]
@@ -91,10 +91,10 @@ module PLUTUS-CORE-EXECUTION
   rule #toHex(N:Int) => #toHex(N /Int 16) +String #hex(N %Int 16)
     when N =/=Int 0
 
-  rule ( builtin ceil:Name  ( F:Float ) ) => #tmHolder(ceilFloat(F))
-  rule ( builtin floor:Name ( F:Float ) ) => #tmHolder(floorFloat(F))
+  rule ( builtin ceil:Name  F:Float ) => #tmHolder(ceilFloat(F))
+  rule ( builtin floor:Name F:Float ) => #tmHolder(floorFloat(F))
   rule #tmHolder(F:Float) => F
-  rule ( builtin round:Name ( F:Float ) )
+  rule ( builtin round:Name F:Float )
     => Float2Int(roundFloat(F:Float, 2, 2))
 
   syntax ByStr ::= toByStrVerbatim ( String )                        [function]
@@ -104,21 +104,21 @@ module PLUTUS-CORE-EXECUTION
   rule toString(B:ByStr):String
     => substrString(toStringVerbatim(B), 1, lengthString(toStringVerbatim(B)))
 
-  rule ( builtin take:Name ( N:Int B:ByStr ) )
+  rule ( builtin take:Name N:Int B:ByStr )
     => toByStr(substrString(toString(B), 0, N))
 
-  rule ( builtin drop:Name ( N:Int B:ByStr ) )
+  rule ( builtin drop:Name N:Int B:ByStr )
     => toByStr(substrString(toString(B), N, lengthString(toString(B))))
 
-  rule ( builtin concatenate:Name ( B1:ByStr B2:ByStr ) )
+  rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
     => toByStr(toString(B1) +String toString(B2))
 
-  rule ( builtin sha3_256:Name ( B:ByStr ) ) => toByStr(Sha3256(toString(B)))
-  rule ( builtin sha2_256:Name ( B:ByStr ) ) => toByStr(Sha256(toString(B)))
+  rule ( builtin sha3_256:Name B:ByStr ) => toByStr(Sha3256(toString(B)))
+  rule ( builtin sha2_256:Name B:ByStr ) => toByStr(Sha256(toString(B)))
 
-  rule ( builtin equalsByteString:Name ( B1:ByStr B2:ByStr ) ) => #primTrue
+  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primTrue
     when toString(B1) ==String toString(B2)
-  rule ( builtin equalsByteString:Name ( B1:ByStr B2:ByStr ) ) => #primFalse
+  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primFalse
     when toString(B1) =/=String toString(B2)
 
   /***************************************************************************/
