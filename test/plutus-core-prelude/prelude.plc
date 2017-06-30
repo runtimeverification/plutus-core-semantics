@@ -67,27 +67,112 @@
   (define bool
     (lam f (lam t (lam b
       (case b
-        (cl Bool.True  () t)
+        (cl Prelude.True  () t)
+        (cl Prelude.False () f))))))
 
-  (define lessThanEqualsInt
-    (lam x (lam y
-      [not (builtin lessThanInt y x)])))
+  (define lessThanEqualsInt (lam x (lam y [not (builtin lessThanInt y x)])))
 
   (define maxInt
     (lam x (lam y
       (case (builtin lessThanInt x y)
-        (cl Bool.True () y)
-        (cl Bool.False () x)))))
+        (cl Prelude.True () y)
+        (cl Prelude.False () x)))))
 
   (define minInt
     (lam x (lam y
       (case (builtin lessThanInt x y)
-        (cl Bool.True () x)
-        (cl Bool.False () y)))))
+        (cl Prelude.True () x)
+        (cl Prelude.False () y)))))
 
   (define lessThanEqualsFloat
     (lam x (lam y
-      [not (builtin lessThanFloat y x)])))
+      [Prelude.not (builtin lessThanFloat y x)])))
 
-       (cl Bool.False () f))))))
+  (define maxFloat
+    (lam x (lam y
+      (case (builtin lessThanFloat x y)
+        (cl Prelude.True () y)
+        (cl Prelude.False () x)))))
+
+  (define minFloat
+    (lam x (lam y
+      (case (builtin lessThanFloat x y)
+        (cl Prelude.True () x)
+        (cl Prelude.False () y)))))
+
+
+  (define append
+    (lam xs (lam ys
+      (case xs
+        (cl Prelude.Nil () ys)
+        (cl Prelude.Cons (x xs') (con Prelude.Cons x [[Prelude.append xs'] ys]))))))
+
+  (define head
+    (lam xs
+      (case xs
+        (cl Prelude.Nil () (con Prelude.Nothing))
+        (cl Prelude.Cons (x xs') (con Prelude.Just x)))))
+
+  (define last
+    (lam xs
+      (case xs
+        (cl Prelude.Nil () (con Prelude.Nothing))
+        (cl Prelude.Cons (x xs')
+              (case xs'
+                (cl Prelude.Nil () (con Prelude.Just x))
+                (cl Prelude.Cons (x' xs'') [last (con Prelude.Cons x' xs'')]))))))
+
+  (define tail
+    (lam xs
+      (case xs
+        (cl Prelude.Nil () (con Prelude.Nothing))
+        (cl Prelude.Cons (x xs) (con Prelude.Just xs)))))
+
+  (define init
+    (lam xs
+      (case xs
+        (cl Prelude.Nil () (con Prelude.Nothing))
+        (cl Prelude.Cons (x xs)
+          (case [init xs]
+            (cl Prelude.Nothing () (con Prelude.Nil))
+            (cl Prelude.Just (ys) (con Prelude.Just (con Prelude.Cons x ys))))))))
+
+  (define uncons
+    (lam xs
+      (case xs
+        (cl Prelude.Nil () (con Prelude.Nothing))
+        (cl Prelude.Cons (x xs) (con Prelude.Just (con Prelude.MkPair x xs))))))
+
+  (define null
+    (lam xs
+      (case xs
+        (cl Prelude.Nil () (con Prelude.True))
+        (cl Prelude.Cons (x xs) (con Prelude.False)))))
+
+  (define length
+    (lam xs
+      (case xs
+        (cl Prelude.Nil () 0)
+        (cl Prelude.Cons (x xs) (builtin addInt 1 [Prelude.length xs])))))
+
+  (define take
+    (lam n (lam xs
+      (case (builtin equalsInt n 0)
+        (cl Prelude.True () (con Prelude.Nil))
+        (cl Prelude.False ()
+          (case xs
+            (cl Prelude.Nil () (con Prelude.Nil))
+            (cl Prelude.Cons (x xs')
+              (con Prelude.Cons x [[Prelude.take (builtin subtractInt n 1)] xs']))))))))
+
+  (define drop
+    (lam n (lam xs
+      (case (builtin equalsInt n 0)
+        (cl Prelude.True () xs)
+        (cl Prelude.False ()
+          (case xs
+            (cl Prelude.Nil () (con Prelude.Nil))
+            (cl Prelude.Cons (x xs')
+              [[Prelude.drop (builtin subtractInt n 1)] xs'])))))))
+
 )
