@@ -10,6 +10,7 @@ module PLUTUS-CORE-EXECUTION
     <T>
       <k> $PGM:Mod </k>
       <env> .Map </env>
+      <mod> .ModName </mod>
     </T>
 
   /***************************************************************************/
@@ -134,7 +135,10 @@ module PLUTUS-CORE-EXECUTION
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
-  rule ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS )
+  rule
+    <k> ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS ) </k>
+    <mod> CurrMN => MN </mod>
+
   rule (.DefList ~> _:ModF ) => .K
 
   /***************************************************************************/
