@@ -125,7 +125,14 @@ module PLUTUS-CORE-EXECUTION
   /************************   LOCAL REDUCTIONS   *****************************/
   /***************************************************************************/
 
-  rule [ ( lam X M ) (N:Tm) ]  => M[N / X]
+  syntax K ::= #frozenTerms(TmList)                                           [prefer]
+
+  rule [ ( lam X M ) (N:Tm .TmList) ] => M[N / X]
+
+  // Explicit strictness for nested application
+  rule [ [ M1:Tm M2:Tm ] MS:TmList ] => [ M1 M2 ] ~> #frozenTerms(MS)
+  rule M:Val ~> #frozenTerms(MS) => [ M MS ]
+
   rule ( let N:Tm X:Var M:Tm ):Tm => M[N / X]
 
   rule D:Def DS:DefList => D ~> DS
