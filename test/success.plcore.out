@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> result |-> ( success ( lam x x ) ) </env> </T>
+<T> <k> . </k> <env> ( Foo . result ) |-> ( success ( lam x x ) ) </env> <mod> Foo </mod> </T>

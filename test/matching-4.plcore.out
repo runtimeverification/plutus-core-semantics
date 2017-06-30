@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> result |-> 90 </env> </T>
+<T> <k> . </k> <env> ( Foo . result ) |-> 90 </env> <mod> Foo </mod> </T>

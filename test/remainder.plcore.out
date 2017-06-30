@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> result |-> 0 </env> </T>
+<T> <k> . </k> <env> ( Foo . result ) |-> 0 </env> <mod> Foo </mod> </T>

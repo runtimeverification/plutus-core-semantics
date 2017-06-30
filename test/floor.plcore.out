@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> result |-> 2e+00 </env> </T>
+<T> <k> . </k> <env> ( Foo . result ) |-> 2e+00 </env> <mod> Foo </mod> </T>

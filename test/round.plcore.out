@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> f3 |-> 0 f1 |-> 3 f2 |-> 2 </env> </T>
+<T> <k> . </k> <env> ( Foo . f1 ) |-> 3 ( Foo . f2 ) |-> 2 ( Foo . f3 ) |-> 0 </env> <mod> Foo </mod> </T>

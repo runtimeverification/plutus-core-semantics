@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> b3 |-> #123456 b1 |-> #ABCDEF b2 |-> #ABBB </env> </T>
+<T> <k> . </k> <env> ( Foo . b1 ) |-> #ABCDEF ( Foo . b2 ) |-> #ABBB ( Foo . b3 ) |-> #123456 </env> <mod> Foo </mod> </T>
