@@ -46,6 +46,8 @@ module PLUTUS-CORE-SYNTAX
 
   // Qualified name and constructor.
   syntax QualN      ::= ModName "." Name
+                      | #qualN(ModName, Name)                        [function]
+
   syntax QualC      ::= ModName "." Con
 
   syntax NameList   ::= List{Name, ""}
@@ -63,6 +65,7 @@ module PLUTUS-CORE-SYNTAX
   syntax CAList     ::= List{ConArity, ""}
 
   syntax Tm         ::= Var
+                      | QualN
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
                       | "[" Tm Tm "]"                            [strict(1, 2)]

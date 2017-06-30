@@ -26,6 +26,7 @@ module PLUTUS-CORE-EXECUTION
     when I2 =/=Int 0
 
   syntax Tm ::= #conHolder(K, K)
+              | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
   syntax Prim ::= "#primTrue" | "#primFalse"
@@ -129,15 +130,22 @@ module PLUTUS-CORE-EXECUTION
 
   rule D:Def DS:DefList => D ~> DS
 
+  rule #qualN(MN:ModName, N:Name) => (MN . N):QualN
+
   rule
     <k> (( define N:Name V:Val ) => .K) ~> _ </k>
-    <env> E => E[N <- V] </env>
+    <mod> MN </mod>
+    <env> E => E[#qualN(MN, N) <- V] </env>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
   rule
     <k> ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS ) </k>
     <mod> CurrMN => MN </mod>
+
+  rule
+    <k> QN:QualN => V ... </k>
+    <env> ... QN |-> V:Val ... </env>
 
   rule (.DefList ~> _:ModF ) => .K
 
