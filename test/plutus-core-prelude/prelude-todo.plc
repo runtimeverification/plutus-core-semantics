@@ -1,0 +1,637 @@
+(module PreludeTODO (imported) (exported () ()) (local () ())
+
+  (define lessThanEqualsInt
+    (lam x (lam y
+      [not (builtin lessThanInt y x)])))
+
+  (define maxInt
+    (lam x (lam y
+      (case (builtin lessThanInt x y)
+        (cl Bool.True () y)
+        (cl Bool.False () x)))))
+
+  (define minInt
+    (lam x (lam y
+      (case (builtin lessThanInt x y)
+        (cl Bool.True () x)
+        (cl Bool.False () y)))))
+
+  (define lessThanEqualsFloat
+    (lam x (lam y
+      [not (builtin lessThanFloat y x)])))
+
+  (define maxFloat
+    (lam x (lam y
+      (case (builtin lessThanFloat x y)
+        (cl Bool.True () y)
+        (cl Bool.False () x)))))
+
+  (define minFloat
+    (lam x (lam y
+      (case (builtin lessThanFloat x y)
+        (cl Bool.True () x)
+        (cl Bool.False () y)))))
+
+  (define append
+    (lam xs (lam ys
+      (case xs
+        (cl Nil () ys)
+        (cl Cons (x xs') (con Cons x [append xs' ys]))))))
+
+  (define head
+    (lam xs
+      (case xs
+        (cl Nil () (con Nothing))
+        (cl Cons (x xs') (con Just x)))))
+
+  (define last
+    (lam xs
+      (case xs
+        (cl Nil () (con Nothing))
+        (cl (Cons (x xs')
+          (case xs'
+            (cl Nil () (con Just x))
+            (cl Cons (x' xs'') [last (con Cons x' xs'')])))))))
+
+  (define tail
+    (lam xs
+      (case xs
+        (cl Nil () (con Nothing))
+        (cl Cons (x xs) (con Just xs)))))
+
+  (define init
+    (lam xs
+      (case xs
+        (cl Nil () (con Nothing))
+        (cl Cons (x xs)
+          (case [init xs]
+            (cl Nothing () (con Nil))
+            (cl Just (ys) (con Just (con Cons x ys)))))))
+
+  (define uncons
+    (lam xs
+      (case xs
+        (cl Nil () (con Nothing))
+        (cl Cons (x xs) (con Just (con Foo.MkPair x xs))))))
+
+  (define null
+    (lam xs
+      (case xs
+        (cl Nil () (con Bool.True))
+        (cl Cons (x xs) (con Bool.False)))))
+
+  (define length
+    (lam xs
+      (case xs
+        (cl Nil () 0)
+        (cl Cons (x xs) (builtin addInt 1 [length xs])))))
+
+  (define take
+    (lam n (lam xs
+      (case [builtin equalsInt n 0]
+        (cl Bool.True () (con Nil))
+        (cl Bool.False ()
+          (case xs
+            (cl Nil () (con Nil))
+            (cl Cons (x xs')
+              (con Cons x [take (builtin subtractInt n 1) xs']))))))))
+
+  (define drop
+    (lam n (lam xs
+      (case [builtin equalsInt n 0]
+        (cl Bool.True () xs)
+        (cl Bool.False ()
+          (case xs
+            (cl Nil () (con Nil))
+            (cl Cons (x xs')
+              [drop (builtin subtractInt n 1) xs'])))))))
+
+  (define splitAt
+    (lam n (lam xs
+      (case (builtinEquals n 0)
+        (cl Bool.True () (con Foo.MkPair (con Nil) xs))
+        (cl Bool.False ()
+          (case xs
+            (cl Nil () (con Foo.MkPair (con Nil) (con Nil)))
+            (cl Cons (x xs')
+              (case [splitAt (builtin subtractInt n 1) xs']
+                (cl Foo.MkPair (ys zs) (con MkPair (con Cons x ys) zs))))))))))
+
+  (define takeWhile
+    (lam p (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (case [p x]
+            (cl Bool.True () (con Cons x [takeWhile p xs']))
+            (cl Bool.False () (con Nil))))))))
+
+  (define dropWhile
+    (lam p (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (case [p x]
+            (cl Bool.True () [dropWhile p xs'])
+            (cl Bool.False () (con Cons x xs'))))))))
+
+  (define span
+    (lam p (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (case [p x]
+            (cl Bool.True ()
+              (case [span p xs']
+                (cl Foo.MkPair (ys zs) (con MkPair (con Cons x ys) zs))))
+            (cl Bool.False ()
+              (con Foo.MkPair (con Nil) (con Cons x xs')))))))))
+
+  (define groupBy
+    (lam eq (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (case [span [eq x] xs']
+            (cl Foo.MkPair (ys zs) (con Cons (con Cons x ys) [groupBy eq zs]))))))))
+
+  (define foldr
+    (lam c (lam n (lam xs
+      (case xs
+        (cl Nil () n)
+        (cl Cons (x xs')
+          [f x [foldr f n xs']]))))))
+
+  (define foldr1
+    (lam c (lam xs
+      (case xs
+        (cl Cons (x xs')
+          (case xs'
+            (cl Nil () x)
+            (cl Cons (x' xs'')
+              [c x [foldr1 c (con Cons x' xs')]])))))))
+
+  (define foldl
+    (lam s (lam n (lam xs
+      (case xs
+        (cl Nil () n)
+        (cl Cons (x xs')
+          [foldl s [s n x] xs]))))))
+
+  (define foldl1
+    (lam s (lam xs
+      (case xs
+        (cl Cons (x xs')
+          [foldl s x xs'])))))
+
+  (define unfoldr
+    (lam step (lam s
+      (case [step s]
+        (cl Nothing () (con Nil))
+        (cl Just (p)
+          (case p
+            (cl Foo.MkPair (x s')
+              (con Cons x [unfoldr step s']))))))))
+
+  (define replicate
+    (lam n (lam x
+      (case (builtin equalsInt n 0)
+        (cl Bool.True () (con Nil))
+        (cl Bool.False ()
+          (con Cons x [replicate (builtin subtractInt n 1) x]))))))
+
+  (define map
+    (lam f (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (con Cons [f x] [map f xs']))))))
+
+  (define reverseOnto
+    (lam xs (lam ys
+      (case xs
+        (cl Nil () ys)
+        (cl Cons (x xs')
+          [reverseOnto xs' (con Cons x ys)])))))
+
+  (define reverse
+    (lam xs [reverseOnto xs (con Nil)]))
+
+  (define prependToAll
+    (lam sep (lam xs
+      (case xs
+        (cl Nil () (con Cons sep (con Nil)))
+        (cl Cons (x xs')
+          (con Cons sep (con Cons x [prependToAll sep xs'])))))))
+
+  (define intersperse
+    (lam sep (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (con Cons x [prependToAll sep xs']))))))
+
+  (define concat
+    (lam xss
+      (case xss
+        (cl Nil () (con Nil))
+        (cl Cons (xs xss')
+          [append xs [concat xss']]))))
+
+  (define concatMap
+    (lam f (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          [append [f x] [concatMap f xs']]))))))
+
+  (define intercalate
+    (lam xs (lam xss
+      [concat [intersperse xs xss]])))
+
+  (define filter
+    (lam p (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (case [p x]
+            (cl Bool.True () (con Cons x [filter p xs']))
+            (cl Bool.False () [filter p xs'])))))))
+
+  (define find
+    (lam p (lam xs
+      (case xs
+        (cl Nil () (con Nothing))
+        (cl Cons (x xs')
+          (case [p x]
+            (cl Bool.True () (con Just x))
+            (cl Bool.False () [find p xs'])))))))
+
+  (define partition
+    (lam p (lam xs
+      (case xs
+        (cl Nil () (con Foo.MkPair (con Nil) (con Nil)))
+        (cl Cons (x xs')
+          (case [partition p xs']
+            (cl Foo.MkPair (ts fs)
+              (case [p x]
+                (cl Bool.True () (con Foo.MkPair (con Cons x ts) fs))
+                (cl Bool.False () (con Foo.MkPair ts (con Cons x fs)))))))))))
+
+  (define nubBy
+    (lam comp (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (con Cons x [filter (lam y [not [comp x y]]) [nubBy comp xs']]))))))
+
+  (define zipWith
+    (lam f (lam xs (lam ys
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (case ys
+            (cl Nil () (con Nil))
+            (cl Cons (y ys')
+              (con Cons [f x y] [zipWith f xs' ys'])))))))))
+
+  (define zip [zipWith (lam x (lam y (con Foo.MkPair x y)))])
+
+  (define unzip
+    (lam xys
+      (case xys
+        (cl Nil () (con Foo.MkPair (con Nil) (con Nil)))
+        (cl Cons (xy xys')
+          (case xy
+            (cl Foo.MkPair (x y)
+              (case [unzip xys']
+                (cl Foo.MkPair (xs ys)
+                  (con Foo.MkPair (con Cons x xs) (con Cons y ys))))))))))
+
+  (define andList
+    (lam bs [foldl and (con Bool.True) bs]))
+
+  (define orList
+    (lam bs [foldl or (con Bool.False) bs]))
+
+  (define any
+    (lam p (lam xs [orList [map p xs]])))
+
+  (define all
+    (lam p (lam xs [andList [map p xs]])))
+
+  (define sumInt
+    (lam xs [foldl (lam x y (builtin addInt x y)) 0 xs]))
+
+  (define sumFloat
+    (lam xs [foldl (lam x y (builtin addFloat x y)) 0.0 xs]))
+
+  (define productInt
+    (lam xs [foldl (lam x y (builtin multiplyInt x y)) 1 xs]))
+
+  (define productFloat
+    (lam xs [foldl (lam x y (builtin multiplyFloat x y)) 1.0 xs]))
+
+  (define maximumBy
+    (lam comp
+      [foldl1
+        (lam x (lam y
+          (case [comp x y]
+            (cl Bool.True () y)
+            (cl Bool.False () x))))]))
+
+  (define minimumBy
+    (lam comp
+      [foldl1
+        (lam x (lam y
+          (case [comp x y]
+            (cl Bool.True () x)
+            (cl Bool.False () y))))]))
+
+  (define project
+    (lam xs (lam n
+      (case xs
+        (cl Nil () (con Nothing))
+        (cl Cons (x xs')
+          (case (builtin equalsInt n 0)
+            (cl Bool.True () (con Just x))
+            (cl Bool.False () [project xs' (builtin subtractInt n 1)])))))))
+
+  (define findIndex
+    (lam p (lam xs
+      (case xs
+        (cl Nil () (con Nothing))
+        (cl Cons (x xs')
+          (case [p x]
+            (cl Bool.True () (con Just 0))
+            (cl Bool.False ()
+              (case [findIndex p xs']
+                (cl Nothing () (con Nothing))
+                (cl Just (i) (con Just (builtin addInt i 1)))))))))))
+
+  (define findIndicesFrom
+    (lam i (lam p (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (case [p x]
+            (cl Bool.True ()
+              (con Cons i [findIndicesFrom (builtin addInt i 1) p xs]))
+            (cl Bool.False ()
+              [findIndicesFrom (builtin addInt i 1) p xs]))))))))
+
+  (define findIndices
+    (lam xs (lam p [findIndicesFrom 0 p xs])))
+
+  (define evenOnSplitFrom
+    (lam b (lam xs
+      (case xs
+        (cl Nil () (con Foo.MkPair (con Nil) (con Nil)))
+        (cl Cons (x xs')
+          (case [evenOddSplitFrom [not b] xs']
+            (cl Foo.MkPair (es os)
+              (case b of
+                (cl Bool.True () (con Foo.MkPair (con Cons x es) os))
+                (cl Bool.False () (coon Foo.MkPair es (con Cons x os)))))))))))
+
+  (define evenOddSplit
+    (lam xs [evenOddSplitFrom (con Bool.True) xs]))
+
+  (define mergeBy
+    (lam comp (lam xs (lam ys
+      (case xs
+        (cl Nil () ys)
+        (cl Cons (x xs')
+          (case ys
+            (cl Nil () (con Cons x xs'))
+            (cl Cons (y ys')
+              (case [comp x y]
+                (cl Bool.True ()
+                  (con Cons x [mergeBy comp xs' (con Cons y ys')]))
+                (cl Bool.False ()
+                  (con Cons y [mergeBy comp (con Cons x xs') ys'])))))))))))
+
+  (define mergeSortBy
+    (lam comp (lam xs
+      (case [evenOddSplit xs]
+        (cl Foo.MkPair (es os)
+          [mergeBy comp [mergeSortBy comp es] [mergeSortBy comp os]])))))
+
+  (define quickSortBy
+    (lam comp (lam xs
+      (case xs
+        (cl Nil () (con Nil))
+        (cl Cons (x xs')
+          (case [partition [comp x] xs']
+            (cl Foo.MkPair (lo hi)
+              [append [quickSortBy comp lo]
+                      (con Cons x [quickSortBy comp hi])])))))))
+
+  (define maybe
+    (lam n (lam j (lam m
+      (case m of
+        (cl Nothing () n)
+        (cl Just (x) [j x]))))))
+
+  (define isJust
+    (lam m
+      (case m
+        (cl Nothing () (con Bool.False))
+        (cl Just (x) (con Bool.True)))))
+
+  (define isNothing
+    (lam m
+      (case m
+        (cl Nothing () (con Bool.True))
+        (cl Just (x) (con Bool.False)))))
+
+  (define fromJust
+    (lam m
+      (case m
+        (cl Just (x) x))))
+
+  (define fromMaybe
+    (lam n (lam m
+      (case m
+        (cl Nothing () n)
+        (cl Just (x) x)))))
+
+  (define listToMaybe
+    (lam xs
+      (case xs
+        (cl Nil () (con Nothing))
+        (cl Cons (x xs') (con Just x)))))
+
+  (define maybeToList
+    (lam m
+      (case m
+        (cl Nothing () (con Nil))
+        (cl Just (x) (con Cons x (con Nil))))))
+
+  (define catMaybes
+    (lam ms
+      (case ms
+        (cl Nil () (con Nil))
+        (cl Cons (m ms')
+          (case m
+            (cl Nothing () [catMaybes ms'])
+            (cl Just (x) (con Cons x [catMaybes ms'])))))))
+
+  (define mapMaybe
+    (lam f (lam m
+      (case m
+        (cl Nothing () (con Nothing))
+        (cl Just (x) (con Just [f x]))))))
+
+  (define either
+    (lam f (lam g (lam e
+      (case e
+        (cl Left (x) [f x])
+        (cl Right (y) [g y]))))))
+
+  (define lefts
+    (lam es
+      (case es
+        (cl Nil () (con Nil))
+        (cl Cons (e es')
+          (case e
+            (cl Left (x) (con Cons x [lefts es']))
+            (cl Right (y) [lefts es']))))))
+
+  (define rights
+    (lam es
+      (case es
+        (cl Nil () (con Nil))
+        (cl Cons (e es')
+          (case e
+            (cl Left (x) [rights es'])
+            (cl Right (y) (con Cons y [rights es'])))))))
+
+  (define isLeft
+    (lam e
+      (case e
+        (cl Left (x) (con Bool.True))
+        (cl Right (y) (con Bool.False)))))
+
+  (define isRight
+    (lam e
+      (case e
+        (cl Left (x) (con Bool.False))
+        (cl Right (y) (con Bool.True)))))
+
+  (define partitionEithers
+    (lam es
+      (case es
+        (cl Nil () (con Foo.MkPair (con Nil) (con Nil)))
+        (cl Cons (e es')
+          (case [partitionEithers es']
+            (cl Foo.MkPair (ls rs)
+              (case e
+                (cl Left (x) (con Foo.MkPair (con Cons x ls) rs))
+                (cl Right (y) (con Foo.MkPair ls (con Cons x rs))))))))))
+
+  (define eitherToMaybe
+    (lam e
+      (case e
+        (cl Left (x) (con Nothing))
+        (cl Right (y) (con Just y)))))
+
+  (define maybeToEither
+    (lam x (lam m
+      (case m
+        (cl Nothing () (con Left x))
+        (cl Just (y) (con Right y))))))
+
+  (define verify
+    (lam dat (lam k (lam m
+      (case m
+        (cl Nil () (con Bool.False))
+        (cl Just (s) (builtin verifySignature k dat s)))))))
+
+  (define verifyMultiSig
+    (lam n (lam keys (lam dat (lam sigs
+      (case [and (builtin equalsInt [length keys] [length sigs])
+                [lessThanEqualsInt
+                  n
+                  [length [filter id [zipWith [verify dat] keys sigs]]]]]
+        (cl Bool.True () (success (con MkUnit)))
+        (cl Bool.False () (failure))))))))
+
+  (define evalMASTProp
+    (lam m
+      (case m
+        (cl MASTNot (x) [not [evalMASTProp x]])
+        (cl MASTAnd (x y)
+          [and [evalMASTProp x] [evalMASTProp y]])
+        (cl MASTOr (x y)
+          [or [evalMASTProp x] [evalMASTProp y]]))))
+
+  (define evalMASTPath
+    (lam m
+      (case m
+        (cl MASTPathSuccess () (con Bool.True))
+        (cl MASTPathFailure () (con Bool.False)
+        (cl MASTPathIfTrue (test t f)
+          (case [evalMASTProp test]
+            (cl Bool.True () [evalMASTPath t])
+            (cl Bool.False () (con Bool.False))))
+        (cl MASTPathIfFalse (test t f)
+          (case [evalMASTProp test]
+            (cl Bool.True () (con Bool.False))
+            (cl Bool.False () [evalMASTPath f])))))))
+
+  (define hashMASTProp
+    (lam m
+      (case m
+        (cl MASTNot (x)
+          (builtin sha2_256
+            (builtin concatenate #00 [hashMASTProp x])))
+        (cl MASTAnd (x y)
+          (builtin sha2_256
+            (builtin concatenate #01
+              (builtin concatenate
+                [hashMASTProp x]
+                [hashMASTProp y]))))
+        (cl MASTOr (x y)
+          (builtin sha2_256
+            (builtin concatenate #02
+              (builtin concatenate
+                [hashMASTProp x]
+                [hashMASTProp y])))))))
+
+  (define hashMASTTree
+    (lam m
+      (case m
+        (cl MASTSuccess () #00)
+        (cl MASTFailure () #01)
+        (cl MASTIf (test t f)
+          (builtin sha2_256
+            (builtin concatenate #02
+              (builtin concatenate
+                [hashMASTTree t]
+                [hashMASTTree f])))))))
+
+  (define hashMASTPath
+    (lam m
+      (case m
+        (cl MASTPathSuccess () #00)
+        (cl MASTPathFailure () #01)
+        (cl MASTPathIfTrue (test t fhash)
+          (builtin sha2_256
+            (builtin concatenate #02
+              (builtin concatenate
+                [hashMASTPath t]
+                fhash))))
+        (cl MASTPathIfFalse (test thash f)
+          (builtin sha2_256
+            (builtin concatenate #02
+              (builtin concatenate
+                thash
+                [hashMASTPath f])))))))
+
+  (define checkMAST
+    (lam hash (lam path
+      (case [evalMASTPath path]
+        (cl Bool.False () (con Bool.False))
+        (cl Bool.True () (builtin equalsByteString hash [hashMASTPath path]))))))
+)

@@ -1,0 +1,72 @@
+(module Prelude (imported) (exported () ()) (local () ())
+
+  (define id
+    (lam x x))
+
+  (define const
+    (lam x (lam y x)))
+
+  (define flip
+    (lam f (lam x (lam y
+      [[f y] x]))))
+
+  (define applyTo
+    (lam x (lam f
+      [f x])))
+
+  (define compose
+    (lam f (lam g (lam x
+      [f [g x]]))))
+
+  (define compose2
+    (lam f (lam g (lam x (lam y
+      [f [[g x] y]])))))
+
+  (define fst
+    (lam p
+      (case p
+        (cl Foo.MkPair (x y) x))))
+
+  (define snd
+    (lam p
+      (case p
+        (cl Foo.MkPair (x y) y))))
+
+  (define curry
+    (lam f (lam x (lam y
+      [f (con Foo.MkPair x y)]))))
+
+  (define uncurry
+    (lam f (lam p
+      (case p
+        (cl Foo.MkPair (x y) [[f x] y])))))
+
+  (define swap
+    (lam p
+      (case p
+        (cl Foo.MkPair (x y) (con Foo.MkPair y x)))))
+
+  (define and
+    (lam x (lam y
+      (case x
+        (cl Bool.True () y)
+        (cl Bool.False () (con Bool.False))))))
+
+  (define or
+    (lam x (lam y
+      (case x
+        (cl Bool.True () (con Bool.True))
+        (cl Bool.False () x)))))
+
+  (define not
+    (lam x
+      (case x
+        (cl Bool.True () (con Bool.False))
+        (cl Bool.False () (con Bool.True)))))
+
+  (define bool
+    (lam f (lam t (lam b
+      (case b
+        (cl Bool.True  () t)
+        (cl Bool.False () f))))))
+)
