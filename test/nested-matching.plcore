@@ -5,5 +5,5 @@
           (cl Nat.Pair (p1 p2)
             (case p2
               (cl Foo.NotThis (x) -2)
-              (cl Nat.Pair (x y) (builtin multiplyInt (x y)))
+              (cl Nat.Pair (x y) (builtin multiplyInt x y))
               (cl Foo.NotThisEither (x) -2))))))

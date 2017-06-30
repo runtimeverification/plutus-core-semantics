@@ -1,25 +1,4 @@
 (module PreludeTODO (imported) (exported () ()) (local () ())
-
-  (define lessThanEqualsInt
-    (lam x (lam y
-      [not (builtin lessThanInt y x)])))
-
-  (define maxInt
-    (lam x (lam y
-      (case (builtin lessThanInt x y)
-        (cl Bool.True () y)
-        (cl Bool.False () x)))))
-
-  (define minInt
-    (lam x (lam y
-      (case (builtin lessThanInt x y)
-        (cl Bool.True () x)
-        (cl Bool.False () y)))))
-
-  (define lessThanEqualsFloat
-    (lam x (lam y
-      [not (builtin lessThanFloat y x)])))
-
   (define maxFloat
     (lam x (lam y
       (case (builtin lessThanFloat x y)

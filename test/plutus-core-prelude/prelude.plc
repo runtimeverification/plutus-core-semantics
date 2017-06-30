@@ -68,5 +68,26 @@
     (lam f (lam t (lam b
       (case b
         (cl Bool.True  () t)
-        (cl Bool.False () f))))))
+
+  (define lessThanEqualsInt
+    (lam x (lam y
+      [not (builtin lessThanInt y x)])))
+
+  (define maxInt
+    (lam x (lam y
+      (case (builtin lessThanInt x y)
+        (cl Bool.True () y)
+        (cl Bool.False () x)))))
+
+  (define minInt
+    (lam x (lam y
+      (case (builtin lessThanInt x y)
+        (cl Bool.True () x)
+        (cl Bool.False () y)))))
+
+  (define lessThanEqualsFloat
+    (lam x (lam y
+      [not (builtin lessThanFloat y x)])))
+
+       (cl Bool.False () f))))))
 )

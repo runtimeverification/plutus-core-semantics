@@ -1,5 +1,5 @@
 (module Foo (imported) (exported () ()) (local () ())
-  (define four (builtin addInt (2 2)))
+  (define four (builtin addInt 2 2))
 
-  (define result (builtin multiplyInt (Foo.four Foo.four)))
+  (define result (builtin multiplyInt Foo.four Foo.four))
 )

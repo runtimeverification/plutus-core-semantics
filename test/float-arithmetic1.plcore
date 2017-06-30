@@ -1,8 +1,6 @@
 (module Foo (imported) (exported () ()) (local () ())
 (define result
   (builtin subtractFloat
-     (260.0
-      (builtin multiplyFloat
-        ((builtin multiplyFloat (3.0 10.0))
-         5.0)))))
+   260.0
+   (builtin multiplyFloat (builtin multiplyFloat 3.0 10.0) 5.0)))
 )
