@@ -141,7 +141,7 @@ module PLUTUS-CORE-EXECUTION
 
   rule [ ( lam X:Var .VarList M:Tm ) N:Tm .TmList ] => M[N / X]
 
-  rule V:Val ~> #lamFreeze(X1:Var, X2:Var) => ( lam X1 ( lam X2 V ))
+  rule V:Val ~> #lamFreeze(X1:Var, X2:Var) => ( lam X1 .VarList ( lam X2 .VarList V ))
 
   rule ( let N:Tm X:Var M:Tm ):Tm => M[N / X]
 
