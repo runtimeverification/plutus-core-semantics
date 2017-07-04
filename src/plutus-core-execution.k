@@ -135,7 +135,7 @@ module PLUTUS-CORE-EXECUTION
   /*rule [ M1:Tm ( M2:Tm MS:TmList ) ] => [ [ M1 M2 ] MS ]*/
   rule [ [ F:Tm M:Tm ] MS:TmList ] => [ F M MS ]
 
-  rule [ ( lam X M ) N:Tm .TmList ] => M[N / X]
+  rule [ ( lam X .VarList M ) N:Tm .TmList ] => M[N / X]
 
   rule ( let N:Tm X:Var M:Tm ):Tm => M[N / X]
 
