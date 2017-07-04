@@ -68,7 +68,7 @@ module PLUTUS-CORE-SYNTAX
                       | QualN
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
-                      | "[" TmList "]"
+                      | "[" Tm TmList "]"                           [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
                       | "(" "con" QualC TmList ")"                  [strict(2)]
                         // Built-in function.
