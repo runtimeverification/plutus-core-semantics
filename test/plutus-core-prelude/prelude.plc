@@ -501,7 +501,7 @@
 
 (define maybe
   (lam n (lam j (lam m
-    (case m of
+    (case m
       (cl Prelude.Nothing () n)
       (cl Prelude.Just (x) [j x]))))))
 
