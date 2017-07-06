@@ -110,12 +110,16 @@ module PLUTUS-CORE-EXECUTION
   rule M:Val ~> #appFreeze(MS) => [ M MS ]
   rule [ [ F:Val M:Tm ] MS:TmList ] => [ F M MS ]
 
+  // When a lambda abstracts more than one variable, desugar it to a
+  // combination of unary lambdas.
   rule [ ( lam X1:Var X2:Var XS:VarList M:Tm ) N:Tm ]
     => [ ( lam X1 .VarList ( lam X2 XS M ) ) N ]
+  // In the unary case, just perform the substitution.
   rule [ ( lam X:Var .VarList M:Tm ) N:Tm ] => M[N / X]
 
   rule ( let N:Tm X:Var M:Tm ):Tm => M[N / X]
 
+  // Process the definitions in order.
   rule D:Def DS:DefList => D ~> DS
 
   rule #qualN(MN:ModName, N:Name) => (MN . N):QualN
@@ -143,7 +147,8 @@ module PLUTUS-CORE-EXECUTION
   /************************   PATTERN MATCHING   *****************************/
   /***************************************************************************/
 
-  syntax Map ::= manySubst(VarList, ValList) [function]
+  syntax Map ::= manySubst(VarList, ValList)                         [function]
+
   rule manySubst(.VarList, .ValList) => .Map
   rule manySubst(X:Var XS:VarList, V:Val VS:ValList)
     => manySubst(XS, VS)[X <- V]
