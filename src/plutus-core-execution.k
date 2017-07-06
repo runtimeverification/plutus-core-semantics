@@ -21,28 +21,29 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin subtractInt:Name  I1:Int I2:Int ) => I1 -Int I2
   rule ( builtin multiplyInt:Name  I1:Int I2:Int ) => I1 *Int I2
   rule ( builtin divideInt:Name    I1:Int I2:Int ) => I1 /Int I2
-    when I2 =/=Int 0
+                                                        when I2 =/=Int 0
   rule ( builtin remainderInt:Name I1:Int I2:Int ) => I1 %Int I2
-    when I2 =/=Int 0
+                                                        when I2 =/=Int 0
 
   syntax Tm ::= #conHolder(K, K)
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
   syntax Prim ::= "#primTrue" | "#primFalse"
-  rule #primTrue => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
-                              #parseToken("Con@PLUTUS-CORE-SYNTAX", "True"))
-  rule #primFalse => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
-                              #parseToken("Con@PLUTUS-CORE-SYNTAX", "False"))
+  rule #primTrue
+    => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
+                  #parseToken("Con@PLUTUS-CORE-SYNTAX", "True"))
+  rule #primFalse
+    => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
+                  #parseToken("Con@PLUTUS-CORE-SYNTAX", "False"))
 
-  rule ( builtin equalsInt:Name I:Int I:Int ) => #primTrue
-  rule ( builtin equalsInt:Name I1:Int I2:Int ) => #primFalse
-    when I1 =/=Int I2
-
+  rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue
+  rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #primFalse
+                                                       when I1 =/=Int I2
   rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primTrue
-    when I1 <Int I2
-  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primFalse
-    when notBool (I1 <Int I2)
+                                                       when I1 <Int I2
+  rule ( builtin lessThanInt:Name I1:Int I2:Int )
+    => #primFalse when notBool (I1 <Int I2)
 
   // TODO: Figure out _why_ 53 and 11.
   rule ( builtin intToFloat:Name   I:Int ) => Int2Float(I, 53, 11)
@@ -57,13 +58,13 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin divideFloat:Name   F1:Float F2:Float ) => F1 /Float F2
 
   rule ( builtin lessThanFloat:Name F1:Float F2:Float ) => #primTrue
-    when F1 <Float F2
-  rule ( builtin lessThanFloat:Name F1:Float F2:Float ) => #primFalse
-    when notBool (F1 <Float F2)
-  rule ( builtin equalsFloat:Name   F1:Float F2:Float ) => #primTrue
-    when F1 ==Float F2
-  rule ( builtin equalsFloat:Name   F1:Float F2:Float ) => #primFalse
-    when F1 =/=Float F2
+                                                             when F1 <Float F2
+  rule ( builtin lessThanFloat:Name F1:Float F2:Float )
+    => #primFalse when notBool (F1 <Float F2)
+  rule ( builtin equalsFloat:Name   F1:Float F2:Float )
+    => #primTrue when F1 ==Float F2
+  rule ( builtin equalsFloat:Name   F1:Float F2:Float )
+    => #primFalse when F1 =/=Float F2
 
   syntax String ::= #toHex(Int)                                      [function]
                   | #hex(Int)                                        [function]
@@ -125,7 +126,7 @@ module PLUTUS-CORE-EXECUTION
   /************************   LOCAL REDUCTIONS   *****************************/
   /***************************************************************************/
 
-  syntax K ::= #appFreeze(TmList)                                    [prefer]
+  syntax K ::= #appFreeze(TmList)                                      [prefer]
 
   // Explicit strictness for nested application
   rule [ F:Val M1:Tm M2:Tm MS:TmList ] => [ F M1 ] ~> #appFreeze(M2 MS)
@@ -150,7 +151,9 @@ module PLUTUS-CORE-EXECUTION
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
   rule
-    <k> ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS ) </k>
+    <k>
+      ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS )
+    </k>
     <mod> CurrMN => MN </mod>
 
   rule
@@ -170,11 +173,12 @@ module PLUTUS-CORE-EXECUTION
 
   syntax K ::= substTerm(Tm, Map)
 
-  rule ( case ( con QC:QualC MS:ValList ) ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
+  rule ( case ( con QC:QualC MS:ValList )
+              ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
     => substTerm(M, manySubst(XS, MS))
-  rule ( case ( con QC:QualC MS:ValList ) ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
-    => ( case ( con QC:QualC MS:ValList ) CL )
-    when QC =/=K QC'
+  rule ( case ( con QC:QualC MS:ValList )
+              ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
+    => ( case ( con QC:QualC MS:ValList ) CL ) when QC =/=K QC'
 
   rule substTerm(T:Tm, M:Map) => T[M]
 
