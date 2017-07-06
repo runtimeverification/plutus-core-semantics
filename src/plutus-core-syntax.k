@@ -2,7 +2,6 @@ module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
   imports SUBSTITUTION
-  /*import FLOAT-SYNTAX*/
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
