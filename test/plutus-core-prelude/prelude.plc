@@ -177,7 +177,7 @@
 
 (define splitAt
   (lam n (lam xs
-    (case (builtinEquals n 0)
+    (case (builtin equalsInt n 0)
       (cl Prelude.True () (con Prelude.MkPair (con Prelude.Nil) xs))
       (cl Prelude.False ()
         (case xs
