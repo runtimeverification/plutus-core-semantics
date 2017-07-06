@@ -135,7 +135,7 @@
       (cl Prelude.Cons (x xs)
         (case [Prelude.init xs]
           (cl Prelude.Nothing () (con Prelude.Nil))
-          (cl Prelude.Just (ys) (con Prelude.Just (con Prelude.Cons x ys)))))))
+          (cl Prelude.Just (ys) (con Prelude.Just (con Prelude.Cons x ys))))))))
 
 (define uncons
   (lam xs
