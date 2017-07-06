@@ -645,7 +645,7 @@
   (lam m
     (case m
       (cl Prelude.MASTPathSuccess () (con Prelude.True))
-      (cl Prelude.MASTPathFailure () (con Prelude.False)
+      (cl Prelude.MASTPathFailure () (con Prelude.False))
       (cl Prelude.MASTPathIfTrue (test t f)
         (case [Prelude.evalMASTProp test]
           (cl Prelude.True () [Prelude.evalMASTPath t])
@@ -653,7 +653,7 @@
       (cl Prelude.MASTPathIfFalse (test t f)
         (case [Prelude.evalMASTProp test]
           (cl Prelude.True () (con Prelude.False))
-          (cl Prelude.False () [Prelude.evalMASTPath f])))))))
+          (cl Prelude.False () [Prelude.evalMASTPath f]))))))
 
 (define hashMASTProp
   (lam m
