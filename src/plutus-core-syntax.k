@@ -53,7 +53,7 @@ module PLUTUS-CORE-SYNTAX
   syntax NameList   ::= List{Name, ""}
   syntax TmList     ::= List{Tm, ""}                          [klabel(tmList)]
   syntax ValList    ::= List{Val, ""}                        [klabel(valList)]
-  syntax VarList    ::= List{Var, ""}
+  syntax VarList    ::= List{Var, ""}                         [klabel(varList)]
   syntax QualCList  ::= List{QualC  ,  ""}
 
   syntax DefList    ::= List{Def    ,  ""}                   [klabel(defList)]
@@ -68,7 +68,7 @@ module PLUTUS-CORE-SYNTAX
                       | QualN
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
-                      | "[" TmList "]"
+                      | "[" Tm TmList "]"                           [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
                       | "(" "con" QualC TmList ")"                  [strict(2)]
                         // Built-in function.
@@ -101,7 +101,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
 
   // Lambda abstraction.
-  syntax Val          ::= "(" "lam" Var Tm ")"                         [binder]
+  syntax Val          ::= "(" "lam" VarList Tm ")"                     [binder]
                           // Constructed data.
                         | "(" "con" QualC ValList ")"                  [prefer]
                         | InstrVal
