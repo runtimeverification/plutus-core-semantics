@@ -126,22 +126,15 @@ module PLUTUS-CORE-EXECUTION
   /***************************************************************************/
 
   syntax K ::= #appFreeze(TmList)                                    [prefer]
-             | #lamFreeze(Var, Var) [prefer]
-
 
   // Explicit strictness for nested application
-  rule [ F:Tm M1:Tm M2:Tm MS:TmList ] => [ F M1 ] ~> #appFreeze(M2 MS)
+  rule [ F:Val M1:Tm M2:Tm MS:TmList ] => [ F M1 ] ~> #appFreeze(M2 MS)
   rule M:Val ~> #appFreeze(MS) => [ M MS ]
+  rule [ [ F:Val M:Tm ] MS:TmList ] => [ F M MS ]
 
-  /*rule [ M1:Tm ( M2:Tm MS:TmList ) ] => [ [ M1 M2 ] MS ]*/
-  rule [ [ F:Tm M:Tm ] MS:TmList ] => [ F M MS ]
-
-  rule ( lam (X1:Var X2:Var XS:VarList) M:Tm )
-    => ( lam XS M ) ~> #lamFreeze(X1, X2)
-
-  rule [ ( lam X:Var .VarList M:Tm ) N:Tm .TmList ] => M[N / X]
-
-  rule V:Val ~> #lamFreeze(X1:Var, X2:Var) => ( lam X1 .VarList ( lam X2 .VarList V ))
+  rule [ ( lam X1:Var X2:Var XS:VarList M:Tm ) N:Tm ]
+    => [ ( lam X1 .VarList ( lam X2 XS M ) ) N ]
+  rule [ ( lam X:Var .VarList M:Tm ) N:Tm ] => M[N / X]
 
   rule ( let N:Tm X:Var M:Tm ):Tm => M[N / X]
 
