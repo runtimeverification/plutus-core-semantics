@@ -312,7 +312,7 @@
     (case xs
       (cl Prelude.Nil () (con Prelude.Nil))
       (cl Prelude.Cons (x xs')
-        [Prelude.append [f x] [Prelude.concatMap f xs']]))))))
+        [Prelude.append [f x] [Prelude.concatMap f xs']])))))
 
 (define intercalate
   (lam xs (lam xss
