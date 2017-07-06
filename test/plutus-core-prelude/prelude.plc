@@ -1,3 +1,4 @@
+(module Prelude (imported) (exported () ()) (local () ())
 (define id
   (lam x x))
 
@@ -283,7 +284,7 @@
         [Prelude.reverseOnto xs' (con Prelude.Cons x ys)])))))
 
 (define reverse
-  (lam xs [Prelude.reverseOnto xs (con Prelude.Nil)]))        
+  (lam xs [Prelude.reverseOnto xs (con Prelude.Nil)]))
 
 (define prependToAll
   (lam sep (lam xs
@@ -708,3 +709,4 @@
     (case [Prelude.evalMASTPath path]
       (cl Prelude.False () (con Prelude.False))
       (cl Prelude.True () (builtin equalsByteString hash [Prelude.hashMASTPath path]))))))
+)
