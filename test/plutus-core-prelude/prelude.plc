@@ -461,7 +461,7 @@
       (cl Prelude.Cons (x xs')
         (case [Prelude.evenOddSplitFrom [not b] xs']
           (cl Prelude.MkPair (es os)
-            (case b of
+            (case b
               (cl Prelude.True () (con Prelude.MkPair (con Prelude.Cons x es) os))
               (cl Prelude.False () (coon Prelude.MkPair es (con Prelude.Cons x os)))))))))))
 
