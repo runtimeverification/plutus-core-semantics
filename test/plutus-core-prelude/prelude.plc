@@ -1,178 +1,710 @@
-(module Prelude (imported) (exported () ()) (local () ())
+(define id
+  (lam x x))
 
-  (define id
-    (lam x x))
+(define const
+  (lam x (lam y x)))
 
-  (define const
-    (lam x (lam y x)))
+(define flip
+  (lam f (lam x (lam y
+    [f y x]))))
 
-  (define flip
-    (lam f (lam x (lam y
-      [[f y] x]))))
+(define applyTo
+  (lam x (lam f
+    [f x])))
 
-  (define applyTo
-    (lam x (lam f
-      [f x])))
+(define compose
+  (lam f (lam g (lam x
+    [f [g x]]))))
 
-  (define compose
-    (lam f (lam g (lam x
-      [f [g x]]))))
+(define compose2
+  (lam f (lam g (lam x (lam y
+    [f [g x y]])))))
 
-  (define compose2
-    (lam f (lam g (lam x (lam y
-      [f [[g x] y]])))))
+(define fst
+  (lam p
+    (case p
+      (cl Prelude.MkPair (x y) x))))
 
-  (define fst
-    (lam p
-      (case p
-        (cl Foo.MkPair (x y) x))))
+(define snd
+  (lam p
+    (case p
+      (cl Prelude.MkPair (x y) y))))
 
-  (define snd
-    (lam p
-      (case p
-        (cl Foo.MkPair (x y) y))))
+(define curry
+  (lam f (lam x (lam y
+    [f (con Prelude.MkPair x y)]))))
 
-  (define curry
-    (lam f (lam x (lam y
-      [f (con Foo.MkPair x y)]))))
+(define uncurry
+  (lam f (lam p
+    (case p
+      (cl Prelude.MkPair (x y) [f x y])))))
 
-  (define uncurry
-    (lam f (lam p
-      (case p
-        (cl Foo.MkPair (x y) [[f x] y])))))
+(define swap
+  (lam p
+    (case p
+      (cl Prelude.MkPair (x y) (con Prelude.MkPair y x)))))
 
-  (define swap
-    (lam p
-      (case p
-        (cl Foo.MkPair (x y) (con Foo.MkPair y x)))))
+(define and
+  (lam x (lam y
+    (case x
+      (cl Prelude.True () y)
+      (cl Prelude.False () (con Prelude.False))))))
 
-  (define and
-    (lam x (lam y
-      (case x
-        (cl Bool.True () y)
-        (cl Bool.False () (con Bool.False))))))
+(define or
+  (lam x (lam y
+    (case x
+      (cl Prelude.True () (con Prelude.True))
+      (cl Prelude.False () x)))))
 
-  (define or
-    (lam x (lam y
-      (case x
-        (cl Bool.True () (con Bool.True))
-        (cl Bool.False () x)))))
+(define not
+  (lam x
+    (case x
+      (cl Prelude.True () (con Prelude.False))
+      (cl Prelude.False () (con Prelude.True)))))
 
-  (define not
-    (lam x
-      (case x
-        (cl Bool.True () (con Bool.False))
-        (cl Bool.False () (con Bool.True)))))
+(define bool
+  (lam f (lam t (lam b
+    (case b
+      (cl Prelude.True  () t)
+      (cl Prelude.False () f))))))
 
-  (define bool
-    (lam f (lam t (lam b
-      (case b
-        (cl Prelude.True  () t)
-        (cl Prelude.False () f))))))
+(define lessThanEqualsInt
+  (lam x (lam y
+    [Prelude.not (builtin lessThanInt y x)])))
 
-  (define lessThanEqualsInt (lam x (lam y [not (builtin lessThanInt y x)])))
+(define maxInt
+  (lam x (lam y
+    (case (builtin lessThanInt x y)
+      (cl Prelude.True () y)
+      (cl Prelude.False () x)))))
 
-  (define maxInt
-    (lam x (lam y
-      (case (builtin lessThanInt x y)
-        (cl Prelude.True () y)
-        (cl Prelude.False () x)))))
+(define minInt
+  (lam x (lam y
+    (case (builtin lessThanInt x y)
+      (cl Prelude.True () x)
+      (cl Prelude.False () y)))))
 
-  (define minInt
-    (lam x (lam y
-      (case (builtin lessThanInt x y)
-        (cl Prelude.True () x)
-        (cl Prelude.False () y)))))
+(define lessThanEqualsFloat
+  (lam x (lam y
+    [Prelude.not (builtin lessThanFloat y x)])))
 
-  (define lessThanEqualsFloat
-    (lam x (lam y
-      [Prelude.not (builtin lessThanFloat y x)])))
+(define maxFloat
+  (lam x (lam y
+    (case (builtin lessThanFloat x y)
+      (cl Prelude.True () y)
+      (cl Prelude.False () x)))))
 
-  (define maxFloat
-    (lam x (lam y
-      (case (builtin lessThanFloat x y)
-        (cl Prelude.True () y)
-        (cl Prelude.False () x)))))
+(define minFloat
+  (lam x (lam y
+    (case (builtin lessThanFloat x y)
+      (cl Prelude.True () x)
+      (cl Prelude.False () y)))))
 
-  (define minFloat
-    (lam x (lam y
-      (case (builtin lessThanFloat x y)
-        (cl Prelude.True () x)
-        (cl Prelude.False () y)))))
+(define append
+  (lam xs (lam ys
+    (case xs
+      (cl Prelude.Nil () ys)
+      (cl Prelude.Cons (x xs') (con Prelude.Cons x [Prelude.append xs' ys]))))))
 
+(define head
+  (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nothing))
+      (cl Prelude.Cons (x xs') (con Prelude.Just x)))))
 
-  (define append
-    (lam xs (lam ys
-      (case xs
-        (cl Prelude.Nil () ys)
-        (cl Prelude.Cons (x xs') (con Prelude.Cons x [[Prelude.append xs'] ys]))))))
+(define last
+  (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nothing))
+      (cl Prelude.Cons (x xs')
+        (case xs'
+          (cl Prelude.Nil () (con Prelude.Just x))
+          (cl Prelude.Cons (x' xs'') [Prelude.last (con Prelude.Cons x' xs'')]))))))
 
-  (define head
-    (lam xs
-      (case xs
-        (cl Prelude.Nil () (con Prelude.Nothing))
-        (cl Prelude.Cons (x xs') (con Prelude.Just x)))))
+(define tail
+  (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nothing))
+      (cl Prelude.Cons (x xs) (con Prelude.Just xs)))))
 
-  (define last
-    (lam xs
-      (case xs
-        (cl Prelude.Nil () (con Prelude.Nothing))
-        (cl Prelude.Cons (x xs')
-              (case xs'
-                (cl Prelude.Nil () (con Prelude.Just x))
-                (cl Prelude.Cons (x' xs'') [last (con Prelude.Cons x' xs'')]))))))
+(define init
+  (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nothing))
+      (cl Prelude.Cons (x xs)
+        (case [Prelude.init xs]
+          (cl Prelude.Nothing () (con Prelude.Nil))
+          (cl Prelude.Just (ys) (con Prelude.Just (con Prelude.Cons x ys)))))))
 
-  (define tail
-    (lam xs
-      (case xs
-        (cl Prelude.Nil () (con Prelude.Nothing))
-        (cl Prelude.Cons (x xs) (con Prelude.Just xs)))))
+(define uncons
+  (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nothing))
+      (cl Prelude.Cons (x xs) (con Prelude.Just (con Prelude.MkPair x xs))))))
 
-  (define init
-    (lam xs
-      (case xs
-        (cl Prelude.Nil () (con Prelude.Nothing))
-        (cl Prelude.Cons (x xs)
-          (case [init xs]
-            (cl Prelude.Nothing () (con Prelude.Nil))
-            (cl Prelude.Just (ys) (con Prelude.Just (con Prelude.Cons x ys))))))))
+(define null
+  (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.True))
+      (cl Prelude.Cons (x xs) (con Prelude.False)))))
 
-  (define uncons
-    (lam xs
-      (case xs
-        (cl Prelude.Nil () (con Prelude.Nothing))
-        (cl Prelude.Cons (x xs) (con Prelude.Just (con Prelude.MkPair x xs))))))
+(define length
+  (lam xs
+    (case xs
+      (cl Prelude.Nil () 0)
+      (cl Prelude.Cons (x xs) (builtin addInt 1 [Prelude.length xs])))))
 
-  (define null
-    (lam xs
-      (case xs
-        (cl Prelude.Nil () (con Prelude.True))
-        (cl Prelude.Cons (x xs) (con Prelude.False)))))
+(define take
+  (lam n (lam xs
+    (case (builtin equalsInt n 0)
+      (cl Prelude.True () (con Prelude.Nil))
+      (cl Prelude.False ()
+        (case xs
+          (cl Prelude.Nil () (con Prelude.Nil))
+          (cl Prelude.Cons (x xs')
+            (con Prelude.Cons x [Prelude.take (builtin subtractInt n 1) xs']))))))))
 
-  (define length
-    (lam xs
-      (case xs
-        (cl Prelude.Nil () 0)
-        (cl Prelude.Cons (x xs) (builtin addInt 1 [Prelude.length xs])))))
+(define drop
+  (lam n (lam xs
+    (case (builtin equalsInt n 0)
+      (cl Prelude.True () xs)
+      (cl Prelude.False ()
+        (case xs
+          (cl Prelude.Nil () (con Prelude.Nil))
+          (cl Prelude.Cons (x xs')
+            [Prelude.drop (builtin subtractInt n 1) xs'])))))))
 
-  (define take
-    (lam n (lam xs
-      (case (builtin equalsInt n 0)
-        (cl Prelude.True () (con Prelude.Nil))
-        (cl Prelude.False ()
-          (case xs
-            (cl Prelude.Nil () (con Prelude.Nil))
-            (cl Prelude.Cons (x xs')
-              (con Prelude.Cons x [[Prelude.take (builtin subtractInt n 1)] xs']))))))))
+(define splitAt
+  (lam n (lam xs
+    (case (builtinEquals n 0)
+      (cl Prelude.True () (con Prelude.MkPair (con Prelude.Nil) xs))
+      (cl Prelude.False ()
+        (case xs
+          (cl Prelude.Nil () (con Prelude.MkPair (con Prelude.Nil) (con Prelude.Nil)))
+          (cl Prelude.Cons (x xs')
+            (case [Prelude.splitAt (builtin subtractInt n 1) xs']
+              (cl Prelude.MkPair (ys zs) (con Prelude.MkPair (con Prelude.Cons x ys) zs))))))))))
 
-  (define drop
-    (lam n (lam xs
-      (case (builtin equalsInt n 0)
-        (cl Prelude.True () xs)
-        (cl Prelude.False ()
-          (case xs
-            (cl Prelude.Nil () (con Prelude.Nil))
-            (cl Prelude.Cons (x xs')
-              [[Prelude.drop (builtin subtractInt n 1)] xs'])))))))
+(define takeWhile
+  (lam p (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (case [p x]
+          (cl Prelude.True () (con Prelude.Cons x [Prelude.takeWhile p xs']))
+          (cl Prelude.False () (con Prelude.Nil))))))))
 
-)
+(define dropWhile
+  (lam p (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (case [p x]
+          (cl Prelude.True () [Prelude.dropWhile p xs'])
+          (cl Prelude.False () (con Prelude.Cons x xs'))))))))
+
+(define span
+  (lam p (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (case [p x]
+          (cl Prelude.True ()
+            (case [Prelude.span p xs']
+              (cl Prelude.MkPair (ys zs) (con Prelude.MkPair (con Prelude.Cons x ys) zs))))
+          (cl Prelude.False ()
+            (con Prelude.MkPair (con Prelude.Nil) (con Prelude.Cons x xs')))))))))
+
+(define groupBy
+  (lam eq (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (case [Prelude.span [eq x] xs']
+          (cl Prelude.MkPair (ys zs) (con Prelude.Cons (con Prelude.Cons x ys) [Prelude.groupBy eq zs]))))))))
+
+(define foldr
+  (lam c (lam n (lam xs
+    (case xs
+      (cl Prelude.Nil () n)
+      (cl Prelude.Cons (x xs')
+        [f x [Prelude.foldr f n xs']]))))))
+
+(define foldr1
+  (lam c (lam xs
+    (case xs
+      (cl Prelude.Cons (x xs')
+        (case xs'
+          (cl Prelude.Nil () x)
+          (cl Prelude.Cons (x' xs'')
+            [c x [Prelude.foldr1 c (con Prelude.Cons x' xs')]])))))))
+
+(define foldl
+  (lam s (lam n (lam xs
+    (case xs
+      (cl Prelude.Nil () n)
+      (cl Prelude.Cons (x xs')
+        [Prelude.foldl s [s n x] xs]))))))
+
+(define foldl1
+  (lam s (lam xs
+    (case xs
+      (cl Prelude.Cons (x xs')
+        [Prelude.foldl s x xs'])))))
+
+(define unfoldr
+  (lam step (lam s
+    (case [step s]
+      (cl Prelude.Nothing () (con Prelude.Nil))
+      (cl Prelude.Just (p)
+        (case p
+          (cl Prelude.MkPair (x s')
+            (con Prelude.Cons x [Prelude.unfoldr step s']))))))))
+
+(define replicate
+  (lam n (lam x
+    (case (builtin equalsInt n 0)
+      (cl Prelude.True () (con Prelude.Nil))
+      (cl Prelude.False ()
+        (con Prelude.Cons x [Prelude.replicate (builtin subtractInt n 1) x]))))))
+
+(define map
+  (lam f (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (con Prelude.Cons [f x] [Prelude.map f xs']))))))
+
+(define reverseOnto
+  (lam xs (lam ys
+    (case xs
+      (cl Prelude.Nil () ys)
+      (cl Prelude.Cons (x xs')
+        [Prelude.reverseOnto xs' (con Prelude.Cons x ys)])))))
+
+(define reverse
+  (lam xs [Prelude.reverseOnto xs (con Prelude.Nil)]))        
+
+(define prependToAll
+  (lam sep (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Cons sep (con Prelude.Nil)))
+      (cl Prelude.Cons (x xs')
+        (con Prelude.Cons sep (con Prelude.Cons x [Prelude.prependToAll sep xs'])))))))
+
+(define intersperse
+  (lam sep (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (con Prelude.Cons x [Prelude.prependToAll sep xs']))))))
+
+(define concat
+  (lam xss
+    (case xss
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (xs xss')
+        [Prelude.append xs [Prelude.concat xss']]))))
+
+(define concatMap
+  (lam f (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        [Prelude.append [f x] [Prelude.concatMap f xs']]))))))
+
+(define intercalate
+  (lam xs (lam xss
+    [Prelude.concat [Prelude.intersperse xs xss]])))
+
+(define filter
+  (lam p (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (case [p x]
+          (cl Prelude.True () (con Prelude.Cons x [Prelude.filter p xs']))
+          (cl Prelude.False () [Prelude.filter p xs'])))))))
+
+(define find
+  (lam p (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nothing))
+      (cl Prelude.Cons (x xs')
+        (case [p x]
+          (cl Prelude.True () (con Prelude.Just x))
+          (cl Prelude.False () [Prelude.find p xs'])))))))
+
+(define partition
+  (lam p (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.MkPair (con Prelude.Nil) (con Prelude.Nil)))
+      (cl Prelude.Cons (x xs')
+        (case [Prelude.partition p xs']
+          (cl Prelude.MkPair (ts fs)
+            (case [p x]
+              (cl Prelude.True () (con Prelude.MkPair (con Prelude.Cons x ts) fs))
+              (cl Prelude.False () (con Prelude.MkPair ts (con Prelude.Cons x fs)))))))))))
+
+(define nubBy
+  (lam comp (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (con Prelude.Cons x [Prelude.filter (lam y [Prelude.not [comp x y]]) [Prelude.nubBy comp xs']]))))))
+
+(define zipWith
+  (lam f (lam xs (lam ys
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (case ys
+          (cl Prelude.Nil () (con Prelude.Nil))
+          (cl Prelude.Cons (y ys')
+            (con Prelude.Cons [f x y] [Prelude.zipWith f xs' ys'])))))))))
+
+(define zip
+  (lam xs (lam ys
+    [Prelude.zipWith (lam x (lam y (con Prelude.MkPair x y))) xs ys])))
+
+(define unzip
+  (lam xys
+    (case xys
+      (cl Prelude.Nil () (con Prelude.MkPair (con Prelude.Nil) (con Prelude.Nil)))
+      (cl Prelude.Cons (xy xys')
+        (case xy
+          (cl Prelude.MkPair (x y)
+            (case [Prelude.unzip xys']
+              (cl Prelude.MkPair (xs ys)
+                (con Prelude.MkPair (con Prelude.Cons x xs) (con Prelude.Cons y ys))))))))))
+
+(define andList
+  (lam bs [Prelude.foldl and (con Prelude.True) bs]))
+
+(define orList
+  (lam bs [Prelude.foldl or (con Prelude.False) bs]))
+
+(define any
+  (lam p (lam xs [Prelude.orList [Prelude.map p xs]])))
+
+(define all
+  (lam p (lam xs [Prelude.andList [Prelude.map p xs]])))
+
+(define sumInt
+  (lam xs [Prelude.foldl (lam x y (builtin addInt x y)) 0 xs]))
+
+(define sumFloat
+  (lam xs [Prelude.foldl (lam x y (builtin addFloat x y)) 0.0 xs]))
+
+(define productInt
+  (lam xs [Prelude.foldl (lam x y (builtin multiplyInt x y)) 1 xs]))
+
+(define productFloat
+  (lam xs [Prelude.foldl (lam x y (builtin multiplyFloat x y)) 1.0 xs]))
+
+(define maximumBy
+  (lam comp
+    [Prelude.foldl1
+      (lam x (lam y
+        (case [comp x y]
+          (cl Prelude.True () y)
+          (cl Prelude.False () x))))]))
+
+(define minimumBy
+  (lam comp
+    [Prelude.foldl1
+      (lam x (lam y
+        (case [comp x y]
+          (cl Prelude.True () x)
+          (cl Prelude.False () y))))]))
+
+(define project
+  (lam xs (lam n
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nothing))
+      (cl Prelude.Cons (x xs')
+        (case (builtin equalsInt n 0)
+          (cl Prelude.True () (con Prelude.Just x))
+          (cl Prelude.False () [Prelude.project xs' (builtin subtractInt n 1)])))))))
+
+(define findIndex
+  (lam p (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nothing))
+      (cl Prelude.Cons (x xs')
+        (case [p x]
+          (cl Prelude.True () (con Prelude.Just 0))
+          (cl Prelude.False ()
+            (case [Prelude.findIndex p xs']
+              (cl Prelude.Nothing () (con Prelude.Nothing))
+              (cl Prelude.Just (i) (con Prelude.Just (builtin addInt i 1)))))))))))
+
+(define findIndicesFrom
+  (lam i (lam p (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (case [p x]
+          (cl Prelude.True ()
+            (con Prelude.Cons i [Prelude.findIndicesFrom (builtin addInt i 1) p xs]))
+          (cl Prelude.False ()
+            [Prelude.findIndicesFrom (builtin addInt i 1) p xs]))))))))
+
+(define findIndices
+  (lam xs (lam p [Prelude.findIndicesFrom 0 p xs])))
+
+(define evenOnSplitFrom
+  (lam b (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.MkPair (con Prelude.Nil) (con Prelude.Nil)))
+      (cl Prelude.Cons (x xs')
+        (case [Prelude.evenOddSplitFrom [not b] xs']
+          (cl Prelude.MkPair (es os)
+            (case b of
+              (cl Prelude.True () (con Prelude.MkPair (con Prelude.Cons x es) os))
+              (cl Prelude.False () (coon Prelude.MkPair es (con Prelude.Cons x os)))))))))))
+
+(define evenOddSplit
+  (lam xs [Prelude.evenOddSplitFrom (con Prelude.True) xs]))
+
+(define mergeBy
+  (lam comp (lam xs (lam ys
+    (case xs
+      (cl Prelude.Nil () ys)
+      (cl Prelude.Cons (x xs')
+        (case ys
+          (cl Prelude.Nil () (con Prelude.Cons x xs'))
+          (cl Prelude.Cons (y ys')
+            (case [comp x y]
+              (cl Prelude.True ()
+                (con Prelude.Cons x [Prelude.mergeBy comp xs' (con Prelude.Cons y ys')]))
+              (cl Prelude.False ()
+                (con Prelude.Cons y [Prelude.mergeBy comp (con Prelude.Cons x xs') ys'])))))))))))
+
+(define mergeSortBy
+  (lam comp (lam xs
+    (case [Prelude.evenOddSplit xs]
+      (cl Prelude.MkPair (es os)
+        [Prelude.mergeBy comp [Prelude.mergeSortBy comp es] [Prelude.mergeSortBy comp os]])))))
+
+(define quickSortBy
+  (lam comp (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (x xs')
+        (case [Prelude.partition [comp x] xs']
+          (cl Prelude.MkPair (lo hi)
+            [Prelude.append
+              [Prelude.quickSortBy comp lo]
+              (con Prelude.Cons x [Prelude.quickSortBy comp hi])])))))))
+
+(define maybe
+  (lam n (lam j (lam m
+    (case m of
+      (cl Prelude.Nothing () n)
+      (cl Prelude.Just (x) [j x]))))))
+
+(define isJust
+  (lam m
+    (case m
+      (cl Prelude.Nothing () (con Prelude.False))
+      (cl Prelude.Just (x) (con Prelude.True)))))
+
+(define isNothing
+  (lam m
+    (case m
+      (cl Prelude.Nothing () (con Prelude.True))
+      (cl Prelude.Just (x) (con Prelude.False)))))
+
+(define fromJust
+  (lam m
+    (case m
+      (cl Prelude.Just (x) x))))
+
+(define fromMaybe
+  (lam n (lam m
+    (case m
+      (cl Prelude.Nothing () n)
+      (cl Prelude.Just (x) x)))))
+
+(define listToMaybe
+  (lam xs
+    (case xs
+      (cl Prelude.Nil () (con Prelude.Nothing))
+      (cl Prelude.Cons (x xs') (con Prelude.Just x)))))
+
+(define maybeToList
+  (lam m
+    (case m
+      (cl Prelude.Nothing () (con Prelude.Nil))
+      (cl Prelude.Just (x) (con Prelude.Cons x (con Prelude.Nil))))))
+
+(define catMaybes
+  (lam ms
+    (case ms
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (m ms')
+        (case m
+          (cl Prelude.Nothing () [Prelude.catMaybes ms'])
+          (cl Prelude.Just (x) (con Prelude.Cons x [Prelude.catMaybes ms'])))))))
+
+(define mapMaybe
+  (lam f (lam m
+    (case m
+      (cl Prelude.Nothing () (con Prelude.Nothing))
+      (cl Prelude.Just (x) (con Prelude.Just [f x]))))))
+
+(define either
+  (lam f (lam g (lam e
+    (case e
+      (cl Prelude.Left (x) [f x])
+      (cl Prelude.Right (y) [g y]))))))
+
+(define lefts
+  (lam es
+    (case es
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (e es')
+        (case e
+          (cl Prelude.Left (x) (con Prelude.Cons x [Prelude.lefts es']))
+          (cl Prelude.Right (y) [Prelude.lefts es']))))))
+
+(define rights
+  (lam es
+    (case es
+      (cl Prelude.Nil () (con Prelude.Nil))
+      (cl Prelude.Cons (e es')
+        (case e
+          (cl Prelude.Left (x) [Prelude.rights es'])
+          (cl Prelude.Right (y) (con Prelude.Cons y [Prelude.rights es'])))))))
+
+(define isLeft
+  (lam e
+    (case e
+      (cl Prelude.Left (x) (con Prelude.True))
+      (cl Prelude.Right (y) (con Prelude.False)))))
+
+(define isRight
+  (lam e
+    (case e
+      (cl Prelude.Left (x) (con Prelude.False))
+      (cl Prelude.Right (y) (con Prelude.True)))))
+
+(define partitionEithers
+  (lam es
+    (case es
+      (cl Prelude.Nil () (con Prelude.MkPair (con Prelude.Nil) (con Prelude.Nil)))
+      (cl Prelude.Cons (e es')
+        (case [Prelude.partitionEithers es']
+          (cl Prelude.MkPair (ls rs)
+            (case e
+              (cl Prelude.Left (x) (con Prelude.MkPair (con Prelude.Cons x ls) rs))
+              (cl Prelude.Right (y) (con Prelude.MkPair ls (con Prelude.Cons x rs))))))))))
+
+(define eitherToMaybe
+  (lam e
+    (case e
+      (cl Prelude.Left (x) (con Prelude.Nothing))
+      (cl Prelude.Right (y) (con Prelude.Just y)))))
+
+(define maybeToEither
+  (lam x (lam m
+    (case m
+      (cl Prelude.Nothing () (con Prelude.Left x))
+      (cl Prelude.Just (y) (con Prelude.Right y))))))
+
+(define verify
+  (lam dat (lam k (lam m
+    (case m
+      (cl Prelude.Nil () (con Prelude.False))
+      (cl Prelude.Just (s) (builtin verifySignature k dat s)))))))
+
+(define verifyMultiSig
+  (lam n (lam keys (lam dat (lam sigs
+    (case [Prelude.and
+            (builtin equalsInt [Prelude.length keys] [Prelude.length sigs])
+            [Prelude.lessThanEqualsInt
+              n
+              [Prelude.length
+                [Prelude.filter id
+                  [Prelude.zipWith [Prelude.verify dat] keys sigs]]]]]
+      (cl Prelude.True () (success (con Prelude.MkUnit)))
+      (cl Prelude.False () (failure))))))))
+
+(define evalMASTProp
+  (lam m
+    (case m
+      (cl Prelude.MASTNot (x) [Prelude.not [Prelude.evalMASTProp x]])
+      (cl Prelude.MASTAnd (x y)
+        [Prelude.and [Prelude.evalMASTProp x] [Prelude.evalMASTProp y]])
+      (cl Prelude.MASTOr (x y)
+        [Prelude.or [Prelude.evalMASTProp x] [Prelude.evalMASTProp y]]))))
+
+(define evalMASTPath
+  (lam m
+    (case m
+      (cl Prelude.MASTPathSuccess () (con Prelude.True))
+      (cl Prelude.MASTPathFailure () (con Prelude.False)
+      (cl Prelude.MASTPathIfTrue (test t f)
+        (case [Prelude.evalMASTProp test]
+          (cl Prelude.True () [Prelude.evalMASTPath t])
+          (cl Prelude.False () (con Prelude.False))))
+      (cl Prelude.MASTPathIfFalse (test t f)
+        (case [Prelude.evalMASTProp test]
+          (cl Prelude.True () (con Prelude.False))
+          (cl Prelude.False () [Prelude.evalMASTPath f])))))))
+
+(define hashMASTProp
+  (lam m
+    (case m
+      (cl Prelude.MASTNot (x)
+        (builtin sha2_256
+          (builtin concatenate #00 [Prelude.hashMASTProp x])))
+      (cl Prelude.MASTAnd (x y)
+        (builtin sha2_256
+          (builtin concatenate #01
+            (builtin concatenate
+              [Prelude.hashMASTProp x]
+              [Prelude.hashMASTProp y]))))
+      (cl Prelude.MASTOr (x y)
+        (builtin sha2_256
+          (builtin concatenate #02
+            (builtin concatenate
+              [Prelude.hashMASTProp x]
+              [Prelude.hashMASTProp y])))))))
+
+(define hashMASTTree
+  (lam m
+    (case m
+      (cl Prelude.MASTSuccess () #00)
+      (cl Prelude.MASTFailure () #01)
+      (cl Prelude.MASTIf (test t f)
+        (builtin sha2_256
+          (builtin concatenate #02
+            (builtin concatenate
+              [Prelude.hashMASTTree t]
+              [Prelude.hashMASTTree f])))))))
+
+(define hashMASTPath
+  (lam m
+    (case m
+      (cl Prelude.MASTPathSuccess () #00)
+      (cl Prelude.MASTPathFailure () #01)
+      (cl Prelude.MASTPathIfTrue (test t fhash)
+        (builtin sha2_256
+          (builtin concatenate #02
+            (builtin concatenate
+              [Prelude.hashMASTPath t]
+              fhash))))
+      (cl Prelude.MASTPathIfFalse (test thash f)
+        (builtin sha2_256
+          (builtin concatenate #02
+            (builtin concatenate
+              thash
+              [Prelude.hashMASTPath f])))))))
+
+(define checkMAST
+  (lam hash (lam path
+    (case [Prelude.evalMASTPath path]
+      (cl Prelude.False () (con Prelude.False))
+      (cl Prelude.True () (builtin equalsByteString hash [Prelude.hashMASTPath path]))))))
