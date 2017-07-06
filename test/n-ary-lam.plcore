@@ -1,4 +1,5 @@
 (module Foo (imported) (exported () ()) (local () ())
   (define r1 [(lam x y y) 1 2])
   (define r2 [(lam x y z (builtin addInt 10 z)) 1 2 3])
-  (define r3 [(lam x y (builtin addInt x y)) 10 20]))
+  (define r3 [(lam x y (builtin addInt x y)) 10 20])
+  (define r4 [(lam x y z (builtin addInt x (builtin addInt y z))) 10 20 5]))
