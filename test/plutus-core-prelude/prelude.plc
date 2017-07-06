@@ -463,7 +463,7 @@
           (cl Prelude.MkPair (es os)
             (case b
               (cl Prelude.True () (con Prelude.MkPair (con Prelude.Cons x es) os))
-              (cl Prelude.False () (coon Prelude.MkPair es (con Prelude.Cons x os)))))))))))
+              (cl Prelude.False () (con Prelude.MkPair es (con Prelude.Cons x os)))))))))))
 
 (define evenOddSplit
   (lam xs [Prelude.evenOddSplitFrom (con Prelude.True) xs]))
