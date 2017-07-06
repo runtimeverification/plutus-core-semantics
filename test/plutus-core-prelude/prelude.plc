@@ -614,11 +614,11 @@
       (cl Prelude.Nothing () (con Prelude.Left x))
       (cl Prelude.Just (y) (con Prelude.Right y))))))
 
-(define verify
-  (lam dat (lam k (lam m
-    (case m
-      (cl Prelude.Nil () (con Prelude.False))
-      (cl Prelude.Just (s) (builtin verifySignature k dat s)))))))
+// (define verify
+//  (lam dat (lam k (lam m
+//    (case m
+//      (cl Prelude.Nil () (con Prelude.False))
+//      (cl Prelude.Just (s) (builtin verifySignature k dat s)))))))
 
 (define verifyMultiSig
   (lam n (lam keys (lam dat (lam sigs
