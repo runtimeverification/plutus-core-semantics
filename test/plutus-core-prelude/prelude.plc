@@ -1,3 +1,4 @@
+(module Prelude (imported) (exported () ()) (local () ())
 (define id
   (lam x x))
 
@@ -134,7 +135,7 @@
       (cl Prelude.Cons (x xs)
         (case [Prelude.init xs]
           (cl Prelude.Nothing () (con Prelude.Nil))
-          (cl Prelude.Just (ys) (con Prelude.Just (con Prelude.Cons x ys)))))))
+          (cl Prelude.Just (ys) (con Prelude.Just (con Prelude.Cons x ys))))))))
 
 (define uncons
   (lam xs
@@ -176,7 +177,7 @@
 
 (define splitAt
   (lam n (lam xs
-    (case (builtinEquals n 0)
+    (case (builtin equalsInt n 0)
       (cl Prelude.True () (con Prelude.MkPair (con Prelude.Nil) xs))
       (cl Prelude.False ()
         (case xs
@@ -283,7 +284,7 @@
         [Prelude.reverseOnto xs' (con Prelude.Cons x ys)])))))
 
 (define reverse
-  (lam xs [Prelude.reverseOnto xs (con Prelude.Nil)]))        
+  (lam xs [Prelude.reverseOnto xs (con Prelude.Nil)]))
 
 (define prependToAll
   (lam sep (lam xs
@@ -311,7 +312,7 @@
     (case xs
       (cl Prelude.Nil () (con Prelude.Nil))
       (cl Prelude.Cons (x xs')
-        [Prelude.append [f x] [Prelude.concatMap f xs']]))))))
+        [Prelude.append [f x] [Prelude.concatMap f xs']])))))
 
 (define intercalate
   (lam xs (lam xss
@@ -460,9 +461,9 @@
       (cl Prelude.Cons (x xs')
         (case [Prelude.evenOddSplitFrom [not b] xs']
           (cl Prelude.MkPair (es os)
-            (case b of
+            (case b
               (cl Prelude.True () (con Prelude.MkPair (con Prelude.Cons x es) os))
-              (cl Prelude.False () (coon Prelude.MkPair es (con Prelude.Cons x os)))))))))))
+              (cl Prelude.False () (con Prelude.MkPair es (con Prelude.Cons x os)))))))))))
 
 (define evenOddSplit
   (lam xs [Prelude.evenOddSplitFrom (con Prelude.True) xs]))
@@ -500,7 +501,7 @@
 
 (define maybe
   (lam n (lam j (lam m
-    (case m of
+    (case m
       (cl Prelude.Nothing () n)
       (cl Prelude.Just (x) [j x]))))))
 
@@ -613,11 +614,11 @@
       (cl Prelude.Nothing () (con Prelude.Left x))
       (cl Prelude.Just (y) (con Prelude.Right y))))))
 
-(define verify
-  (lam dat (lam k (lam m
-    (case m
-      (cl Prelude.Nil () (con Prelude.False))
-      (cl Prelude.Just (s) (builtin verifySignature k dat s)))))))
+// (define verify
+//  (lam dat (lam k (lam m
+//    (case m
+//      (cl Prelude.Nil () (con Prelude.False))
+//      (cl Prelude.Just (s) (builtin verifySignature k dat s)))))))
 
 (define verifyMultiSig
   (lam n (lam keys (lam dat (lam sigs
@@ -644,7 +645,7 @@
   (lam m
     (case m
       (cl Prelude.MASTPathSuccess () (con Prelude.True))
-      (cl Prelude.MASTPathFailure () (con Prelude.False)
+      (cl Prelude.MASTPathFailure () (con Prelude.False))
       (cl Prelude.MASTPathIfTrue (test t f)
         (case [Prelude.evalMASTProp test]
           (cl Prelude.True () [Prelude.evalMASTPath t])
@@ -652,7 +653,7 @@
       (cl Prelude.MASTPathIfFalse (test t f)
         (case [Prelude.evalMASTProp test]
           (cl Prelude.True () (con Prelude.False))
-          (cl Prelude.False () [Prelude.evalMASTPath f])))))))
+          (cl Prelude.False () [Prelude.evalMASTPath f]))))))
 
 (define hashMASTProp
   (lam m
@@ -708,3 +709,4 @@
     (case [Prelude.evalMASTPath path]
       (cl Prelude.False () (con Prelude.False))
       (cl Prelude.True () (builtin equalsByteString hash [Prelude.hashMASTPath path]))))))
+)
