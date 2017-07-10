@@ -22,7 +22,8 @@ module PLUTUS-CORE-SYNTAX
   // expression as that in the Plutus Core specification.
 
   /* TODO: Make sure that K's built-in Float is compatible with PlFloat*/
-   /*syntax Float ::= "TODO"*/
+  syntax PlFloat ::= r"[\\+\\-]?[0-9]+(\\.[0-9]+(([eE][+-]?[0-9]+)?|([eE][+-]?[0-9])+))" [token]
+  syntax Float   ::= #toFloat(PlFloat)                                [function]
 
   // Exponent.
   syntax Exp     ::= r"[eE][+-]?[0-9]+"                                 [token]
@@ -105,7 +106,7 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "con" QualC ValList ")"                    [prefer]
                       | InstrVal
                       | Int
-                      | Float
+                      | PlFloat
                       | ByStr
 
   syntax InstrVal   ::= "(" "success" Val ")"
@@ -119,6 +120,8 @@ module PLUTUS-CORE-SYNTAX
   syntax KVariable  ::= Var
 
   syntax String     ::= toStringVerbatim(ByStr)    [ function
+                                                   , hook(STRING.token2string)]
+                      | #toStringFloat(PlFloat)     [ function
                                                    , hook(STRING.token2string)]
                       | toString(ByStr)                              [function]
 

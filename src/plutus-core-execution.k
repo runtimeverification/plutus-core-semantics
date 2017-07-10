@@ -48,32 +48,40 @@ module PLUTUS-CORE-EXECUTION
     => #primFalse when notBool (I1 <Int I2)
 
   // TODO: Figure out _why_ 53 and 11.
-  rule ( builtin intToFloat:Name   I:Int ) => Int2Float(I, 53, 11)
+  rule ( builtin intToFloat:Name   I:Int ) => #toPlFloat(Int2Float(I, 53, 11))
 
   rule ( builtin intToByteString:Name 0 )    => toByStr("0")
   rule ( builtin intToByteString:Name I:Int) => toByStr(#toHex(I))
     when I =/=Int 0
 
-  rule ( builtin addFloat:Name      F1:Float F2:Float ) => F1 +Float F2
-  rule ( builtin subtractFloat:Name F1:Float F2:Float ) => F1 -Float F2
-  rule ( builtin multiplyFloat:Name F1:Float F2:Float ) => F1 *Float F2
-  rule ( builtin divideFloat:Name   F1:Float F2:Float ) => F1 /Float F2
+  rule ( builtin addFloat:Name      F1:PlFloat F2:PlFloat )
+    => #toPlFloat(#toFloat(F1) +Float #toFloat(F2))
+  rule ( builtin subtractFloat:Name F1:PlFloat F2:PlFloat )
+    => #toPlFloat(#toFloat(F1) -Float #toFloat(F2))
+  rule ( builtin multiplyFloat:Name F1:PlFloat F2:PlFloat )
+    => #toPlFloat(#toFloat(F1) *Float #toFloat(F2))
+  rule ( builtin divideFloat:Name   F1:PlFloat F2:PlFloat )
+    => #toPlFloat(#toFloat(F1) /Float #toFloat(F2))
+  rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
+    => #primTrue when #toFloat(F1) <Float #toFloat(F2)
+  rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
+    => #primFalse when notBool (#toFloat(F1) <Float #toFloat(F2))
+  rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
+    => #primTrue when #toFloat(F1) ==Float #toFloat(F2)
+  rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
+    => #primFalse when #toFloat(F1) =/=Float #toFloat(F2)
 
-  rule ( builtin lessThanFloat:Name F1:Float F2:Float ) => #primTrue
-                                                             when F1 <Float F2
-  rule ( builtin lessThanFloat:Name F1:Float F2:Float )
-    => #primFalse when notBool (F1 <Float F2)
-  rule ( builtin equalsFloat:Name   F1:Float F2:Float )
-    => #primTrue when F1 ==Float F2
-  rule ( builtin equalsFloat:Name   F1:Float F2:Float )
-    => #primFalse when F1 =/=Float F2
 
+  rule ( builtin ceil:Name  F:PlFloat ) => #toPlFloat(ceilFloat(#toFloat(F)))
+  rule ( builtin floor:Name F:PlFloat ) => #toPlFloat(floorFloat(#toFloat(F)))
+  rule ( builtin round:Name F:PlFloat )
+    => Float2Int(roundFloat(#toFloat(F), 2, 2))
 
-  rule ( builtin ceil:Name  F:Float ) => #tmHolder(ceilFloat(F))
-  rule ( builtin floor:Name F:Float ) => #tmHolder(floorFloat(F))
-  rule #tmHolder(F:Float) => F
-  rule ( builtin round:Name F:Float )
-    => Float2Int(roundFloat(F:Float, 2, 2))
+  syntax PlFloat ::= #toPlFloat(Float)                                [function]
+  rule #toPlFloat(F:Float)
+    => #parseToken("PlFloat@PLUTUS-CORE-SYNTAX", Float2String(F))
+  rule #toFloat(F:PlFloat)
+    => #parseToken("Float@FLOAT-SYNTAX", #toStringFloat(F))
 
   syntax ByStr ::= toByStrVerbatim ( String )                        [function]
   rule toByStr(S:String)
