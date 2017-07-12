@@ -2,7 +2,6 @@ module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
   imports SUBSTITUTION
-  /*import FLOAT-SYNTAX*/
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
@@ -13,6 +12,7 @@ module PLUTUS-CORE-SYNTAX
 
   // Module name.
   syntax ModName ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+                   | ".ModName"
 
   // Constructor name.
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
@@ -21,8 +21,9 @@ module PLUTUS-CORE-SYNTAX
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
   // expression as that in the Plutus Core specification.
 
-  /* TODO: Make sure that K's built-in Float is compatible with PlFloat*/
-   /*syntax Float ::= "TODO"*/
+  /* TODO: Add hook to ensure floats are always of the correct format */
+  syntax PlFloat ::= r"[\\+\\-]?[0-9]+(\\.[0-9]+(([eE][+-]?[0-9]+)?|([eE][+-]?[0-9])+))" [token]
+  syntax Float   ::= #toFloat(PlFloat)                                [function]
 
   // Exponent.
   syntax Exp     ::= r"[eE][+-]?[0-9]+"                                 [token]
@@ -45,15 +46,17 @@ module PLUTUS-CORE-SYNTAX
 
   // Qualified name and constructor.
   syntax QualN      ::= ModName "." Name
+                      | #qualN(ModName, Name)                        [function]
+
   syntax QualC      ::= ModName "." Con
 
   syntax NameList   ::= List{Name, ""}
-  syntax TmList     ::= List{Tm, ""}                          [klabel(tmList)]
-  syntax ValList    ::= List{Val, ""}                        [klabel(valList)]
-  syntax VarList    ::= List{Var, ""}
+  syntax TmList     ::= List{Tm, ""}                           [klabel(tmList)]
+  syntax ValList    ::= List{Val, ""}                         [klabel(valList)]
+  syntax VarList    ::= List{Var, ""}                         [klabel(varList)]
   syntax QualCList  ::= List{QualC  ,  ""}
 
-  syntax DefList    ::= List{Def    ,  ""}                   [klabel(defList)]
+  syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
 
   syntax ModList    ::= List{ModName , ""}
   syntax ClList     ::= List{Cl     ,  ""}
@@ -62,15 +65,16 @@ module PLUTUS-CORE-SYNTAX
   syntax CAList     ::= List{ConArity, ""}
 
   syntax Tm         ::= Var
+                      | QualN
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
-                      | "[" Tm Tm "]"                            [strict(1, 2)]
+                      | "[" Tm TmList "]"                           [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
                       | "(" "con" QualC TmList ")"                  [strict(2)]
                         // Built-in function.
-                      | "(" "builtin" Name "(" Tm ")" ")"
+                      | "(" "builtin" Name Tm ")"
                                                             [strict(2), prefer]
-                      | "(" "builtin" Name "(" Tm Tm ")" ")"
+                      | "(" "builtin" Name Tm Tm ")"
                                                                  [strict(2, 3)]
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
@@ -79,31 +83,31 @@ module PLUTUS-CORE-SYNTAX
                       | #tmHolder(Float)
 
   // Case clause.
-  syntax Cl           ::= "(" "cl" QualC "(" VarList ")" Tm ")"
+  syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
 
   // Program.
-  syntax Prg          ::= "(" "program" ModList ")"
+  syntax Prg        ::= "(" "program" ModList ")"
 
   // Module.
-  syntax Mod          ::= "(" "module" ModName ImpD ExpD LocD DefList ")"
+  syntax Mod        ::= "(" "module" ModName ImpD ExpD LocD DefList ")"
 
   // Import declarations.
-  syntax ImpD         ::= "(" "imported" ModList ")"
+  syntax ImpD       ::= "(" "imported" ModList ")"
 
   // Export and local declarations.
-  syntax ExpD         ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
-  syntax LocD         ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
+  syntax ExpD       ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
+  syntax LocD       ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
 
-  syntax Def          ::= "(" "define" Name Tm ")"                  [strict(2)]
+  syntax Def        ::= "(" "define" Name Tm ")"                    [strict(2)]
 
   // Lambda abstraction.
-  syntax Val          ::= "(" "lam" Var Tm ")"                         [binder]
-                          // Constructed data.
-                        | "(" "con" QualC ValList ")"                  [prefer]
-                        | InstrVal
-                        | Int
-                        | Float
-                        | ByStr
+  syntax Val        ::= "(" "lam" VarList Tm ")"                       [binder]
+                        // Constructed data.
+                      | "(" "con" QualC ValList ")"                    [prefer]
+                      | InstrVal
+                      | Int
+                      | PlFloat
+                      | ByStr
 
   syntax InstrVal   ::= "(" "success" Val ")"
                       | "(" "failure" ")"
@@ -112,11 +116,13 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "blocktime" ")"
                       | "(" "bind" Val Var Tm ")"
 
-  syntax KResult      ::= Val
-  syntax KVariable    ::= Var
+  syntax KResult    ::= Val
+  syntax KVariable  ::= Var
 
-  syntax String       ::= toStringVerbatim(ByStr)  [ function
+  syntax String     ::= #toStringVerbatim(ByStr)   [ function
                                                    , hook(STRING.token2string)]
-                        | toString(ByStr)                            [function]
+                      | #toStringFloat(PlFloat)    [ function
+                                                   , hook(STRING.token2string)]
+                      | #toString(ByStr)                             [function]
 
 endmodule

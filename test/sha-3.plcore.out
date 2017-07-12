@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> result |-> #34bbdf1adad011d1feeb7c17864589b07af0cbc2759b0d402e248f55abc5bad9 </env> </T>
+<T> <k> . </k> <env> ( Foo . result ) |-> #34bbdf1adad011d1feeb7c17864589b07af0cbc2759b0d402e248f55abc5bad9 </env> <mod> Foo </mod> </T>

@@ -1,5 +1,5 @@
 (module Foo (imported) (exported () ()) (local () ())
   (define result
     (case (con Nat.Pair 3 7)
-          (cl Nat.Pair (x y) (builtin multiplyInt (x y)))
+          (cl Nat.Pair (x y) (builtin multiplyInt x y))
           (cl Nat.NotThis ()  -1))))

@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> result |-> ( con Bool . True .ValList ) </env> </T>
+<T> <k> . </k> <env> ( Foo . result ) |-> ( con Bool . True .ValList ) </env> <mod> Foo </mod> </T>

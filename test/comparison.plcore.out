@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> c1 |-> ( con Nat . True .ValList ) c2 |-> ( con Nat . False .ValList ) c3 |-> ( con Nat . True .ValList ) c4 |-> ( con Nat . False .ValList ) </env> </T>
+<T> <k> . </k> <env> ( Foo . c3 ) |-> ( con Nat . True .ValList ) ( Foo . c4 ) |-> ( con Nat . False .ValList ) ( Foo . c1 ) |-> ( con Nat . True .ValList ) ( Foo . c2 ) |-> ( con Nat . False .ValList ) </env> <mod> Foo </mod> </T>

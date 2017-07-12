@@ -1,12 +1,12 @@
 (module Foo (imported) (exported () ()) (local () ())
 (define b1
   (builtin take
-    (5 (builtin drop
-         (1 (builtin concatenate
-              (#123456 #789ABC)))))))
+   5 (builtin drop
+     1 (builtin concatenate
+       #123456 #789ABC))))
 
 (define b2
   (let
-    (lam x (builtin concatenate (x #1))) f
+    (lam x (builtin concatenate x #1)) f
       [f #ABC]))
 )

@@ -5,5 +5,5 @@
           (cl Nat.NotThisTwo ()    -2)
           (cl Nat.NotThisThree (y) -3)
           (cl Nat.NotThisFour  (y)  -4)
-          (cl Nat.Foo (x) (builtin multiplyInt (x 30)))
+          (cl Nat.Foo (x) (builtin multiplyInt x 30))
           (cl Nat.NotThisFive ()  -6))))
