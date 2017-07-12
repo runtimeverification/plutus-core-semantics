@@ -21,7 +21,7 @@ module PLUTUS-CORE-SYNTAX
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
   // expression as that in the Plutus Core specification.
 
-  /* TODO: Make sure that K's built-in Float is compatible with PlFloat*/
+  /* TODO: Add hook to ensure floats are always of the correct format */
   syntax PlFloat ::= r"[\\+\\-]?[0-9]+(\\.[0-9]+(([eE][+-]?[0-9]+)?|([eE][+-]?[0-9])+))" [token]
   syntax Float   ::= #toFloat(PlFloat)                                [function]
 
