@@ -114,9 +114,9 @@ module PLUTUS-CORE-EXECUTION
   syntax K ::= #appFreeze(TmList)                                      [prefer]
 
   // Explicit strictness for nested application
-  rule [ F:Val M1:Tm M2:Tm MS:TmList ] => [ F M1 ] ~> #appFreeze(M2 MS)
+  rule [ [ F:Val M:Tm ] MS:TmList ] => [ F M ] ~> #appFreeze(MS)
   rule M:Val ~> #appFreeze(MS) => [ M MS ]
-  rule [ [ F:Val M:Tm ] MS:TmList ] => [ F M MS ]
+  rule [ F:Val M1:Tm M2:Tm MS:TmList ] => [ [ F M1 ] M2 MS ]
 
   // When a lambda abstracts more than one variable, desugar it to a
   // combination of unary lambdas.
