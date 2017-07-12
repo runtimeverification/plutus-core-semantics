@@ -50,8 +50,8 @@ module PLUTUS-CORE-EXECUTION
   // TODO: Figure out _why_ 53 and 11.
   rule ( builtin intToFloat:Name   I:Int ) => #toPlFloat(Int2Float(I, 53, 11))
 
-  rule ( builtin intToByteString:Name 0 )    => toByStr("0")
-  rule ( builtin intToByteString:Name I:Int) => toByStr(#toHex(I))
+  rule ( builtin intToByteString:Name 0 )    => #toByStr("0")
+  rule ( builtin intToByteString:Name I:Int) => #toByStr(#toHex(I))
     when I =/=Int 0
 
   rule ( builtin addFloat:Name      F1:PlFloat F2:PlFloat )
@@ -83,29 +83,29 @@ module PLUTUS-CORE-EXECUTION
   rule #toFloat(F:PlFloat)
     => #parseToken("Float@FLOAT-SYNTAX", #toStringFloat(F))
 
-  syntax ByStr ::= toByStrVerbatim ( String )                        [function]
-  rule toByStr(S:String)
+  syntax ByStr ::= #toByStr ( String )                                [function]
+  rule #toByStr(S:String)
     => #parseToken("ByStr@PLUTUS-CORE-SYNTAX", ("#" +String S))
 
-  rule toString(B:ByStr):String
-    => substrString(toStringVerbatim(B), 1, lengthString(toStringVerbatim(B)))
+  rule #toString(B:ByStr):String
+    => substrString(#toStringVerbatim(B), 1, lengthString(#toStringVerbatim(B)))
 
   rule ( builtin take:Name N:Int B:ByStr )
-    => toByStr(substrString(toString(B), 0, N))
+    => #toByStr(substrString(#toString(B), 0, N))
 
   rule ( builtin drop:Name N:Int B:ByStr )
-    => toByStr(substrString(toString(B), N, lengthString(toString(B))))
+    => #toByStr(substrString(#toString(B), N, lengthString(#toString(B))))
 
   rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
-    => toByStr(toString(B1) +String toString(B2))
+    => #toByStr(#toString(B1) +String #toString(B2))
 
-  rule ( builtin sha3_256:Name B:ByStr ) => toByStr(Sha3256(toString(B)))
-  rule ( builtin sha2_256:Name B:ByStr ) => toByStr(Sha256(toString(B)))
+  rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
+  rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
   rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primTrue
-    when toString(B1) ==String toString(B2)
+    when #toString(B1) ==String #toString(B2)
   rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primFalse
-    when toString(B1) =/=String toString(B2)
+    when #toString(B1) =/=String #toString(B2)
 
   /***************************************************************************/
   /************************   LOCAL REDUCTIONS   *****************************/
@@ -155,17 +155,17 @@ module PLUTUS-CORE-EXECUTION
   /************************   PATTERN MATCHING   *****************************/
   /***************************************************************************/
 
-  syntax Map ::= manySubst(VarList, ValList)                         [function]
+  syntax Map ::= #manySubst(VarList, ValList)                        [function]
 
-  rule manySubst(.VarList, .ValList) => .Map
-  rule manySubst(X:Var XS:VarList, V:Val VS:ValList)
-    => manySubst(XS, VS)[X <- V]
+  rule #manySubst(.VarList, .ValList) => .Map
+  rule #manySubst(X:Var XS:VarList, V:Val VS:ValList)
+    => #manySubst(XS, VS)[X <- V]
 
   syntax K ::= substTerm(Tm, Map)
 
   rule ( case ( con QC:QualC MS:ValList )
               ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
-    => substTerm(M, manySubst(XS, MS))
+    => substTerm(M, #manySubst(XS, MS))
   rule ( case ( con QC:QualC MS:ValList )
               ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
     => ( case ( con QC:QualC MS:ValList ) CL ) when QC =/=K QC'

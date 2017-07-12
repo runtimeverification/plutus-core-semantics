@@ -119,10 +119,10 @@ module PLUTUS-CORE-SYNTAX
   syntax KResult    ::= Val
   syntax KVariable  ::= Var
 
-  syntax String     ::= toStringVerbatim(ByStr)    [ function
+  syntax String     ::= #toStringVerbatim(ByStr)   [ function
                                                    , hook(STRING.token2string)]
-                      | #toStringFloat(PlFloat)     [ function
+                      | #toStringFloat(PlFloat)    [ function
                                                    , hook(STRING.token2string)]
-                      | toString(ByStr)                              [function]
+                      | #toString(ByStr)                             [function]
 
 endmodule
