@@ -11,8 +11,9 @@ module PLUTUS-CORE-EXECUTION
   configuration
     <T>
       <k> $PGM:Mod </k>
-      <env> .Map </env>
-      <mod> .ModName </mod>
+      <env>  .Map </env>
+      <mod>  .ModName </mod>
+      <benv> .Map </benv> // blockchain environment
     </T>
 
   /***************************************************************************/
@@ -171,5 +172,14 @@ module PLUTUS-CORE-EXECUTION
     => ( case ( con QC:QualC MS:ValList ) CL ) when QC =/=K QC'
 
   rule substTerm(T:Tm, M:Map) => T[M]
+
+  /***************************************************************************/
+  /************************   BLOCKCHAIN STUFF   *****************************/
+  /***************************************************************************/
+
+  rule
+    <k> txhash => V ... </k>
+    <benv> ... TXH |-> 
+    
 
 endmodule
