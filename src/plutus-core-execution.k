@@ -174,7 +174,7 @@ module PLUTUS-CORE-EXECUTION
   rule substTerm(T:Tm, M:Map) => T[M]
 
   /***************************************************************************/
-  /************************   BLOCKCHAIN STUFF   *****************************/
+  /************************   BLOCKCHAIN, BIND   *****************************/
   /***************************************************************************/
 
   rule
@@ -188,5 +188,7 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> ( blocktime ):Instr => V ... </k>
     <benv> ... BT |-> V ... </benv>
+
+  rule ( bind V:Val X:Var M:Tm ):Instr => M[V/X]
 
 endmodule

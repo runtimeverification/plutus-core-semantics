@@ -81,10 +81,12 @@ module PLUTUS-CORE-SYNTAX
                       | Val
                       | #tmHolder(Float)
 
-  syntax Instr      ::= "(" "failure" ")"
+  syntax Instr      ::= "(" "success" Tm ")"                        [strict(1)]
+                      | "(" "failure" ")"
                       | "(" "txhash"  ")"
                       | "(" "blocknum" ")"
                       | "(" "blocktime" ")"
+                      | "(" "bind" Tm Var Tm ")"                    [strict(1)]
 
   // Case clause.
   syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
@@ -111,8 +113,6 @@ module PLUTUS-CORE-SYNTAX
                       | Int
                       | PlFloat
                       | ByStr
-                      | "(" "success" Val ")"
-                      | "(" "bind" Val Var Tm ")"                    [strict(1)]
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var
