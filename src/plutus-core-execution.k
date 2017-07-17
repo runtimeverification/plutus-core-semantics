@@ -8,12 +8,14 @@ module PLUTUS-CORE-EXECUTION
   imports KRYPTO
   imports HEX-CONVERSION
 
+  syntax BlockchainItem ::= "TXH" | "BN" | "BT"
+
   configuration
     <T>
       <k> $PGM:Mod </k>
       <env>  .Map </env>
       <mod>  .ModName </mod>
-      <benv> "TXH" |-> -1 "BN" |-> -1 "BT" |-> -1 </benv> // blockchain environment
+      <benv> TXH |-> -1 BN |-> -1 BT |-> -1 </benv> // blockchain environment
     </T>
 
   /***************************************************************************/
