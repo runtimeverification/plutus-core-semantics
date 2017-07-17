@@ -76,11 +76,15 @@ module PLUTUS-CORE-SYNTAX
                                                             [strict(2), prefer]
                       | "(" "builtin" Name Tm Tm ")"
                                                                  [strict(2, 3)]
-                      | "(" "success" Tm ")"                        [strict(1)]
-                      | "(" "bind" Tm Var Tm ")"                    [strict(1)]
+                      | Instr
                         // Lambda abstraction.
                       | Val
                       | #tmHolder(Float)
+
+  syntax Instr      ::= "(" "failure" ")"
+                      | "(" "txhash"  ")"
+                      | "(" "blocknum" ")"
+                      | "(" "blocktime" ")"
 
   // Case clause.
   syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
@@ -104,17 +108,11 @@ module PLUTUS-CORE-SYNTAX
   syntax Val        ::= "(" "lam" VarList Tm ")"                       [binder]
                         // Constructed data.
                       | "(" "con" QualC ValList ")"                    [prefer]
-                      | InstrVal
                       | Int
                       | PlFloat
                       | ByStr
-
-  syntax InstrVal   ::= "(" "success" Val ")"
-                      | "(" "failure" ")"
-                      | "(" "txhash"  ")"
-                      | "(" "blocknum" ")"
-                      | "(" "blocktime" ")"
-                      | "(" "bind" Val Var Tm ")"
+                      | "(" "success" Val ")"
+                      | "(" "bind" Val Var Tm ")"                    [strict(1)]
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var

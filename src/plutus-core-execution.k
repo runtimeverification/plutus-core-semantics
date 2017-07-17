@@ -13,7 +13,7 @@ module PLUTUS-CORE-EXECUTION
       <k> $PGM:Mod </k>
       <env>  .Map </env>
       <mod>  .ModName </mod>
-      <benv> .Map </benv> // blockchain environment
+      <benv> "TXH" |-> -1 "BN" |-> -1 "BT" |-> -1 </benv> // blockchain environment
     </T>
 
   /***************************************************************************/
@@ -178,8 +178,15 @@ module PLUTUS-CORE-EXECUTION
   /***************************************************************************/
 
   rule
-    <k> txhash => V ... </k>
-    <benv> ... TXH |-> 
-    
+    <k> ( txhash ):Instr => V ... </k>
+    <benv> ... TXH |-> V ... </benv>
+
+  rule
+    <k> ( blocknum ):Instr => V ... </k>
+    <benv> ... BN |-> V ... </benv>
+
+  rule
+    <k> ( blocktime ):Instr => V ... </k>
+    <benv> ... BT |-> V ... </benv>
 
 endmodule
