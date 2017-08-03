@@ -78,7 +78,6 @@ module PLUTUS-CORE-SYNTAX
                                                                  [strict(2, 3)]
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
-                        // Lambda abstraction.
                       | Val
                       | #tmHolder(Float)
 

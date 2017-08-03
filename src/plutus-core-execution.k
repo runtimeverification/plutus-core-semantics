@@ -118,14 +118,16 @@ module PLUTUS-CORE-EXECUTION
   rule M:Val ~> #appFreeze(MS) => [ M MS ]
   rule [ F:Val M1:Tm M2:Tm MS:TmList ] => [ [ F M1 ] M2 MS ]
 
+  rule [ ( lam .VarList M:Tm ) .TmList ] => M
+
   // When a lambda abstracts more than one variable, desugar it to a
   // combination of unary lambdas.
   rule [ ( lam X1:Var X2:Var XS:VarList M:Tm ) N:Tm ]
     => [ ( lam X1 .VarList ( lam X2 XS M ) ) N ]
   // In the unary case, just perform the substitution.
-  rule [ ( lam X:Var .VarList M:Tm ) N:Tm ] => M[N / X]
+  rule [ ( lam X:Var M:Tm ) N:Tm ] => M[N / X]
 
-  rule ( let N:Tm X:Var M:Tm ):Tm => M[N / X]
+  rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
 
   // Process the definitions in order.
   rule D:Def DS:DefList => D ~> DS
@@ -163,13 +165,30 @@ module PLUTUS-CORE-EXECUTION
 
   syntax K ::= substTerm(Tm, Map)
 
+  syntax TmList ::= #toTermList(ValList) [function]
+  rule #toTermList(.ValList) => .TmList
+  rule #toTermList(M:Val MS:ValList) => M #toTermList(MS)
+
   rule ( case ( con QC:QualC MS:ValList )
               ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
-    => substTerm(M, #manySubst(XS, MS))
+    => [ ( lam XS M ) #toTermList(MS) ]
+    //=> substTerm(M, #manySubst(XS, MS))
   rule ( case ( con QC:QualC MS:ValList )
               ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
     => ( case ( con QC:QualC MS:ValList ) CL ) when QC =/=K QC'
 
   rule substTerm(T:Tm, M:Map) => T[M]
+
+  rule ( con QC:QualC MS:TmList ) => ( con QC #toValList(MS) )
+
+  syntax Val ::= #toVal(Tm) [function]
+  syntax ValList ::= #toValList(TmList) [function]
+  rule #toValList(.TmList) => .ValList
+  rule #toValList(M:Tm MS:TmList) => #toVal(M) #toValList(MS)
+
+  rule #toVal(I:Int) => I
+
+
+  rule .TmList => .ValList
 
 endmodule
