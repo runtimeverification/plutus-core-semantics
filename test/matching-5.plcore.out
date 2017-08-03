@@ -1,0 +1,1 @@
+<T> <k> . </k> <env> ( Foo . result ) |-> ( con Nat . Pair 2  ( 1  .ValList ) ) </env> <mod> Foo </mod> </T>
