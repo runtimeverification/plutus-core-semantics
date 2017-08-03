@@ -157,13 +157,13 @@ module PLUTUS-CORE-EXECUTION
   /************************   PATTERN MATCHING   *****************************/
   /***************************************************************************/
 
-  syntax Map ::= #manySubst(VarList, ValList)                        [function]
+  // syntax Map ::= #manySubst(VarList, ValList)                        [function]
 
-  rule #manySubst(.VarList, .ValList) => .Map
-  rule #manySubst(X:Var XS:VarList, V:Val VS:ValList)
-    => #manySubst(XS, VS)[X <- V]
+  // rule #manySubst(.VarList, .ValList) => .Map
+  // rule #manySubst(X:Var XS:VarList, V:Val VS:ValList)
+  //   => #manySubst(XS, VS)[X <- V]
 
-  syntax K ::= substTerm(Tm, Map)
+  // syntax K ::= substTerm(Tm, Map)
 
   syntax TmList ::= #toTermList(ValList) [function]
   rule #toTermList(.ValList) => .TmList
@@ -177,18 +177,15 @@ module PLUTUS-CORE-EXECUTION
               ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
     => ( case ( con QC:QualC MS:ValList ) CL ) when QC =/=K QC'
 
-  rule substTerm(T:Tm, M:Map) => T[M]
+  // rule substTerm(T:Tm, M:Map) => T[M]
 
   rule ( con QC:QualC MS:TmList ) => ( con QC #toValList(MS) )
 
-  syntax Val ::= #toVal(Tm) [function]
   syntax ValList ::= #toValList(TmList) [function]
   rule #toValList(.TmList) => .ValList
   rule #toValList(M:Tm MS:TmList) => #toVal(M) #toValList(MS)
 
+  syntax Val ::= #toVal(Tm) [function]
   rule #toVal(I:Int) => I
-
-
-  rule .TmList => .ValList
 
 endmodule

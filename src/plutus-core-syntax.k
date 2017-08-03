@@ -70,7 +70,7 @@ module PLUTUS-CORE-SYNTAX
                         // Application.
                       | "[" Tm TmList "]"                           [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
-                      | "(" "con" QualC TmList ")"                  [strict(2)]
+                      | "(" "con" QualC TmList ")"
                         // Built-in function.
                       | "(" "builtin" Name Tm ")"
                                                             [strict(2), prefer]
