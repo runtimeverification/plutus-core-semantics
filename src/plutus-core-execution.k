@@ -179,13 +179,19 @@ module PLUTUS-CORE-EXECUTION
 
   // rule substTerm(T:Tm, M:Map) => T[M]
 
-  rule ( con QC:QualC MS:TmList ) => ( con QC #toValList(MS) )
+  syntax K ::= #freezeCon(QualC, ValList)
 
-  syntax ValList ::= #toValList(TmList) [function]
-  rule #toValList(.TmList) => .ValList
-  rule #toValList(M:Tm MS:TmList) => #toVal(M) #toValList(MS)
+  rule ( con QC:QualC MS:TmList ) => MS ~> #freezeCon(QC, .ValList)
+  rule .TmList ~> #freezeCon(QC:QualC, VL:ValList) => ( con QC #reverse(VL) )
+  rule (M:Tm MS:TmList => M ~> MS) ~> #freezeCon(QC:QualC, VL:ValList)
+  rule V:Val ~> MS:TmList ~> #freezeCon(QC:QualC, VL:ValList)
+    => MS ~> #freezeCon(QC, V VL)
 
-  syntax Val ::= #toVal(Tm) [function]
-  rule #toVal(I:Int) => I
+  syntax ValList ::= #reverse(ValList)                               [function]
+                   | #reverseAux(ValList, ValList)                   [function]
+
+  rule #reverse(V:ValList) => #reverseAux(V, .ValList)
+  rule #reverseAux(.ValList, VL:ValList) => VL
+  rule #reverseAux(V:Val VL1:ValList, VL2:ValList) => #reverseAux(VL1, V VL2)
 
 endmodule
