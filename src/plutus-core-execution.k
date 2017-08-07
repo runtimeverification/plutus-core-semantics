@@ -132,12 +132,15 @@ module PLUTUS-CORE-EXECUTION
   // Process the definitions in order.
   rule D:Def DS:DefList => D ~> DS
 
-  rule #qualN(MN:ModName, N:Name) => (MN . N):QualN
-
   rule
-    <k> (( define N:Name V:Val ) => .K) ~> _ </k>
+    <k> ( define N:Name V:Val ) => .K ... </k>
     <mod> MN </mod>
-    <env> E => E[#qualN(MN, N) <- V] </env>
+    <env> E:Map ((MN . N):QualN |-> _) => E ((MN . N):QualN |-> V) </env>
+  rule
+    <k> ( define N:Name V:Val ) => .K ... </k>
+    <mod> MN </mod>
+    <env> E:Map => E ((MN . N):QualN |-> V) </env>
+    when notBool((MN . N):QualN in keys(E))
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
