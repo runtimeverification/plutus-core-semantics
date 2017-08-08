@@ -1,0 +1,3 @@
+(module Foo (imported) (exported () ()) (local () ())
+  (define result (builtin equalsInt 2 3))
+)
