@@ -99,6 +99,7 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
     => #toByStr(#toString(B1) +String #toString(B2))
 
+  // TODO: fix sha stuff to work with current K
   rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
   rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
@@ -132,21 +133,23 @@ module PLUTUS-CORE-EXECUTION
   // Process the definitions in order.
   rule D:Def DS:DefList => D ~> DS
 
-   rule
-     <k> ( define N:Name V:Val ) => .K ... </k>
-     <mod> MN </mod>
-     <env> ...((MN . N):QualN |->( _=> V)) ... </env>
- /*    
+  // TODO: Ideally we would have this rule only instead of the next two.
+  // Currently it does not work for verification, need to figure out why.
+  // rule
+  //   <k> ( define N:Name V:Val ) => .K ... </k>
+  //   <mod> MN </mod>
+  //   <env> E:Map => E [(MN . N):QualN <- V] </env>
+
   rule
     <k> ( define N:Name V:Val ) => .K ... </k>
     <mod> MN </mod>
-    <env> E:Map => E [(MN . N):QualN <- V] </env>
-*/
-   rule
-     <k> ( define N:Name V:Val ) => .K ... </k>
-     <mod> MN </mod>
-     <env> E:Map => E ((MN . N):QualN |-> V) </env>
-     when notBool((MN . N):QualN in keys(E))
+    <env> ... ((MN . N):QualN |-> (_ => V)) ... </env>
+
+  rule
+    <k> ( define N:Name V:Val ) => .K ... </k>
+    <mod> MN </mod>
+    <env> E:Map (.Map => ((MN . N):QualN |-> V)) </env>
+    when notBool((MN . N):QualN in keys(E))
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 

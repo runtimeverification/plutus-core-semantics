@@ -76,8 +76,8 @@ module PLUTUS-CORE-SYNTAX
                                                             [strict(2), prefer]
                       | "(" "builtin" Name Tm Tm ")"
                                                                  [strict(2, 3)]
-                      //| "(" "success" Tm ")"                        [strict(1)]
-                    //  | "(" "bind" Tm Var Tm ")"                    [strict(1)]
+                      | "(" "success" Tm ")"                        [strict(1)]
+                      | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
                       | #tmHolder(Float)
 
@@ -108,12 +108,15 @@ module PLUTUS-CORE-SYNTAX
                       | PlFloat
                       | ByStr
 
-  syntax InstrVal   ::= //"(" "success" Val ")"
-                       "(" "failure" ")"
+  syntax InstrVal   ::= "(" "failure" ")"
                       | "(" "txhash"  ")"
                       | "(" "blocknum" ")"
                       | "(" "blocktime" ")"
-                   //   | "(" "bind" Val Var Tm ")"
+                      // TODO: for some reason these cause issues with
+                      // verification. Ok to comment out since they are unused
+                      // but need to figure out why
+                      //| "(" "success" Val ")"
+                      //| "(" "bind" Val Var Tm ")"
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var
