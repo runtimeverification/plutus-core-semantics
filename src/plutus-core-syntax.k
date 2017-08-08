@@ -76,8 +76,8 @@ module PLUTUS-CORE-SYNTAX
                                                             [strict(2), prefer]
                       | "(" "builtin" Name Tm Tm ")"
                                                                  [strict(2, 3)]
-                      | "(" "success" Tm ")"                        [strict(1)]
-                      | "(" "bind" Tm Var Tm ")"                    [strict(1)]
+                      //| "(" "success" Tm ")"                        [strict(1)]
+                    //  | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
                       | #tmHolder(Float)
 
@@ -108,12 +108,12 @@ module PLUTUS-CORE-SYNTAX
                       | PlFloat
                       | ByStr
 
-  syntax InstrVal   ::= "(" "success" Val ")"
-                      | "(" "failure" ")"
+  syntax InstrVal   ::= //"(" "success" Val ")"
+                       "(" "failure" ")"
                       | "(" "txhash"  ")"
                       | "(" "blocknum" ")"
                       | "(" "blocktime" ")"
-                      | "(" "bind" Val Var Tm ")"
+                   //   | "(" "bind" Val Var Tm ")"
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var
