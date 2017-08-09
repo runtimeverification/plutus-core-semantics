@@ -46,8 +46,6 @@ module PLUTUS-CORE-SYNTAX
 
   // Qualified name and constructor.
   syntax QualN      ::= ModName "." Name
-                      | #qualN(ModName, Name)                        [function]
-
   syntax QualC      ::= ModName "." Con
 
   syntax NameList   ::= List{Name, ""}
@@ -73,9 +71,9 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "con" QualC TmList ")"
                         // Built-in function.
                       | "(" "builtin" Name Tm ")"
-                                                            [strict(2), prefer, function]
+                                                  [strict(2), prefer, function]
                       | "(" "builtin" Name Tm Tm ")"
-                                                                 [strict(2, 3), function]
+                                                       [strict(2, 3), function]
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
@@ -112,9 +110,6 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "txhash"  ")"
                       | "(" "blocknum" ")"
                       | "(" "blocktime" ")"
-                      // TODO: for some reason these cause issues with
-                      // verification. Ok to comment out since they are unused
-                      // but need to figure out why
                       | "(" "success" Val ")"
                       | "(" "bind" Val Var Tm ")"
 
