@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> ( Foo . four ) |-> 4 ( Foo . result ) |-> 16 </env> <mod> Foo </mod> </T>
+<T> <k> . </k> <env> ( Foo . result ) |-> 16 ( Foo . four ) |-> 4 </env> <mod> Foo </mod> </T>
