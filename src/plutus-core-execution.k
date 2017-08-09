@@ -136,7 +136,7 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> ( define N:Name V:Val ) => .K ... </k>
     <mod> MN </mod>
-    <env> E:Map => E [(MN . N):QualN <- V] </env>
+    <env>... . => (MN . N):QualN |-> V ...</env>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
