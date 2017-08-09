@@ -135,12 +135,12 @@ module PLUTUS-CORE-EXECUTION
 
   // TODO: Ideally we would have this rule only instead of the next two.
   // Currently it does not work for verification, need to figure out why.
-  // rule
-  //   <k> ( define N:Name V:Val ) => .K ... </k>
-  //   <mod> MN </mod>
-  //   <env> E:Map => E [(MN . N):QualN <- V] </env>
+   rule
+     <k> ( define N:Name V:Val ) => .K ... </k>
+     <mod> MN </mod>
+     <env> E:Map => E [(MN . N):QualN <- V] </env>
 
-  rule
+ /* rule
     <k> ( define N:Name V:Val ) => .K ... </k>
     <mod> MN </mod>
     <env> ... ((MN . N):QualN |-> (_ => V)) ... </env>
@@ -150,7 +150,7 @@ module PLUTUS-CORE-EXECUTION
     <mod> MN </mod>
     <env> E:Map (.Map => ((MN . N):QualN |-> V)) </env>
     when notBool((MN . N):QualN in keys(E))
-
+*/
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
   rule
