@@ -71,9 +71,9 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "con" QualC TmList ")"
                         // Built-in function.
                       | "(" "builtin" Name Tm ")"
-                                                  [strict(2), prefer, function]
+                                                            [strict(2), prefer]
                       | "(" "builtin" Name Tm Tm ")"
-                                                       [strict(2, 3), function]
+                                                                 [strict(2, 3)]
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
@@ -110,8 +110,8 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "txhash"  ")"
                       | "(" "blocknum" ")"
                       | "(" "blocktime" ")"
-                      | "(" "success" Val ")"
-                      | "(" "bind" Val Var Tm ")"
+                      | "(" "success" Val ")"         [prefer, klabel(succVal)]
+                      | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var
