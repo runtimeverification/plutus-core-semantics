@@ -4,7 +4,8 @@ module INT-ADDITION-SPEC
   // Proof of the add program.
   rule
     <k> (define result (builtin addInt X:Int Y:Int)):Def => .K ... </k>
-    <env> E => E (MN . result) |-> X +Int Y </env>
+    <lenv> _ </lenv>
+    <genv> E => E (MN . result) |-> X +Int Y </genv>
       // must name E rather than using ... here,
       // so we can write the frame condition that Foo.result hasn't
       // already been defined.
