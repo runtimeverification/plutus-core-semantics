@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> ( Foo . b1 ) |-> #23456 ( Foo . b2 ) |-> #3456 ( Foo . b3 ) |-> #456 </env> <mod> Foo </mod> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . b1 ) |-> #23456 ( Foo . b2 ) |-> #3456 ( Foo . b3 ) |-> #456 </genv> <mod> Foo </mod> </T>

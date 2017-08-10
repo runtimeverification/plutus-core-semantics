@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> ( Foo . result ) |-> ( success closure ( .Map , x , x ) ) </env> <mod> Foo </mod> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> ( success closure ( .Map , x , x ) ) </genv> <mod> Foo </mod> </T>

@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> ( Foo . result ) |-> 1.1e+02 </env> <mod> Foo </mod> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> 1.1e+02 </genv> <mod> Foo </mod> </T>
