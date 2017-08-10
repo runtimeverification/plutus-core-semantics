@@ -1,10 +1,8 @@
 require "plutus-core-syntax.k"
 require "hex-conversion.k"
-require "substitution.k"
 
 module PLUTUS-CORE-EXECUTION
   imports PLUTUS-CORE-SYNTAX
-  imports SUBSTITUTION
   imports KRYPTO
   imports HEX-CONVERSION
 
@@ -119,14 +117,39 @@ module PLUTUS-CORE-EXECUTION
   rule M:Val ~> #appFreeze(MS) => [ M MS ]
   rule [ F:Val M1:Tm M2:Tm MS:TmList ] => [ [ F M1 ] M2 MS ]
 
-  rule [ ( lam .VarList M:Tm ) .TmList ] => M
+  rule ( lam .VarList M:Tm ) => M
+  rule [ V:Val .TmList ] => V
 
   // When a lambda abstracts more than one variable, desugar it to a
   // combination of unary lambdas.
-  rule [ ( lam X1:Var X2:Var XS:VarList M:Tm ) N:Tm ]
-    => [ ( lam X1 .VarList ( lam X2 XS M ) ) N ]
+  // rule [ ( lam X1:Var X2:Var XS:VarList M:Tm ) N:Tm ]
+  //   => [ ( lam X1 .VarList ( lam X2 XS M ) ) N ]
+
+  rule ( lam X1:Var X2:Var XS:VarList M:Tm )
+    => ( lam X1 .VarList ( lam X2 XS M ) )
+
   // In the unary case, just perform the substitution.
-  rule [ ( lam X:Var M:Tm ) N:Tm ] => M[N / X]
+
+  syntax Val ::= closure(Map, Var, Tm)
+  
+  syntax Tm ::= app(Tm, Tm) [strict]
+
+  rule [ F:Val M:Tm ] => app(F, M)
+  
+  rule
+    <k> ( lam X:Var M:Tm ):Tm => closure(Rho, X, M) ... </k>
+    <env> Rho </env>
+    [structural]
+
+  rule
+    <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
+    <env> Rho' => Rho[X <- V] </env>
+    [structural]
+
+  rule
+    <k> _:Val ~> (Rho => .K) ... </k>
+    <env> _ => Rho </env>
+    [structural]
 
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
 
@@ -148,7 +171,11 @@ module PLUTUS-CORE-EXECUTION
 
   rule
     <k> QN:QualN => V ... </k>
-    <env> ... QN |-> V:Val ... </env>
+    <env> ... QN |-> V ... </env>
+
+  rule
+    <k> X:Var => V ... </k>
+    <env> ... X |-> V ... </env>
 
   rule (.DefList ~> _:ModF ) => .K
 
@@ -164,7 +191,7 @@ module PLUTUS-CORE-EXECUTION
 
   // syntax K ::= substTerm(Tm, Map)
 
-  syntax TmList ::= #toTermList(ValList) [function]
+  syntax TmList ::= #toTermList(ValList)                             [function]
   rule #toTermList(.ValList) => .TmList
   rule #toTermList(M:Val MS:ValList) => M #toTermList(MS)
 
@@ -179,6 +206,7 @@ module PLUTUS-CORE-EXECUTION
   // rule substTerm(T:Tm, M:Map) => T[M]
 
   syntax K ::= #freezeCon(QualC, ValList)
+             | "#freezeSucc()"
 
   rule ( con QC:QualC MS:TmList ) => MS ~> #freezeCon(QC, .ValList)
   rule .TmList ~> #freezeCon(QC:QualC, VL:ValList) => ( con QC #reverse(VL) )
@@ -192,5 +220,8 @@ module PLUTUS-CORE-EXECUTION
   rule #reverse(V:ValList) => #reverseAux(V, .ValList)
   rule #reverseAux(.ValList, VL:ValList) => VL
   rule #reverseAux(V:Val VL1:ValList, VL2:ValList) => #reverseAux(VL1, V VL2)
+
+  rule (success M):Tm => M ~> #freezeSucc()
+  rule V:Val ~> #freezeSucc() => (success V):Val
 
 endmodule

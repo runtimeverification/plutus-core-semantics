@@ -1,7 +1,6 @@
 module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
-  imports SUBSTITUTION
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
@@ -78,6 +77,7 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
                       | #tmHolder(Float)
+                      | "(" "lam" VarList Tm ")"                       [binder]
 
   // Case clause.
   syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
@@ -98,9 +98,9 @@ module PLUTUS-CORE-SYNTAX
   syntax Def        ::= "(" "define" Name Tm ")"                    [strict(2)]
 
   // Lambda abstraction.
-  syntax Val        ::= "(" "lam" VarList Tm ")"                       [binder]
+  syntax Val        ::= //closure(Map, Var, Tm)
                         // Constructed data.
-                      | "(" "con" QualC ValList ")"                    [prefer]
+                      "(" "con" QualC ValList ")"                    [prefer]
                       | InstrVal
                       | Int
                       | PlFloat
@@ -110,6 +110,7 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "txhash"  ")"
                       | "(" "blocknum" ")"
                       | "(" "blocktime" ")"
+                      // TODO: fix test success.plcore
                       | "(" "success" Val ")"         [prefer, klabel(succVal)]
                       | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
 
