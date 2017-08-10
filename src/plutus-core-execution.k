@@ -9,7 +9,8 @@ module PLUTUS-CORE-EXECUTION
   configuration
     <T>
       <k> $PGM:Mod </k>
-      <env> .Map </env>
+      <lenv> .Map </lenv>
+      <genv> .Map </genv>
       <mod> .ModName </mod>
     </T>
 
@@ -138,17 +139,17 @@ module PLUTUS-CORE-EXECUTION
   
   rule
     <k> ( lam X:Var M:Tm ):Tm => closure(Rho, X, M) ... </k>
-    <env> Rho </env>
+    <lenv> Rho </lenv>
     [structural]
 
   rule
     <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
-    <env> Rho' => Rho[X <- V] </env>
+    <lenv> Rho' => Rho[X <- V] </lenv>
     [structural]
 
   rule
     <k> _:Val ~> (Rho => .K) ... </k>
-    <env> _ => Rho </env>
+    <lenv> _ => Rho </lenv>
     [structural]
 
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
@@ -159,7 +160,8 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> ( define N:Name V:Val ) => .K ... </k>
     <mod> MN </mod>
-    <env> ... .Map => (MN . N):QualN |-> V ... </env>
+    <lenv> _ => .Map </lenv>
+    <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
@@ -171,11 +173,11 @@ module PLUTUS-CORE-EXECUTION
 
   rule
     <k> QN:QualN => V ... </k>
-    <env> ... QN |-> V ... </env>
+    <genv> ... QN |-> V ... </genv>
 
   rule
     <k> X:Var => V ... </k>
-    <env> ... X |-> V ... </env>
+    <lenv> ... X |-> V ... </lenv>
 
   rule (.DefList ~> _:ModF ) => .K
 
@@ -223,5 +225,7 @@ module PLUTUS-CORE-EXECUTION
 
   rule (success M):Tm => M ~> #freezeSucc()
   rule V:Val ~> #freezeSucc() => (success V):Val
+
+  rule symInt => ?V:Int
 
 endmodule
