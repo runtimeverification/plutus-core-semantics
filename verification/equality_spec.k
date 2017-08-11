@@ -3,7 +3,9 @@ module LET-SPEC
   
   rule
     <k> (define result (builtin equalsInt X:Int X)):Def => .K ... </k>
-    <env> ... ENV:Map => ENV ( Foo . result ) |-> ( con (Nat . True):QualC .ValList ) ... </env>
-    <mod> Foo </mod>
+    <lenv> _ </lenv>
+    <genv> E => E ( MN . result ) |-> ( con (Nat . True):QualC .ValList ):Val </genv>
+    <mod> MN </mod>
+    when notBool ((MN . result) in keys(E))
 
 endmodule

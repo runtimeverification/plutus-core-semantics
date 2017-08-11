@@ -38,9 +38,10 @@ module PLUTUS-CORE-EXECUTION
     => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
                   #parseToken("Con@PLUTUS-CORE-SYNTAX", "False"))
 
-  rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue
+  rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue [transition]
   rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #primFalse
                                                        when I1 =/=Int I2
+                                                       [transition]
   rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primTrue
                                                        when I1 <Int I2
   rule ( builtin lessThanInt:Name I1:Int I2:Int )
