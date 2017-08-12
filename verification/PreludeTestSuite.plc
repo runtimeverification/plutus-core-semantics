@@ -1,0 +1,663 @@
+(program
+  (module Testing
+    (imported)
+    (exported () ())
+  
+  
+  
+  
+    ;; forall x. [id x] = x
+  
+    (declare test_function_tools_id
+      (fun (integer) (con Prelude.Bool)))
+    (define test_function_tools_id
+      (lam x
+      
+        [Prelude.equalsInteger
+          [Prelude.id x]
+          x
+          ]
+      
+      ))
+  
+  
+  
+    ;; forall x y. [const x y] = x
+  
+    (declare test_function_tools_const
+      (fun (integer)
+           (fun (integer)
+                (con Prelude.Bool))))
+    (define test_function_tools_const
+      (lam x (lam y
+      
+        [Prelude.equalsInteger
+          [Prelude.const x y]
+          x
+          ]
+    
+      )))
+  
+  
+  
+    ;; forall f x y. [flip f x y] = [f y x]
+  
+    (declare test_function_tools_flip
+      (fun (fun (integer) (fun (integer) (integer)))
+           (fun (integer)
+                (fun (integer)
+                     (con Prelude.Bool)))))
+    (define test_function_tools_flip
+      (lam f (lam x (lam y
+      
+        [Prelude.equalsInteger
+          [Prelude.flip f x y]
+          [f y x]
+          ]
+      
+      ))))
+  
+  
+  
+    ;; forall f x. [applyTo x f] = [f x]
+  
+    (declare test_function_tools_applyTo
+      (fun (fun (integer) (integer))
+           (fun (integer)
+                (con Prelude.Bool))))
+    (define test_function_tools_applyTo
+      (lam f (lam x
+      
+        [Prelude.equalsInteger
+          [Prelude.applyTo x f]
+          [f x]
+          ]
+      
+      )))
+  
+  
+  
+    ;; forall f g x. [compose f g x] = [f [g x]]
+  
+    (declare test_function_tools_compose
+      (fun (fun (integer) (integer))
+           (fun (fun (integer) (integer))
+                (fun (integer)
+                     (integer)))))
+    (define test_function_tools_compose
+      (lam f (lam g (lam x
+      
+        [Prelude.equalsInteger
+          [Prelude.compose f g x]
+          [f [g x]]
+          ]
+    
+      ))))
+  
+  
+  
+    ;; forall f g x y. [compose2 f g x y] = [f [g x y]]
+  
+    (declare test_function_tools_compose2
+      (fun (fun (integer) (integer))
+           (fun (fun (integer) (fun (integer) (integer)))
+                (fun (integer)
+                     (fun (integer)
+                          (con Prelude.Bool))))))
+    (define test_function_tools_compose2
+      (lam f (lam g (lam x (lam y
+      
+        [Prelude.equalsInteger
+          [Prelude.compose2 f g x y]
+          [f [g x y]]
+          ]
+    
+      )))))
+  
+  
+  
+    ;; forall x y. [fst (con MkPair x y)] = x
+  
+    (declare test_pair_tools_fst
+      (fun (integer)
+           (fun (integer)
+                (con Prelude.Bool))))
+    (define test_pair_tools_fst
+      (lam x (lam y
+      
+        [Prelude.equalsInteger
+          [Prelude.fst (con Prelude.MkPair x y)]
+          x
+          ]
+    
+      )))
+  
+  
+    ;; forall x y. [snd (con MkPair x y)] = y
+  
+    (declare test_pair_tools_snd
+      (fun (integer)
+           (fun (integer)
+                (con Prelude.Bool))))
+    (define test_pair_tools_snd
+      (lam x (lam y
+      
+        [Prelude.equalsInteger
+          [Prelude.snd (con Prelude.MkPair x y)]
+          y
+          ]
+    
+      )))
+  
+  
+    ;; forall f x y. [curry f x y] = [f (con MkPair x y)]
+  
+    (declare test_pair_tools_curry
+      (fun (fun (con Prelude.Pair (integer) (integer)) (integer))
+           (fun (integer)
+                (fun (integer)
+                     (con Prelude.Bool)))))
+    (define test_pair_tools_curry
+      (lam f (lam x (lam y
+      
+        [Prelude.equalsInteger
+          [Prelude.curry f x y]
+          [f (con Prelude.MkPair x y)]
+          ]
+    
+      ))))
+  
+  
+    ;; forall f x y. [uncury f (con MkPair x y)] = [f x y]
+  
+    (declare test_pair_tools_uncurry
+      (fun (fun (integer) (fun (integer) (integer)))
+           (fun (integer)
+                (fun (integer)
+                     (con Prelude.Bool)))))
+    (define test_pair_tools_uncurry
+      (lam f (lam x (lam y
+      
+        [Prelude.equalsInteger
+          [Prelude.uncurry f (con Prelude.MkPair x y)]
+          [f x y]
+          ]
+    
+      ))))
+  
+  
+    ;; forall x y. [swap (con MkPair x y)] = (con MkPair y x)
+  
+    (declare test_pair_tools_swap
+      (fun (integer)
+           (fun (integer)
+                (con Prelude.Bool))))
+    (define test_pair_tools_swap
+      (lam x (lam y
+      
+        [Prelude.equalsPair Prelude.equalsInteger Prelude.equalsInteger
+          [Prelude.swap (con Prelude.MkPair x y)]
+          (con Prelude.MkPair y x)
+          ]
+    
+      )))
+  
+  
+  
+    ;; forall n j. [Prelude.maybe n j (con Nothing)] = n
+  
+    (declare test_maybe_tools_maybe_0
+      (fun (integer)
+           (fun (fun (integer) (integer))
+                (con Prelude.Bool))))
+    (define test_maybe_tools_maybe_0
+      (lam n (lam j
+      
+        [Prelude.equalsInteger
+          [Prelude.maybe n j (con Prelude.Nothing)]
+          n
+          ]
+        
+      )))
+  
+  
+    ;; forall n j x. [maybe n j (con Just x)] = [j x]
+  
+    (declare test_maybe_tools_maybe_1
+      (fun (integer)
+           (fun (fun (integer) (integer))
+                (fun (integer)
+                     (con PRelude.Bool)))))
+    (define test_maybe_tools_maybe_1
+      (lam n (lam j (lam x
+      
+        [Prelude.equalsInteger
+          [Prelude.maybe n j (con Prelude.Just x)]
+          [j x]
+          ]
+      
+      ))))
+  
+  
+    ;; forall x. [fromJust (con Just x)] = x
+  
+    (declare test_maybe_tools_fromJust
+      (fun (integer) (con Prelude.Bool)))
+    (define text_maybe_tools_fromJust
+      (lam x
+      
+        [Prelude.equalsInteger
+          [Prelude.fromJust (con Prelude.Just x)]
+          x
+          ]
+    
+      ))
+  
+  
+    ;; forall n. [fromMaybe n (con Nothing)] = n
+  
+    (declare test_maybe_tools_fromMaybe_0
+      (fun (integer)
+           (con Prelude.Bool)))
+    (define test_maybe_tools_fromMaybe_0
+      (lam n
+      
+        [Prelude.equalsInteger
+          [Prelude.fromMaybe n (con Prelude.Nothing)]
+          n
+          ]
+      
+      )))
+  
+  
+    ;; forall n x. [fromMaybe n (con Just x)] = x
+  
+    (declare test_maybe_tools_fromMaybe_1
+      (fun (integer)
+           (fun (integer)
+                (con Prelude.Bool))))
+    (define test_maybe_tools_fromMaybe_1
+      (lam n (lam x
+      
+        [Prelude.equalsInteger
+          [Prelude.fromMaybe n (con Prelude.Just x)]
+          x
+          ]
+      
+      )))
+    
+    
+    ;; forall f. [mapMaybe f (con Nothing)] = (con Nothing)
+    
+    (declare test_maybe_tools_mapMaybe_0
+      (fun (fun (integer) (integer))
+           (con Prelude.Bool)))
+    (define test_maybe_tools_mapMaybe_0
+      (lam f
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.mapMaybe f (con Prelude.Nothing)]
+          (con Prelude.Nothing)
+          ]
+        
+      ))
+    
+    
+    ;; forall f x. [mapMaybe f (con Just x)] = (con Just [f x])
+    
+    (declare test_maybe_tools_mapMaybe_1
+      (fun (fun (integer) (integer))
+           (fun (integer)
+                (con Prelude.Bool))))
+    (define test_maybe_tools_mapMaybe_1
+      (lam f (lam x
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.mapMaybe f (con Prelude.Just x)]
+          [f x]
+          ]
+        
+      )))
+  
+  
+  
+    ;; forall l r x. [either l r (con Left x)] = [l x]
+  
+    (declare test_either_tools_either_0
+      (fun (fun (integer) (integer))
+           (fun (fun (integer) (integer))
+                (fun (integer)
+                     (con Prelude.Bool)))))
+    (define test_either_tools_either_0
+      (lam l (lam r (lam x
+      
+        [Prelude.equalsInteger
+          [Prelude.either l r (con Prelude.Left x)]
+          [l x]
+          ]
+      
+      ))))
+  
+  
+    ;; forall l r y. [either l r (con Right y)] = [r y]
+  
+    (declare test_either_tools_either_1
+      (fun (fun (integer) (integer))
+           (fun (fun (integer) (integer))
+                (fun (integer)
+                     (con Prelude.Bool)))))
+    (define test_either_tools_either_1
+      (lam l (lam r (lam y
+      
+        [Prelude.equalsInteger
+          [Prelude.either l r (con Prelude.Right y)]
+          [r y]
+          ]
+      
+      ))))
+    
+    
+    ;; forall x. [eitherToMaybe (con Left x)] = (con Nothing)
+    
+    (declare test_either_tools_eitherToMaybe_0
+      (fun (integer)
+           (con Prelude.Bool)))
+    (define test_either_tools_eitherToMaybe_0
+      (lam x
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.eitherToMaybe (con Prelude.Left x)]
+          (con Prelude.Nothing)
+          ]
+        
+      ))
+    
+    
+    ;; forall y. [eitherToMaybe (con Right y)] = (con Just y)
+    
+    (declare test_either_tools_eitherToMaybe_1
+      (fun (integer)
+           (con Prelude.Bool)))
+    (define test_either_tools_eitherToMaybe_1
+      (lam x
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.eitherToMaybe (con Prelude.Right y)]
+          (con Prelude.Just y)
+          ]
+        
+      ))
+    
+    
+    ;; forall x. [maybeToEither x (con Nothing)] = (con Left x)
+    
+    (declare test_either_tools_maybeToEither_0
+      (fun (integer)
+           (con Prelude.Bool)))
+    (define test_either_tools_maybeToEither_0
+      (lam x
+        
+        [Prelude.equalsEither Prelude.equalsInteger Prelude.equalsInteger
+          [Prelude.maybeToEither x (con Prelude.Nothing)]
+          (con Prelude.Left x)
+          ]
+        
+      ))
+    
+    
+    ;; forall x y. [maybeToEither x (con Just y)] = (con Right y)
+    
+    (declare test_either_tools_maybeToEither_1
+      (fun (integer)
+           (fun (integer)
+                (con Prelude.Bool))))
+    (define test_either_tools_maybeToEither_1
+      (lam x (lam y
+        
+        [Prelude.equalsEither Prelude.equalsInteger Prelude.equalsInteger
+          [Prelude.maybeToEither x (con Prelude.Just y)]
+          (con Prelude.Right y)
+          ]
+        
+      )))
+    
+    
+    
+    ;; forall xs. [append (con Nil) xs] = xs
+    
+    (declare test_list_tools_append_0
+      (fun (con Prelude.List (integer))
+           (con Prelude.Bool)))
+    (define test_list_tools_append_0
+      (lam xs
+        
+        [Prelude.equalsList Prelude.equalsInteger
+          [Prelude.append (con Prelude.Nil) xs]
+          xs
+          ]
+        
+      ))
+    
+    
+    ;; forall xs. [append xs (con Nil)] = xs
+    
+    (declare test_list_tools_append_1
+      (fun (con Prelude.List (integer))
+           (con Prelude.Bool)))
+    (define test_list_tools_append_1
+      (lam xs
+        
+        [Prelude.equalsList Prelude.equalsInteger
+          [Prelude.append xs (con Prelude.Nil)]
+          xs
+          ]
+        
+      ))
+    
+    
+    ;; forall xs ys zs. [append xs [append ys zs]] = [append [append xs ys] zs]
+    
+    (declare test_list_tools_append_2
+      (fun (con Prelude.List (integer))
+           (fun (con Prelude.List (integer))
+                (fun (con Prelude.List (integer))
+                     (con Prelude.Bool)))))
+    (define test_list_tools_append_2
+      (lam xs (lam ys (lam zs
+        
+        [Prelude.equalsList Prelude.equalsInteger
+          [Prelude.append xs [Prelude.append ys zs]]
+          [Prelude.append [Prelude.append xs ys] zs]
+          ]
+        
+      ))))
+    
+    
+    ;; [head (con Nil)] = (con Nothing)
+    
+    (declare test_list_tools_head_0
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_list_tools_head_0
+      (lam x
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.head (con Prelude.Nil)]
+          (con Prelude.Maybe)
+          ]
+          
+      ))
+    
+    
+    ;; forall x xs. [head (con Cons x xs)] = (con Just x)
+    
+    (declare test_list_tools_head_1
+      (fun (integer)
+           (fun (con Prelude.List (integer))
+                (con Prelude.Bool))))
+    (define test_list_tools_head_1
+      (lam x (lam xs
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.head (con Prelude.Cons x xs)]
+          (con Prelude.Just x)
+          ]
+        
+      )))
+    
+    
+    ;; [last (con Nil)] = (con Nothing)
+    
+    (declare test_list_tools_last_0
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_list_tools_last_0
+      (lam x
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.last (con Prelude.Nil)]
+          (con Prelude.Nothing)
+          ]
+        
+      ))
+    
+    
+    ;; forall x xs. [last [append xs (con Cons x (con Nil))]] = (con Just x)
+    
+    (declare test_list_tools_last_1
+      (fun (integer)
+           (fun (con Prelude.List (integer))
+                (con Prelude.Bool))))
+    (define test_list_tools_last_1
+      (lam x (lam xs
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.last [Prelude.append xs (con Prelude.Cons x (con Prelude.Nil))]]
+          (con Prelude.Just x)
+          ]
+        
+      )))
+    
+    
+    ;; [tail (con Nil)] = (con Nothing)
+    
+    (declare test_list_tools_tail_0
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_list_tools_tail_0
+      (lam x
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.tail (con Prelude.Nil)]
+          (con Prelude.Nothing)
+          ]
+        
+      ))
+    
+    
+    ;; forall x xs. [tail (con Cons x xs)] = (con Just xs)
+    
+    (declare test_list_tools_tail_1
+      (fun (integer)
+           (fun (con Prelude.List (integer))
+                (con Prelude.Bool))))
+    (define test_list_tools_tail_1
+      (lam x (lam xs
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.tail (con Prelude.Cons x xs)]
+          (con Prelude.Just xs)
+          ]
+        
+      )))
+    
+    
+    ;; [init (con Nil)] = (con Nothing)
+    
+    (declare test_list_tools_init_0
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_list_tools_init_0
+      (lam x
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.init (con Prelude.Nil)]
+          (con Prelude.Nothing)
+          ]
+        
+      ))
+    
+    
+    ;; forall x xs. [init [append xs (con Cons x (con Nil))]] = (con Just xs)
+    
+    (declare test_list_tools_init_1
+      (fun (integer)
+           (fun (con Prelude.List (integer))
+                (con Prelude.Bool))))
+    (define test_list_tools_init_1
+      (lam x (lam xs
+        
+        [Prelude.equalsMaybe Prelude.equalsInteger
+          [Prelude.init [Prelude.append xs (con Prelude.Cons x (con Prelude.Nil))]]
+          (con Prelude.Just xs)
+          ]
+        
+      )))
+    
+    
+    ;; [uncons (con Nil)] = (con Nothing)
+    
+    (declare test_list_tools_uncons_0
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_list_tools_uncons_0
+      (lam x
+        
+        [Prelude.equalsMaybe [Prelude.equalsPair Prelude.equalsInteger [Prelude.equalsList Prelude.equalsInteger]]
+          [Prelude.uncons (con Prelude.Nil)]
+          (con Prelude.Nothing)
+          ]
+        
+      ))
+    
+    
+    ;; forall x xs. [uncons (con Cons x xs)] = (cons MkPair x xs)
+    
+    (declare test_list_tools_uncons_1
+      (fun (integer)
+           (fun (con Prelude.List (integer))
+                (con Prelude.Bool))))
+    (define test_list_tools_uncons_1
+      (lam x (lam xs
+        
+        [Prelude.equalsMaybe [Prelude.equalsPair Prelude.equalsInteger [Prelude.equalsList Prelude.equalsInteger]]
+          [Prelude.uncons (con Prelude.Cons x xs)]
+          (con Prelude.Just (con Prelude.MkPair x xs))
+          ]
+        
+      )))
+    
+    
+    ;; [null (con Nil)] = (con True)
+    
+    (declare test_list_tools_null_0
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_list_tools_null_0
+      (lam x
+        
+        [Prelude.null (con Prelude.Nil)]
+        
+      ))
+    
+    
+    ;; forall x xs. [null (con Cons x xs)] = (con False)
+    
+    (declare test_list_tools_null_1
+      (fun (integer)
+           (fun (con Prelude.List (integer))
+                (con Prelude.Bool))))
+    (define test_list_tools_null_1
+      (lam x (lam xs
+        
+        [Prelude.not [Prelude.null (con Prelude.Cons x xs)]]
+        
+      )))
+    
+  
+  
+))
