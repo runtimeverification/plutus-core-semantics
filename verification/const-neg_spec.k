@@ -1,0 +1,13 @@
+module CONST-NEG-SPEC
+  imports PLUTUS-CORE
+
+  // Negative test: const x y =/= y
+  rule
+    <k> (define result [((#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Prelude"):>ModName) . const):QualN X:Int Y:Int]):Def => .K ... </k>
+    <lenv> _ </lenv>
+    <genv> E GENV => E GENV (MN . result) |-> Y </genv>
+    <mod> MN:ModName </mod>
+    when notBool ((MN . result) in keys(E GENV)) andBool notBool (((#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Prelude"):>ModName) . result) in keys(E))
+         andBool X =/=Int Y
+
+endmodule
