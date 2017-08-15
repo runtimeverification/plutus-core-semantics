@@ -1,0 +1,8 @@
+(module ModId (imported) (exported () ()) (local () ())
+
+(define id
+  (lam x x))
+
+(define result [ModId.id symInt])
+
+)
