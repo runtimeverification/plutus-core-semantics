@@ -1,7 +1,7 @@
 module CONST-SPEC
   imports PLUTUS-CORE
 
-  // Proof that const x y = x
+  // Claim that const x y = y. Should fail
   rule
     <k> (define result [((#parseToken("ModName@PLUTUS-CORE-SYNTAX", "ModConst"):>ModName) . const):QualN X:Int Y:Int]):Def => .K ... </k>
     <lenv> _ </lenv>
