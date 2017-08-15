@@ -1,0 +1,6 @@
+(module ModConst (imported) (exported () ()) (local () ())
+
+(define const
+  (lam x (lam y x)))
+
+)
