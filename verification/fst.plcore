@@ -1,0 +1,10 @@
+(module ModFst (imported) (exported () ()) (local () ())
+
+(define fst
+  (lam p
+    (case p
+      (cl Prelude.MkPair (x y) x))))
+
+(define result [ModFst.fst (con Prelude.MkPair symInt symInt)])
+
+)
