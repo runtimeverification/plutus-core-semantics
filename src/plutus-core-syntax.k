@@ -39,7 +39,7 @@ module PLUTUS-CORE-SYNTAX
 
   // Variable.
   syntax Var     ::= r"[a-z][a-zA-Z0-9\\_']*"                           [token]
-                   | symInt(Var)                             [function, prefer]
+                   | symInt(Var)                                       [prefer]
 
   /***************************************************************************/
   /*****************************   GRAMMAR   *********************************/
