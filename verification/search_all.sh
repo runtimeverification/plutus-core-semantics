@@ -4,3 +4,4 @@ krun --debug --directory ../ --search equality.plcore
 krun --debug --directory ../ --search id.plcore
 krun --debug --directory ../ --search const.plcore
 krun --debug --directory ../ --search fst.plcore
+krun --debug --directory ../ --search snd.plcore

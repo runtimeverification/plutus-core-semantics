@@ -1,0 +1,10 @@
+(module ModSnd (imported) (exported () ()) (local () ())
+
+(define snd
+  (lam p
+    (case p
+      (cl ModSnd.MkPair (x y) y))))
+
+(define result [ModSnd.snd (con ModSnd.MkPair symInt symInt)])
+
+)
