@@ -1,10 +1,10 @@
-(module ModFst (imported) (exported () ()) (local () ())
+(module Foo (imported) (exported () ()) (local () ())
 
 (define fst
   (lam p
     (case p
-      (cl ModFst.MkPair (x y) x))))
+      (cl Foo.MkPair (x y) x))))
 
-(define result [ModFst.fst (con ModFst.MkPair symInt symInt)])
+(define result [Foo.fst (con Foo.MkPair symInt symInt)])
 
 )

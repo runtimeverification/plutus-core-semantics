@@ -1,8 +1,8 @@
-(module ModId (imported) (exported () ()) (local () ())
+(module Foo (imported) (exported () ()) (local () ())
 
 (define id
   (lam x x))
 
-(define result [ModId.id symInt])
+(define result [Foo.id symInt])
 
 )

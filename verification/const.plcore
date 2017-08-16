@@ -1,8 +1,8 @@
-(module ModConst (imported) (exported () ()) (local () ())
+(module Foo (imported) (exported () ()) (local () ())
 
 (define const
   (lam x (lam y x)))
 
-(define result [ModConst.const symInt symInt])
+(define result [Foo.const symInt symInt])
 
 )
