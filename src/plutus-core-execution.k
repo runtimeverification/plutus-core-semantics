@@ -31,6 +31,8 @@ module PLUTUS-CORE-EXECUTION
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
+  rule stringToModName(S:String) => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
+
   syntax Prim ::= "#primTrue" | "#primFalse"
   rule #primTrue
     => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
