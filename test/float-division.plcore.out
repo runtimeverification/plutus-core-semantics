@@ -1,1 +1,1 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . f1 ) |-> 6e+00 ( Foo . f4 ) |-> 1.6666666666666668e+01 ( Foo . f2 ) |-> 3e+00 ( Foo . f3 ) |-> 6.666666666666667e+00 </genv> <mod> Foo </mod> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . f1 ) |-> 6e+00 ( Foo . f4 ) |-> 1.6666666666666668e+01 ( Foo . f2 ) |-> 3e+00 ( Foo . f3 ) |-> 6.666666666666667e+00 </genv> <mod> Foo </mod> <sym> .Map </sym> </T>
