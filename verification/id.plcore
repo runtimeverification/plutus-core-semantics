@@ -3,6 +3,6 @@
 (define id
   (lam x x))
 
-(define result [Foo.id symInt])
+(define result [Foo.id symInt(a)])
 
 )

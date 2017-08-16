@@ -5,6 +5,6 @@
     (case p
       (cl Foo.MkPair (x y) y))))
 
-(define result [Foo.snd (con Foo.MkPair symInt symInt)])
+(define result [Foo.snd (con Foo.MkPair symInt(a) symInt(b))])
 
 )

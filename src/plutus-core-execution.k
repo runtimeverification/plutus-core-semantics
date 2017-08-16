@@ -12,6 +12,7 @@ module PLUTUS-CORE-EXECUTION
       <lenv> .Map </lenv>
       <genv> .Map </genv>
       <mod> .ModName </mod>
+      <sym> .Map </sym>
     </T>
 
   /***************************************************************************/
@@ -227,6 +228,8 @@ module PLUTUS-CORE-EXECUTION
   rule (success M):Tm => M ~> #freezeSucc()
   rule V:Val ~> #freezeSucc() => (success V):Val
 
-  rule symInt => ?V:Int
+  rule
+    <k> symInt(X:Var) => ?V:Int ... </k>
+    <sym> ... .Map => X |-> ?V ... </sym>
 
 endmodule

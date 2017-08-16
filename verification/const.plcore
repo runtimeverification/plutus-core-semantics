@@ -3,6 +3,6 @@
 (define const
   (lam x (lam y x)))
 
-(define result [Foo.const symInt symInt])
+(define result [Foo.const symInt(a) symInt(b)])
 
 )
