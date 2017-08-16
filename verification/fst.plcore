@@ -3,8 +3,8 @@
 (define fst
   (lam p
     (case p
-      (cl Prelude.MkPair (x y) x))))
+      (cl ModFst.MkPair (x y) x))))
 
-(define result [ModFst.fst (con Prelude.MkPair symInt symInt)])
+(define result [ModFst.fst (con ModFst.MkPair symInt symInt)])
 
 )
