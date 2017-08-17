@@ -16,6 +16,7 @@ module PLUTUS-CORE-SYNTAX
 
   // Constructor name.
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+                   | stringToCon(String)                             [function]
 
   // Integer literal.
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
@@ -102,7 +103,7 @@ module PLUTUS-CORE-SYNTAX
   // Lambda abstraction.
   syntax Val        ::= //closure(Map, Var, Tm)
                         // Constructed data.
-                      "(" "con" QualC ValList ")"                    [prefer]
+                      "(" "con" QualC ValList ")"      [prefer, klabel(conVal)]
                       | InstrVal
                       | Int
                       | PlFloat

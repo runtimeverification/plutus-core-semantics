@@ -32,6 +32,7 @@ module PLUTUS-CORE-EXECUTION
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
   rule stringToModName(S:String) => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
+  rule stringToCon(S:String) => #parseToken("Con@PLUTUS-CORE-SYNTAX", S)
 
   syntax Prim ::= "#primTrue" | "#primFalse"
   rule #primTrue
@@ -201,13 +202,23 @@ module PLUTUS-CORE-EXECUTION
   rule #toTermList(.ValList) => .TmList
   rule #toTermList(M:Val MS:ValList) => M #toTermList(MS)
 
-  rule ( case ( con QC:QualC MS:ValList )
-              ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
-    => [ ( lam XS M ) #toTermList(MS) ]
-    //=> substTerm(M, #manySubst(XS, MS))
+  syntax Tm ::= "#ifTm" Bool "#then" Tm "#else" Tm "#fi"             [function]
+
   rule ( case ( con QC:QualC MS:ValList )
               ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
-    => ( case ( con QC:QualC MS:ValList ) CL ) when QC =/=K QC'
+    => #ifTm (QC ==K QC') #then [ ( lam XS M ) #toTermList(MS) ]
+                          #else ( case ( con QC:QualC MS:ValList ) CL )
+       #fi
+
+  rule #ifTm true #then M #else _ #fi => M
+  rule #ifTm false #then _ #else M #fi => M
+
+
+// [ ( lam XS M ) #toTermList(MS) ] requires QC ==K QC'
+    //=> substTerm(M, #manySubst(XS, MS))
+  // rule ( case ( con QC:QualC MS:ValList )
+  //             ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
+  //   => ( case ( con QC:QualC MS:ValList ) CL ) requires QC =/=K QC'
 
   // rule substTerm(T:Tm, M:Map) => T[M]
 
