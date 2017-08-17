@@ -12,11 +12,11 @@ module PLUTUS-CORE-SYNTAX
   // Module name.
   syntax ModName ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
                    | ".ModName"
-                   | stringToModName(String)                         [function]
+                   | #stringToModName(String)                        [function]
 
   // Constructor name.
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
-                   | stringToCon(String)                             [function]
+                   | #stringToCon(String)                            [function]
 
   // Integer literal.
   // NOTE: K's builtin `Int` sort is based on exactly the same regular

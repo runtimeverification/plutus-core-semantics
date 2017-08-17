@@ -31,8 +31,8 @@ module PLUTUS-CORE-EXECUTION
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
-  rule stringToModName(S:String) => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
-  rule stringToCon(S:String) => #parseToken("Con@PLUTUS-CORE-SYNTAX", S)
+  rule #stringToModName(S:String) => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
+  rule #stringToCon(S:String) => #parseToken("Con@PLUTUS-CORE-SYNTAX", S)
 
   syntax Prim ::= "#primTrue" | "#primFalse"
   rule #primTrue
@@ -190,14 +190,6 @@ module PLUTUS-CORE-EXECUTION
   /************************   PATTERN MATCHING   *****************************/
   /***************************************************************************/
 
-  // syntax Map ::= #manySubst(VarList, ValList)                        [function]
-
-  // rule #manySubst(.VarList, .ValList) => .Map
-  // rule #manySubst(X:Var XS:VarList, V:Val VS:ValList)
-  //   => #manySubst(XS, VS)[X <- V]
-
-  // syntax K ::= substTerm(Tm, Map)
-
   syntax TmList ::= #toTermList(ValList)                             [function]
   rule #toTermList(.ValList) => .TmList
   rule #toTermList(M:Val MS:ValList) => M #toTermList(MS)
@@ -212,15 +204,6 @@ module PLUTUS-CORE-EXECUTION
 
   rule #ifTm true #then M #else _ #fi => M
   rule #ifTm false #then _ #else M #fi => M
-
-
-// [ ( lam XS M ) #toTermList(MS) ] requires QC ==K QC'
-    //=> substTerm(M, #manySubst(XS, MS))
-  // rule ( case ( con QC:QualC MS:ValList )
-  //             ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
-  //   => ( case ( con QC:QualC MS:ValList ) CL ) requires QC =/=K QC'
-
-  // rule substTerm(T:Tm, M:Map) => T[M]
 
   syntax K ::= #freezeCon(QualC, ValList)
              | "#freezeSucc()"
