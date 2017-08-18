@@ -7,3 +7,4 @@ krun --debug --directory ../ --prove id_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove const_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove fst_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove snd_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove swap_spec.k --z3-executable prelude.plc
