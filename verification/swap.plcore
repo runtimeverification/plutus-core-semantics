@@ -1,0 +1,10 @@
+(module Foo (imported) (exported () ()) (local () ())
+
+(define swap
+  (lam p
+    (case p
+      (cl Foo.MkPair (x y) (con Foo.MkPair y x)))))
+
+(define result [Foo.swap (con Foo.MkPair symInt(a) symInt(b))])
+
+)

@@ -7,3 +7,4 @@ krun --debug --directory ../ --search const.plcore
 # Need to figure out why and fix this
 krun --debug --directory ../ --search fst.plcore
 krun --debug --directory ../ --search snd.plcore
+krun --debug --directory ../ --search swap.plcore
