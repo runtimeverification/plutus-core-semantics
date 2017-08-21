@@ -4,7 +4,7 @@ module SND-SPEC
   // Claim that snd (pair x y) = X. Should fail.
   rule
     <k> (define result [(#stringToModName("Prelude") . snd):QualN (con (#stringToModName("Prelude") . #stringToCon("MkPair")):QualC X:Int Y:Int)]):Def => .K ... </k>
-    <lenv> _ </lenv>
+    <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> X </genv>
     <mod> MN:ModName </mod>
     requires notBool ((MN . result) in keys(E GENV))

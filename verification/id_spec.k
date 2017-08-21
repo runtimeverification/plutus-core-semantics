@@ -4,7 +4,7 @@ module ID-SPEC
   // Proof that id x = x
   rule
     <k> (define result [(#stringToModName("Prelude") . id):QualN X:Int]):Def => .K ... </k>
-    <lenv> _ </lenv>
+    <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> X </genv>
     <mod> MN:ModName </mod>
     when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Prelude") . id) in keys(E))
