@@ -7,6 +7,6 @@ module ID-SPEC
     <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> X </genv>
     <mod> MN:ModName </mod>
-    when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Prelude") . id) in keys(E))
+    when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Prelude") . id):QualN in keys(E))
 
 endmodule

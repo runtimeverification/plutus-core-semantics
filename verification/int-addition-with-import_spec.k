@@ -7,6 +7,6 @@ module INT-ADDITION-SPEC
     <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> X +Int (Y +Int 4) </genv>
     <mod> MN:ModName </mod>
-    when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Bar") . result) in keys(E))
+    when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Bar") . result):QualN in keys(E))
 
 endmodule

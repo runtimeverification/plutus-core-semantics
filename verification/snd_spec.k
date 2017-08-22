@@ -8,7 +8,7 @@ module FST-SPEC
     <genv> E GENV => E GENV (MN . result) |-> Y </genv>
     <mod> MN:ModName </mod>
     requires notBool ((MN . result) in keys(E GENV))
-             andBool notBool ((#stringToModName("Prelude") . snd) in keys(E))
+             andBool notBool ((#stringToModName("Prelude") . snd):QualN in keys(E))
              andBool notBool ((#stringToModName("Prelude") . #stringToCon("MkPair")) in keys(E))
 
 endmodule
