@@ -9,3 +9,4 @@ krun --debug --directory ../ --prove fst_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove snd_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove swap_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove flip_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove flip-no-prelude_spec.k --z3-executable dummy.plcore
