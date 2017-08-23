@@ -1,0 +1,16 @@
+(module Foo (imported) (exported () ()) (local () ())
+
+(define equalsInt
+  (lam x (lam y
+    (builtin equalsInt x y))))
+
+(define const
+  (lam x (lam y x)))
+
+(define flip
+  (lam f (lam x (lam y
+    [f y x]))))
+
+(define result [Foo.equalsInt [Foo.flip Foo.const 1 2] [Foo.const 2 1]])
+
+)
