@@ -8,6 +8,7 @@ krun --debug --directory ../ --prove inequality_spec.k --z3-executable dummy.plc
 krun --debug --directory ../ --prove id_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove flip_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove flip-no-prelude_spec.k --z3-executable dummy.plcore
+krun --debug --directory ../ --prove applyTo_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove applyTo-no-prelude_spec.k --z3-executable dummy.plcore
 krun --debug --directory ../ --prove compose-no-prelude_spec.k --z3-executable dummy.plcore
 krun --debug --directory ../ --prove compose2-no-prelude_spec.k --z3-executable dummy.plcore
