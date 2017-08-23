@@ -1,4 +1,9 @@
 (module Prelude (imported) (exported () ()) (local () ())
+
+(define equalsInt
+  (lam x (lam y
+    (builtin equalsInt x y))))
+
 (define id
   (lam x x))
 
