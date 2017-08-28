@@ -15,4 +15,6 @@ krun --debug --directory ../ --prove compose2-no-prelude_spec.k --z3-executable 
 krun --debug --directory ../ --prove const_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove fst_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove snd_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove curry_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove curry-no-prelude_spec.k --z3-executable dummy.plcore
 krun --debug --directory ../ --prove swap_spec.k --z3-executable prelude.plc
