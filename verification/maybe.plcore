@@ -1,0 +1,14 @@
+(module Foo (imported) (exported () ()) (local () ())
+
+(define maybe
+  (lam n (lam j (lam m
+    (case m
+      (cl Foo.Nothing () n)
+      (cl Foo.Just (x) [j x]))))))
+
+(define id
+  (lam x x))
+
+(define result [Foo.maybe 3 Foo.id (con Foo.Just 4)])
+
+)
