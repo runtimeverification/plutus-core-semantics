@@ -14,6 +14,7 @@ before_install:
   - cd k
   - git fetch --all
   - git checkout sha3
+  - git checkout hotfix/rightOnlyVariables
   - mvn package -DskipTests;
   - export PATH=$PATH:$(pwd)/k-distribution/target/release/k/bin
   - cd $TRAVIS_BUILD_DIR
