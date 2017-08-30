@@ -13,8 +13,8 @@ module SUM-SPEC
 
   rule
     <k> [(#stringToModName("Foo") . sum):QualN (builtin subtractInt n 1) (builtin addInt n s):Tm] => S +Int ((N +Int 1) *Int N /Int 2) ... </k>
-    <lenv> L:Map n |-> N:Int s |-> S:Int </lenv>
-    <genv> E GENV:Map => E GENV </genv>
+    <lenv> ... n |-> N:Int s |-> S:Int ... </lenv>
+    <genv> E GENV:Map </genv>
     <mod> MN:ModName </mod>
 
 endmodule

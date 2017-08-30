@@ -13,9 +13,8 @@ module ID-SPEC
       (con (#stringToModName("Prelude") . #stringToCon("True")) .ValList)
       ...
     </k>
-    <lenv> .Map </lenv>
-    <genv> E GENV => E GENV </genv>
-    <mod> MN:ModName </mod>
-    when notBool ((#stringToModName("Prelude") . id):QualN in keys(E))
+    <genv> E GENV </genv>
+    when notBool ((#stringToModName("Prelude") . id):QualN in keys(E)) andBool
+         notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E))
 
 endmodule
