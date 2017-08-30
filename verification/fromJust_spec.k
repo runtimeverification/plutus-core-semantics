@@ -1,12 +1,13 @@
-module ID-SPEC
+module FROM-JUST-SPEC
   imports PLUTUS-CORE
 
-  // Proof that id x = x
+  // Proof that fromJust (Just x) = x
   rule
     <k>
       [
         (#stringToModName("Prelude") . equalsInt):QualN
-          [ (#stringToModName("Prelude") . id):QualN X:Int ]
+          [ (#stringToModName("Prelude") . fromJust):QualN
+            (con (#stringToModName("Prelude") . #stringToCon("Just")):QualC X:Int) ]
           X
       ]
       =>
@@ -14,7 +15,7 @@ module ID-SPEC
       ...
     </k>
     <genv> E GENV </genv>
-    when notBool ((#stringToModName("Prelude") . id):QualN in keys(E)) andBool
+    when notBool ((#stringToModName("Prelude") . fromJust):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E))
 
 endmodule
