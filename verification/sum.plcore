@@ -3,8 +3,8 @@
 (define sum
   (lam n (lam s
     (case (builtin equalsInt n 0)
-      (cl Nat.True () s)
-      (cl Nat.False ()
+      (cl Prelude.True () s)
+      (cl Prelude.False ()
           [Foo.sum (builtin subtractInt n 1) (builtin addInt n s)])))))
 
 )

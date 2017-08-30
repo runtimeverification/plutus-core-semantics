@@ -10,7 +10,7 @@ module ID-SPEC
           X
       ]
       =>
-      (con (#stringToModName("Nat") . #stringToCon("True")) .ValList)
+      (con (#stringToModName("Prelude") . #stringToCon("True")) .ValList)
       ...
     </k>
     <lenv> .Map </lenv>
