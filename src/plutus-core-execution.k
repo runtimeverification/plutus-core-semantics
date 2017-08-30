@@ -31,16 +31,15 @@ module PLUTUS-CORE-EXECUTION
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
-  rule #stringToModName(S:String) => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
+  rule #stringToModName(S:String)
+    => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
   rule #stringToCon(S:String) => #parseToken("Con@PLUTUS-CORE-SYNTAX", S)
 
   syntax Prim ::= "#primTrue" | "#primFalse"
   rule #primTrue
-    => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
-                  #parseToken("Con@PLUTUS-CORE-SYNTAX", "True"))
+    => #conHolder(#stringToModName("Prelude"), #stringToCon("True"))
   rule #primFalse
-    => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
-                  #parseToken("Con@PLUTUS-CORE-SYNTAX", "False"))
+    => #conHolder(#stringToModName("Prelude"), #stringToCon("False"))
 
   rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue [transition]
   rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #primFalse
@@ -103,7 +102,6 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
     => #toByStr(#toString(B1) +String #toString(B2))
 
-  // TODO: fix sha stuff to work with current K
   rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
   rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
@@ -116,30 +114,22 @@ module PLUTUS-CORE-EXECUTION
   /************************   LOCAL REDUCTIONS   *****************************/
   /***************************************************************************/
 
-  // syntax K ::= #appFreeze(TmList)                                      [prefer]
-
-  // Explicit strictness for nested application
-  // rule [ [ F:Val M:Tm ] MS:TmList ] => [ F M ] ~> #appFreeze(MS)
-  // rule M:Val ~> #appFreeze(MS) => [ M MS ]
   rule [ F:Val M1:Tm M2:Tm MS:TmList ] => [ [ F M1 ] M2 MS ]
 
+  // From desugaring constructors, we may have lambda expressions with no
+  // variables and application to an empty TmList.
   rule ( lam .VarList M:Tm ) => M
   rule [ V:Val .TmList ] => V
 
   // When a lambda abstracts more than one variable, desugar it to a
   // combination of unary lambdas.
-  // rule [ ( lam X1:Var X2:Var XS:VarList M:Tm ) N:Tm ]
-  //   => [ ( lam X1 .VarList ( lam X2 XS M ) ) N ]
-
   rule ( lam X1:Var X2:Var XS:VarList M:Tm )
     => ( lam X1 .VarList ( lam X2 XS M ) )
 
-  // In the unary case, just perform the substitution.
-
   syntax Val ::= closure(Map, Var, Tm)
-  
-  syntax Tm ::= app(Tm, Tm) [strict]
 
+  // Wrapper around function application in order to make application strict
+  syntax Tm ::= app(Tm, Tm)                                            [strict]
   rule [ F:Val M:Tm ] => app(F, M)
   
   rule
@@ -157,6 +147,11 @@ module PLUTUS-CORE-EXECUTION
     <lenv> _ => Rho </lenv>
     [structural]
 
+  rule
+    <k> X:Var => V ... </k>
+    <lenv> ... X |-> V ... </lenv>
+
+  // Desugar let expression to lambda expression
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
 
   // Process the definitions in order.
@@ -180,10 +175,6 @@ module PLUTUS-CORE-EXECUTION
     <k> QN:QualN => V ... </k>
     <genv> ... QN |-> V ... </genv>
 
-  rule
-    <k> X:Var => V ... </k>
-    <lenv> ... X |-> V ... </lenv>
-
   rule (.DefList ~> _:ModF ) => .K
 
   /***************************************************************************/
@@ -205,6 +196,7 @@ module PLUTUS-CORE-EXECUTION
   rule #ifTm true #then M #else _ #fi => M
   rule #ifTm false #then _ #else M #fi => M
 
+  // Convert TmList into ValList and convert (success Tm) into (success Val)
   syntax K ::= #freezeCon(QualC, ValList)
              | "#freezeSucc()"
 

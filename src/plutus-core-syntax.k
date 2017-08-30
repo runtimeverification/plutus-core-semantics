@@ -100,10 +100,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax Def        ::= "(" "define" Name Tm ")"                    [strict(2)]
 
-  // Lambda abstraction.
-  syntax Val        ::= //closure(Map, Var, Tm)
-                        // Constructed data.
-                      "(" "con" QualC ValList ")"      [prefer, klabel(conVal)]
+  syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
                       | InstrVal
                       | Int
                       | PlFloat
@@ -113,7 +110,6 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "txhash"  ")"
                       | "(" "blocknum" ")"
                       | "(" "blocktime" ")"
-                      // TODO: fix test success.plcore
                       | "(" "success" Val ")"         [prefer, klabel(succVal)]
                       | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
 
