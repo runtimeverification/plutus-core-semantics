@@ -22,3 +22,6 @@ krun --debug --directory ../ --prove uncurry_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove swap_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove maybe-nothing_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove maybe-just_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove fromJust_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove fromMaybe-nothing_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove fromMaybe-just_spec.k --z3-executable prelude.plc
