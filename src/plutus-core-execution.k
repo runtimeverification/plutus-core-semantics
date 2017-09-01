@@ -13,18 +13,26 @@ module PLUTUS-CORE-EXECUTION
       <genv> .Map </genv>
       <mod> .ModName </mod>
       <sym> .Map </sym>
+      <gas> 0 </gas>
     </T>
 
   /***************************************************************************/
   /***********************  BUILT-IN REDUCTIONS   ****************************/
   /***************************************************************************/
 
-  rule ( builtin addInt:Name       I1:Int I2:Int ) => I1 +Int I2
-  rule ( builtin subtractInt:Name  I1:Int I2:Int ) => I1 -Int I2
-  rule ( builtin multiplyInt:Name  I1:Int I2:Int ) => I1 *Int I2
-  rule ( builtin divideInt:Name    I1:Int I2:Int ) => I1 /Int I2
+  syntax K ::= #gas(K, Int)
+
+  rule
+    <k> #gas(K, I) => K ... </k>
+    <gas> G => G -Int I </gas>
+    when (G -Int I) >=Int 0
+
+  rule ( builtin addInt:Name       I1:Int I2:Int ) => #gas(I1 +Int I2, 1)
+  rule ( builtin subtractInt:Name  I1:Int I2:Int ) => #gas(I1 -Int I2, 1)
+  rule ( builtin multiplyInt:Name  I1:Int I2:Int ) => #gas(I1 *Int I2, 1)
+  rule ( builtin divideInt:Name    I1:Int I2:Int ) => #gas(I1 /Int I2, 1)
                                                         when I2 =/=Int 0
-  rule ( builtin remainderInt:Name I1:Int I2:Int ) => I1 %Int I2
+  rule ( builtin remainderInt:Name I1:Int I2:Int ) => #gas(I1 %Int I2, 1)
                                                         when I2 =/=Int 0
 
   syntax Tm ::= #conHolder(K, K)
@@ -41,14 +49,15 @@ module PLUTUS-CORE-EXECUTION
   rule #primFalse
     => #conHolder(#stringToModName("Prelude"), #stringToCon("False"))
 
-  rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue [transition]
-  rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #primFalse
+  rule ( builtin equalsInt:Name I:Int I:Int     ) => #gas(#primTrue, 1)
+                                                       [transition]
+  rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #gas(#primFalse, 1)
                                                        when I1 =/=Int I2
                                                        [transition]
-  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primTrue
+  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #gas(#primTrue, 1)
                                                        when I1 <Int I2
-  rule ( builtin lessThanInt:Name I1:Int I2:Int )
-    => #primFalse when notBool (I1 <Int I2)
+  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #gas(#primFalse, 1)
+                                                       when notBool (I1 <Int I2)
 
   // TODO: Figure out _why_ 53 and 11.
   rule ( builtin intToFloat:Name   I:Int ) => #toPlFloat(Int2Float(I, 53, 11))
