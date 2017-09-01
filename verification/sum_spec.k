@@ -8,13 +8,15 @@ module SUM-SPEC
     <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> ((N +Int 1) *Int N /Int 2) </genv>
     <mod> MN:ModName </mod>
+    <gas> G => G -Int (N *Int 3 +Int 1) </gas>
     when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Foo") . sum):QualN in keys(E))
-         andBool N >=Int 0
+         // andBool (G -Int (N *Int 3 +Int 1)) >=Int 0
 
   rule
     <k> [(#stringToModName("Foo") . sum):QualN (builtin subtractInt n 1) (builtin addInt n s):Tm] => S +Int ((N +Int 1) *Int N /Int 2) ... </k>
     <lenv> ... n |-> N:Int s |-> S:Int ... </lenv>
     <genv> E GENV:Map </genv>
     <mod> MN:ModName </mod>
+    <gas> G => G -Int (N *Int 3) </gas>
 
 endmodule
