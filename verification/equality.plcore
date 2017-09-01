@@ -1,0 +1,3 @@
+(module Foo (imported) (exported () ()) (local () ())
+  (define result (builtin equalsInt symInt(a) symInt(b)))
+)

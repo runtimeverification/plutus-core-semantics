@@ -1,0 +1,8 @@
+(module Foo (imported) (exported () ()) (local () ())
+
+(define id
+  (lam x x))
+
+(define result [Foo.id symInt(a)])
+
+)

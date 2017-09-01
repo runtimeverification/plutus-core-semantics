@@ -1,0 +1,8 @@
+(module Foo (imported) (exported () ()) (local () ())
+
+(define const
+  (lam x (lam y x)))
+
+(define result [Foo.const symInt(a) symInt(b)])
+
+)

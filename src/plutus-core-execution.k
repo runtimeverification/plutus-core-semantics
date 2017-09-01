@@ -1,18 +1,18 @@
 require "plutus-core-syntax.k"
 require "hex-conversion.k"
-require "substitution.k"
 
 module PLUTUS-CORE-EXECUTION
   imports PLUTUS-CORE-SYNTAX
-  imports SUBSTITUTION
   imports KRYPTO
   imports HEX-CONVERSION
 
   configuration
     <T>
       <k> $PGM:Mod </k>
-      <env> .Map </env>
+      <lenv> .Map </lenv>
+      <genv> .Map </genv>
       <mod> .ModName </mod>
+      <sym> .Map </sym>
     </T>
 
   /***************************************************************************/
@@ -31,17 +31,20 @@ module PLUTUS-CORE-EXECUTION
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
+  rule #stringToModName(S:String)
+    => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
+  rule #stringToCon(S:String) => #parseToken("Con@PLUTUS-CORE-SYNTAX", S)
+
   syntax Prim ::= "#primTrue" | "#primFalse"
   rule #primTrue
-    => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
-                  #parseToken("Con@PLUTUS-CORE-SYNTAX", "True"))
+    => #conHolder(#stringToModName("Prelude"), #stringToCon("True"))
   rule #primFalse
-    => #conHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Nat"),
-                  #parseToken("Con@PLUTUS-CORE-SYNTAX", "False"))
+    => #conHolder(#stringToModName("Prelude"), #stringToCon("False"))
 
-  rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue
+  rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue [transition]
   rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #primFalse
                                                        when I1 =/=Int I2
+                                                       [transition]
   rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primTrue
                                                        when I1 <Int I2
   rule ( builtin lessThanInt:Name I1:Int I2:Int )
@@ -111,31 +114,54 @@ module PLUTUS-CORE-EXECUTION
   /************************   LOCAL REDUCTIONS   *****************************/
   /***************************************************************************/
 
-  syntax K ::= #appFreeze(TmList)                                      [prefer]
-
-  // Explicit strictness for nested application
-  rule [ [ F:Val M:Tm ] MS:TmList ] => [ F M ] ~> #appFreeze(MS)
-  rule M:Val ~> #appFreeze(MS) => [ M MS ]
   rule [ F:Val M1:Tm M2:Tm MS:TmList ] => [ [ F M1 ] M2 MS ]
+
+  // From desugaring constructors, we may have lambda expressions with no
+  // variables and application to an empty TmList.
+  rule ( lam .VarList M:Tm ) => M
+  rule [ V:Val .TmList ] => V
 
   // When a lambda abstracts more than one variable, desugar it to a
   // combination of unary lambdas.
-  rule [ ( lam X1:Var X2:Var XS:VarList M:Tm ) N:Tm ]
-    => [ ( lam X1 .VarList ( lam X2 XS M ) ) N ]
-  // In the unary case, just perform the substitution.
-  rule [ ( lam X:Var .VarList M:Tm ) N:Tm ] => M[N / X]
+  rule ( lam X1:Var X2:Var XS:VarList M:Tm )
+    => ( lam X1 .VarList ( lam X2 XS M ) )
 
-  rule ( let N:Tm X:Var M:Tm ):Tm => M[N / X]
+  syntax Val ::= closure(Map, Var, Tm)
+
+  // Wrapper around function application in order to make application strict
+  syntax Tm ::= app(Tm, Tm)                                            [strict]
+  rule [ F:Val M:Tm ] => app(F, M)
+  
+  rule
+    <k> ( lam X:Var M:Tm ):Tm => closure(Rho, X, M) ... </k>
+    <lenv> Rho </lenv>
+    [structural]
+
+  rule
+    <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
+    <lenv> Rho' => Rho[X <- V] </lenv>
+    [structural]
+
+  rule
+    <k> _:Val ~> (Rho => .K) ... </k>
+    <lenv> _ => Rho </lenv>
+    [structural]
+
+  rule
+    <k> X:Var => V ... </k>
+    <lenv> ... X |-> V ... </lenv>
+
+  // Desugar let expression to lambda expression
+  rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
 
   // Process the definitions in order.
   rule D:Def DS:DefList => D ~> DS
 
-  rule #qualN(MN:ModName, N:Name) => (MN . N):QualN
-
   rule
-    <k> (( define N:Name V:Val ) => .K) ~> _ </k>
+    <k> ( define N:Name V:Val ) => .K ... </k>
     <mod> MN </mod>
-    <env> E => E[#qualN(MN, N) <- V] </env>
+    <lenv> _ => .Map </lenv>
+    <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
@@ -147,7 +173,7 @@ module PLUTUS-CORE-EXECUTION
 
   rule
     <k> QN:QualN => V ... </k>
-    <env> ... QN |-> V:Val ... </env>
+    <genv> ... QN |-> V ... </genv>
 
   rule (.DefList ~> _:ModF ) => .K
 
@@ -155,21 +181,43 @@ module PLUTUS-CORE-EXECUTION
   /************************   PATTERN MATCHING   *****************************/
   /***************************************************************************/
 
-  syntax Map ::= #manySubst(VarList, ValList)                        [function]
+  syntax TmList ::= #toTermList(ValList)                             [function]
+  rule #toTermList(.ValList) => .TmList
+  rule #toTermList(M:Val MS:ValList) => M #toTermList(MS)
 
-  rule #manySubst(.VarList, .ValList) => .Map
-  rule #manySubst(X:Var XS:VarList, V:Val VS:ValList)
-    => #manySubst(XS, VS)[X <- V]
+  syntax Tm ::= "#ifTm" Bool "#then" Tm "#else" Tm "#fi"             [function]
 
-  syntax K ::= substTerm(Tm, Map)
-
-  rule ( case ( con QC:QualC MS:ValList )
-              ( cl QC ( XS:VarList ) M:Tm ) _:ClList )
-    => substTerm(M, #manySubst(XS, MS))
   rule ( case ( con QC:QualC MS:ValList )
               ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
-    => ( case ( con QC:QualC MS:ValList ) CL ) when QC =/=K QC'
+    => #ifTm (QC ==K QC') #then [ ( lam XS M ) #toTermList(MS) ]
+                          #else ( case ( con QC:QualC MS:ValList ) CL )
+       #fi
 
-  rule substTerm(T:Tm, M:Map) => T[M]
+  rule #ifTm true #then M #else _ #fi => M
+  rule #ifTm false #then _ #else M #fi => M
+
+  // Convert TmList into ValList and convert (success Tm) into (success Val)
+  syntax K ::= #freezeCon(QualC, ValList)
+             | "#freezeSucc()"
+
+  rule ( con QC:QualC MS:TmList ) => MS ~> #freezeCon(QC, .ValList)
+  rule .TmList ~> #freezeCon(QC:QualC, VL:ValList) => ( con QC #reverse(VL) )
+  rule (M:Tm MS:TmList => M ~> MS) ~> #freezeCon(QC:QualC, VL:ValList)
+  rule V:Val ~> MS:TmList ~> #freezeCon(QC:QualC, VL:ValList)
+    => MS ~> #freezeCon(QC, V VL)
+
+  syntax ValList ::= #reverse(ValList)                               [function]
+                   | #reverseAux(ValList, ValList)                   [function]
+
+  rule #reverse(V:ValList) => #reverseAux(V, .ValList)
+  rule #reverseAux(.ValList, VL:ValList) => VL
+  rule #reverseAux(V:Val VL1:ValList, VL2:ValList) => #reverseAux(VL1, V VL2)
+
+  rule (success M):Tm => M ~> #freezeSucc()
+  rule V:Val ~> #freezeSucc() => (success V):Val
+
+  rule
+    <k> symInt(X:Var) => ?V:Int ... </k>
+    <sym> ... .Map => X |-> ?V ... </sym>
 
 endmodule

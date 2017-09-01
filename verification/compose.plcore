@@ -1,0 +1,17 @@
+(module Foo (imported) (exported () ()) (local () ())
+
+(define plus1
+  (lam x (builtin addInt x 1)))
+
+(define plus3
+  (lam x (builtin addInt x 3)))
+
+(define compose
+  (lam f (lam g (lam x
+    [f [g x]]))))
+
+// (define result [Foo.compose Foo.plus1 Foo.plus3 5])
+
+(define result [Foo.plus1 [Foo.plus3 5]])
+
+)

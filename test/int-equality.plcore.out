@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> result |-> ( con Nat . True .ValList ) </env> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> result |-> ( con Nat . True .ValList ) </genv> <sym> .Map </sym> </T>

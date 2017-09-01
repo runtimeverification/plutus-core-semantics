@@ -1,0 +1,1 @@
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> ( con Nat . Pair 2  ( 1  .ValList ) ) </genv> <mod> Foo </mod> <sym> .Map </sym> </T>

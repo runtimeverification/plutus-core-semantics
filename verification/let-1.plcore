@@ -1,0 +1,4 @@
+(module Foo (imported) (exported () ()) (local () ())
+(define result
+  (let 2 x (builtin addInt x x)))
+)

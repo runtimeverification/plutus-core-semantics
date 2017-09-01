@@ -1,0 +1,10 @@
+(module Foo (imported) (exported () ()) (local () ())
+
+(define fst
+  (lam p
+    (case p
+      (cl Foo.MkPair (x y) x))))
+
+(define result [Foo.fst (con Foo.MkPair symInt(a) symInt(b))])
+
+)

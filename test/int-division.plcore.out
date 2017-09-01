@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> ( Foo . i3 ) |-> 11 ( Foo . i4 ) |-> 3 ( Foo . i1 ) |-> 10 ( Foo . i2 ) |-> 3 </env> <mod> Foo </mod> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . i3 ) |-> 11 ( Foo . i4 ) |-> 3 ( Foo . i1 ) |-> 10 ( Foo . i2 ) |-> 3 </genv> <mod> Foo </mod> <sym> .Map </sym> </T>

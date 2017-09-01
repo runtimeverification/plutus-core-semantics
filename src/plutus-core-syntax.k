@@ -1,7 +1,6 @@
 module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
-  imports SUBSTITUTION
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
@@ -13,9 +12,11 @@ module PLUTUS-CORE-SYNTAX
   // Module name.
   syntax ModName ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
                    | ".ModName"
+                   | #stringToModName(String)                        [function]
 
   // Constructor name.
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+                   | #stringToCon(String)                            [function]
 
   // Integer literal.
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
@@ -39,6 +40,7 @@ module PLUTUS-CORE-SYNTAX
 
   // Variable.
   syntax Var     ::= r"[a-z][a-zA-Z0-9\\_']*"                           [token]
+                   | symInt(Var)                                       [prefer]
 
   /***************************************************************************/
   /*****************************   GRAMMAR   *********************************/
@@ -46,8 +48,6 @@ module PLUTUS-CORE-SYNTAX
 
   // Qualified name and constructor.
   syntax QualN      ::= ModName "." Name
-                      | #qualN(ModName, Name)                        [function]
-
   syntax QualC      ::= ModName "." Con
 
   syntax NameList   ::= List{Name, ""}
@@ -70,7 +70,7 @@ module PLUTUS-CORE-SYNTAX
                         // Application.
                       | "[" Tm TmList "]"                           [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
-                      | "(" "con" QualC TmList ")"                  [strict(2)]
+                      | "(" "con" QualC TmList ")"
                         // Built-in function.
                       | "(" "builtin" Name Tm ")"
                                                             [strict(2), prefer]
@@ -78,9 +78,9 @@ module PLUTUS-CORE-SYNTAX
                                                                  [strict(2, 3)]
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
-                        // Lambda abstraction.
                       | Val
                       | #tmHolder(Float)
+                      | "(" "lam" VarList Tm ")"                       [binder]
 
   // Case clause.
   syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
@@ -100,21 +100,18 @@ module PLUTUS-CORE-SYNTAX
 
   syntax Def        ::= "(" "define" Name Tm ")"                    [strict(2)]
 
-  // Lambda abstraction.
-  syntax Val        ::= "(" "lam" VarList Tm ")"                       [binder]
-                        // Constructed data.
-                      | "(" "con" QualC ValList ")"                    [prefer]
+  syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
                       | InstrVal
                       | Int
                       | PlFloat
                       | ByStr
 
-  syntax InstrVal   ::= "(" "success" Val ")"
-                      | "(" "failure" ")"
+  syntax InstrVal   ::= "(" "failure" ")"
                       | "(" "txhash"  ")"
                       | "(" "blocknum" ")"
                       | "(" "blocktime" ")"
-                      | "(" "bind" Val Var Tm ")"
+                      | "(" "success" Val ")"         [prefer, klabel(succVal)]
+                      | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var

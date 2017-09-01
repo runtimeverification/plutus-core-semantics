@@ -1,0 +1,3 @@
+(module Foo (imported) (exported () ()) (local () ())
+(define result (builtin addFloat 2.0 2.0))
+)

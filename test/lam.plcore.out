@@ -1,1 +1,1 @@
-<T> <k> . </k> <env> ( Foo . result ) |-> ( lam x  .VarList x ) </env> <mod> Foo </mod> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> closure ( .Map , x , x ) </genv> <mod> Foo </mod> <sym> .Map </sym> </T>
