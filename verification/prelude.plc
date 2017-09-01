@@ -4,6 +4,18 @@
   (lam x (lam y
     (builtin equalsInt x y))))
 
+(define equalsMaybe
+  (lam m (lam m'
+    (case m
+      (cl Prelude.Nothing ()
+        (case m'
+          (cl Prelude.Nothing () (con Prelude.True))
+          (cl Prelude.Just (y) (con Prelude.False))))
+      (cl Prelude.Just (x)
+        (case m'
+          (cl Prelude.Nothing () (con Prelude.False))
+          (cl Prelude.Just (y) [Prelude.equalsInt x y])))))))
+
 (define id
   (lam x x))
 
