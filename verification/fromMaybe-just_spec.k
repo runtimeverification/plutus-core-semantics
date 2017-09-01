@@ -1,4 +1,4 @@
-module FROM-JUST-SPEC
+module FROM-MAYBE-JUST-SPEC
   imports PLUTUS-CORE
 
   // Proof that fromMaybe n (Just x) = x
