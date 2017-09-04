@@ -13,7 +13,7 @@ module PLUTUS-CORE-EXECUTION
       <genv> .Map </genv>
       <mod> .ModName </mod>
       <sym> .Map </sym>
-      <gas> 0 </gas>
+      <gas> 10000 </gas>
     </T>
 
   /***************************************************************************/
@@ -21,11 +21,17 @@ module PLUTUS-CORE-EXECUTION
   /***************************************************************************/
 
   syntax K ::= #gas(K, Int)
+             | "ERROR"
 
   rule
     <k> #gas(K, I) => K ... </k>
     <gas> G => G -Int I </gas>
     when (G -Int I) >=Int 0
+
+  rule
+    <k> (#gas(K, I) ~> _) => ERROR </k>
+    <gas> G => G -Int I </gas>
+    when (G -Int I) <Int 0
 
   rule ( builtin addInt:Name       I1:Int I2:Int ) => #gas(I1 +Int I2, 1)
   rule ( builtin subtractInt:Name  I1:Int I2:Int ) => #gas(I1 -Int I2, 1)
