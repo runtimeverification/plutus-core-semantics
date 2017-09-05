@@ -66,34 +66,37 @@ module PLUTUS-CORE-EXECUTION
                                                        when notBool (I1 <Int I2)
 
   // TODO: Figure out _why_ 53 and 11.
-  rule ( builtin intToFloat:Name   I:Int ) => #toPlFloat(Int2Float(I, 53, 11))
+  rule ( builtin intToFloat:Name   I:Int )
+    => #gas(toPlFloat(Int2Float(I, 53, 11)), 3)
 
-  rule ( builtin intToByteString:Name 0 )    => #toByStr("0")
-  rule ( builtin intToByteString:Name I:Int) => #toByStr(#toHex(I))
+  rule ( builtin intToByteString:Name 0 )    => #gas(#toByStr("0"), 1)
+  rule ( builtin intToByteString:Name I:Int) => #gas(#toByStr(#toHex(I)), 3)
     when I =/=Int 0
 
   rule ( builtin addFloat:Name      F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) +Float #toFloat(F2))
+    => #gas(#toPlFloat(#toFloat(F1) +Float #toFloat(F2)), 3)
   rule ( builtin subtractFloat:Name F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) -Float #toFloat(F2))
+    => #gas(#toPlFloat(#toFloat(F1) -Float #toFloat(F2)), 3)
   rule ( builtin multiplyFloat:Name F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) *Float #toFloat(F2))
+    => #gas(#toPlFloat(#toFloat(F1) *Float #toFloat(F2)), 3)
   rule ( builtin divideFloat:Name   F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) /Float #toFloat(F2))
+    => #gas(toPlFloat(#toFloat(F1) /Float #toFloat(F2)), 3)
   rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
-    => #primTrue when #toFloat(F1) <Float #toFloat(F2)
+    => #gas(#primTrue, 3) when #toFloat(F1) <Float #toFloat(F2)
   rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
-    => #primFalse when notBool (#toFloat(F1) <Float #toFloat(F2))
+    => #gas(#primFalse, 3) when notBool (#toFloat(F1) <Float #toFloat(F2))
   rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
-    => #primTrue when #toFloat(F1) ==Float #toFloat(F2)
+    => #gas(#primTrue, 3) when #toFloat(F1) ==Float #toFloat(F2)
   rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
-    => #primFalse when #toFloat(F1) =/=Float #toFloat(F2)
+    => #gas(#primFalse, 3) when #toFloat(F1) =/=Float #toFloat(F2)
 
 
-  rule ( builtin ceil:Name  F:PlFloat ) => #toPlFloat(ceilFloat(#toFloat(F)))
-  rule ( builtin floor:Name F:PlFloat ) => #toPlFloat(floorFloat(#toFloat(F)))
+  rule ( builtin ceil:Name  F:PlFloat )
+    => #gas(#toPlFloat(ceilFloat(#toFloat(F))), 3)
+  rule ( builtin floor:Name F:PlFloat )
+    => #gas(#toPlFloat(floorFloat(#toFloat(F))), 3)
   rule ( builtin round:Name F:PlFloat )
-    => Float2Int(roundFloat(#toFloat(F), 2, 2))
+    => #gas(Float2Int(roundFloat(#toFloat(F), 2, 2)), 3)
 
   syntax PlFloat ::= #toPlFloat(Float)                                [function]
   rule #toPlFloat(F:Float)
