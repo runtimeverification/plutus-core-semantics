@@ -8,5 +8,6 @@ module CURRY-SPEC
     <lenv> L => (x |-> X) (y |-> Y) (f |-> V) </lenv>
     <genv> E GENV:Map (F |-> V:Val) </genv>
     <mod> MN:ModName </mod>
+    <gas> _ => _ </gas>
 
 endmodule

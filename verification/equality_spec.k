@@ -6,5 +6,7 @@ module EQUALITY-SPEC
     <lenv> _ => .Map </lenv>
     <genv> E => E ( MN . result ) |-> (con (#stringToModName("Prelude") . #stringToCon("True")) .ValList) </genv>
     <mod> MN:ModName </mod>
+    <gas> G => G -Int 1 </gas>
+    when (G -Int 1 >=Int 0)
 
 endmodule

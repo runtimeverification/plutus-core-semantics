@@ -15,7 +15,9 @@ module FROM-MAYBE-JUST-SPEC
       ...
     </k>
     <genv> E GENV </genv>
+    <gas> G => G -Int 1 </gas>
     when notBool ((#stringToModName("Prelude") . fromMaybe):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E))
+         andBool (G -Int 1 >=Int 0)
 
 endmodule
