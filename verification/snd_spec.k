@@ -7,6 +7,7 @@ module FST-SPEC
     <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> Y </genv>
     <mod> MN:ModName </mod>
+    <gas> _ => _ </gas>
     requires notBool ((MN . result) in keys(E GENV))
              andBool notBool ((#stringToModName("Prelude") . snd):QualN in keys(E))
              andBool notBool ((#stringToModName("Prelude") . #stringToCon("MkPair")) in keys(E))
