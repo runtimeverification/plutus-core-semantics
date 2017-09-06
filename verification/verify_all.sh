@@ -27,3 +27,5 @@ krun --debug --directory ../ --prove fromMaybe-nothing_spec.k --z3-executable pr
 krun --debug --directory ../ --prove fromMaybe-just_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove mapMaybe-nothing_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove mapMaybe-just_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove either-left_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove either-right_spec.k --z3-executable prelude.plc
