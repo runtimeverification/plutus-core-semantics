@@ -31,3 +31,5 @@ krun --debug --directory ../ --prove either-left_spec.k --z3-executable prelude.
 krun --debug --directory ../ --prove either-right_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove eitherToMaybe-left_spec.k --z3-executable prelude.plc
 krun --debug --directory ../ --prove eitherToMaybe-right_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove maybeToEither-nothing_spec.k --z3-executable prelude.plc
+krun --debug --directory ../ --prove maybeToEither-just_spec.k --z3-executable prelude.plc
