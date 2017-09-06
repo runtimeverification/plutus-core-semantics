@@ -1,0 +1,17 @@
+(module Foo (imported) (exported () ()) (local () ())
+
+(define either
+  (lam f (lam g (lam e
+    (case e
+      (cl Foo.Left (x) [f x])
+      (cl Foo.Right (y) [g y]))))))
+
+(define left
+  (lam x (builtin addInt x 1)))
+
+(define right
+  (lam x (builtin addInt x 2)))
+
+(define result [Foo.either Foo.left Foo.right (con Foo.Right 4)])
+
+)
