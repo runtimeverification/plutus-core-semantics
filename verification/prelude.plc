@@ -16,6 +16,18 @@
           (cl Prelude.Nothing () (con Prelude.False))
           (cl Prelude.Just (y) [eq x y]))))))))
 
+(define equalsEither
+  (lam eqA (lam eqB (lam e (lam e'
+    (case e
+      (cl Prelude.Left (x)
+        (case e'
+          (cl Prelude.Left (x') [eqA x x'])
+          (cl Prelude.Right (y) (con Prelude.False))))
+      (cl Prelude.Right (y)
+        (case e'
+          (cl Prelude.Left (x) (con Prelude.False))
+          (cl Prelude.Right (y') [eqB y y'])))))))))
+
 (define id
   (lam x x))
 
