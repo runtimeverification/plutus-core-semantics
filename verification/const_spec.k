@@ -7,7 +7,8 @@ module CONST-SPEC
     <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> X </genv>
     <mod> MN:ModName </mod>
-    <gas> G </gas>
+    <gas> G => G -Int 1 </gas>
     when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Prelude") . const):QualN in keys(E))
+         andBool (G -Int 1 >=Int 0)
 
 endmodule
