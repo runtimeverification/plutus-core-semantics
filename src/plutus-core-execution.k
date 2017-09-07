@@ -30,7 +30,7 @@ module PLUTUS-CORE-EXECUTION
 
   rule
     <k> (#gas(K, I) ~> _) => ERROR </k>
-    <gas> G => G -Int I </gas>
+    <gas> G </gas>
     when (G -Int I) <Int 0
 
   rule ( builtin addInt:Name       I1:Int I2:Int ) => #gas(I1 +Int I2, 1)
@@ -180,6 +180,13 @@ module PLUTUS-CORE-EXECUTION
     <mod> MN </mod>
     <lenv> _ => .Map </lenv>
     <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
+    <gas> G => G -Int #sizeTm(V) </gas>
+    when (G -Int #sizeTm(V)) >=Int 0
+
+  rule
+    <k> (( define N:Name V:Val ) ~> _) => ERROR ... </k>
+    <gas> G </gas>
+    when (G -Int #sizeTm(V)) <Int 0
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
@@ -237,5 +244,43 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> symInt(X:Var) => ?V:Int ... </k>
     <sym> ... .Map => X |-> ?V ... </sym>
+
+  syntax Int ::= #sizeTm(Tm)                                         [function]
+               | #sizeTmList(TmList)                                 [function]
+               | #sizeValList(ValList)                               [function]
+               | #sizeCl(Cl)                                         [function]
+               | #sizeClList(ClList)                                 [function]
+               | #sizeVarList(VarList)                               [function]
+
+  rule #sizeTmList(.TmList) => 0
+  rule #sizeTmList(M MS) => #sizeTm(M) +Int #sizeTmList(MS)
+  rule #sizeValList(.ValList) => 0
+  rule #sizeValList(V VS) => #sizeTm(V) +Int #sizeValList(VS)
+
+  rule #sizeVarList(.VarList) => 0
+  rule #sizeVarList(X XS) => 1 +Int #sizeVarList(XS)
+
+  rule #sizeClList(.ClList) => 0
+  rule #sizeClList(CL CLS) => #sizeCl(CL) +Int #sizeClList(CLS)
+
+  rule #sizeCl( ( cl QC ( XS ) M ) ) => 2 +Int #sizeVarList(XS) +Int #sizeTm(M)
+
+  rule #sizeTm(X:Var) => 1
+  rule #sizeTm(F:QualN) => 1
+  rule #sizeTm( ( let M1 X M2 ) ) => 2 +Int #sizeTm(M1) +Int #sizeTm(M2)
+  rule #sizeTm( [ M MS ] ) => 1 +Int #sizeTm(M) +Int #sizeTmList(MS)
+  rule #sizeTm( ( case M CLS ) ) => 1 +Int #sizeTm(M) +Int #sizeClList(CLS)
+  rule #sizeTm( ( con QC MS ) ) => 2 +Int #sizeTmList(MS)
+  rule #sizeTm( ( con QC VS ) ) => 2 +Int #sizeValList(VS)
+  rule #sizeTm( ( builtin N M ) ) => 2 +Int #sizeTm(M)
+  rule #sizeTm( ( builtin N M1 M2 ) ) => 2 +Int #sizeTm(M1) +Int #sizeTm(M1)
+  rule #sizeTm( ( success M ) ) => 1 +Int #sizeTm(M)
+  rule #sizeTm( ( bind M1 X M2 ) ) => 2 +Int #sizeTm(M1) +Int #sizeTm(M2)
+  rule #sizeTm( ( lam XS:VarList M ) ) => 1 +Int #sizeVarList(XS) +Int #sizeTm(M)
+
+  // Values
+  // TODO: finish calculating #sizeTm for Vals
+  rule #sizeTm( closure(L, X, M) ) => size(L) +Int 2 +Int #sizeTm(M)
+  rule #sizeTm(X:Int) => 1
 
 endmodule
