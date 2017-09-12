@@ -67,7 +67,7 @@ module PLUTUS-CORE-EXECUTION
 
   // TODO: Figure out _why_ 53 and 11.
   rule ( builtin intToFloat:Name   I:Int )
-    => #gas(toPlFloat(Int2Float(I, 53, 11)), 3)
+    => #gas(#toPlFloat(Int2Float(I, 53, 11)), 3)
 
   rule ( builtin intToByteString:Name 0 )    => #gas(#toByStr("0"), 1)
   rule ( builtin intToByteString:Name I:Int) => #gas(#toByStr(#toHex(I)), 3)
@@ -80,7 +80,7 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin multiplyFloat:Name F1:PlFloat F2:PlFloat )
     => #gas(#toPlFloat(#toFloat(F1) *Float #toFloat(F2)), 3)
   rule ( builtin divideFloat:Name   F1:PlFloat F2:PlFloat )
-    => #gas(toPlFloat(#toFloat(F1) /Float #toFloat(F2)), 3)
+    => #gas(#toPlFloat(#toFloat(F1) /Float #toFloat(F2)), 3)
   rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
     => #gas(#primTrue, 3) when #toFloat(F1) <Float #toFloat(F2)
   rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
@@ -112,21 +112,29 @@ module PLUTUS-CORE-EXECUTION
     => substrString(#toStringVerbatim(B), 1, lengthString(#toStringVerbatim(B)))
 
   rule ( builtin take:Name N:Int B:ByStr )
-    => #toByStr(substrString(#toString(B), 0, N))
+    => #gas(#toByStr(substrString(#toString(B), 0, N)), N)
 
   rule ( builtin drop:Name N:Int B:ByStr )
-    => #toByStr(substrString(#toString(B), N, lengthString(#toString(B))))
+    => #gas(#toByStr(
+         substrString(#toString(B), N, lengthString(#toString(B)))), N)
 
   rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
-    => #toByStr(#toString(B1) +String #toString(B2))
+    => #gas(#toByStr(
+         #toString(B1) +String #toString(B2)),
+       lengthString(#toString(B1)) +Int lengthString(#toString(B2)))
 
   rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
   rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
-  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primTrue
-    when #toString(B1) ==String #toString(B2)
-  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primFalse
-    when #toString(B1) =/=String #toString(B2)
+  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+    => #gas(#primTrue,
+            lengthString(#toString(B1)) +Int lengthString(#toString(B2)))
+       when #toString(B1) ==String #toString(B2)
+
+  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+    => #gas(#primFalse,
+            lengthString(#toString(B1)) +Int lengthString(#toString(B2)))
+       when #toString(B1) =/=String #toString(B2)
 
   /***************************************************************************/
   /************************   LOCAL REDUCTIONS   *****************************/
@@ -282,5 +290,9 @@ module PLUTUS-CORE-EXECUTION
   // TODO: finish calculating #sizeTm for Vals
   rule #sizeTm( closure(L, X, M) ) => size(L) +Int 2 +Int #sizeTm(M)
   rule #sizeTm(X:Int) => 1
+  rule #sizeTm(B:ByStr) => 1
+  rule #sizeTm(F:PlFloat) => 1
+  rule #sizeTm( ( failure ):InstrVal ) => 1
+  rule #sizeTm( ( success V:Val ) ) => 1 +Int #sizeTm(V)
 
 endmodule
