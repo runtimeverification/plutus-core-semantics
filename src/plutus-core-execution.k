@@ -166,7 +166,14 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
     <lenv> Rho' => Rho[X <- V] </lenv>
+    <gas> G => G -Int (#sizeTm(V) +Int size(Rho)) </gas>
     [structural]
+
+  // rule
+  //   <k> (app(closure(Rho, X, M), V:Val) => M ~> Rho') ~> Rest </k>
+  //   <lenv> Rho' => Rho[X <- V] </lenv>
+  //   <gas> G => G -Int size(Rest) </gas>
+  //   [structural]
 
   rule
     <k> _:Val ~> (Rho => .K) ... </k>
