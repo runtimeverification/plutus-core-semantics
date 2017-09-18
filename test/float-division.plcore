@@ -1,5 +1,0 @@
-(module Foo (imported) (exported () ()) (local () ())
-  (define f1 (builtin divideFloat 30.0 5.0))
-  (define f2 (builtin divideFloat 9.0 3.0))
-  (define f3 (builtin divideFloat 20.0 3.0))
-  (define f4 (builtin divideFloat 100.0 6.0)))
