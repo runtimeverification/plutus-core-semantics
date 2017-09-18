@@ -1,6 +1,5 @@
 module PLUTUS-CORE-SYNTAX
   imports INT
-  imports FLOAT
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
@@ -21,10 +20,6 @@ module PLUTUS-CORE-SYNTAX
   // Integer literal.
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
   // expression as that in the Plutus Core specification.
-
-  /* TODO: Add hook to ensure floats are always of the correct format */
-  syntax PlFloat ::= r"[\\+\\-]?[0-9]+(\\.[0-9]+(([eE][+-]?[0-9]+)?|([eE][+-]?[0-9])+))" [token]
-  syntax Float   ::= #toFloat(PlFloat)                                [function]
 
   // Exponent.
   syntax Exp     ::= r"[eE][+-]?[0-9]+"                                 [token]
@@ -79,7 +74,6 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
-                      | #tmHolder(Float)
                       | "(" "lam" VarList Tm ")"                       [binder]
 
   // Case clause.
@@ -103,7 +97,6 @@ module PLUTUS-CORE-SYNTAX
   syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
                       | InstrVal
                       | Int
-                      | PlFloat
                       | ByStr
 
   syntax InstrVal   ::= "(" "failure" ")"
@@ -117,8 +110,6 @@ module PLUTUS-CORE-SYNTAX
   syntax KVariable  ::= Var
 
   syntax String     ::= #toStringVerbatim(ByStr)   [ function
-                                                   , hook(STRING.token2string)]
-                      | #toStringFloat(PlFloat)    [ function
                                                    , hook(STRING.token2string)]
                       | #toString(ByStr)                             [function]
 

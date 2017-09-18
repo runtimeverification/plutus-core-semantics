@@ -114,22 +114,6 @@
       (cl Prelude.True () x)
       (cl Prelude.False () y)))))
 
-(define lessThanEqualsFloat
-  (lam x (lam y
-    [Prelude.not (builtin lessThanFloat y x)])))
-
-(define maxFloat
-  (lam x (lam y
-    (case (builtin lessThanFloat x y)
-      (cl Prelude.True () y)
-      (cl Prelude.False () x)))))
-
-(define minFloat
-  (lam x (lam y
-    (case (builtin lessThanFloat x y)
-      (cl Prelude.True () x)
-      (cl Prelude.False () y)))))
-
 (define append
   (lam xs (lam ys
     (case xs
@@ -423,14 +407,8 @@
 (define sumInt
   (lam xs [Prelude.foldl (lam x y (builtin addInt x y)) 0 xs]))
 
-(define sumFloat
-  (lam xs [Prelude.foldl (lam x y (builtin addFloat x y)) 0.0 xs]))
-
 (define productInt
   (lam xs [Prelude.foldl (lam x y (builtin multiplyInt x y)) 1 xs]))
-
-(define productFloat
-  (lam xs [Prelude.foldl (lam x y (builtin multiplyFloat x y)) 1.0 xs]))
 
 (define maximumBy
   (lam comp

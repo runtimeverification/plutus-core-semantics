@@ -65,44 +65,9 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #gas(#primFalse, 1)
                                                        when notBool (I1 <Int I2)
 
-  // TODO: Figure out _why_ 53 and 11.
-  rule ( builtin intToFloat:Name   I:Int )
-    => #gas(#toPlFloat(Int2Float(I, 53, 11)), 3)
-
   rule ( builtin intToByteString:Name 0 )    => #gas(#toByStr("0"), 1)
   rule ( builtin intToByteString:Name I:Int) => #gas(#toByStr(#toHex(I)), 3)
     when I =/=Int 0
-
-  rule ( builtin addFloat:Name      F1:PlFloat F2:PlFloat )
-    => #gas(#toPlFloat(#toFloat(F1) +Float #toFloat(F2)), 3)
-  rule ( builtin subtractFloat:Name F1:PlFloat F2:PlFloat )
-    => #gas(#toPlFloat(#toFloat(F1) -Float #toFloat(F2)), 3)
-  rule ( builtin multiplyFloat:Name F1:PlFloat F2:PlFloat )
-    => #gas(#toPlFloat(#toFloat(F1) *Float #toFloat(F2)), 3)
-  rule ( builtin divideFloat:Name   F1:PlFloat F2:PlFloat )
-    => #gas(#toPlFloat(#toFloat(F1) /Float #toFloat(F2)), 3)
-  rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
-    => #gas(#primTrue, 3) when #toFloat(F1) <Float #toFloat(F2)
-  rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
-    => #gas(#primFalse, 3) when notBool (#toFloat(F1) <Float #toFloat(F2))
-  rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
-    => #gas(#primTrue, 3) when #toFloat(F1) ==Float #toFloat(F2)
-  rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
-    => #gas(#primFalse, 3) when #toFloat(F1) =/=Float #toFloat(F2)
-
-
-  rule ( builtin ceil:Name  F:PlFloat )
-    => #gas(#toPlFloat(ceilFloat(#toFloat(F))), 3)
-  rule ( builtin floor:Name F:PlFloat )
-    => #gas(#toPlFloat(floorFloat(#toFloat(F))), 3)
-  rule ( builtin round:Name F:PlFloat )
-    => #gas(Float2Int(roundFloat(#toFloat(F), 2, 2)), 3)
-
-  syntax PlFloat ::= #toPlFloat(Float)                                [function]
-  rule #toPlFloat(F:Float)
-    => #parseToken("PlFloat@PLUTUS-CORE-SYNTAX", Float2String(F))
-  rule #toFloat(F:PlFloat)
-    => #parseToken("Float@FLOAT-SYNTAX", #toStringFloat(F))
 
   syntax ByStr ::= #toByStr ( String )                                [function]
   rule #toByStr(S:String)
@@ -298,7 +263,6 @@ module PLUTUS-CORE-EXECUTION
   rule #sizeTm( closure(L, X, M) ) => size(L) +Int 2 +Int #sizeTm(M)
   rule #sizeTm(X:Int) => 1
   rule #sizeTm(B:ByStr) => 1
-  rule #sizeTm(F:PlFloat) => 1
   rule #sizeTm( ( failure ):InstrVal ) => 1
   rule #sizeTm( ( success V:Val ) ) => 1 +Int #sizeTm(V)
 

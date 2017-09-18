@@ -1,6 +1,4 @@
 (module Foo (imported) (exported () ()) (local () ())
   (define c1 (builtin lessThanInt 1 2))
   (define c2 (builtin lessThanInt 2 2))
-  (define c3 (builtin lessThanFloat 0.1 1.0))
-  (define c4 (builtin lessThanFloat 1.0 0.1))
 )
