@@ -16,9 +16,10 @@ module EITHER-TO-MAYBE-LEFT-SPEC
       ...
     </k>
     <genv> E GENV:Map </genv>
-    <gas> _ => _ </gas>
+    <gas> G => G -Int 27 </gas>
     when notBool ((#stringToModName("Prelude") . eitherToMaybe):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsMaybe):QualN in keys(E)) andBool
-         notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E))
+         notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E)) andBool
+         G -Int 27 >=Int 0
 
 endmodule

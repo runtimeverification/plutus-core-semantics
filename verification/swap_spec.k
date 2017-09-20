@@ -7,9 +7,10 @@ module SWAP-SPEC
     <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> (con (#stringToModName("Prelude") . #stringToCon("MkPair")):QualC Y X) </genv>
     <mod> MN:ModName </mod>
-    <gas> _ => _ </gas>
+    <gas> G => G -Int 19 </gas>
     requires notBool ((MN . result) in keys(E GENV))
              andBool notBool ((#stringToModName("Prelude") . swap):QualN in keys(E))
              andBool notBool ((#stringToModName("Prelude") . #stringToCon("MkPair")) in keys(E))
+             andBool G -Int 19 >=Int 0
 
 endmodule

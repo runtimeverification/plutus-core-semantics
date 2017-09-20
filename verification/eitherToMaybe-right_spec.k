@@ -16,10 +16,10 @@ module EITHER-TO-MAYBE-RIGHT-SPEC
       ...
     </k>
     <genv> E GENV:Map </genv>
-    <gas> G => G -Int 1 </gas>
+    <gas> G => G -Int 57 </gas>
     when notBool ((#stringToModName("Prelude") . eitherToMaybe):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsMaybe):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E)) andBool
-         G -Int 1 >=Int 0
+         G -Int 57 >=Int 0
 
 endmodule

@@ -16,7 +16,7 @@ module MAP-MAYBE-NOTHING-SPEC
       ...
     </k>
     <genv> E GENV:Map (F |-> V:Val) </genv>
-    <gas> _ => _ </gas>
+    <gas> G => G -Int 1 </gas>
     when notBool ((#stringToModName("Prelude") . mapMaybe):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsMaybe):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E))
