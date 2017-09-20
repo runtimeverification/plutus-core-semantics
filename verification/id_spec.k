@@ -14,9 +14,9 @@ module ID-SPEC
       ...
     </k>
     <genv> E GENV </genv>
-    <gas> G => G -Int 1 </gas>
+    <gas> G => G -Int 8 </gas>
     when notBool ((#stringToModName("Prelude") . id):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E))
-         andBool (G -Int 1 >=Int 0)
+         andBool (G -Int 8 >=Int 0)
 
 endmodule

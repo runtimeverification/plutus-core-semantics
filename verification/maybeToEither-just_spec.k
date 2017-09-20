@@ -17,10 +17,10 @@ module MAYBE-TO-EITHER-JUST-SPEC
       ...
     </k>
     <genv> E GENV:Map </genv>
-    <gas> G => G -Int 1 </gas>
+    <gas> G => G -Int 73 </gas>
     when notBool ((#stringToModName("Prelude") . maybeToEither):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsEither):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E)) andBool
-         G -Int 1 >=Int 0
+         G -Int 73 >=Int 0
 
 endmodule
