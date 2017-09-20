@@ -35,11 +35,14 @@ module PLUTUS-CORE-EXECUTION
 
   rule ( builtin addInt:Name       I1:Int I2:Int ) => #gas(I1 +Int I2, 1)
   rule ( builtin subtractInt:Name  I1:Int I2:Int ) => #gas(I1 -Int I2, 1)
-  rule ( builtin multiplyInt:Name  I1:Int I2:Int ) => #gas(I1 *Int I2, 1)
-  rule ( builtin divideInt:Name    I1:Int I2:Int ) => #gas(I1 /Int I2, 1)
-                                                        when I2 =/=Int 0
-  rule ( builtin remainderInt:Name I1:Int I2:Int ) => #gas(I1 %Int I2, 1)
-                                                        when I2 =/=Int 0
+  rule ( builtin multiplyInt:Name  I1:Int I2:Int )
+    => #gas(I1 *Int I2, #sizeTm(I1 +Int I2))
+  rule ( builtin divideInt:Name    I1:Int I2:Int )
+    => #gas(I1 /Int I2, #sizeTm(I1 +Int I2))
+    when I2 =/=Int 0
+  rule ( builtin remainderInt:Name I1:Int I2:Int )
+    => #gas(I1 %Int I2, #sizeTm(I1 +Int I2))
+    when I2 =/=Int 0
 
   syntax Tm ::= #conHolder(K, K)
               | #qualCHolder(K, K)
@@ -66,7 +69,8 @@ module PLUTUS-CORE-EXECUTION
                                                        when notBool (I1 <Int I2)
 
   rule ( builtin intToByteString:Name 0 )    => #gas(#toByStr("0"), 1)
-  rule ( builtin intToByteString:Name I:Int) => #gas(#toByStr(#toHex(I)), 3)
+  rule ( builtin intToByteString:Name I:Int)
+    => #gas(#toByStr(#toHex(I)), #sizeTm(I))
     when I =/=Int 0
 
   syntax ByStr ::= #toByStr ( String )                                [function]
@@ -148,6 +152,13 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> X:Var => V ... </k>
     <lenv> ... X |-> V ... </lenv>
+    <gas> G => G -Int #sizeTm(V) </gas>
+    when (G -Int #sizeTm(V)) >=Int 0
+
+  rule
+    <k> (X:Var ~> _) => ERROR </k>
+    <gas> G </gas>
+    when (G -Int #sizeTm(V)) <Int 0
 
   // Desugar let expression to lambda expression
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
@@ -164,7 +175,7 @@ module PLUTUS-CORE-EXECUTION
     when (G -Int #sizeTm(V)) >=Int 0
 
   rule
-    <k> (( define N:Name V:Val ) ~> _) => ERROR ... </k>
+    <k> (( define N:Name V:Val ) ~> _) => ERROR </k>
     <gas> G </gas>
     when (G -Int #sizeTm(V)) <Int 0
 
@@ -261,7 +272,7 @@ module PLUTUS-CORE-EXECUTION
   // Values
   // TODO: finish calculating #sizeTm for Vals
   rule #sizeTm( closure(L, X, M) ) => size(L) +Int 2 +Int #sizeTm(M)
-  rule #sizeTm(X:Int) => 1
+  rule #sizeTm(I:Int) => Float2Int(logFloat(Int2Float(I, 53, 11)))
   rule #sizeTm(B:ByStr) => 1
   rule #sizeTm( ( failure ):InstrVal ) => 1
   rule #sizeTm( ( success V:Val ) ) => 1 +Int #sizeTm(V)
