@@ -92,6 +92,7 @@ module PLUTUS-CORE-EXECUTION
          #toString(B1) +String #toString(B2)),
        lengthString(#toString(B1)) +Int lengthString(#toString(B2)))
 
+  // TODO: no gas encoding chosen for now
   rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
   rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
@@ -136,6 +137,13 @@ module PLUTUS-CORE-EXECUTION
     <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
     <lenv> Rho' => Rho[X <- V] </lenv>
     <gas> G => G -Int (#sizeTm(V) +Int size(Rho)) </gas>
+    when G -Int (#sizeTm(V) +Int size(Rho)) >=Int 0
+    [structural]
+
+  rule
+    <k> (app(closure(Rho, X, M), V:Val) ~> _) => ERROR </k>
+    <gas> G </gas>
+    when G -Int (#sizeTm(V) +Int size(Rho)) <Int 0
     [structural]
 
   // rule
@@ -157,6 +165,7 @@ module PLUTUS-CORE-EXECUTION
 
   rule
     <k> (X:Var ~> _) => ERROR </k>
+    <lenv> ... X |-> V ... </lenv>
     <gas> G </gas>
     when (G -Int #sizeTm(V)) <Int 0
 
@@ -270,11 +279,24 @@ module PLUTUS-CORE-EXECUTION
   rule #sizeTm( ( lam XS:VarList M ) ) => 1 +Int #sizeVarList(XS) +Int #sizeTm(M)
 
   // Values
-  // TODO: finish calculating #sizeTm for Vals
+  // TODO: finish gas calculation for all values
   rule #sizeTm( closure(L, X, M) ) => size(L) +Int 2 +Int #sizeTm(M)
-  rule #sizeTm(I:Int) => Float2Int(logFloat(Int2Float(I, 53, 11)))
+
+  // TODO: The Float2Int(logFloat(...)) calculates the size of an integer, but
+  // verification doesn't like it. We either need to change encoding of an
+  // integer or make verification go through
+  rule #sizeTm(I:Int) => 1 // Float2Int(logFloat(Int2Float(I, 53, 11)))
+
   rule #sizeTm(B:ByStr) => 1
   rule #sizeTm( ( failure ):InstrVal ) => 1
   rule #sizeTm( ( success V:Val ) ) => 1 +Int #sizeTm(V)
+
+  // Gas TODOs:
+  // Agree on gas calculation for every rule (sha, application, etc.)
+  // Agree on cost for integer/string/bytes operations and storing them
+  // Make verification go through with size of int (if that encoding is chosen)
+  // Finish gas calculation for all values
+  // Refactoring/cleaneup: less repeated code, etc.
+  // get #sizeTm to work symbolically with verification (smt-lib attribute?)
 
 endmodule
