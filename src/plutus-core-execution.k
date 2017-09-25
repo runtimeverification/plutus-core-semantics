@@ -245,12 +245,13 @@ module PLUTUS-CORE-EXECUTION
     <k> symInt(X:Var) => ?V:Int ... </k>
     <sym> ... .Map => X |-> ?V ... </sym>
 
-  syntax Int ::= #sizeTm(Tm)                                         [function]
+  syntax Int ::= #sizeTm(Tm)                        [function, smt-lib(sizeTm)]
                | #sizeTmList(TmList)                                 [function]
                | #sizeValList(ValList)                               [function]
                | #sizeCl(Cl)                                         [function]
                | #sizeClList(ClList)                                 [function]
                | #sizeVarList(VarList)                               [function]
+               | #sizeInt(Int)                     [function, smt-lib(sizeInt)]
 
   rule #sizeTmList(.TmList) => 0
   rule #sizeTmList(M MS) => #sizeTm(M) +Int #sizeTmList(MS)
@@ -285,11 +286,13 @@ module PLUTUS-CORE-EXECUTION
   // TODO: The Float2Int(logFloat(...)) calculates the size of an integer, but
   // verification doesn't like it. We either need to change encoding of an
   // integer or make verification go through
-  rule #sizeTm(I:Int) => 1 // Float2Int(logFloat(Int2Float(I, 53, 11)))
+  rule #sizeTm(I:Int) => #sizeInt(I) // Float2Int(logFloat(Int2Float(I, 53, 11)))
 
   rule #sizeTm(B:ByStr) => 1
   rule #sizeTm( ( failure ):InstrVal ) => 1
   rule #sizeTm( ( success V:Val ) ) => 1 +Int #sizeTm(V)
+
+  rule #sizeInt(I:Int) => 1 // TODO: fix this
 
   // Gas TODOs:
   // Agree on gas calculation for every rule (sha, application, etc.)
