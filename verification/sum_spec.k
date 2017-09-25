@@ -8,18 +8,18 @@ module SUM-SPEC
     <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> ((N +Int 1) *Int N /Int 2) </genv>
     <mod> MN:ModName </mod>
-    <gas> G => G -Int (N *Int 10 +Int 7) </gas>
+    <gas> G => G -Int (N *Int 6 *Int #sizeInt(N)) -Int (N *Int 4) -Int #sizeInt(N) -Int 3 *Int #sizeInt(N) -Int 2 -Int #sizeInt(N) </gas>
     when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Foo") . sum):QualN in keys(E))
          andBool N >=Int 0
-         andBool (G -Int (N *Int 10 +Int 7)) >=Int 0
+         andBool G -Int (N *Int 6 *Int #sizeInt(N)) -Int (N *Int 4) -Int (#sizeInt(N) *Int 2) -Int 53 -Int #sizeInt(N) >=Int 0
 
   rule
     <k> [(#stringToModName("Foo") . sum):QualN (builtin subtractInt n 1) (builtin addInt n s):Tm] => S +Int ((N +Int 1) *Int N /Int 2) ... </k>
     <lenv> ... n |-> N:Int s |-> S:Int ... </lenv>
     <genv> E GENV:Map </genv>
     <mod> MN:ModName </mod>
-    <gas> G => G -Int (N *Int 10 +Int 1) </gas>
+    <gas> G => G -Int (N *Int 6 *Int #sizeInt(N)) -Int (N *Int 4) -Int #sizeInt(N) </gas>
     when N >Int 0
-         andBool G -Int (N *Int 10 +Int 1) >=Int 0
+         andBool G -Int (N *Int 6 *Int #sizeInt(N)) -Int (N *Int 4) -Int #sizeInt(N) >=Int 0
 
 endmodule
