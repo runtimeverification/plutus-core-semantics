@@ -78,6 +78,9 @@ module PLUTUS-CORE-SYNTAX
                       | Val
                       | "(" "lam" VarList Tm ")"                       [binder]
 
+  syntax Ki         ::= "type"
+                      | "(" "fun" Ki Ki ")"
+
   // Case clause.
   syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
 
