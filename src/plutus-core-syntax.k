@@ -111,6 +111,9 @@ module PLUTUS-CORE-SYNTAX
 
   syntax TDec       ::= "(" "type" Name Ty ")"
 
+  // Type annotations for terms.
+  syntax MDec       ::= "(" "declare" Name Ty ")"
+
   syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
                       | InstrVal
                       | Int
