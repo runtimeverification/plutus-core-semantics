@@ -4,7 +4,7 @@ require "hex-conversion.k"
 module PLUTUS-CORE-EXECUTION
   imports PLUTUS-CORE-SYNTAX
   imports KRYPTO
-  imports HEX-CONVERSION
+  imports PLUTUS-LIB
 
   configuration
     <T>
@@ -245,13 +245,13 @@ module PLUTUS-CORE-EXECUTION
     <k> symInt(X:Var) => ?V:Int ... </k>
     <sym> ... .Map => X |-> ?V ... </sym>
 
-  syntax Int ::= #sizeTm(Tm)                        [function, smt-lib(sizeTm)]
+  syntax Int ::= #sizeTm(Tm)                         [function, smtlib(sizeTm)]
                | #sizeTmList(TmList)                                 [function]
                | #sizeValList(ValList)                               [function]
                | #sizeCl(Cl)                                         [function]
                | #sizeClList(ClList)                                 [function]
                | #sizeVarList(VarList)                               [function]
-               | #sizeInt(Int)                     [function, smt-lib(sizeInt)]
+               | #sizeInt(Int)                      [function, smtlib(sizeInt)]
 
   rule #sizeTmList(.TmList) => 0
   rule #sizeTmList(M MS) => #sizeTm(M) +Int #sizeTmList(MS)
@@ -283,21 +283,23 @@ module PLUTUS-CORE-EXECUTION
   // TODO: finish gas calculation for all values
   rule #sizeTm( closure(L, X, M) ) => size(L) +Int 2 +Int #sizeTm(M)
 
-  // TODO: The Float2Int(logFloat(...)) calculates the size of an integer, but
-  // verification doesn't like it. We either need to change encoding of an
-  // integer or make verification go through
-  rule #sizeTm(I:Int) => #sizeInt(I) // Float2Int(logFloat(Int2Float(I, 53, 11)))
+  // TODO: proofs go through when considering #sizeInt as an uninterpreted fct.
+  // However, verification does not seem to like using #log2Int directly.
+  // Need to use #log2Int calculation correctly for some proofs (notably sum)
+  rule #sizeTm(I:Int) => #sizeInt(I)
+  rule #sizeInt(_) >=Int 0 => true:Bool [smt-lemma]
+  rule #sizeInt(I1 +Int I2) ==Int #sizeInt(I2 +Int I1) => true:Bool [smt-lemma]
+  rule #sizeInt(I1 +Int (I2 +Int I3)) ==Int #sizeInt((I1 +Int I2) +Int I3) => true:Bool [smt-lemma]
+  // rule #sizeInt(I:Int) => #log2Int(I)
 
   rule #sizeTm(B:ByStr) => 1
   rule #sizeTm( ( failure ):InstrVal ) => 1
   rule #sizeTm( ( success V:Val ) ) => 1 +Int #sizeTm(V)
 
-  rule #sizeInt(I:Int) => 1 // TODO: fix this
-
   // Gas TODOs:
   // Agree on gas calculation for every rule (sha, application, etc.)
   // Agree on cost for integer/string/bytes operations and storing them
-  // Make verification go through with size of int (if that encoding is chosen)
+  // Make verification go through with size of int
   // Finish gas calculation for all values
   // Refactoring/cleaneup: less repeated code, etc.
   // get #sizeTm to work symbolically with verification (smt-lib attribute?)
