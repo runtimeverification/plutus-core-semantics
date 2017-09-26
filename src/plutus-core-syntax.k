@@ -81,6 +81,16 @@ module PLUTUS-CORE-SYNTAX
   syntax Ki         ::= "type"
                       | "(" "fun" Ki Ki ")"
 
+  syntax Ty         ::= Var
+                      | "(" "fun" Ty Ty ")"
+                      | "(" "con" QualC TyList ")"
+                      | "(" "comp" Ty ")"
+                      | "(" "forall" Var Ki Ty ")"
+                      | "bytestring"
+                      | "integer"
+                      | "(" "lam" Var Ki Ty ")"
+                      | "[" Ty Ty "]"
+
   // Case clause.
   syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
 
