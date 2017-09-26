@@ -1,4 +1,4 @@
-module HEX-CONVERSION
+module PLUTUS-LIB
 
   syntax String ::= #toHex(Int)                                      [function]
                   | #hex(Int)                                        [function]
@@ -25,5 +25,19 @@ module HEX-CONVERSION
   rule #toHex(0) => ""
   rule #toHex(N:Int) => #toHex(N /Int 16) +String #hex(N %Int 16)
                           when N =/=Int 0
+
+  syntax Int ::= #log2Int(Int)                       [function, smtlib(logInt)]
+
+  rule #log2Int(I) => #log2Int(0 -Int I) when I <Int 0
+  rule #log2Int(0) => 1
+  rule #log2Int(1) => 1
+  rule #log2Int(I) => 1 +Int #log2Int(I /Int 2) when I >Int 1
+
+  rule #log2Int(_) >=Int 0 => true [smt-lemma]
+
+  // rule #log2Int(0) ==Int 0 => true [smt-lemma]
+  // rule #log2Int(1) ==Int 0 => true [smt-lemma]
+
+  // rule #log2Int(I) ==Int 1 +Int #log2Int(I /Int 2) => I >Int 1 [smt-lemma]
 
 endmodule
