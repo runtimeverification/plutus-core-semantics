@@ -109,6 +109,8 @@ module PLUTUS-CORE-SYNTAX
 
   syntax Def        ::= "(" "define" Name Tm ")"                    [strict(2)]
 
+  syntax TDec       ::= "(" "type" Name Ty ")"
+
   syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
                       | InstrVal
                       | Int
