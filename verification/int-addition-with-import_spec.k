@@ -7,8 +7,8 @@ module INT-ADDITION-SPEC
     <lenv> _ => .Map </lenv>
     <genv> E GENV => E GENV (MN . result) |-> X +Int (Y +Int 4) </genv>
     <mod> MN:ModName </mod>
-    <gas> G => G -Int 3 </gas>
+    <gas> G => G -Int 2 -Int #sizeInt(X +Int (Y +Int 4)) </gas>
     when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Bar") . result):QualN in keys(E))
-         andBool (G -Int 3 >=Int 0)
+         andBool (G -Int 2 -Int #sizeInt(X +Int (Y +Int 4)) >=Int 0)
 
 endmodule
