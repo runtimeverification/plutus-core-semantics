@@ -1,5 +1,5 @@
 require "plutus-core-syntax.k"
-require "hex-conversion.k"
+require "plutus-lib.k"
 
 module PLUTUS-CORE-EXECUTION
   imports PLUTUS-CORE-SYNTAX
@@ -160,14 +160,6 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> X:Var => V ... </k>
     <lenv> ... X |-> V ... </lenv>
-    <gas> G => G -Int #sizeTm(V) </gas>
-    when (G -Int #sizeTm(V)) >=Int 0
-
-  rule
-    <k> (X:Var ~> _) => ERROR </k>
-    <lenv> ... X |-> V ... </lenv>
-    <gas> G </gas>
-    when (G -Int #sizeTm(V)) <Int 0
 
   // Desugar let expression to lambda expression
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
