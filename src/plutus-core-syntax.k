@@ -35,7 +35,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Arity   ::= r"[0-9]+"                                          [token]
 
   // Variable.
-  syntax Var     ::= r"[a-z][a-zA-Z0-9\\_']*"                           [token]
+  syntax Var     ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
                    | symInt(Var)                                       [prefer]
 
   /***************************************************************************/
