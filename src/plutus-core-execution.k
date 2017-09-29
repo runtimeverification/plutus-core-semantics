@@ -33,18 +33,21 @@ module PLUTUS-CORE-EXECUTION
     <gas> G </gas>
     when (G -Int I) <Int 0
 
-  rule ( builtin addInt:Name       I1:Int I2:Int ) => #gas(I1 +Int I2, 1)
-  rule ( builtin subtractInt:Name  I1:Int I2:Int ) => #gas(I1 -Int I2, 1)
+  rule ( builtin addInt:Name       I1:Int I2:Int )
+    => #gas(I1 +Int I2, #sizeInt(I1 +Int I2))
+  rule ( builtin subtractInt:Name  I1:Int I2:Int )
+    => #gas(I1 -Int I2, #sizeInt(I1 +Int I2))
   rule ( builtin multiplyInt:Name  I1:Int I2:Int )
-    => #gas(I1 *Int I2, #sizeTm(I1 +Int I2))
+    => #gas(I1 *Int I2, #sizeInt(I1 *Int I2))
   rule ( builtin divideInt:Name    I1:Int I2:Int )
-    => #gas(I1 /Int I2, #sizeTm(I1 +Int I2))
+    => #gas(I1 /Int I2, #sizeInt(I1 *Int I2))
     when I2 =/=Int 0
   rule ( builtin remainderInt:Name I1:Int I2:Int )
-    => #gas(I1 %Int I2, #sizeTm(I1 +Int I2))
+    => #gas(I1 %Int I2, #sizeInt(I1 *Int I2))
     when I2 =/=Int 0
 
-  syntax Tm ::= #conHolder(K, K)
+
+syntax Tm ::= #conHolder(K, K)
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
@@ -58,19 +61,23 @@ module PLUTUS-CORE-EXECUTION
   rule #primFalse
     => #conHolder(#stringToModName("Prelude"), #stringToCon("False"))
 
-  rule ( builtin equalsInt:Name I:Int I:Int     ) => #gas(#primTrue, 1)
-                                                       [transition]
-  rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #gas(#primFalse, 1)
-                                                       when I1 =/=Int I2
-                                                       [transition]
-  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #gas(#primTrue, 1)
-                                                       when I1 <Int I2
-  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #gas(#primFalse, 1)
-                                                       when notBool (I1 <Int I2)
+  rule ( builtin equalsInt:Name I:Int I:Int     )
+    => #gas(#primTrue, #sizeInt(I))
+       [transition]
+  rule ( builtin equalsInt:Name I1:Int I2:Int   )
+    => #gas(#primFalse, #sizeInt(maxInt(I1, I2)))
+       when I1 =/=Int I2
+       [transition]
+  rule ( builtin lessThanInt:Name I1:Int I2:Int )
+    => #gas(#primTrue, #sizeInt(maxInt(I1, I2)))
+       when I1 <Int I2
+  rule ( builtin lessThanInt:Name I1:Int I2:Int )
+    => #gas(#primFalse, #sizeInt(maxInt(I1, I2)))
+        when notBool (I1 <Int I2)
 
   rule ( builtin intToByteString:Name 0 )    => #gas(#toByStr("0"), 1)
   rule ( builtin intToByteString:Name I:Int)
-    => #gas(#toByStr(#toHex(I)), #sizeTm(I))
+    => #gas(#toByStr(#toHex(I)), #sizeInt(I))
     when I =/=Int 0
 
   syntax ByStr ::= #toByStr ( String )                                [function]
@@ -134,23 +141,9 @@ module PLUTUS-CORE-EXECUTION
     [structural]
 
   rule
-    <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
+    <k> app(closure(Rho, X, M), V:Val) => #gas(M ~> Rho', #sizeTm(V) +Int size(Rho)) ... </k>
     <lenv> Rho' => Rho[X <- V] </lenv>
-    <gas> G => G -Int (#sizeTm(V) +Int size(Rho)) </gas>
-    when G -Int (#sizeTm(V) +Int size(Rho)) >=Int 0
     [structural]
-
-  rule
-    <k> (app(closure(Rho, X, M), V:Val) ~> _) => ERROR </k>
-    <gas> G </gas>
-    when G -Int (#sizeTm(V) +Int size(Rho)) <Int 0
-    [structural]
-
-  // rule
-  //   <k> (app(closure(Rho, X, M), V:Val) => M ~> Rho') ~> Rest </k>
-  //   <lenv> Rho' => Rho[X <- V] </lenv>
-  //   <gas> G => G -Int size(Rest) </gas>
-  //   [structural]
 
   rule
     <k> _:Val ~> (Rho => .K) ... </k>
@@ -158,7 +151,7 @@ module PLUTUS-CORE-EXECUTION
     [structural]
 
   rule
-    <k> X:Var => V ... </k>
+    <k> X:Var => #gas(V, 1) ... </k>
     <lenv> ... X |-> V ... </lenv>
 
   // Desugar let expression to lambda expression
@@ -168,17 +161,10 @@ module PLUTUS-CORE-EXECUTION
   rule D:Def DS:DefList => D ~> DS
 
   rule
-    <k> ( define N:Name V:Val ) => .K ... </k>
+    <k> ( define N:Name V:Val ) => #gas(.K, #sizeTm(V)) ... </k>
     <mod> MN </mod>
     <lenv> _ => .Map </lenv>
     <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
-    <gas> G => G -Int #sizeTm(V) </gas>
-    when (G -Int #sizeTm(V)) >=Int 0
-
-  rule
-    <k> (( define N:Name V:Val ) ~> _) => ERROR </k>
-    <gas> G </gas>
-    when (G -Int #sizeTm(V)) <Int 0
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
@@ -189,7 +175,7 @@ module PLUTUS-CORE-EXECUTION
     <mod> CurrMN => MN </mod>
 
   rule
-    <k> QN:QualN => V ... </k>
+    <k> QN:QualN => #gas(V, 1) ... </k>
     <genv> ... QN |-> V ... </genv>
 
   rule (.DefList ~> _:ModF ) => .K
@@ -282,7 +268,7 @@ module PLUTUS-CORE-EXECUTION
   rule #sizeInt(_) >=Int 0 => true:Bool [smt-lemma]
   rule #sizeInt(I1 +Int I2) ==Int #sizeInt(I2 +Int I1) => true:Bool [smt-lemma]
   rule #sizeInt(I1 +Int (I2 +Int I3)) ==Int #sizeInt((I1 +Int I2) +Int I3) => true:Bool [smt-lemma]
-  // rule #sizeInt(I:Int) => #log2Int(I)
+  rule #sizeInt(I:Int) => #log2Int(I)
 
   rule #sizeTm(B:ByStr) => 1
   rule #sizeTm( ( failure ):InstrVal ) => 1
