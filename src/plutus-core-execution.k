@@ -65,14 +65,14 @@ syntax Tm ::= #conHolder(K, K)
     => #gas(#primTrue, #sizeInt(I))
        [transition]
   rule ( builtin equalsInt:Name I1:Int I2:Int   )
-    => #gas(#primFalse, #sizeInt(maxInt(I1, I2)))
+    => #gas(#primFalse, #sizeInt(I1 +Int I2))
        when I1 =/=Int I2
        [transition]
   rule ( builtin lessThanInt:Name I1:Int I2:Int )
-    => #gas(#primTrue, #sizeInt(maxInt(I1, I2)))
+    => #gas(#primTrue, #sizeInt(I1 +Int I2))
        when I1 <Int I2
   rule ( builtin lessThanInt:Name I1:Int I2:Int )
-    => #gas(#primFalse, #sizeInt(maxInt(I1, I2)))
+    => #gas(#primFalse, #sizeInt(I1 +Int I2))
         when notBool (I1 <Int I2)
 
   rule ( builtin intToByteString:Name 0 )    => #gas(#toByStr("0"), 1)
@@ -161,7 +161,7 @@ syntax Tm ::= #conHolder(K, K)
   rule D:Def DS:DefList => D ~> DS
 
   rule
-    <k> ( define N:Name V:Val ) => #gas(.K, #sizeTm(V)) ... </k>
+    <k> ( define N:Name V:Val ) => #gas(.K, 1) ... </k>
     <mod> MN </mod>
     <lenv> _ => .Map </lenv>
     <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
@@ -268,7 +268,7 @@ syntax Tm ::= #conHolder(K, K)
   rule #sizeInt(_) >=Int 0 => true:Bool [smt-lemma]
   rule #sizeInt(I1 +Int I2) ==Int #sizeInt(I2 +Int I1) => true:Bool [smt-lemma]
   rule #sizeInt(I1 +Int (I2 +Int I3)) ==Int #sizeInt((I1 +Int I2) +Int I3) => true:Bool [smt-lemma]
-  rule #sizeInt(I:Int) => #log2Int(I)
+  // rule #sizeInt(I:Int) => #log2Int(I)
 
   rule #sizeTm(B:ByStr) => 1
   rule #sizeTm( ( failure ):InstrVal ) => 1
