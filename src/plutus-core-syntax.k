@@ -99,7 +99,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Prg        ::= "(" "program" ModList ")"
 
   // Module.
-  syntax Mod        ::= "(" "module" ModName ImpD ExpD LocD DefList ")"
+  syntax Mod        ::= "(" "module" ModName ImpD ExpD LocD DecList ")"
 
   // Import declarations.
   syntax ImpD       ::= "(" "imported" ModList ")"
