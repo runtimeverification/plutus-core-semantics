@@ -107,6 +107,9 @@ module PLUTUS-CORE-SYNTAX
   syntax ExpD       ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
   syntax LocD       ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
 
+  syntax Dec        ::= Def
+                      | TDec
+
   syntax Def        ::= "(" "define" Name Tm ")"                    [strict(2)]
 
   syntax TDec       ::= "(" "type" Name Ty ")"
