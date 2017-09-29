@@ -117,6 +117,8 @@ module PLUTUS-CORE-SYNTAX
 
   syntax TDec       ::= "(" "type" Name Ty ")"
 
+  syntax DDec       ::= "(" "data" Con "(" KiList ")" AltList ")"
+
   // Type annotations for terms.
   syntax MDec       ::= "(" "declare" Name Ty ")"
 
