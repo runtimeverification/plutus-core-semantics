@@ -49,6 +49,7 @@ module PLUTUS-CORE-SYNTAX
   syntax NameList   ::= List{Name, ""}
   syntax TmList     ::= List{Tm, ""}                           [klabel(tmList)]
   syntax TyList     ::= List{Ty, ""}                           [klabel(tyList)]
+  syntax AltList    ::= List{Alt, ""}                         [klabel(altList)]
   syntax KiList     ::= List{Ki, ""}                           [klabel(kiList)]
   syntax ValList    ::= List{Val, ""}                         [klabel(valList)]
   syntax VarList    ::= List{Var, ""}                         [klabel(varList)]
