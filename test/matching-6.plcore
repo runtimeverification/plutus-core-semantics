@@ -1,4 +1,4 @@
 (module Foo (imported) (exported () ()) (local () ())
   (define result
-    (case (con Nat.Pair (builtin ceil 2.5) 2)
+    (case (con Nat.Pair 3 2)
       (cl Nat.Pair (x y) (con Nat.Pair y x)))))

@@ -6,7 +6,7 @@ module MAP-MAYBE-NOTHING-SPEC
   rule
     <k>
       [
-        (#stringToModName("Prelude") . equalsMaybe):QualN
+        (#stringToModName("Prelude") . equalsMaybe):QualN (#stringToModName("Prelude") . equalsInt):QualN
           [ (#stringToModName("Prelude") . mapMaybe):QualN F:QualN
             (con (#stringToModName("Prelude") . #stringToCon("Nothing")):QualC .ValList) ]
           (con (#stringToModName("Prelude") . #stringToCon("Nothing")):QualC .ValList)
@@ -16,7 +16,9 @@ module MAP-MAYBE-NOTHING-SPEC
       ...
     </k>
     <genv> E GENV:Map (F |-> V:Val) </genv>
+    <gas> G => G -Int 1 </gas>
     when notBool ((#stringToModName("Prelude") . mapMaybe):QualN in keys(E)) andBool
-         notBool ((#stringToModName("Prelude") . equalsMaybe):QualN in keys(E))
+         notBool ((#stringToModName("Prelude") . equalsMaybe):QualN in keys(E)) andBool
+         notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E))
 
 endmodule

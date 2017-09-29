@@ -1,0 +1,35 @@
+(module Foo (imported) (exported () ()) (local () ())
+
+(define equalsInt
+  (lam x (lam y
+    (builtin equalsInt x y))))
+
+(define equalsEither
+  (lam eqA (lam eqB (lam e (lam e'
+    (case e
+      (cl Foo.Left (x)
+        (case e'
+          (cl Foo.Left (x') [eqA x x'])
+          (cl Foo.Right (y) (con Foo.False))))
+      (cl Foo.Right (y)
+        (case e'
+          (cl Foo.Left (x) (con Foo.False))
+          (cl Foo.Right (y') [eqB y y'])))))))))
+
+(define either
+  (lam f (lam g (lam e
+    (case e
+      (cl Foo.Left (x) [f x])
+      (cl Foo.Right (y) [g y]))))))
+
+(define left
+  (lam x (builtin addInt x 1)))
+
+(define right
+  (lam x (builtin addInt x 2)))
+
+(define result [Foo.equalsEither Foo.equalsInt Foo.equalsInt (con Foo.Left 4) (con Foo.Left 3)])
+
+// (define result [Foo.either Foo.left Foo.right (con Foo.Right 4)])
+
+)

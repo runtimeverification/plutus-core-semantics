@@ -8,6 +8,7 @@ module MAYBE-NOTHING-SPEC
     <lenv> _ </lenv>
     <genv> E GENV:Map (J |-> V:Val) </genv>
     <mod> MN:ModName </mod>
+    <gas> _ => _ </gas>
     when notBool ((#stringToModName("Prelude") . maybe):QualN in keys(E))
          andBool notBool ((#stringToModName("Prelude") . #stringToCon("Nothing")) in keys(E))
 

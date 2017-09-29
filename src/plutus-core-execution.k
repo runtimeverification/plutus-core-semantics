@@ -1,10 +1,10 @@
 require "plutus-core-syntax.k"
-require "hex-conversion.k"
+require "plutus-lib.k"
 
 module PLUTUS-CORE-EXECUTION
   imports PLUTUS-CORE-SYNTAX
   imports KRYPTO
-  imports HEX-CONVERSION
+  imports PLUTUS-LIB
 
   configuration
     <T>
@@ -13,21 +13,41 @@ module PLUTUS-CORE-EXECUTION
       <genv> .Map </genv>
       <mod> .ModName </mod>
       <sym> .Map </sym>
+      <gas> 10000 </gas>
     </T>
 
   /***************************************************************************/
   /***********************  BUILT-IN REDUCTIONS   ****************************/
   /***************************************************************************/
 
-  rule ( builtin addInt:Name       I1:Int I2:Int ) => I1 +Int I2
-  rule ( builtin subtractInt:Name  I1:Int I2:Int ) => I1 -Int I2
-  rule ( builtin multiplyInt:Name  I1:Int I2:Int ) => I1 *Int I2
-  rule ( builtin divideInt:Name    I1:Int I2:Int ) => I1 /Int I2
-                                                        when I2 =/=Int 0
-  rule ( builtin remainderInt:Name I1:Int I2:Int ) => I1 %Int I2
-                                                        when I2 =/=Int 0
+  syntax K ::= #gas(K, Int)
+             | "ERROR"
 
-  syntax Tm ::= #conHolder(K, K)
+  rule
+    <k> #gas(K, I) => K ... </k>
+    <gas> G => G -Int I </gas>
+    when (G -Int I) >=Int 0
+
+  rule
+    <k> (#gas(K, I) ~> _) => ERROR </k>
+    <gas> G </gas>
+    when (G -Int I) <Int 0
+
+  rule ( builtin addInt:Name       I1:Int I2:Int )
+    => #gas(I1 +Int I2, #sizeInt(I1 +Int I2))
+  rule ( builtin subtractInt:Name  I1:Int I2:Int )
+    => #gas(I1 -Int I2, #sizeInt(I1 +Int I2))
+  rule ( builtin multiplyInt:Name  I1:Int I2:Int )
+    => #gas(I1 *Int I2, #sizeInt(I1 *Int I2))
+  rule ( builtin divideInt:Name    I1:Int I2:Int )
+    => #gas(I1 /Int I2, #sizeInt(I1 *Int I2))
+    when I2 =/=Int 0
+  rule ( builtin remainderInt:Name I1:Int I2:Int )
+    => #gas(I1 %Int I2, #sizeInt(I1 *Int I2))
+    when I2 =/=Int 0
+
+
+syntax Tm ::= #conHolder(K, K)
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
 
@@ -41,50 +61,24 @@ module PLUTUS-CORE-EXECUTION
   rule #primFalse
     => #conHolder(#stringToModName("Prelude"), #stringToCon("False"))
 
-  rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue [transition]
-  rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #primFalse
-                                                       when I1 =/=Int I2
-                                                       [transition]
-  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primTrue
-                                                       when I1 <Int I2
+  rule ( builtin equalsInt:Name I:Int I:Int     )
+    => #gas(#primTrue, #sizeInt(I))
+       [transition]
+  rule ( builtin equalsInt:Name I1:Int I2:Int   )
+    => #gas(#primFalse, #sizeInt(I1 +Int I2))
+       when I1 =/=Int I2
+       [transition]
   rule ( builtin lessThanInt:Name I1:Int I2:Int )
-    => #primFalse when notBool (I1 <Int I2)
+    => #gas(#primTrue, #sizeInt(I1 +Int I2))
+       when I1 <Int I2
+  rule ( builtin lessThanInt:Name I1:Int I2:Int )
+    => #gas(#primFalse, #sizeInt(I1 +Int I2))
+        when notBool (I1 <Int I2)
 
-  // TODO: Figure out _why_ 53 and 11.
-  rule ( builtin intToFloat:Name   I:Int ) => #toPlFloat(Int2Float(I, 53, 11))
-
-  rule ( builtin intToByteString:Name 0 )    => #toByStr("0")
-  rule ( builtin intToByteString:Name I:Int) => #toByStr(#toHex(I))
+  rule ( builtin intToByteString:Name 0 )    => #gas(#toByStr("0"), 1)
+  rule ( builtin intToByteString:Name I:Int)
+    => #gas(#toByStr(#toHex(I)), #sizeInt(I))
     when I =/=Int 0
-
-  rule ( builtin addFloat:Name      F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) +Float #toFloat(F2))
-  rule ( builtin subtractFloat:Name F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) -Float #toFloat(F2))
-  rule ( builtin multiplyFloat:Name F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) *Float #toFloat(F2))
-  rule ( builtin divideFloat:Name   F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) /Float #toFloat(F2))
-  rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
-    => #primTrue when #toFloat(F1) <Float #toFloat(F2)
-  rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
-    => #primFalse when notBool (#toFloat(F1) <Float #toFloat(F2))
-  rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
-    => #primTrue when #toFloat(F1) ==Float #toFloat(F2)
-  rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
-    => #primFalse when #toFloat(F1) =/=Float #toFloat(F2)
-
-
-  rule ( builtin ceil:Name  F:PlFloat ) => #toPlFloat(ceilFloat(#toFloat(F)))
-  rule ( builtin floor:Name F:PlFloat ) => #toPlFloat(floorFloat(#toFloat(F)))
-  rule ( builtin round:Name F:PlFloat )
-    => Float2Int(roundFloat(#toFloat(F), 2, 2))
-
-  syntax PlFloat ::= #toPlFloat(Float)                                [function]
-  rule #toPlFloat(F:Float)
-    => #parseToken("PlFloat@PLUTUS-CORE-SYNTAX", Float2String(F))
-  rule #toFloat(F:PlFloat)
-    => #parseToken("Float@FLOAT-SYNTAX", #toStringFloat(F))
 
   syntax ByStr ::= #toByStr ( String )                                [function]
   rule #toByStr(S:String)
@@ -94,21 +88,30 @@ module PLUTUS-CORE-EXECUTION
     => substrString(#toStringVerbatim(B), 1, lengthString(#toStringVerbatim(B)))
 
   rule ( builtin take:Name N:Int B:ByStr )
-    => #toByStr(substrString(#toString(B), 0, N))
+    => #gas(#toByStr(substrString(#toString(B), 0, N)), N)
 
   rule ( builtin drop:Name N:Int B:ByStr )
-    => #toByStr(substrString(#toString(B), N, lengthString(#toString(B))))
+    => #gas(#toByStr(
+         substrString(#toString(B), N, lengthString(#toString(B)))), N)
 
   rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
-    => #toByStr(#toString(B1) +String #toString(B2))
+    => #gas(#toByStr(
+         #toString(B1) +String #toString(B2)),
+       lengthString(#toString(B1)) +Int lengthString(#toString(B2)))
 
+  // TODO: no gas encoding chosen for now
   rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
   rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
-  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primTrue
-    when #toString(B1) ==String #toString(B2)
-  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primFalse
-    when #toString(B1) =/=String #toString(B2)
+  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+    => #gas(#primTrue,
+            lengthString(#toString(B1)) +Int lengthString(#toString(B2)))
+       when #toString(B1) ==String #toString(B2)
+
+  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+    => #gas(#primFalse,
+            lengthString(#toString(B1)) +Int lengthString(#toString(B2)))
+       when #toString(B1) =/=String #toString(B2)
 
   /***************************************************************************/
   /************************   LOCAL REDUCTIONS   *****************************/
@@ -138,7 +141,7 @@ module PLUTUS-CORE-EXECUTION
     [structural]
 
   rule
-    <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
+    <k> app(closure(Rho, X, M), V:Val) => #gas(M ~> Rho', #sizeTm(V) +Int size(Rho)) ... </k>
     <lenv> Rho' => Rho[X <- V] </lenv>
     [structural]
 
@@ -148,7 +151,7 @@ module PLUTUS-CORE-EXECUTION
     [structural]
 
   rule
-    <k> X:Var => V ... </k>
+    <k> X:Var => #gas(V, 1) ... </k>
     <lenv> ... X |-> V ... </lenv>
 
   // Desugar let expression to lambda expression
@@ -158,7 +161,7 @@ module PLUTUS-CORE-EXECUTION
   rule D:Def DS:DefList => D ~> DS
 
   rule
-    <k> ( define N:Name V:Val ) => .K ... </k>
+    <k> ( define N:Name V:Val ) => #gas(.K, 1) ... </k>
     <mod> MN </mod>
     <lenv> _ => .Map </lenv>
     <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
@@ -172,7 +175,7 @@ module PLUTUS-CORE-EXECUTION
     <mod> CurrMN => MN </mod>
 
   rule
-    <k> QN:QualN => V ... </k>
+    <k> QN:QualN => #gas(V, 1) ... </k>
     <genv> ... QN |-> V ... </genv>
 
   rule (.DefList ~> _:ModF ) => .K
@@ -219,5 +222,64 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> symInt(X:Var) => ?V:Int ... </k>
     <sym> ... .Map => X |-> ?V ... </sym>
+
+  syntax Int ::= #sizeTm(Tm)                         [function, smtlib(sizeTm)]
+               | #sizeTmList(TmList)                                 [function]
+               | #sizeValList(ValList)                               [function]
+               | #sizeCl(Cl)                                         [function]
+               | #sizeClList(ClList)                                 [function]
+               | #sizeVarList(VarList)                               [function]
+               | #sizeInt(Int)                      [function, smtlib(sizeInt)]
+
+  rule #sizeTmList(.TmList) => 0
+  rule #sizeTmList(M MS) => #sizeTm(M) +Int #sizeTmList(MS)
+  rule #sizeValList(.ValList) => 0
+  rule #sizeValList(V VS) => #sizeTm(V) +Int #sizeValList(VS)
+
+  rule #sizeVarList(.VarList) => 0
+  rule #sizeVarList(X XS) => 1 +Int #sizeVarList(XS)
+
+  rule #sizeClList(.ClList) => 0
+  rule #sizeClList(CL CLS) => #sizeCl(CL) +Int #sizeClList(CLS)
+
+  rule #sizeCl( ( cl QC ( XS ) M ) ) => 2 +Int #sizeVarList(XS) +Int #sizeTm(M)
+
+  rule #sizeTm(X:Var) => 1
+  rule #sizeTm(F:QualN) => 1
+  rule #sizeTm( ( let M1 X M2 ) ) => 2 +Int #sizeTm(M1) +Int #sizeTm(M2)
+  rule #sizeTm( [ M MS ] ) => 1 +Int #sizeTm(M) +Int #sizeTmList(MS)
+  rule #sizeTm( ( case M CLS ) ) => 1 +Int #sizeTm(M) +Int #sizeClList(CLS)
+  rule #sizeTm( ( con QC MS ) ) => 2 +Int #sizeTmList(MS)
+  rule #sizeTm( ( con QC VS ) ) => 2 +Int #sizeValList(VS)
+  rule #sizeTm( ( builtin N M ) ) => 2 +Int #sizeTm(M)
+  rule #sizeTm( ( builtin N M1 M2 ) ) => 2 +Int #sizeTm(M1) +Int #sizeTm(M1)
+  rule #sizeTm( ( success M ) ) => 1 +Int #sizeTm(M)
+  rule #sizeTm( ( bind M1 X M2 ) ) => 2 +Int #sizeTm(M1) +Int #sizeTm(M2)
+  rule #sizeTm( ( lam XS:VarList M ) ) => 1 +Int #sizeVarList(XS) +Int #sizeTm(M)
+
+  // Values
+  // TODO: finish gas calculation for all values
+  rule #sizeTm( closure(L, X, M) ) => size(L) +Int 2 +Int #sizeTm(M)
+
+  // TODO: proofs go through when considering #sizeInt as an uninterpreted fct.
+  // However, verification does not seem to like using #log2Int directly.
+  // Need to use #log2Int calculation correctly for some proofs (notably sum)
+  rule #sizeTm(I:Int) => #sizeInt(I)
+  rule #sizeInt(_) >=Int 0 => true:Bool [smt-lemma]
+  rule #sizeInt(I1 +Int I2) ==Int #sizeInt(I2 +Int I1) => true:Bool [smt-lemma]
+  rule #sizeInt(I1 +Int (I2 +Int I3)) ==Int #sizeInt((I1 +Int I2) +Int I3) => true:Bool [smt-lemma]
+  // rule #sizeInt(I:Int) => #log2Int(I)
+
+  rule #sizeTm(B:ByStr) => 1
+  rule #sizeTm( ( failure ):InstrVal ) => 1
+  rule #sizeTm( ( success V:Val ) ) => 1 +Int #sizeTm(V)
+
+  // Gas TODOs:
+  // Agree on gas calculation for every rule (sha, application, etc.)
+  // Agree on cost for integer/string/bytes operations and storing them
+  // Make verification go through with size of int
+  // Finish gas calculation for all values
+  // Refactoring/cleaneup: less repeated code, etc.
+  // get #sizeTm to work symbolically with verification (smt-lib attribute?)
 
 endmodule

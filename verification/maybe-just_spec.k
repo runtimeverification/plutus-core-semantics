@@ -8,6 +8,7 @@ module MAYBE-JUST-SPEC
     <lenv> L => x |-> X m |-> (con (#stringToModName("Prelude") . #stringToCon("Just")):QualC X) n |-> N j |-> V </lenv>
     <genv> E GENV:Map (J |-> V:Val) </genv>
     <mod> MN:ModName </mod>
+    <gas> _ => _ </gas>
     when notBool ((#stringToModName("Prelude") . maybe):QualN in keys(E))
          andBool notBool ((#stringToModName("Prelude") . #stringToCon("Just")) in keys(E))
 

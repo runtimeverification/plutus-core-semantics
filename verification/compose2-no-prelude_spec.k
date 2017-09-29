@@ -7,5 +7,6 @@ module COMPOSE2-SPEC
     <lenv> L => (x |-> X) (y |-> Y) (f |-> V1) (g |-> V2) </lenv>
     <genv> ... (F |-> V1:Val) (G |-> V2:Val) ((MN . compose) |-> closure (.Map, f, (lam g (lam x (lam y [f [g x y]]))))) ... </genv>
     <mod> MN:ModName </mod>
+    <gas> _ => _ </gas>
 
 endmodule

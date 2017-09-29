@@ -11,8 +11,8 @@
   (lam f (lam x (lam y
     [f y x]))))
 
-(define result [Foo.equalsInt [Foo.flip Foo.const 1 2] [Foo.const 2 1]])
+// (define result [Foo.equalsInt [Foo.flip Foo.const 1 2] [Foo.const 2 1]])
 
-// (define result [Foo.flip Foo.const 1 2])
+(define result [Foo.flip Foo.const 1 2])
 
 )

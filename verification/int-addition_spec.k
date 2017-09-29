@@ -10,6 +10,8 @@ module INT-ADDITION-SPEC
       // so we can write the frame condition that Foo.result hasn't
       // already been defined.
     <mod> MN:ModName </mod>
+    <gas> G => G -Int 1 -Int #sizeInt(X +Int Y) </gas>
     when notBool ((MN . result) in keys(E))
+         andBool (G -Int 1 -Int #sizeInt(X +Int Y) >=Int 0)
 
 endmodule
