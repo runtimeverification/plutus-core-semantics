@@ -96,6 +96,8 @@ module PLUTUS-CORE-SYNTAX
   // Case clause.
   syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
 
+  syntax Alt        ::= "(" Con TyList ")"
+
   // Program.
   syntax Prg        ::= "(" "program" ModList ")"
 
