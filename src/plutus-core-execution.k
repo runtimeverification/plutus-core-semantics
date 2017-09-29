@@ -173,7 +173,7 @@ module PLUTUS-CORE-EXECUTION
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
 
   // Process the definitions in order.
-  rule D:Def DS:DefList => D ~> DS
+  rule D:Dec DS:DecList => D ~> DS
 
   rule
     <k> ( define N:Name V:Val ) => .K ... </k>
@@ -200,7 +200,7 @@ module PLUTUS-CORE-EXECUTION
     <k> QN:QualN => V ... </k>
     <genv> ... QN |-> V ... </genv>
 
-  rule (.DefList ~> _:ModF ) => .K
+  rule (.DecList ~> _:ModF ) => .K
 
   /***************************************************************************/
   /************************   PATTERN MATCHING   *****************************/
