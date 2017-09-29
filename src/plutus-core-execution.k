@@ -175,6 +175,9 @@ module PLUTUS-CORE-EXECUTION
   // Process the definitions in order.
   rule D:Dec DS:DecList => D ~> DS
 
+  // Type declarations are ignored for now.
+  rule (( declare N:Name T:Ty ) ~> DS) => DS
+
   rule
     <k> ( define N:Name V:Val ) => .K ... </k>
     <mod> MN </mod>
