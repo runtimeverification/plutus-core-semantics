@@ -53,7 +53,8 @@ module PLUTUS-CORE-SYNTAX
   syntax VarList    ::= List{Var, ""}                         [klabel(varList)]
   syntax QualCList  ::= List{QualC  ,  ""}
 
-  syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
+  // syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
+  syntax DecList    ::= List{Dec, ""}
 
   syntax ModList    ::= List{ModName , ""}
   syntax ClList     ::= List{Cl     ,  ""}
