@@ -100,6 +100,8 @@ module PLUTUS-CORE-SYNTAX
   // Case clause.
   syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
 
+  // Kind signature.
+  syntax KSig       ::= "(" Var Ki ")"
   syntax Alt        ::= "(" Con TyList ")"
 
   // Program.
