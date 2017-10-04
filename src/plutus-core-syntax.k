@@ -68,6 +68,7 @@ module PLUTUS-CORE-SYNTAX
                       | QualN
                       | "(" "isa" Tm Ty ")"
                       | "(" "abs" Var Tm ")"
+                      | "(" "inst" Tm Ty ")"
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
                       | "[" Tm TmList "]"                           [strict(1)]
