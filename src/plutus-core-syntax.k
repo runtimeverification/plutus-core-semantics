@@ -102,6 +102,8 @@ module PLUTUS-CORE-SYNTAX
 
   // Kind signature.
   syntax KSig       ::= "(" Var Ki ")"
+
+  // Alternative.
   syntax Alt        ::= "(" Con TyList ")"
 
   // Program.
