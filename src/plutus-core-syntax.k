@@ -112,6 +112,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Alt        ::= "(" Con TyList ")"
 
   // Program.
+  // TODO: make program a Prg
   syntax Prg        ::= "(" "program" ModList ")"
 
   // Module.
