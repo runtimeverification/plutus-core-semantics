@@ -51,6 +51,7 @@ module PLUTUS-CORE-SYNTAX
   syntax TyList     ::= List{Ty, ""}                           [klabel(tyList)]
   syntax AltList    ::= List{Alt, ""}                         [klabel(altList)]
   syntax KiList     ::= List{Ki, ""}                           [klabel(kiList)]
+  syntax KSigList   ::= List{KSig, ""}                       [klabel(ksigList)]
   syntax ValList    ::= List{Val, ""}                         [klabel(valList)]
   syntax VarList    ::= List{Var, ""}                         [klabel(varList)]
   syntax QualCList  ::= List{QualC  ,  ""}
@@ -128,7 +129,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax TDec       ::= "(" "type" Name Ty ")"
 
-  syntax DDec       ::= "(" "data" Con "(" KiList ")" AltList ")"
+  syntax DDec       ::= "(" "data" Con "(" KSigList ")" AltList ")"
 
   // Type annotations for terms.
   syntax MDec       ::= "(" "declare" Name Ty ")"
