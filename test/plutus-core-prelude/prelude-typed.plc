@@ -1,130 +1,12 @@
-(program
-  (module Prelude
+(module Prelude
     (imported)
-    (exported
-      
-      ((Unit (MkUnit))
-       (Pair (MkPair))
-       (Bool (True False))
-       (Maybe (Nothing Just))
-       (Either (Left Right))
-       (List (Nil Cons))
-       (MASTProp
-         (MASTTrue MASTFalse MASTNot MASTAnd MASTOr))
-       (MASTTree
-         (MASTSuccess MASTFailure MASTIf))
-       (MASTPath
-         (MASTPathSuccess MASTPathFailure MASTPathIfTrue MASTPathIfFalse)))
-       
-      (id
-       const
-       flip
-       applyTo
-       compose
-       compose2
-       fst
-       snd
-       curry
-       uncurry
-       swap
-       not
-       and
-       or
-       bool
-       lessThanEqualsInt
-       maxInt
-       minInt
-       lessThanEqualsFloat
-       maxFloat
-       minFloat
-       maybe
-       isJust
-       isNothing
-       fromJust
-       fromMaybe
-       mapMaybe
-       equalsMaybe
-       either
-       isLeft
-       isRight
-       eitherToMaybe
-       maybeToEither
-       append
-       head
-       last
-       tail
-       init
-       uncons
-       null
-       length
-       take
-       drop
-       splitAt
-       takeWhile
-       dropWhile
-       span
-       groupBy
-       foldr
-       foldr1
-       foldl
-       foldl1
-       unfoldr
-       replicate
-       map
-       reverseOnto
-       reverse
-       prependToAll
-       intersperse
-       concat
-       concatMap
-       intercalate
-       filter
-       find
-       partition
-       nubBy
-       zipWith
-       zip
-       unzip
-       andList
-       orList
-       any
-       all
-       sumInt
-       sumFloat
-       productInt
-       productFloat
-       maximumBy
-       minimumBy
-       project
-       findIndex
-       findIndicesFrom
-       findIndices
-       evenOddSplitFrom
-       evenOddSplit
-       mergeBy
-       mergeSortBy
-       quickSortBy
-       listToMaybe
-       maybeToList
-       catMaybes
-       lefts
-       rights
-       partitionEithers
-       verifySignature
-       verify
-       verifyMultiSig
-       evalMASTProp
-       evalMASTPath
-       hashMASTProp
-       hashMASTTree
-       hashMASTPath
-       checkMAST))
-    
-    
-    
-    ;;
-    ;; Function Tools
-    ;;
+    (exported () ())
+    (local () ())
+
+
+    //
+    // Function Tools
+    //
     
     (declare id (forall a (type) (fun a a)))
     (define id
@@ -181,17 +63,17 @@
     
     
     
-    ;;
-    ;; Unit Tools
-    ;;
+    //
+    // Unit Tools
+    //
     
     (data Unit () (MkUnit))
     
     
     
-    ;;
-    ;; Pair Tools
-    ;;
+    //
+    // Pair Tools
+    //
     
     (data Pair ((a (type)) (b (type)))
           (MkPair a b))
@@ -252,9 +134,9 @@
     
     
     
-    ;;
-    ;; Boolean Tools
-    ;;
+    //
+    // Boolean Tools
+    //
     
     (data Bool () (True) (False))
     
@@ -310,9 +192,9 @@
     
     
     
-    ;;
-    ;; Integer Tools
-    ;;
+    //
+    // Integer Tools
+    //
     
     (declare addInteger
       (fun (integer) (fun (integer) (integer))))
@@ -388,11 +270,11 @@
           (Prelude.False () y)))))
     
     
-    (declare integerToFloat
-      (fun (integer) (float)))
-    (define integerToFloat
-      (lam x
-        (builtin integerToFloat x)))
+    // (declare integerToFloat
+    //   (fun (integer) (float)))
+    // (define integerToFloat
+    //   (lam x
+    //     (builtin integerToFloat x)))
     
     
     (declare integerToByteString
@@ -403,95 +285,95 @@
     
     
     
-    ;;
-    ;; Float Tools
-    ;;
+    //
+    // Float Tools
+    //
     
-    (declare addFloat
-      (fun (float) (fun (float) (float))))
-    (define addFloat
-      (lam x (lam y
-        (builtin addFloat x y))))
-    
-    
-    (declare subtractFloat
-      (fun (float) (fun (float) (float))))
-    (define subtractFloat
-      (lam x (lam y
-        (builtin subtractFloat x y))))
+    // (declare addFloat
+    //   (fun (float) (fun (float) (float))))
+    // (define addFloat
+    //   (lam x (lam y
+    //     (builtin addFloat x y))))
     
     
-    (declare multiplyFloat
-      (fun (float) (fun (float) (float))))
-    (define multiplyFloat
-      (lam x (lam y
-        (builtin multiplyFloat x y))))
+    // (declare subtractFloat
+    //   (fun (float) (fun (float) (float))))
+    // (define subtractFloat
+    //   (lam x (lam y
+    //     (builtin subtractFloat x y))))
     
     
-    (declare divideFloat
-      (fun (float) (fun (float) (float))))
-    (define divideFloat
-      (lam x (lam y
-        (builtin divideFloat x y))))
+    // (declare multiplyFloat
+    //   (fun (float) (fun (float) (float))))
+    // (define multiplyFloat
+    //   (lam x (lam y
+    //     (builtin multiplyFloat x y))))
     
     
-    (declare equalsFloat
-      (fun (float) (fun (float) (con Prelude.Bool))))
-    (define equalsFloat
-      (lam x (lam y
-        (builtin equalsFloat x y))))
+    // (declare divideFloat
+    //   (fun (float) (fun (float) (float))))
+    // (define divideFloat
+    //   (lam x (lam y
+    //     (builtin divideFloat x y))))
     
     
-    (declare lessThanFloat
-      (fun (float) (fun (float) (con Prelude.Bool))))
-    (define lessThanFloat
-      (lam x (lam y
-        (builtin lessThanFloat x y))))
+    // (declare equalsFloat
+    //   (fun (float) (fun (float) (con Prelude.Bool))))
+    // (define equalsFloat
+    //   (lam x (lam y
+    //     (builtin equalsFloat x y))))
     
     
-    (declare lessThanEqualsFloat
-      (fun (float) (fun (float) (con Prelude.Bool))))
-    (define lessThanEqualsFloat
-      (lam x (lam y
-        (builtin lessThanEqualsFloat y x))))
+    // (declare lessThanFloat
+    //   (fun (float) (fun (float) (con Prelude.Bool))))
+    // (define lessThanFloat
+    //   (lam x (lam y
+    //     (builtin lessThanFloat x y))))
     
     
-    (declare ceil
-      (fun (float) (integer)))
-    (define ceil
-      (lam x
-        (builtin ceil x)))
+    // (declare lessThanEqualsFloat
+    //   (fun (float) (fun (float) (con Prelude.Bool))))
+    // (define lessThanEqualsFloat
+    //   (lam x (lam y
+    //     (builtin lessThanEqualsFloat y x))))
     
     
-    (declare floor
-      (fun (float) (integer)))
-    (define floor
-      (lam x
-        (builtin floor x)))
+    // (declare ceil
+    //   (fun (float) (integer)))
+    // (define ceil
+    //   (lam x
+    //     (builtin ceil x)))
     
     
-    (declare maxFloat
-      (fun (float) (fun (float) (float))))
-    (define maxFloat
-      (lam x (lam y
-        (case [Prelude.lessThanFloat x y]
-          (Prelude.True () y)
-          (Prelude.False () x)))))
+    // (declare floor
+    //   (fun (float) (integer)))
+    // (define floor
+    //   (lam x
+    //     (builtin floor x)))
     
     
-    (declare minFloat
-      (fun (float) (fun (float) (float))))
-    (define minFloat
-      (lam x (lam y
-        (case [Prelude.lessThanFloat x y]
-          (Prelude.True () x)
-          (Prelude.False () y)))))
+    // (declare maxFloat
+    //   (fun (float) (fun (float) (float))))
+    // (define maxFloat
+    //   (lam x (lam y
+    //     (case [Prelude.lessThanFloat x y]
+    //       (Prelude.True () y)
+    //       (Prelude.False () x)))))
+    
+    
+    // (declare minFloat
+    //   (fun (float) (fun (float) (float))))
+    // (define minFloat
+    //   (lam x (lam y
+    //     (case [Prelude.lessThanFloat x y]
+    //       (Prelude.True () x)
+    //       (Prelude.False () y)))))
     
     
     
-    ;;
-    ;; ByteString Tools
-    ;;
+    //
+    // ByteString Tools
+    //
     
     (declare concatenate
       (fun (bytestring) (fun (bytestring) (bytestring))))
@@ -536,9 +418,9 @@
     
     
     
-    ;;
-    ;; Maybe Tools
-    ;;
+    //
+    // Maybe Tools
+    //
     
     (data Maybe ((a (type)))
           (Nothing)
@@ -640,9 +522,9 @@
     
     
     
-    ;;
-    ;; Either Tools
-    ;;
+    //
+    // Either Tools
+    //
     
     (data Either ((a (type)) (b (type)))
           (Left a)
@@ -750,9 +632,9 @@
     
     
     
-    ;;
-    ;; List Tools
-    ;;
+    //
+    // List Tools
+    //
     
     (data List ((a (type)))
           (Nil)
@@ -1509,11 +1391,11 @@
           Prelude.addInteger 0 xs]))
     
     
-    (declare sumFloat
-      (fun (con Prelude.List (float)) (float)))
-    (define sumFloat
-      (lam xs [(inst (inst Prelude.foldl (float)) (float))
-        Prelude.addFloat 0.0 xs]))
+    // (declare sumFloat
+    //   (fun (con Prelude.List (float)) (float)))
+    // (define sumFloat
+    //   (lam xs [(inst (inst Prelude.foldl (float)) (float))
+    //     Prelude.addFloat 0.0 xs]))
     
     (declare productInteger
       (fun (con Prelude.List (integer)) (integer)))
@@ -1523,12 +1405,12 @@
           Prelude.multiplyInteger 1 xs]))
     
     
-    (declare productFloat
-      (fun (con Prelude.List (float)) (float)))
-    (define productFloat
-      (lam xs
-        [(inst (inst Prelude.foldl (float)) (float))
-          Prelude.multiplyFloat 1.0 xs]))
+    // (declare productFloat
+    //   (fun (con Prelude.List (float)) (float)))
+    // (define productFloat
+    //   (lam xs
+    //     [(inst (inst Prelude.foldl (float)) (float))
+    //       Prelude.multiplyFloat 1.0 xs]))
     
     (declare maximumBy
       (forall a (type)
@@ -1888,55 +1770,55 @@
     
     
     
-    ;;
-    ;; Blockchain Tools
-    ;;
+    //
+    // Blockchain Tools
+    //
     
     
-    ;; (declare verifySignature
-    ;;   (fun (bytestring)
-    ;;     (fun (bytestring)
-    ;;       (fun (bytestring)
-    ;;            (con Prelude.Bool)))))
-    ;; (define verifySignature
-    ;;   (lam k (lam dat (lam s
-    ;;     (builtin verifySignature k dat s)))))
-    ;; 
-    ;; 
-    ;; (declare verify
-    ;;   (fun (bytestring)
-    ;;        (fun (bytestring)
-    ;;             (fun (con Prelude.Maybe (bytestring))
-    ;;                  (con Prelude.Bool)))))
-    ;; (define verify
-    ;;   (lam dat (lam k (lam m
-    ;;     (case m
-    ;;       (cl Prelude.Nil () (con Prelude.False))
-    ;;       (cl Prelude.Just (s) [verifySignature k dat s]))))))
-    ;; 
-    ;; 
-    ;; (declare verifyMultiSig
-    ;;   (fun (integer)
-    ;;     (fun (con Prelude.List (bytestring))
-    ;;       (fun (bytestring)
-    ;;         (fun (con Prelude.List (con Prelude.Maybe (bytestring)))
-    ;;           (comp (con Prelude.Unit)))))))
-    ;; (define verifyMultiSig
-    ;;   (lam n (lam keys (lam dat (lam sigs
-    ;;     (case [Prelude.and
-    ;;             [equalsInt
-    ;;               [(inst Prelude.length (con Prelude.List (bytestring))) keys]
-    ;;               [(inst Prelude.length (con Prelude.List (con Prelude.Maybe (bytestring)))) sigs]]
-    ;;             [Prelude.lessThanEqualsInt
-    ;;               n
-    ;;               [(inst Prelude.length (con Prelude.Bool))
-    ;;                 [(inst Prelude.filter (con Prelude.Bool)) (inst id Prelude.Bool)
-    ;;                   [(inst (inst (inst Prelude.zipWith (bytestring)) (con Prelude.Maybe (bytestring))) (con Prelude.Bool))
-    ;;                     [Prelude.verify dat]
-    ;;                     keys
-    ;;                     sigs]]]]]
-    ;;       (Prelude.True () (success (con Prelude.MkUnit)))
-    ;;       (Prelude.False () (failure))))))))
+    // (declare verifySignature
+    //   (fun (bytestring)
+    //     (fun (bytestring)
+    //       (fun (bytestring)
+    //            (con Prelude.Bool)))))
+    // (define verifySignature
+    //   (lam k (lam dat (lam s
+    //     (builtin verifySignature k dat s)))))
+    // 
+    // 
+    // (declare verify
+    //   (fun (bytestring)
+    //        (fun (bytestring)
+    //             (fun (con Prelude.Maybe (bytestring))
+    //                  (con Prelude.Bool)))))
+    // (define verify
+    //   (lam dat (lam k (lam m
+    //     (case m
+    //       (cl Prelude.Nil () (con Prelude.False))
+    //       (cl Prelude.Just (s) [verifySignature k dat s]))))))
+    // 
+    // 
+    // (declare verifyMultiSig
+    //   (fun (integer)
+    //     (fun (con Prelude.List (bytestring))
+    //       (fun (bytestring)
+    //         (fun (con Prelude.List (con Prelude.Maybe (bytestring)))
+    //           (comp (con Prelude.Unit)))))))
+    // (define verifyMultiSig
+    //   (lam n (lam keys (lam dat (lam sigs
+    //     (case [Prelude.and
+    //             [equalsInt
+    //               [(inst Prelude.length (con Prelude.List (bytestring))) keys]
+    //               [(inst Prelude.length (con Prelude.List (con Prelude.Maybe (bytestring)))) sigs]]
+    //             [Prelude.lessThanEqualsInt
+    //               n
+    //               [(inst Prelude.length (con Prelude.Bool))
+    //                 [(inst Prelude.filter (con Prelude.Bool)) (inst id Prelude.Bool)
+    //                   [(inst (inst (inst Prelude.zipWith (bytestring)) (con Prelude.Maybe (bytestring))) (con Prelude.Bool))
+    //                     [Prelude.verify dat]
+    //                     keys
+    //                     sigs]]]]]
+    //       (Prelude.True () (success (con Prelude.MkUnit)))
+    //       (Prelude.False () (failure))))))))
     
     
     (data MASTProp ()
@@ -2074,4 +1956,4 @@
           (Prelude.True ()
             [Prelude.equalsByteString
               hash
-              [Prelude.hashMASTPath path]])))))))
+              [Prelude.hashMASTPath path]]))))))
