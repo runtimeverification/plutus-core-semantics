@@ -187,13 +187,13 @@ module PLUTUS-CORE-EXECUTION
     <mod> MN </mod>
     <lenv> _ => .Map </lenv>
     <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
-    <gas> G => G -Int #sizeTm(V) </gas>
-    when (G -Int #sizeTm(V)) >=Int 0
+    <gas> G => G -Int 1 </gas>
+    when (G -Int 1) >=Int 0
 
   rule
     <k> (( define N:Name V:Val ) ~> _) => ERROR </k>
     <gas> G </gas>
-    when (G -Int #sizeTm(V)) <Int 0
+    when (G -Int 1) <Int 0
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
