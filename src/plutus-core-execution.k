@@ -220,7 +220,7 @@ module PLUTUS-CORE-EXECUTION
   syntax Tm ::= "#ifTm" Bool "#then" Tm "#else" Tm "#fi"             [function]
 
   rule ( case ( con QC:QualC MS:ValList )
-              ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
+              ( QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
     => #ifTm (QC ==K QC') #then [ ( lam XS M ) #toTermList(MS) ]
                           #else ( case ( con QC:QualC MS:ValList ) CL )
        #fi
@@ -271,7 +271,7 @@ module PLUTUS-CORE-EXECUTION
   rule #sizeClList(.ClList) => 0
   rule #sizeClList(CL CLS) => #sizeCl(CL) +Int #sizeClList(CLS)
 
-  rule #sizeCl( ( cl QC ( XS ) M ) ) => 2 +Int #sizeVarList(XS) +Int #sizeTm(M)
+  rule #sizeCl( ( QC ( XS ) M ) ) => 2 +Int #sizeVarList(XS) +Int #sizeTm(M)
 
   rule #sizeTm(X:Var) => 1
   rule #sizeTm(F:QualN) => 1
