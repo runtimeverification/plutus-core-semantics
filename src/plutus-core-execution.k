@@ -175,8 +175,12 @@ module PLUTUS-CORE-EXECUTION
   // Process the definitions in order.
   rule D:Dec DS:DecList => D ~> DS
 
-  // Type declarations are ignored for now.
-  rule (( declare N:Name T:Ty ) ~> DS) => DS
+  // Ignoring typing stuff
+  rule ( declare N:Name T:Ty ) => .K
+  rule ( data C:Con ( KSL:KSigList ) AL:AltList ) => .K
+  rule ( isa M:Tm T:Ty ) => .K
+  rule ( abs V:Var M:Tm ):Tm => M
+  rule ( inst M:Tm T:Ty ) => .K
 
   rule
     <k> ( define N:Name V:Val ) => .K ... </k>
