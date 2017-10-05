@@ -86,15 +86,19 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "lam" VarList Tm ")"                       [binder]
 
   syntax Ki         ::= "type"
+                      | "(" "type" ")"
                       | "(" "fun" Ki Ki ")"
 
+  // TODO: is non-parenthesized version for type, bytestring, integer allowed?
   syntax Ty         ::= Var
                       | "(" "fun" Ty Ty ")"
                       | "(" "con" QualC TyList ")"
                       | "(" "comp" Ty ")"
                       | "(" "forall" Var Ki Ty ")"
                       | "bytestring"
+                      | "(" "bytestring" ")"
                       | "integer"
+                      | "(" "integer" ")"
                       | "(" "lam" Var Ki Ty ")"
                       | "[" Ty Ty "]"
 
