@@ -65,11 +65,13 @@ module PLUTUS-CORE-SYNTAX
   syntax ConArity   ::= "(" Con Arity ")"
   syntax CAList     ::= List{ConArity, ""}
 
+  // TODO: current spec still has floats?
   syntax Tm         ::= Var
                       | QualN
                       | "(" "isa" Tm Ty ")"
                       | "(" "abs" Var Tm ")"
                       | "(" "inst" Tm Ty ")"
+                      // TODO: remove let?
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
                       | "[" Tm TmList "]"                           [strict(1)]
@@ -80,27 +82,24 @@ module PLUTUS-CORE-SYNTAX
                                                             [strict(2), prefer]
                       | "(" "builtin" Name Tm Tm ")"
                                                                  [strict(2, 3)]
+                      // TODO: compbuiltin
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
                       | "(" "lam" VarList Tm ")"                       [binder]
 
-  syntax Ki         ::= "type"
-                      | "(" "type" ")"
+  syntax Ki         ::= "(" "type" ")"
                       | "(" "fun" Ki Ki ")"
 
-  // TODO: is non-parenthesized version for type, bytestring, integer allowed?
   syntax Ty         ::= Var
                       | "(" "fun" Ty Ty ")"
                       | "(" "con" QualC TyList ")"
                       | "(" "comp" Ty ")"
                       | "(" "forall" Var Ki Ty ")"
-                      | "bytestring"
                       | "(" "bytestring" ")"
-                      | "integer"
                       | "(" "integer" ")"
                       | "(" "lam" Var Ki Ty ")"
-                      | "[" Ty Ty "]"
+                      | "[" Ty TyList "]"
 
   // Case clause.
   syntax Cl         ::= "(" QualC "(" VarList ")" Tm ")"
@@ -136,7 +135,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax DDec       ::= "(" "data" Con "(" KSigList ")" AltList ")"
 
-  // Type annotations for terms.
+  // Type annotations for terms. Missing from prelude?
   syntax MDec       ::= "(" "declare" Name Ty ")"
 
   syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
