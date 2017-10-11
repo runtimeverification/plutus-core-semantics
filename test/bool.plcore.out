@@ -1,1 +1,1 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> ( con Bool . True .ValList ) </genv> <mod> Foo </mod> <sym> .Map </sym> <gas> 9982 </gas> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> ( con Bool . True .ValList ) </genv> <mod> Foo </mod> </T>
