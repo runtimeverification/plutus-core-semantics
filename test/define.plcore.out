@@ -1,1 +1,1 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> 16 ( Foo . four ) |-> 4 </genv> <mod> Foo </mod> <sym> .Map </sym> <gas> 9996 </gas> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> 16 ( Foo . four ) |-> 4 </genv> <mod> Foo </mod> </T>
