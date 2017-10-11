@@ -44,6 +44,8 @@ module PLUTUS-CORE-EXECUTION
     => #gas(I1 %Int I2, #sizeTm(I1 +Int I2))
     when I2 =/=Int 0
 
+  // TODO: define semantics for compbuiltin.
+
   syntax Tm ::= #conHolder(K, K)
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C) .ValList )
@@ -169,9 +171,6 @@ module PLUTUS-CORE-EXECUTION
     <gas> G </gas>
     when (G -Int #sizeTm(V)) <Int 0
 
-  // Desugar let expression to lambda expression
-  rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
-
   // Process the definitions in order.
   rule D:Dec DS:DecList => D ~> DS
 
@@ -275,7 +274,6 @@ module PLUTUS-CORE-EXECUTION
 
   rule #sizeTm(X:Var) => 1
   rule #sizeTm(F:QualN) => 1
-  rule #sizeTm( ( let M1 X M2 ) ) => 2 +Int #sizeTm(M1) +Int #sizeTm(M2)
   rule #sizeTm( [ M MS ] ) => 1 +Int #sizeTm(M) +Int #sizeTmList(MS)
   rule #sizeTm( ( case M CLS ) ) => 1 +Int #sizeTm(M) +Int #sizeClList(CLS)
   rule #sizeTm( ( con QC MS ) ) => 2 +Int #sizeTmList(MS)
