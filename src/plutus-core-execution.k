@@ -294,7 +294,7 @@ module PLUTUS-CORE-EXECUTION
   rule #sizeTm(I:Int) => #sizeInt(I) // Float2Int(logFloat(Int2Float(I, 53, 11)))
 
   rule #sizeTm(B:ByStr) => 1
-  rule #sizeTm( ( failure ):InstrVal ) => 1
+  rule #sizeTm( ( failure ):Val ) => 1
   rule #sizeTm( ( success V:Val ) ) => 1 +Int #sizeTm(V)
 
   rule #sizeInt(I:Int) => 1 // TODO: fix this
