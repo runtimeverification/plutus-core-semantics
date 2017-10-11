@@ -143,16 +143,11 @@ module PLUTUS-CORE-SYNTAX
   syntax MDec       ::= "(" "declare" Name Ty ")"
 
   syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
-                      | InstrVal
-                      | Int
-                      | ByStr
-
-  syntax InstrVal   ::= "(" "failure" ")"
-                      | "(" "txhash"  ")"
-                      | "(" "blocknum" ")"
-                      | "(" "blocktime" ")"
+                      | "(" "failure" ")"
                       | "(" "success" Val ")"         [prefer, klabel(succVal)]
                       | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
+                      | Int
+                      | ByStr
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var
