@@ -85,6 +85,7 @@ module PLUTUS-CORE-SYNTAX
                                                             [strict(2), prefer]
                       | "(" "builtin" Name Tm Tm ")"
                                                                  [strict(2, 3)]
+                      | "(" "compbuiltin" CBName ")"
                       // TODO: compbuiltin
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
