@@ -171,6 +171,9 @@ module PLUTUS-CORE-EXECUTION
     <gas> G </gas>
     when (G -Int #sizeTm(V)) <Int 0
 
+  // Desugar let expression to lambda expression
+  rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
+
   // Process the definitions in order.
   rule D:Dec DS:DecList => D ~> DS
 
