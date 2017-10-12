@@ -132,10 +132,10 @@ module PLUTUS-CORE-TYPING
     <k> checks(T:Ty, X:Var) => true ... </k>
     <tenv> ... X |-> T ... </tenv>
 
-  rule synth(I:Int, (integer)) => true
+  rule synth(I:Int, (integer):Ty) => true
 
   rule
-    <k> checks(( fun S T ), ( lam X .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
+    <k> checks(( fun S T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
