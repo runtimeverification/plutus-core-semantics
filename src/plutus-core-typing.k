@@ -123,7 +123,7 @@ module PLUTUS-CORE-TYPING
     <tenv> ... .Map => (N |-> TAU) ... </tenv>
 
   rule
-    <k> ( define N:Name M:Tm ) => checks(TAU, N) ... </k>
+    <k> ( define N:Name M:Tm ) => checks(TAU, M) ... </k>
     <tenv> ... N |-> TAU ... </tenv>
 
   rule checks((integer):Ty, I:Int) => synth(I:Int, (integer):Ty)
