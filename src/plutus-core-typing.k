@@ -9,6 +9,8 @@ module PLUTUS-CORE-TYPING
   syntax Bool ::= checks(Ty, Tm)
                 | synth(Tm, Ty)
 
+  syntax K ::= #restoreTEnv(Map)
+
   configuration
     <T>
       <k> $PGM:Mod </k>
