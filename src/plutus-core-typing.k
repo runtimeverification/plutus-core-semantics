@@ -128,6 +128,9 @@ module PLUTUS-CORE-TYPING
 
   rule checks((integer):Ty, I:Int) => synth(I:Int, (integer):Ty)
 
+  rule
+    <k> checks(T:Ty, X:Var) => true ... </k>
+    <tenv> ... X |-> T ... </tenv>
 
   rule synth(I:Int, (integer)) => true
 
