@@ -126,13 +126,13 @@ module PLUTUS-CORE-TYPING
     <k> ( define N:Name M:Tm ) => checks(TAU, M) ... </k>
     <tenv> ... N |-> TAU ... </tenv>
 
-  rule checks((integer):Ty, I:Int) => synth(I:Int, (integer):Ty)
+  rule checks((integer)<:Ty, I:Int) => synth(I:Int, (integer)<:Ty)
 
   rule
     <k> checks(T:Ty, X:Var) => true ... </k>
     <tenv> ... X |-> T ... </tenv>
 
-  rule synth(I:Int, (integer):Ty) => true
+  rule synth(I:Int, (integer)<:Ty) => true
 
   rule
     <k> checks(( fun S T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
