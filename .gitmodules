@@ -1,0 +1,3 @@
+[submodule ".build/uiuck"]
+	path = .build/uiuck
+	url = https://github.com/kframework/k
