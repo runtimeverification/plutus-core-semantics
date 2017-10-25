@@ -5,6 +5,9 @@ cd "$(dirname "$0")"
 make kframework
 export PATH="$(pwd)/.build/uiuck/k-distribution/target/release/k/bin:$PATH"
 
+kserver &
+sleep 1
+
 make plutus-core-kompiled
 
 count=0
