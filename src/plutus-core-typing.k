@@ -178,14 +178,14 @@ module PLUTUS-CORE-TYPING
     <k> checks(( fun S T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
-  rule
-    <k>
-      checks(( con (MN . C) TYS ), ( con QC MS ))
-      => checksCon(QC, ( forall #getVars(TYS) #getKinds(KSL)
-                                ( fun #getVars(TYS) ( con (MN . C) #getVars(TYS) ) ) ))
-      ~> checksList(TYS, MS)
-    </k>
-    <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
+  // rule
+  //   <k>
+  //     checks(( con (MN . C) TYS ), ( con QC MS ))
+  //     => checksCon(QC, ( forall #getVars(TYS) #getKinds(KSL)
+  //                               ( fun #getVars(TYS) ( con (MN . C) #getVars(TYS) ) ) ))
+  //     ~> checksList(TYS, MS)
+  //   </k>
+  //   <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
