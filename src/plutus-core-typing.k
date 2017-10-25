@@ -8,6 +8,8 @@ module PLUTUS-CORE-TYPING
 
   syntax Bool ::= checks(Ty, Tm)
                 | synth(Tm, Ty)
+                // TODO: bug in spec with type application for checksCon?
+                | checksCon(QualC, Ty)
 
   syntax K ::= checksList(TyList, TmList)
 
@@ -18,6 +20,7 @@ module PLUTUS-CORE-TYPING
       <k> $PGM:Mod </k>
       <tenv> .Map </tenv>
       <kenv> .Map </kenv>
+      <data> .Map </data>
       <mod> .ModName </mod>
     </T>
 
@@ -145,7 +148,14 @@ module PLUTUS-CORE-TYPING
     <k> checks(( fun S T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
-  rule checks (( case M CLS ), T) => checks(
+  rule
+    <k>
+      checks(( con (MN . C) TYS ), ( con QC MS ))
+      => checksCon(QC, ( forall #getVars(TYS) #getKinds(KSL)
+                                ( fun #getVars(TYS) ( con (MN . C) #getVars(TYS) ) ) ))
+      ~> checksList(TYS, MS)
+    </k>
+    <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
