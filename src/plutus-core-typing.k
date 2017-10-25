@@ -10,6 +10,7 @@ module PLUTUS-CORE-TYPING
                 | synth(Tm, Ty)
                 // TODO: bug in spec with type application for checksCon?
                 | checksCon(QualC, Ty)
+                | hasKind(Ty, Ki)
 
   syntax K ::= checksList(TyList, TmList)
 
@@ -127,6 +128,31 @@ module PLUTUS-CORE-TYPING
   rule
     <k> ( declare N:Name TAU:Ty ) => .K ... </k>
     <tenv> ... .Map => (N |-> TAU) ... </tenv>
+
+  rule
+    <k> hasKind(X, K) => true ... </k>
+    <kenv> ... X |-> K ... </kenv>
+
+  rule hasKind(( fun S T ), (type)) => hasKind(S, (type)) ~> hasKind(T, (type))
+
+  rule
+    <k> hasKind(( con QC TL ), (type)) => hasKindList(TL, #getKinds(KSL)) ... </k>
+    <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
+
+  rule hasKind(( comp T ), (type)) => hasKind(T, (type))
+
+  rule
+    <k> hasKind(( forall X K T ), (type)) => hasKind(T, (type)) ~> #restoreKEnv(Rho) ... </k>
+    <kenv> Rho => Rho (X |-> K) </kenv>
+
+  rule hasKind((integer)<:Ty, (type)) => true
+  rule hasKind((bytestring)<:Ty, (type)) => true
+
+  rule
+    <k> hasKind(( lam X J T ), ( fun J K )) => hasKind(T, K) ~> #restoreKEnv(Rho) ... </k>
+    <kenv> Rho => Rho (X |-> J) </kenv>
+
+  rule hasKind( [ S T ], K) => hasKind(S, ( fun ?J K )) ~> hasKind(T, ?J)
 
   rule
     <k> ( define N:Name M:Tm ) => checks(TAU, M) ... </k>
