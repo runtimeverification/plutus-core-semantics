@@ -16,6 +16,10 @@ module PLUTUS-CORE-TYPING
 
   syntax K ::= #restoreTEnv(Map)
 
+  syntax KiList ::= #getKinds(KSigList)
+
+  // TODO: add syntax (and semantics) for #getKinds, #getVars, etc.
+
   configuration
     <T>
       <k> $PGM:Mod </k>
