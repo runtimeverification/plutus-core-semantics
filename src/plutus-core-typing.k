@@ -15,6 +15,7 @@ module PLUTUS-CORE-TYPING
     <T>
       <k> $PGM:Mod </k>
       <tenv> .Map </tenv>
+      <kenv> .Map </kenv>
       <mod> .ModName </mod>
     </T>
 
@@ -133,6 +134,10 @@ module PLUTUS-CORE-TYPING
     <tenv> ... X |-> T ... </tenv>
 
   rule synth(I:Int, (integer)<:Ty) => true
+
+  rule
+    <k> checks(( forall X K T ), ( abs X M )) => checks(T, M) ~> #restoreKEnv(Rho) ... </k>
+    <kenv> Rho => Rho (X |-> K) </kenv>
 
   rule
     <k> checks(( fun S T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
