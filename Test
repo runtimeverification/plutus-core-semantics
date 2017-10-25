@@ -7,5 +7,18 @@ export PATH="$(pwd)/.build/uiuck/k-distribution/target/release/k/bin:$PATH"
 
 make plutus-core-kompiled
 
-cd test
-./test_all.sh
+count=0
+failed_count=0
+for file in $(find test/ -iname *.plcore); do
+    let count="$count+1"
+    echo "== running: $file"
+    krun -d .build/ $file | diff $file.out -
+    if [ $? != 0 ]; then
+        let failed_count="$failed_count+1"
+        echo "==  failed: $file"
+    else
+        echo "==  passed: $file"
+    fi
+done
+echo "==  failed: $failed_count / $count"
+exit "$failed_count"
