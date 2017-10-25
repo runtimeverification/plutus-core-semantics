@@ -6,6 +6,11 @@ defn_files=${defn_dir}/hex-conversion.k ${defn_dir}/plutus-core-execution.k ${de
 .build/plutus-core-kompiled/extras/timestamp: $(defn_files)
 	kompile -d .build/ --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/plutus-core.k
 
+kframework:
+	@echo "== git submodule: cloning kframework/k"
+	git submodule update --init -- .build/uiuck
+	cd .build/uiuck && mvn package -DskipTests
+
 test: plutus-core-kompiled
 	cd test && ./test_all.sh
 verify: plutus-core-kompiled
@@ -14,4 +19,4 @@ verify: plutus-core-kompiled
 clean:
 	rm -rf plutus-core-kompiled
 
-.PHONY: plutus-core-kompiled test clean
+.PHONY: plutus-core-kompiled test clean kframework

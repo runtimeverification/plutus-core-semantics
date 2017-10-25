@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$0")"
+
+make kframework
+export PATH="$(pwd)/.build/uiuck/k-distribution/target/release/k/bin:$PATH"
+
+make plutus-core-kompiled
+
+cd test
+./test_all.sh
