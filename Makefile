@@ -1,7 +1,10 @@
-plutus-core-kompiled: src/plutus-core.k src/plutus-core-syntax.k src/plutus-core-execution.k
-	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/plutus-core.k
-	touch plutus-core-kompiled # workaround for kompile not updating mtime
-# reported as https://github.com/kframework/k/issues/2327
+plutus-core-kompiled: .build/plutus-core-kompiled/extras/timestamp
+
+defn_dir=src
+defn_files=${defn_dir}/hex-conversion.k ${defn_dir}/plutus-core-execution.k ${defn_dir}/plutus-core-syntax.k ${defn_dir}/plutus-core.k
+
+.build/plutus-core-kompiled/extras/timestamp: $(defn_files)
+	kompile -d .build/ --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/plutus-core.k
 
 test: plutus-core-kompiled
 	cd test && ./test_all.sh
@@ -11,4 +14,4 @@ verify: plutus-core-kompiled
 clean:
 	rm -rf plutus-core-kompiled
 
-.PHONY: test clean
+.PHONY: plutus-core-kompiled test clean
