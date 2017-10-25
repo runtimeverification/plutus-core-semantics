@@ -9,6 +9,8 @@ module PLUTUS-CORE-TYPING
   syntax Bool ::= checks(Ty, Tm)
                 | synth(Tm, Ty)
 
+  syntax K ::= checksList(TyList, TmList)
+
   syntax K ::= #restoreTEnv(Map)
 
   configuration
@@ -142,6 +144,8 @@ module PLUTUS-CORE-TYPING
   rule
     <k> checks(( fun S T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
+
+  rule checks (( case M CLS ), T) => checks(
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
