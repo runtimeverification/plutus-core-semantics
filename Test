@@ -12,7 +12,7 @@ make plutus-core-kompiled
 
 count=0
 failed_count=0
-for file in $(find test/ -iname *.plcore); do
+for file in $(find test/ -iname *.plcore | sort); do
     let count="$count+1"
     echo "== running: $file"
     krun -d .build/ $file | diff $file.out -
