@@ -25,7 +25,7 @@ function final_report () {
 for file in `ls *.plcore`;
   do
     begin_case $file
-    krun -d .. $file | diff $file.out - > /dev/null;
+    krun -d ../.build/ $file | diff $file.out - > /dev/null;
     if [ $? != 0 ]
       then report_case 1 $file
       else report_case 0 $file
