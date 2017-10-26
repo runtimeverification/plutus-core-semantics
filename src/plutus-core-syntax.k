@@ -8,6 +8,7 @@ module PLUTUS-CORE-SYNTAX
 
   // Name.
   syntax Name    ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
+  syntax TyName  ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // CompBuiltin.
   syntax CBName  ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
@@ -48,6 +49,7 @@ module PLUTUS-CORE-SYNTAX
   // Qualified name and constructor.
   syntax QualN      ::= ModName "." Name
   syntax QualC      ::= ModName "." Con
+  syntax QualTyName ::= ModName "." TyName
 
   syntax NameList   ::= List{Name, ""}
   syntax TmList     ::= List{Tm, ""}                           [klabel(tmList)]
@@ -95,6 +97,7 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "fun" Ki Ki ")"
 
   syntax Ty         ::= Var
+                      | QualTyName
                       | "(" "fun" Ty Ty ")"
                       | "(" "con" QualC TyList ")"
                       | "(" "comp" Ty ")"

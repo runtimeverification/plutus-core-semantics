@@ -8,16 +8,24 @@ module PLUTUS-CORE-TYPING
 
   syntax Bool ::= checks(Ty, Tm)
                 | synth(Tm, Ty)
+                // TODO: bug in spec with type application for checksCon?
+                | checksCon(QualC, Ty)
+                | hasKind(Ty, Ki)
 
   syntax K ::= checksList(TyList, TmList)
 
   syntax K ::= #restoreTEnv(Map)
+
+  syntax KiList ::= #getKinds(KSigList)
+
+  // TODO: add syntax (and semantics) for #getKinds, #getVars, etc.
 
   configuration
     <T>
       <k> $PGM:Mod </k>
       <tenv> .Map </tenv>
       <kenv> .Map </kenv>
+      <data> .Map </data>
       <mod> .ModName </mod>
     </T>
 
@@ -126,6 +134,31 @@ module PLUTUS-CORE-TYPING
     <tenv> ... .Map => (N |-> TAU) ... </tenv>
 
   rule
+    <k> hasKind(X, K) => true ... </k>
+    <kenv> ... X |-> K ... </kenv>
+
+  rule hasKind(( fun S T ), (type)) => hasKind(S, (type)) ~> hasKind(T, (type))
+
+  rule
+    <k> hasKind(( con QC TL ), (type)) => hasKindList(TL, #getKinds(KSL)) ... </k>
+    <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
+
+  rule hasKind(( comp T ), (type)) => hasKind(T, (type))
+
+  rule
+    <k> hasKind(( forall X K T ), (type)) => hasKind(T, (type)) ~> #restoreKEnv(Rho) ... </k>
+    <kenv> Rho => Rho (X |-> K) </kenv>
+
+  rule hasKind((integer)<:Ty, (type)) => true
+  rule hasKind((bytestring)<:Ty, (type)) => true
+
+  rule
+    <k> hasKind(( lam X J T ), ( fun J K )) => hasKind(T, K) ~> #restoreKEnv(Rho) ... </k>
+    <kenv> Rho => Rho (X |-> J) </kenv>
+
+  rule hasKind( [ S T ], K) => hasKind(S, ( fun ?J K )) ~> hasKind(T, ?J)
+
+  rule
     <k> ( define N:Name M:Tm ) => checks(TAU, M) ... </k>
     <tenv> ... N |-> TAU ... </tenv>
 
@@ -145,7 +178,14 @@ module PLUTUS-CORE-TYPING
     <k> checks(( fun S T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
-  rule checks (( case M CLS ), T) => checks(
+  // rule
+  //   <k>
+  //     checks(( con (MN . C) TYS ), ( con QC MS ))
+  //     => checksCon(QC, ( forall #getVars(TYS) #getKinds(KSL)
+  //                               ( fun #getVars(TYS) ( con (MN . C) #getVars(TYS) ) ) ))
+  //     ~> checksList(TYS, MS)
+  //   </k>
+  //   <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
