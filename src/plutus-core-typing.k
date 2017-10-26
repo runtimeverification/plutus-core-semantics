@@ -174,14 +174,14 @@ module PLUTUS-CORE-TYPING
   rule synth(I:Int, (integer)<:Ty) => true
 
   rule
-    <k> checks(( forall X K T ), ( abs X M )) => checks(T, M) ~> #restoreKEnv(Rho) ... </k>
+    <k> checks(( forall X .VarList K .KiList T ), ( abs X M )) => checks(T, M) ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   rule
     <k> checks(( fun S .TyList T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
-  // TODO: desugar fun TyList Ty correctly
+  // TODO: desugar fun TyList Ty correctly, also forall VarList KiList Ty
 
   rule
     <k>
