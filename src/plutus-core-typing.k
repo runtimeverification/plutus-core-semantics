@@ -136,53 +136,60 @@ module PLUTUS-CORE-TYPING
     <k> ( declare N:Name TAU:Ty ) => .K ... </k>
     <tenv> ... .Map => (N |-> TAU) ... </tenv>
 
+  // tyvar
   rule
     <k> hasKind(X, K) => true ... </k>
     <kenv> ... X |-> K ... </kenv>
 
+  // TODO: rule for tyname?
+
+  // fun
   rule hasKind(( fun S T ), (type)) => hasKind(S, (type)) ~> hasKind(T, (type))
 
+  // tycon
   rule
     <k> hasKind(( con QC TL ), (type)) => hasKindList(TL, #getKinds(KSL)) ... </k>
     <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
 
+  // comp
   rule hasKind(( comp T ), (type)) => hasKind(T, (type))
 
+  // forall
   rule
     <k> hasKind(( forall X K T ), (type)) => hasKind(T, (type)) ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
+  // integer
   rule hasKind((integer)<:Ty, (type)) => true
+
+  // bytestring
   rule hasKind((bytestring)<:Ty, (type)) => true
 
+  // tylam
   rule
     <k> hasKind(( lam X J T ), ( fun J K )) => hasKind(T, K) ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> J) </kenv>
 
+  // tyapp
   rule hasKind( [ S T ], K) => hasKind(S, ( fun ?J:Ki K )) ~> hasKind(T, ?J)
 
   rule
     <k> ( define N:Name M:Tm ) => checks(TAU, M) ... </k>
     <tenv> ... N |-> TAU ... </tenv>
 
-  rule checks((integer)<:Ty, I:Int) => synth(I:Int, (integer)<:Ty)
-
-  rule
-    <k> checks(T:Ty, X:Var) => true ... </k>
-    <tenv> ... X |-> T ... </tenv>
-
-  rule synth(I:Int, (integer)<:Ty) => true
-
+  // abs
   rule
     <k> checks(( forall X .VarList K .KiList T ), ( abs X M )) => checks(T, M) ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
+  // lam
   rule
     <k> checks(( fun S .TyList T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
-  // TODO: desugar fun TyList Ty correctly, also forall VarList KiList Ty
+  // TODO: desugar fun TyList Ty correctly, also forall VarList KiList Ty (abs/lam rules)
 
+  // con
   rule
     <k>
       checks(( con (MN . C) TYS ), ( con QC MS ))
@@ -191,6 +198,20 @@ module PLUTUS-CORE-TYPING
       ~> checksList(TYS, MS)
     </k>
     <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
+
+  // dirchange (var)
+  rule checks(T:Ty, X:Var) => synth(X, T)
+
+  // dirchange (integer)
+  rule checks((integer)<:Ty, I:Int) => synth(I:Int, (integer)<:Ty)
+
+  // var
+  rule
+    <k> synth(X:Var, T) => true ... </k>
+    <tenv> ... X |-> T ... </tenv>
+
+  // intval
+  rule synth(I:Int, (integer)<:Ty) => true
 
   // Clear result after type-checking succeeds. Ok since pure Booleans are only internal
   rule true => .K
