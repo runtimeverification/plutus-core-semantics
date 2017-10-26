@@ -15,6 +15,7 @@ module PLUTUS-CORE-TYPING
   syntax K ::= checksList(TyList, TmList)
 
   syntax K ::= #restoreTEnv(Map)
+             | #restoreKEnv(Map)
 
   syntax KiList ::= #getKinds(KSigList)
   syntax VarList ::= #getVars(TyList)
@@ -190,6 +191,17 @@ module PLUTUS-CORE-TYPING
       ~> checksList(TYS, MS)
     </k>
     <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
+
+  // Clear result after type-checking succeeds. Ok since pure Booleans are only internal
+  rule true => .K
+
+  rule
+    <k> #restoreTEnv(Rho) => .K ... </k>
+    <tenv> _ => Rho </tenv>
+
+  rule
+    <k> #restoreKEnv(Rho) => .K ... </k>
+    <kenv> _ => Rho </kenv>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
