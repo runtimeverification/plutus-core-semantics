@@ -17,6 +17,8 @@ module PLUTUS-CORE-TYPING
   syntax K ::= #restoreTEnv(Map)
 
   syntax KiList ::= #getKinds(KSigList)
+  syntax VarList ::= #getVars(TyList)
+  syntax TyList ::= #getVarsTy(TyList)
 
   // TODO: add syntax (and semantics) for #getKinds, #getVars, etc.
 
@@ -178,14 +180,16 @@ module PLUTUS-CORE-TYPING
     <k> checks(( fun S .TyList T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
-  // rule
-  //   <k>
-  //     checks(( con (MN . C) TYS ), ( con QC MS ))
-  //     => checksCon(QC, ( forall #getVars(TYS) #getKinds(KSL)
-  //                               ( fun #getVars(TYS) ( con (MN . C) #getVars(TYS) ) ) ))
-  //     ~> checksList(TYS, MS)
-  //   </k>
-  //   <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
+  // TODO: desugar fun TyList Ty correctly
+
+  rule
+    <k>
+      checks(( con (MN . C) TYS ), ( con QC MS ))
+      => checksCon(QC, ( forall #getVars(TYS) #getKinds(KSL)
+                                ( fun #getVarsTy(TYS) ( con (MN . C) #getVarsTy(TYS) ) ) ))
+      ~> checksList(TYS, MS)
+    </k>
+    <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
 
   syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
 
