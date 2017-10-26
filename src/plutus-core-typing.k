@@ -175,7 +175,7 @@ module PLUTUS-CORE-TYPING
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   rule
-    <k> checks(( fun S T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
+    <k> checks(( fun S .TyList T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
   // rule
