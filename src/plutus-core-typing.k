@@ -158,7 +158,7 @@ module PLUTUS-CORE-TYPING
     <k> hasKind(( lam X J T ), ( fun J K )) => hasKind(T, K) ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> J) </kenv>
 
-  rule hasKind( [ S T ], K) => hasKind(S, ( fun ?J K )) ~> hasKind(T, ?J)
+  rule hasKind( [ S T ], K) => hasKind(S, ( fun ?J:Ki K )) ~> hasKind(T, ?J)
 
   rule
     <k> ( define N:Name M:Tm ) => checks(TAU, M) ... </k>
