@@ -98,10 +98,10 @@ module PLUTUS-CORE-SYNTAX
 
   syntax Ty         ::= Var
                       | QualTyName
-                      | "(" "fun" Ty Ty ")"
+                      | "(" "fun" TyList Ty ")"
                       | "(" "con" QualC TyList ")"
                       | "(" "comp" Ty ")"
-                      | "(" "forall" Var Ki Ty ")"
+                      | "(" "forall" VarList KiList Ty ")"
                       | "(" "bytestring" ")"
                       | "(" "integer" ")"
                       | "(" "lam" Var Ki Ty ")"
