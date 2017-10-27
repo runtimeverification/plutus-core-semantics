@@ -3,3 +3,4 @@
 3. What do the Oxford brackets mean?
 4. Where is K coming from here: “Θ ⊢ c : (forall α K (fun T [κ α]))”?
 5. In `decl-valid-define`, should the synthesis be a checking?
+6. Section IV: `leads` -> `leaves`
