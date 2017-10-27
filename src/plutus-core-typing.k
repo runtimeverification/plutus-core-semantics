@@ -199,6 +199,14 @@ module PLUTUS-CORE-TYPING
     </k>
     <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
 
+  // case
+
+  // success
+  rule checks(( comp T ), ( success M)) => checks(T, M)
+
+  // failure
+  rule checks(( comp T), ( failure ):Val) => true
+
   // dirchange (var)
   rule checks(T:Ty, X:Var) => synth(X, T)
 
