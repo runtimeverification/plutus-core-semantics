@@ -6,13 +6,15 @@ module PLUTUS-CORE-TYPING
   imports KRYPTO
   imports HEX-CONVERSION
 
-  syntax Bool ::= checks(Ty, Tm)
-                | synth(Tm, Ty)
+  // syntax Bool ::= checks(Ty, Tm)
+                // | synth(Tm, Ty)
                 // TODO: bug in spec with type application for checksCon?
-                | checksCon(QualC, Ty)
-                | hasKind(Ty, Ki)
+                // | hasKind(Ty, Ki)
 
   syntax K ::= checksList(TyList, TmList)
+             | Ty "::" Tm                                   // `Tm` checks `Ty`
+             | Ty "equiv" Ty                                        [strict(1)]
+             | checksCon(QualC, Ty)
 
   syntax K ::= #restoreTEnv(Map)
              | #restoreKEnv(Map)
@@ -174,44 +176,60 @@ module PLUTUS-CORE-TYPING
   rule hasKind( [ S T ], K) => hasKind(S, ( fun ?J:Ki K )) ~> hasKind(T, ?J)
 
   rule
-    <k> ( define N:Name M:Tm ) => checks(TAU, M) ... </k>
+    <k> ( define N:Name M:Tm ) => M :: TAU ... </k>
     <tenv> ... N |-> TAU ... </tenv>
 
   // abs
-  rule
-    <k> checks(( forall X .VarList K .KiList T ), ( abs X M )) => checks(T, M) ~> #restoreKEnv(Rho) ... </k>
-    <kenv> Rho => Rho (X |-> K) </kenv>
+  // rule
+    // <k> checks(( forall X .VarList K .KiList T ), ( abs X M )) => checks(T, M) ~> #restoreKEnv(Rho) ... </k>
+    // <kenv> Rho => Rho (X |-> K) </kenv>
 
-  // lam
+  /*****************************************************************************/
+  /**                          THE CHECKS JUDGMENT                             */
+  /*****************************************************************************/
+
+  // Checks: abs.
+  // TODO.
+
+  // Checks: lam.
   rule
-    <k> checks(( fun S .TyList T ), ( lam X:Var .VarList M:Tm )) => checks(T, M) ~> #restoreTEnv(Rho) ... </k>
+    <k> (( fun S .TyList T ) :: ( lam X:Var .VarList M:Tm )) => T :: M ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
-  // TODO: desugar fun TyList Ty correctly, also forall VarList KiList Ty (abs/lam rules)
-
-  // con
+  // Checks: con.
+  // TODO: the following will change.
   rule
     <k>
-      checks(( con (MN . C) TYS ), ( con QC MS ))
-      => checksCon(QC, ( forall #getVars(TYS) #getKinds(KSL)
-                                ( fun #getVarsTy(TYS) ( con (MN . C) #getVarsTy(TYS) ) ) ))
-      ~> checksList(TYS, MS)
+      (( con (MN . C) TYS ) :: ( con QC MS ))
+        => checksCon(QC, ( forall #getVars(TYS) #getKinds(KSL)
+                           ( fun #getVarsTy(TYS)
+                             ( con (MN . C) #getVarsTy(TYS) ) ) ) )
+        ~> checksList(TYS, MS)
     </k>
     <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
 
-  // case
+  // Checks: case.
+  // TODO.
 
-  // success
-  rule checks(( comp T ), ( success M)) => checks(T, M)
+  // Checks: success.
+  rule ( comp T ) :: ( success M ) => M :: T
 
-  // failure
-  rule checks(( comp T), ( failure ):Val) => true
+  // Checks: failure.
+  rule ( comp T ) :: (( failure ):Val) => true
 
-  // dirchange (var)
-  rule checks(T:Ty, X:Var) => synth(X, T)
+  // Checks: dir-change.
+  rule (T:Ty) :: (M:Tm) => M equiv T
+
+
+  /*****************************************************************************/
+  /**                       THE SYNTHESIS JUDGMENT                             */
+  /*****************************************************************************/
+
+
+  // TODO: desugar fun TyList Ty correctly, also forall VarList KiList Ty (abs/lam rules)
 
   // dirchange (integer)
-  rule checks((integer)<:Ty, I:Int) => synth(I:Int, (integer)<:Ty)
+  rule (integer)<:Ty :: I:Int => .
 
   // var
   rule
