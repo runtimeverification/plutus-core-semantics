@@ -238,29 +238,30 @@ module PLUTUS-CORE-TYPING
 
   // name
 
-  // isa
-  rule synth(( isa T M ), T) => checks(T, M)
-
-  // inst
-
   // app (TODO: should fun `M \in fun ...` be a checks judgment?)
-  rule
-    <k> synth( [ M N .TmList ], T) => checks(S, N) ... </k>
-    <tenv> ... M |-> ( fun S .TyList T ) ... </tenv>
+  // rule
+    // <k> synth( [ M N .TmList ], T) => S :: N ... </k>
+    // <tenv> ... M |-> ( fun S .TyList T ) ... </tenv>
 
   // compbuiltin
+  // TODO.
 
   // bind
+  // TODO.
 
   // intval
-  rule synth(I:Int, (integer)<:Ty) => true
+  // TODO.
+  // rule synth(I:Int, (integer)<:Ty) => true
 
   // bytestringval
-  rule synth(B:ByStr, (bytestring)<:Ty) => true
+  // TODO.
+  // rule synth(B:ByStr, (bytestring)<:Ty) => true
 
   // builtin
+  // TODO.
 
   // Clear result after type-checking succeeds. Ok since pure Booleans are only internal
+  // TODO.
   rule true => .K
 
   rule
