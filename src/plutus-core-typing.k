@@ -221,9 +221,11 @@ module PLUTUS-CORE-TYPING
     <k> T:Ty :: X:Var => .K ... </k>
     <tenv> ... X |-> T ... </tenv>  
 
-  // Checks: dir-change.
-  // rule (T:Ty) :: (M:Tm) => M equiv T
+  // Checks: dirchange (integer).
+  rule (integer)<:Ty :: I:Int => .K
 
+  // Checks: dirchange (bytestring).
+  rule (bytestring)<:Ty :: B:ByStr => .K
 
   /*****************************************************************************/
   /**                       THE SYNTHESIS JUDGMENT                             */
@@ -231,9 +233,6 @@ module PLUTUS-CORE-TYPING
 
 
   // TODO: desugar fun TyList Ty correctly, also forall VarList KiList Ty (abs/lam rules)
-
-  // dirchange (integer)
-  rule (integer)<:Ty :: I:Int => .K
 
   // Synthesis: var.
   rule
