@@ -49,7 +49,6 @@ module PLUTUS-CORE-SYNTAX
   // Qualified name and constructor.
   syntax QualN      ::= ModName "." Name
   syntax QualC      ::= ModName "." Con
-  syntax QualTyName ::= ModName "." TyName
 
   syntax NameList   ::= List{Name, ""}
   syntax TmList     ::= List{Tm, ""}                           [klabel(tmList)]
@@ -97,7 +96,6 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "fun" Ki Ki ")"
 
   syntax Ty         ::= Var
-                      | QualTyName
                       | "(" "fun" TyList Ty ")"
                       | "(" "con" QualC TyList ")"
                       | "(" "comp" Ty ")"
