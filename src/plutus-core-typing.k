@@ -125,7 +125,7 @@ module PLUTUS-CORE-TYPING
 
   // Wrapper around function application in order to make application strict
   syntax Tm ::= app(Tm, Tm)                                            [strict]
-  rule [ F:Val M:Tm ] => app(F, M)
+  // rule [ F:Val M:Tm ] => app(F, M)
 
   // Desugar let expression to lambda expression
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
