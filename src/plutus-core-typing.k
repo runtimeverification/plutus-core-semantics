@@ -13,11 +13,12 @@ module PLUTUS-CORE-TYPING
 
   syntax K ::= checksList(TyList, TmList)
              | Ty "::" Tm                                   // `Tm` checks `Ty`
-             | Ty "equiv" Ty                                        [strict(1)]
              | checksCon(QualC, Ty)
 
   syntax K ::= #restoreTEnv(Map)
              | #restoreKEnv(Map)
+
+  syntax Equiv ::= "equiv" Ty
 
   syntax KiList ::= #getKinds(KSigList)
   syntax VarList ::= #getVars(TyList)
@@ -217,15 +218,15 @@ module PLUTUS-CORE-TYPING
   rule ( comp T ) :: (( failure )<:Val) => .K
 
   // Checks: dir-change (var).
-  rule
-    <k> T:Ty :: X:Var => .K ... </k>
-    <tenv> ... X |-> T ... </tenv>  
+  rule T:Ty :: X:Var => X ~> (equiv T):Equiv
 
   // Checks: dirchange (integer).
-  rule (integer)<:Ty :: I:Int => .K
+  rule (integer)<:Ty :: M:Tm => M ~> (equiv (integer)<:Ty):Equiv
 
   // Checks: dirchange (bytestring).
-  rule (bytestring)<:Ty :: B:ByStr => .K
+  rule (bytestring)<:Ty :: M:Tm => M ~> (equiv (bytestring)<:Ty):Equiv
+
+  rule T:Ty ~> (equiv T):Equiv => .K
 
   /*****************************************************************************/
   /**                       THE SYNTHESIS JUDGMENT                             */
