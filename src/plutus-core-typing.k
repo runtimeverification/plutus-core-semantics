@@ -231,9 +231,9 @@ module PLUTUS-CORE-TYPING
   // dirchange (integer)
   rule (integer)<:Ty :: I:Int => .
 
-  // var
+  // Synthesis: var.
   rule
-    <k> synth(X:Var, T) => true ... </k>
+    <k> X:Var => T ... </k>
     <tenv> ... X |-> T ... </tenv>
 
   // name
