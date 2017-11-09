@@ -247,8 +247,7 @@ module PLUTUS-CORE-TYPING
   syntax K ::= "[" Ty TmList "]"
 
   // Synthesis: app.
-  rule
-    <k> [ ( fun S T ) N:Tm .TmList ] => S :: N ~> T ... </k>
+  rule [ ( fun S T ) N:Tm .TmList ] => S :: N ~> T
 
   // compbuiltin
   // TODO.
