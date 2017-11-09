@@ -238,10 +238,9 @@ module PLUTUS-CORE-TYPING
 
   // name
 
-  // app (TODO: should fun `M \in fun ...` be a checks judgment?)
-  // rule
-    // <k> synth( [ M N .TmList ], T) => S :: N ... </k>
-    // <tenv> ... M |-> ( fun S .TyList T ) ... </tenv>
+  // Synthesis: app.
+  rule
+    <k> [ ( fun S T ) N .TmList ] => S :: N ~> T ... </k>
 
   // compbuiltin
   // TODO.
