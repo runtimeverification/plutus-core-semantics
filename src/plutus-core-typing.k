@@ -192,7 +192,7 @@ module PLUTUS-CORE-TYPING
 
   // Checks: lam.
   rule
-    <k> (( fun S .TyList T ) :: ( lam X:Var .VarList M:Tm )) => T :: M ~> #restoreTEnv(Rho) ... </k>
+    <k> ( fun S .TyList T ) :: ( lam X:Var .VarList M:Tm ) => T :: M ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
   // Checks: con.
@@ -216,7 +216,7 @@ module PLUTUS-CORE-TYPING
   // Checks: failure.
   rule ( comp T ) :: (( failure ):Val) => .K
 
-  // Checks: dir-change - var
+  // Checks: dir-change (var).
   rule
     <k> T:Ty :: X:Var => .K ... </k>
     <tenv> ... X |-> T ... </tenv>  
