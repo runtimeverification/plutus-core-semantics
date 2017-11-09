@@ -249,9 +249,8 @@ module PLUTUS-CORE-TYPING
   // bind
   // TODO.
 
-  // intval
-  // TODO.
-  // rule synth(I:Int, (integer)<:Ty) => true
+  // Synthesis: intval.
+  rule I:Int   => ((integer)<:Ty)
 
   // bytestringval
   // TODO.
