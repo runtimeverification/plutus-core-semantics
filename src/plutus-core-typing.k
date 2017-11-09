@@ -53,7 +53,7 @@ module PLUTUS-CORE-TYPING
 
   syntax Tm ::= #conHolder(K, K)
               | #qualCHolder(K, K)
-  rule #conHolder(MN, C) => ( con (MN . C) .ValList )
+  rule #conHolder(MN, C:Con) => ( con (MN . C) .ValList )
 
   rule #stringToModName(S:String)
     => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
@@ -214,7 +214,7 @@ module PLUTUS-CORE-TYPING
   rule ( comp T ) :: ( success M ) => M :: T
 
   // Checks: failure.
-  rule ( comp T ) :: (( failure ):Val) => .K
+  rule ( comp T ) :: (( failure )<:Val) => .K
 
   // Checks: dir-change (var).
   rule
