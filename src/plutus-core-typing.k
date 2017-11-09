@@ -264,10 +264,6 @@ module PLUTUS-CORE-TYPING
   // builtin
   // TODO.
 
-  // Clear result after type-checking succeeds. Ok since pure Booleans are only internal
-  // TODO.
-  rule true => .K
-
   rule
     <k> #restoreTEnv(Rho) => .K ... </k>
     <tenv> _ => Rho </tenv>
