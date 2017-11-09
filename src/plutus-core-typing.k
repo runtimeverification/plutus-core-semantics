@@ -180,16 +180,15 @@ module PLUTUS-CORE-TYPING
     <tenv> ... N |-> TAU ... </tenv>
 
   // abs
-  // rule
-    // <k> checks(( forall X .VarList K .KiList T ), ( abs X M )) => checks(T, M) ~> #restoreKEnv(Rho) ... </k>
-    // <kenv> Rho => Rho (X |-> K) </kenv>
 
   /*****************************************************************************/
   /**                          THE CHECKS JUDGMENT                             */
   /*****************************************************************************/
 
   // Checks: abs.
-  // TODO.
+  rule
+    <k> ( forall X .VarList K .KiList T ) :: ( abs X M ) => T :: M ~> #restoreKEnv(Rho) ... </k>
+    <kenv> Rho => Rho (X |-> K) </kenv>
 
   // Checks: lam.
   rule
