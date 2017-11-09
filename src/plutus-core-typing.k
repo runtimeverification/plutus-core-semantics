@@ -239,7 +239,9 @@ module PLUTUS-CORE-TYPING
     <tenv> ... X |-> T ... </tenv>
 
   // Synthesis: name.
-  // TODO.
+  rule
+    <k> (MN . N):QualN => T ... </k>
+    <tenv> ... N |-> T ... </tenv>
 
   // TODO: is this necessary? Cleaner way?
   syntax K ::= "[" Ty TmList "]"
