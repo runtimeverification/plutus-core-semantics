@@ -236,7 +236,8 @@ module PLUTUS-CORE-TYPING
     <k> X:Var => T ... </k>
     <tenv> ... X |-> T ... </tenv>
 
-  // name
+  // Synthesis: name.
+  // TODO.
 
   // Synthesis: app.
   rule
