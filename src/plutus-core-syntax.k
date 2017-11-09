@@ -150,6 +150,7 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
                       | Int
                       | ByStr
+                      | Ty
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var
