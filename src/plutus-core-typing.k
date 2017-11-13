@@ -13,6 +13,8 @@ module PLUTUS-CORE-TYPING
 
   syntax K ::= checksList(TyList, TmList)
              | Ty ":" Tm                                    // `Tm` checks `Ty`
+             | Ty "::" Ki                                 // `Ty` has kind `Ki`
+             | TyList "::" KiList
              | checksCon(QualC, Ty)
 
   syntax K ::= #restoreTEnv(Map)
@@ -139,40 +141,40 @@ module PLUTUS-CORE-TYPING
 
   // tyvar
   rule
-    <k> hasKind(X, K) => true ... </k>
+    <k> X :: K => true ... </k>
     <kenv> ... X |-> K ... </kenv>
 
   // TODO: rule for tyname?
 
   // fun
-  rule hasKind(( fun S T .TyList ), (type):Ki) => hasKind(S, (type):Ki) ~> hasKind(T, (type):Ki)
+  rule ( fun S T .TyList ) :: (type):Ki => S :: (type):Ki ~> T :: (type):Ki
 
   // tycon
   rule
-    <k> hasKind(( con QC:QualC TL:TyList ), (type):Ki) => hasKindList(TL, #getKinds(KSL)) ... </k>
+    <k> ( con QC:QualC TL:TyList ) :: (type):Ki => TL :: #getKinds(KSL) ... </k>
     <data> ... C |-> ( data C ( KSL ) AL ) ... </data>
 
   // comp
-  rule hasKind(( comp T:Ty ):Ty, (type):Ki) => hasKind(T, (type):Ki)
+  rule ( comp T:Ty ):Ty :: (type):Ki => T :: (type):Ki
 
   // forall
   rule
-    <k> hasKind(( forall X .VarList K .KiList T ), (type):Ki) => hasKind(T, (type):Ki) ~> #restoreKEnv(Rho) ... </k>
+    <k> ( forall X .VarList K .KiList T ) :: (type):Ki => T :: (type):Ki ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   // integer
-  rule hasKind((integer)<:Ty, (type):Ki) => true
+  rule (integer)<:Ty :: (type):Ki => true
 
   // bytestring
-  rule hasKind((bytestring)<:Ty, (type):Ki) => true
+  rule (bytestring)<:Ty :: (type):Ki => true
 
   // tylam
   rule
-    <k> hasKind(( lam X J:Ki T ), ( fun J K )) => hasKind(T, K) ~> #restoreKEnv(Rho) ... </k>
+    <k> ( lam X J:Ki T ) :: ( fun J K ) => T :: K ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> J) </kenv>
 
   // tyapp
-  rule hasKind( [ S T .TyList ], K) => hasKind(S, ( fun ?J:Ki K )) ~> hasKind(T, ?J)
+  rule [ S T .TyList ] :: K => S :: ( fun ?J:Ki K ) ~> T :: ?J
 
   rule
     <k> ( define N:Name M:Tm ) => TAU : M ... </k>
