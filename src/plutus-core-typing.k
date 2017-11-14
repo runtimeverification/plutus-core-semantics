@@ -174,6 +174,7 @@ module PLUTUS-CORE-TYPING
     <kenv> Rho => Rho (X |-> J) </kenv>
 
   // tyapp
+  // TODO: get rid of .TyList, other similar things
   rule [ S T .TyList ] :: K => S :: (fun ?J:Ki K) ~> T :: ?J
 
   rule
