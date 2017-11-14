@@ -1,10 +1,12 @@
 require "plutus-core-syntax.k"
 require "hex-conversion.k"
+require "substitution.k"
 
 module PLUTUS-CORE-TYPING
   imports PLUTUS-CORE-SYNTAX
   imports KRYPTO
   imports HEX-CONVERSION
+  imports SUBSTITUTION
 
   // syntax Bool ::= checks(Ty, Tm)
                 // | synth(Tm, Ty)
@@ -248,6 +250,12 @@ module PLUTUS-CORE-TYPING
   rule
     <k> (MN . N):QualN => T ... </k>
     <tenv> ... N |-> T ... </tenv>
+
+  // Synthesis: isa
+  // TODO
+
+  // Synthesis: inst
+  rule (inst (forall X:Var K:Ki T) S) => S :: K ~> T[S/X]
 
   // Synthesis: app.
   rule [ (fun S T) N:Tm ] => S <- N ~> T

@@ -74,7 +74,7 @@ module PLUTUS-CORE-SYNTAX
                       | QualN
                       | "(" "isa" Tm Ty ")"
                       | "(" "abs" Var Tm ")"
-                      | "(" "inst" Tm Ty ")"
+                      | "(" "inst" Tm Ty ")"                        [strict(1)]
                       // TODO: remove let?
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
