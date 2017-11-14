@@ -5,3 +5,5 @@
 5. In `decl-valid-define`, should the synthesis be a checking?
 6. Section IV: `leads` -> `leaves`
 7. Just to confirm, a program like `(define r [f 3])` is not valid?
+8. Inference in `tyapp` rule for kind checking?
+9. In CK machine, `case on` typo?
