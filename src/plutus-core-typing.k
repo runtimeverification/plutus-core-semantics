@@ -256,10 +256,10 @@ module PLUTUS-CORE-TYPING
   // TODO.
 
   // Synthesis: intval.
-  rule I:Int   => ((integer)<:Ty)
+  rule I:Int   => (integer)<:Ty
 
   // Synthesis: bytestringval.
-  rule B:ByStr => ((bytestring)<:Ty)
+  rule B:ByStr => (bytestring)<:Ty
 
   // builtin
   // TODO.
