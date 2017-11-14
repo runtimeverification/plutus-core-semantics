@@ -141,14 +141,8 @@ module PLUTUS-CORE-TYPING
   // Checks: failure.
   rule (comp T) <- (failure)<:Val => .K
 
-  // Checks: dir-change (var).
-  rule T <- X:Var => X ~> T
-
-  // Checks: dirchange (integer).
-  rule (integer)<:Ty <- M => M ~> (integer)<:Ty
-
-  // Checks: dirchange (bytestring).
-  rule (bytestring)<:Ty <- M => M ~> (bytestring)<:Ty
+  // Checks: dirchange
+  rule T:Ty <- M:SynthTm => M ~> T
 
   rule T:Ty ~> T => .K
 
