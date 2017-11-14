@@ -255,7 +255,7 @@ module PLUTUS-CORE-TYPING
   // TODO
 
   // Synthesis: inst
-  rule (inst (forall X:Var K:Ki T) S) => S :: K ~> T[S/X]
+  rule (inst (forall X:Var K:Ki T) S):SynthTm => S :: K ~> T[S / X]
 
   // Synthesis: app.
   rule [ (fun S T) N:Tm ] => S <- N ~> T
