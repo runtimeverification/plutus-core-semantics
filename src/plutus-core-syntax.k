@@ -70,28 +70,25 @@ module PLUTUS-CORE-SYNTAX
   syntax CAList     ::= List{ConArity, ""}
 
   // TODO: current spec still has floats?
-  syntax Tm         ::= Var
-                      | QualN
-                      | "(" "isa" Tm Ty ")"
-                      | "(" "abs" Var Tm ")"
-                      | "(" "inst" Tm Ty ")"                        [strict(1)]
-                      // TODO: remove let?
+  syntax Tm         ::= "(" "abs" Var Tm ")"
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
-                        // Application.
-                      | "[" Tm TmList "]"                           [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
                       | "(" "con" QualC TmList ")"
-                        // Built-in function.
-                      | "(" "builtin" Name Tm ")"
-                                                            [strict(2), prefer]
-                      | "(" "builtin" Name Tm Tm ")"
-                                                                 [strict(2, 3)]
-                      | "(" "compbuiltin" CBName ")"
                       | "(" "success" Tm ")"                        [strict(1)]
-                      | "(" "bind" Tm Var Tm ")"                    [strict(1)]
-                      | Val
                       | "(" "lam" VarList Tm ")"                       [binder]
-                      | Ty
+                      | Val
+                      | SynthTm
+
+  syntax SynthTm    ::= Var
+                      | QualN
+                      | "(" "isa" Tm Ty ")"
+                      | "(" "inst" Tm Ty ")"                        [strict(1)]
+                      | "[" Tm TmList "]"                           [strict(1)]
+                      | "(" "builtin" Name Tm ")"           [strict(2), prefer]
+                      | "(" "builtin" Name Tm Tm ")"             [strict(2, 3)]
+                      | "(" "compbuiltin" CBName ")"
+                      | "(" "bind" Tm Var Tm ")"                    [strict(1)]
+                      | SynthVal
 
   syntax Ki         ::= "(" "type" ")"
                       | "(" "fun" Ki Ki ")"
@@ -146,10 +143,12 @@ module PLUTUS-CORE-SYNTAX
   syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
                       | "(" "failure" ")"
                       | "(" "success" Val ")"         [prefer, klabel(succVal)]
-                      | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
+                      | SynthVal
+                      | Ty
+
+  syntax SynthVal   ::= "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
                       | Int
                       | ByStr
-                      | Ty
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var
