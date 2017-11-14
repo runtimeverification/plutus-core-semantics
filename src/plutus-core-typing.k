@@ -12,7 +12,7 @@ module PLUTUS-CORE-TYPING
                 // | hasKind(Ty, Ki)
 
   syntax K ::= checksList(TyList, TmList)
-             | Ty ":" Tm                                    // `Tm` checks `Ty`
+             | Ty "<-" Tm                                    // `Tm` checks `Ty`
              | Ty "::" Ki                                 // `Ty` has kind `Ki`
              | TyList "::" KiList
              | checksCon(QualC, Ty)
@@ -178,7 +178,7 @@ module PLUTUS-CORE-TYPING
   rule [ S T .TyList ] :: K => S :: (fun ?J:Ki K) ~> T :: ?J
 
   rule
-    <k> (define N:Name M:Tm) => TAU : M ... </k>
+    <k> (define N:Name M:Tm) => TAU <- M ... </k>
     <tenv> ... N |-> TAU ... </tenv>
 
   // abs
@@ -189,19 +189,19 @@ module PLUTUS-CORE-TYPING
 
   // Checks: abs.
   rule
-    <k> (forall X .VarList K .KiList T) : (abs X M) => T : M ~> #restoreKEnv(Rho) ... </k>
+    <k> (forall X .VarList K .KiList T) <- (abs X M) => T <- M ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   // Checks: lam.
   rule
-    <k> (fun S .TyList T) : (lam X:Var .VarList M:Tm) => T : M ~> #restoreTEnv(Rho) ... </k>
+    <k> (fun S .TyList T) <- (lam X:Var .VarList M:Tm) => T <- M ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
   // Checks: con.
   // TODO: the following will change.
   rule
     <k>
-      ((con (MN . C) TYS) : (con QC MS))
+      ((con (MN . C) TYS) <- (con QC MS))
         => checksCon(QC, (forall #getVars(TYS) #getKinds(KSL)
                            (fun #getVarsTy(TYS)
                              (con (MN . C) #getVarsTy(TYS)))))
@@ -213,19 +213,19 @@ module PLUTUS-CORE-TYPING
   // TODO.
 
   // Checks: success.
-  rule (comp T) : (success M) => M : T
+  rule (comp T) <- (success M) => M <- T
 
   // Checks: failure.
-  rule (comp T) : (failure)<:Val => .K
+  rule (comp T) <- (failure)<:Val => .K
 
   // Checks: dir-change (var).
-  rule T:Ty : X:Var => X ~> T
+  rule T:Ty <- X:Var => X ~> T
 
   // Checks: dirchange (integer).
-  rule (integer)<:Ty : M:Tm => M ~> (integer)<:Ty
+  rule (integer)<:Ty <- M:Tm => M ~> (integer)<:Ty
 
   // Checks: dirchange (bytestring).
-  rule (bytestring)<:Ty : M:Tm => M ~> (bytestring)<:Ty
+  rule (bytestring)<:Ty <- M:Tm => M ~> (bytestring)<:Ty
 
   rule T:Ty ~> T => .K
 
@@ -247,7 +247,7 @@ module PLUTUS-CORE-TYPING
     <tenv> ... N |-> T ... </tenv>
 
   // Synthesis: app.
-  rule [ (fun S T) N:Tm .TmList ] => S : N ~> T
+  rule [ (fun S T) N:Tm .TmList ] => S <- N ~> T
 
   // compbuiltin
   // TODO.
