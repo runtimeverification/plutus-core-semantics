@@ -1,3 +1,6 @@
 (module Foo (imported) (exported () ()) (local () ())
   (declare id (forall a (type) (fun a a)))
-  (define id (abs a (lam x x))))
+  (define id (abs a (lam x x)))
+  (declare result (fun (integer) (integer)))
+  (define result
+    (inst Foo.id (integer)))
