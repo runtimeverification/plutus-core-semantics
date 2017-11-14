@@ -91,6 +91,7 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
                       | "(" "lam" VarList Tm ")"                       [binder]
+                      | Ty
 
   syntax Ki         ::= "(" "type" ")"
                       | "(" "fun" Ki Ki ")"
