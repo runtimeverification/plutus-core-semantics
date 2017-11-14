@@ -141,7 +141,7 @@ module PLUTUS-CORE-TYPING
 
   // tyvar
   rule
-    <k> X :: K => true ... </k>
+    <k> X :: K => .K ... </k>
     <kenv> ... X |-> K ... </kenv>
 
   // TODO: rule for tyname?
@@ -163,10 +163,10 @@ module PLUTUS-CORE-TYPING
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   // integer
-  rule (integer)<:Ty :: (type):Ki => true
+  rule (integer)<:Ty :: (type):Ki => .K
 
   // bytestring
-  rule (bytestring)<:Ty :: (type):Ki => true
+  rule (bytestring)<:Ty :: (type):Ki => .K
 
   // tylam
   rule
