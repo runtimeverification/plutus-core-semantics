@@ -147,7 +147,7 @@ module PLUTUS-CORE-TYPING
   // TODO: rule for tyname?
 
   // fun
-  rule (fun S T .TyList) :: (type):Ki => S :: (type):Ki ~> T :: (type):Ki
+  rule (fun S:Ty T) :: (type):Ki => S :: (type):Ki ~> T :: (type):Ki
 
   // tycon
   rule
@@ -155,11 +155,11 @@ module PLUTUS-CORE-TYPING
     <data> ... C |-> (data C (KSL) AL) ... </data>
 
   // comp
-  rule (comp T:Ty):Ty :: (type):Ki => T :: (type):Ki
+  rule (comp T):Ty :: (type):Ki => T :: (type):Ki
 
   // forall
   rule
-    <k> (forall X .VarList K .KiList T) :: (type):Ki => T :: (type):Ki ~> #restoreKEnv(Rho) ... </k>
+    <k> (forall X:Var K:Ki T) :: (type):Ki => T :: (type):Ki ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   // integer
@@ -170,12 +170,15 @@ module PLUTUS-CORE-TYPING
 
   // tylam
   rule
-    <k> (lam X J:Ki T) :: (fun J K) => T :: K ~> #restoreKEnv(Rho) ... </k>
+    <k> (lam X J T) :: (fun J K) => T :: K ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> J) </kenv>
 
   // tyapp
-  // TODO: get rid of .TyList, other similar things
-  rule [ S T .TyList ] :: K => S :: (fun ?J:Ki K) ~> T :: ?J
+  rule [ (lam X J S) T:Ty ] :: K => (lam X J S) :: (fun J K) ~> T :: J
+
+  rule
+    <k> [ X:Var T:Ty ] :: K => [ (lam X J S) T ] :: K ... </k>
+    <kenv> ... X |-> (lam X J S) ... </kenv>
 
   rule
     <k> (define N:Name M:Tm) => TAU <- M ... </k>
@@ -189,12 +192,12 @@ module PLUTUS-CORE-TYPING
 
   // Checks: abs.
   rule
-    <k> (forall X .VarList K .KiList T) <- (abs X M) => T <- M ~> #restoreKEnv(Rho) ... </k>
+    <k> (forall X:Var K:Ki T) <- (abs X M) => T <- M ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   // Checks: lam.
   rule
-    <k> (fun S .TyList T) <- (lam X:Var .VarList M:Tm) => T <- M ~> #restoreTEnv(Rho) ... </k>
+    <k> (fun S:Ty T) <- (lam X:Var M) => T <- M ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
   // Checks: con.
@@ -219,13 +222,13 @@ module PLUTUS-CORE-TYPING
   rule (comp T) <- (failure)<:Val => .K
 
   // Checks: dir-change (var).
-  rule T:Ty <- X:Var => X ~> T
+  rule T <- X:Var => X ~> T
 
   // Checks: dirchange (integer).
-  rule (integer)<:Ty <- M:Tm => M ~> (integer)<:Ty
+  rule (integer)<:Ty <- M => M ~> (integer)<:Ty
 
   // Checks: dirchange (bytestring).
-  rule (bytestring)<:Ty <- M:Tm => M ~> (bytestring)<:Ty
+  rule (bytestring)<:Ty <- M => M ~> (bytestring)<:Ty
 
   rule T:Ty ~> T => .K
 
@@ -247,7 +250,7 @@ module PLUTUS-CORE-TYPING
     <tenv> ... N |-> T ... </tenv>
 
   // Synthesis: app.
-  rule [ (fun S T) N:Tm .TmList ] => S <- N ~> T
+  rule [ (fun S T) N:Tm ] => S <- N ~> T
 
   // compbuiltin
   // TODO.
@@ -256,7 +259,7 @@ module PLUTUS-CORE-TYPING
   // TODO.
 
   // Synthesis: intval.
-  rule I:Int   => (integer)<:Ty
+  rule I:Int => (integer)<:Ty
 
   // Synthesis: bytestringval.
   rule B:ByStr => (bytestring)<:Ty
@@ -264,6 +267,7 @@ module PLUTUS-CORE-TYPING
   // builtin
   // TODO.
 
+  // Restore type and kind environments
   rule
     <k> #restoreTEnv(Rho) => .K ... </k>
     <tenv> _ => Rho </tenv>
