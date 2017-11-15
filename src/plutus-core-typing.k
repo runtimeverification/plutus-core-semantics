@@ -117,13 +117,7 @@ module PLUTUS-CORE-TYPING
 
   // Checks: lam.
   rule
-    <k> (fun S:Ty T) <- (lam X:Var M) => T <- M ~> #restoreTEnv(Rho) ... </k>
-    <tenv> Rho => Rho (X |-> S) </tenv>
-
-  // Checks: lam - multiple variables
-  // TODO: maybe these can be combined
-  rule
-    <k> (fun S SLIST T) <- (lam X:Var (lam Y:Var M)) => (fun SLIST T) <- (lam Y M) ~> #restoreTEnv(Rho) ... </k>
+    <k> (fun S SLIST T) <- (lam X:Var M) => (fun SLIST T) <- M ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
   // Checks: con.
@@ -176,7 +170,7 @@ module PLUTUS-CORE-TYPING
   rule (inst (forall X:TyVar K:Ki T) S):Tm => S :: K ~> T[S / X]
 
   // Synthesis: app.
-  rule [ (fun S T) N:Tm ] => S <- N ~> T
+  rule [ (fun S SLIST T) N:Tm ] => S <- N ~> (fun SLIST T)
 
   // compbuiltin
   // TODO.
@@ -211,5 +205,17 @@ module PLUTUS-CORE-TYPING
     <mod> CurrMN => MN </mod>
 
   rule (.DecList ~> _:ModF ) => .K
+
+  /*****************************************************************************/
+  /**                        HELPER FUNCTIONALITY                              */
+  /*****************************************************************************/
+
+  rule (fun .TyList T) => T
+  rule T:Ty ~> (fun .TyList T) => .K
+
+  rule [ F:Val M1 M2 MS ] => [ [ F M1 ] M2 MS ]
+
+  rule T <- (lam X1 X2 XS M) => T <- (lam X1 .VarList (lam X2 XS M))
+
 
 endmodule
