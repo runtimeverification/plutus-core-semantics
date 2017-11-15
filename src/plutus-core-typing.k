@@ -173,7 +173,7 @@ module PLUTUS-CORE-TYPING
   rule (isa T M):Tm => T <- M ~> T
 
   // Synthesis: inst
-  rule (inst (forall X:Var K:Ki T) S):SynthTm => S :: K ~> T[S / X]
+  rule (inst (forall X:Var K:Ki T) S):Tm => S :: K ~> T[S / X]
 
   // Synthesis: app.
   rule [ (fun S T) N:Tm ] => S <- N ~> T
