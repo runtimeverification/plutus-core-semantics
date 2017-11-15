@@ -185,7 +185,8 @@ module PLUTUS-CORE-TYPING
   rule B:ByStr => (bytestring)<:Ty
 
   // builtin
-  // TODO.
+  // TODO: complete these
+  rule (builtin addInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
 
   // Restore type and kind environments
   rule
