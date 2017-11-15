@@ -122,15 +122,15 @@ module PLUTUS-CORE-TYPING
 
   // Checks: con.
   // TODO: the following will change.
-  rule
-    <k>
-      ((con (MN . C) TYS) <- (con QC MS))
-        => checksCon(QC, (forall #getVars(TYS) #getKinds(KSL)
-                           (fun #getVarsTy(TYS)
-                             (con (MN . C) #getVarsTy(TYS)))))
-        ~> checksList(TYS, MS)
-    </k>
-    <data> ... C |-> (data C (KSL) AL) ... </data>
+  // rule
+  //   <k>
+  //     ((con (MN . C) TYS) <- (con QC MS))
+  //       => checksCon(QC, (forall #getTyVars(TYS) #getKinds(KSL)
+  //                          (fun #getTyVars(TYS)
+  //                            (con (MN . C) #getTyVars(TYS)))))
+  //       ~> checksList(TYS, MS)
+  //   </k>
+  //   <data> ... C |-> (data C (KSL) AL) ... </data>
 
   // Checks: case.
   // TODO.
