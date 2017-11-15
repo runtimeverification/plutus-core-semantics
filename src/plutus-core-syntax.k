@@ -82,7 +82,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax SynthTm    ::= Var
                       | QualN
-                      | "(" "isa" Tm Ty ")"
+                      | "(" "isa" Ty Tm ")"
                       | "(" "inst" Tm Ty ")"                        [strict(1)]
                       | "[" Tm TmList "]"                           [strict(1)]
                       | "(" "builtin" Name Tm ")"           [strict(2), prefer]
