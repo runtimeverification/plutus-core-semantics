@@ -24,7 +24,7 @@ module PLUTUS-CORE-TYPING
 
   syntax KiList ::= #getKinds(KSigList)
   syntax VarList ::= #getVars(TyList)
-  syntax TyList ::= #getVarsTy(TyList)
+  syntax TyVarList ::= #getTyVars(TyList)
 
   // TODO: add syntax (and semantics) for #getKinds, #getVars, etc.
 
@@ -79,7 +79,7 @@ module PLUTUS-CORE-TYPING
 
   // forall
   rule
-    <k> (forall X:Var K:Ki T) :: (type):Ki => T :: (type):Ki ~> #restoreKEnv(Rho) ... </k>
+    <k> (forall X:TyVar K:Ki T) :: (type):Ki => T :: (type):Ki ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   // integer
@@ -97,7 +97,7 @@ module PLUTUS-CORE-TYPING
   rule [ (lam X J S) T:Ty ] :: K => (lam X J S) :: (fun J K) ~> T :: J
 
   rule
-    <k> [ X:Var T:Ty ] :: K => [ (lam X J S) T ] :: K ... </k>
+    <k> [ X:TyVar T:Ty ] :: K => [ (lam X J S) T ] :: K ... </k>
     <kenv> ... X |-> (lam X J S) ... </kenv>
 
   rule
@@ -112,7 +112,7 @@ module PLUTUS-CORE-TYPING
 
   // Checks: abs.
   rule
-    <k> (forall X:Var K:Ki T) <- (abs X M) => T <- M ~> #restoreKEnv(Rho) ... </k>
+    <k> (forall X:TyVar K:Ki T) <- (abs X M) => T <- M ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   // Checks: lam.
@@ -173,7 +173,7 @@ module PLUTUS-CORE-TYPING
   rule (isa T M):Tm => T <- M ~> T
 
   // Synthesis: inst
-  rule (inst (forall X:Var K:Ki T) S):Tm => S :: K ~> T[S / X]
+  rule (inst (forall X:TyVar K:Ki T) S):Tm => S :: K ~> T[S / X]
 
   // Synthesis: app.
   rule [ (fun S T) N:Tm ] => S <- N ~> T

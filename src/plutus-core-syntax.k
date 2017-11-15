@@ -39,9 +39,12 @@ module PLUTUS-CORE-SYNTAX
   // Arity.
   syntax Arity   ::= r"[0-9]+"                                          [token]
 
+  // TODO: Make sure preferring Var over TyVar is ok.
   // Variable.
-  syntax Var     ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
-                   | symInt(Var)                                       [prefer]
+  syntax Var     ::= r"[a-z][a-zA-Z0-9\\_']*"                           [token]
+
+  // Type Variable.
+  syntax TyVar     ::= r"[a-z][a-zA-Z0-9\\_']*"                  [token, avoid]
 
   /***************************************************************************/
   /*****************************   GRAMMAR   *********************************/
@@ -59,6 +62,7 @@ module PLUTUS-CORE-SYNTAX
   syntax KSigList   ::= List{KSig, ""}                       [klabel(ksigList)]
   syntax ValList    ::= List{Val, ""}                         [klabel(valList)]
   syntax VarList    ::= List{Var, ""}                         [klabel(varList)]
+  syntax TyVarList  ::= List{TyVar, ""}                     [klabel(tyvarList)]
   syntax QualCList  ::= List{QualC  ,  ""}
 
   // syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
@@ -71,7 +75,7 @@ module PLUTUS-CORE-SYNTAX
   syntax CAList     ::= List{ConArity, ""}
 
   // TODO: current spec still has floats?
-  syntax Tm         ::= "(" "abs" Var Tm ")"
+  syntax Tm         ::= "(" "abs" TyVar Tm ")"
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
                       | "(" "con" QualC TmList ")"
@@ -94,21 +98,21 @@ module PLUTUS-CORE-SYNTAX
   syntax Ki         ::= "(" "type" ")"
                       | "(" "fun" Ki Ki ")"
 
-  syntax Ty         ::= Var
+  syntax Ty         ::= TyVar
                       | "(" "fun" TyList Ty ")"
                       | "(" "con" QualC TyList ")"
                       | "(" "comp" Ty ")"
-                      | "(" "forall" VarList KiList Ty ")"
+                      | "(" "forall" TyVarList KiList Ty ")"
                       | "(" "bytestring" ")"
                       | "(" "integer" ")"
-                      | "(" "lam" Var Ki Ty ")"
+                      | "(" "lam" TyVar Ki Ty ")"
                       | "[" Ty TyList "]"
 
   // Case clause.
   syntax Cl         ::= "(" QualC "(" VarList ")" Tm ")"
 
   // Kind signature.
-  syntax KSig       ::= "(" Var Ki ")"
+  syntax KSig       ::= "(" TyVar Ki ")"
 
   // Alternative.
   syntax Alt        ::= "(" Con TyList ")"
@@ -152,7 +156,7 @@ module PLUTUS-CORE-SYNTAX
                       | ByStr
 
   syntax KResult    ::= Val
-  syntax KVariable  ::= Var
+  syntax KVariable  ::= Var | TyVar
 
   syntax String     ::= #toStringVerbatim(ByStr)   [ function
                                                    , hook(STRING.token2string)]
