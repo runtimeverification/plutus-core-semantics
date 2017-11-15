@@ -164,7 +164,7 @@ module PLUTUS-CORE-TYPING
     <tenv> ... N |-> T ... </tenv>
 
   // Synthesis: isa
-  // TODO
+  rule (isa T M):Tm => T <- M ~> T
 
   // Synthesis: inst
   rule (inst (forall X:Var K:Ki T) S):SynthTm => S :: K ~> T[S / X]
