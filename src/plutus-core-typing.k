@@ -200,11 +200,11 @@ module PLUTUS-CORE-TYPING
 
   rule
     <k>
-      ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS )
+      (module MN:ModName IS ES LS DEFS) => DEFS ~> (moduleF MN IS ES LS)
     </k>
     <mod> CurrMN => MN </mod>
 
-  rule (.DecList ~> _:ModF ) => .K
+  rule (.DecList ~> _:ModF) => .K
 
   /*****************************************************************************/
   /**                        HELPER FUNCTIONALITY                              */
