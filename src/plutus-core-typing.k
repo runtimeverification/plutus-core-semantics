@@ -120,6 +120,12 @@ module PLUTUS-CORE-TYPING
     <k> (fun S:Ty T) <- (lam X:Var M) => T <- M ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
+  // Checks: lam - multiple variables
+  // TODO: maybe these can be combined
+  rule
+    <k> (fun S SLIST T) <- (lam X:Var (lam Y:Var M)) => (fun SLIST T) <- (lam Y M) ~> #restoreTEnv(Rho) ... </k>
+    <tenv> Rho => Rho (X |-> S) </tenv>
+
   // Checks: con.
   // TODO: the following will change.
   rule
