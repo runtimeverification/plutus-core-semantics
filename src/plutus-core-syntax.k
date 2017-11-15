@@ -93,6 +93,8 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "builtin" Name Tm Tm ")"             [strict(2, 3)]
                       | "(" "compbuiltin" CBName ")"
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
+                      | Int
+                      | ByStr
                       | SynthVal
 
   syntax Ki         ::= "(" "type" ")"
@@ -152,8 +154,6 @@ module PLUTUS-CORE-SYNTAX
                       | Ty
 
   syntax SynthVal   ::= "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
-                      | Int
-                      | ByStr
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var | TyVar
