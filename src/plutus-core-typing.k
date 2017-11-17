@@ -187,6 +187,8 @@ module PLUTUS-CORE-TYPING
   // builtin
   // TODO: complete these
   rule (builtin addInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
+  rule (builtin multiplyInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
+  rule (builtin subtractInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
 
   // Restore type and kind environments
   rule
