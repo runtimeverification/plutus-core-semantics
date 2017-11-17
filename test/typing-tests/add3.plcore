@@ -1,0 +1,5 @@
+(module Foo (imported) (exported () ()) (local () ())
+  (declare add (fun (integer) (integer) (integer)))
+  (declare add3 (fun (integer) (integer)))
+  (define add (lam x y (builtin addInt x y)))
+  (define add3 (lam x [Foo.add x 3])))
