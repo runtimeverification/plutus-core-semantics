@@ -37,21 +37,6 @@ module PLUTUS-CORE-TYPING
       <mod> .ModName </mod>
     </T>
 
-  /***************************************************************************/
-  /***********************  BUILT-IN REDUCTIONS   ****************************/
-  /***************************************************************************/
-
-  rule ( builtin addInt:Name       I1:Int I2:Int ) => I1 +Int I2
-  rule ( builtin subtractInt:Name  I1:Int I2:Int ) => I1 -Int I2
-  rule ( builtin multiplyInt:Name  I1:Int I2:Int )
-    => I1 *Int I2
-  rule ( builtin divideInt:Name    I1:Int I2:Int )
-    => I1 /Int I2
-    when I2 =/=Int 0
-  rule ( builtin remainderInt:Name I1:Int I2:Int )
-    => I1 %Int I2
-    when I2 =/=Int 0
-
   // Process the definitions in order.
   rule D:Dec DS:DecList => D ~> DS
 
