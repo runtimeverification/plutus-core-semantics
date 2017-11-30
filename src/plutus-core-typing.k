@@ -120,7 +120,13 @@ module PLUTUS-CORE-TYPING
     <k> (fun S T) <- (lam X:Var M) => T <- M ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
+  syntax K ::= "(" "forall" TyVarList KiList "(" "fun" TyList "[" QualTyC TyVarList "]" ")" ")"
+
   // Checks: con.
+  // rule
+  //   <k> (con QTC TYS) <- (con QC MS) =>
+  //   <data> ... C |-> (data C (KSL) AL) ... </data>
+
   // TODO: the following will change.
   // rule
   //   <k>
