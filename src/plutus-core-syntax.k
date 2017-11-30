@@ -23,6 +23,8 @@ module PLUTUS-CORE-SYNTAX
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
                    | #stringToCon(String)                            [function]
 
+  syntax TyCon   ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+
   // Integer literal.
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
   // expression as that in the Plutus Core specification.
@@ -52,7 +54,9 @@ module PLUTUS-CORE-SYNTAX
 
   // Qualified name and constructor.
   syntax QualN      ::= ModName "." Name
+  syntax QualTyN    ::= ModName "." TyName
   syntax QualC      ::= ModName "." Con
+  syntax QualTyC    ::= ModName "." TyCon
 
   syntax NameList   ::= List{Name, ""}
   syntax TmList     ::= List{Tm, ""}                           [klabel(tmList)]
