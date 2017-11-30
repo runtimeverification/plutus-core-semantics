@@ -103,10 +103,10 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "fun" Ki Ki ")"
 
   syntax Ty         ::= TyVar
-                      | "(" "fun" TyList Ty ")"
+                      | "(" "fun" Ty Ty ")"
                       | "(" "con" QualC TyList ")"
                       | "(" "comp" Ty ")"
-                      | "(" "forall" TyVarList KiList Ty ")"
+                      | "(" "forall" TyVar Ki Ty ")"
                       | "(" "bytestring" ")"
                       | "(" "integer" ")"
                       | "(" "lam" TyVar Ki Ty ")"

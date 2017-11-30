@@ -67,7 +67,7 @@ module PLUTUS-CORE-TYPING
   // TODO: rule for tyname?
 
   // fun
-  rule (fun S:Ty T) :: (type):Ki => S :: (type):Ki ~> T :: (type):Ki
+  rule (fun S T) :: (type):Ki => S :: (type):Ki ~> T :: (type):Ki
 
   // tycon
   rule
@@ -117,7 +117,7 @@ module PLUTUS-CORE-TYPING
 
   // Checks: lam.
   rule
-    <k> (fun S SLIST T) <- (lam X:Var M) => (fun SLIST T) <- M ~> #restoreTEnv(Rho) ... </k>
+    <k> (fun S T) <- (lam X:Var M) => T <- M ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
   // Checks: con.
@@ -170,7 +170,7 @@ module PLUTUS-CORE-TYPING
   rule (inst (forall X:TyVar K:Ki T) S):Tm => S :: K ~> T[S / X]
 
   // Synthesis: app.
-  rule [ (fun S SLIST T) N:Tm ] => S <- N ~> (fun SLIST T)
+  rule [ (fun S T) N:Tm ] => S <- N ~> T
 
   // compbuiltin
   // TODO.
@@ -212,9 +212,6 @@ module PLUTUS-CORE-TYPING
   /*****************************************************************************/
   /**                        HELPER FUNCTIONALITY                              */
   /*****************************************************************************/
-
-  rule (fun .TyList T) => T
-  rule T:Ty ~> (fun .TyList T) => .K
 
   rule [ F:Val M1 M2 MS ] => [ [ F M1 ] M2 MS ]
 
