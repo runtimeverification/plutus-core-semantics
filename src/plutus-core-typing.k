@@ -190,11 +190,30 @@ module PLUTUS-CORE-TYPING
   // Synthesis: bytestringval.
   rule B:ByStr => (bytestring)<:Ty
 
-  // builtin
-  // TODO: complete these
+  // builtins
   rule (builtin addInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
   rule (builtin multiplyInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
   rule (builtin subtractInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
+  rule (builtin divideInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
+  rule (builtin remainderInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
+
+  rule (builtin lessthanInt (integer)<:Ty (integer)<:Ty):Tm => boolean
+  rule (builtin lessthanEqualsInt (integer)<:Ty (integer)<:Ty):Tm => boolean
+  rule (builtin greaterThanInt (integer)<:Ty (integer)<:Ty):Tm => boolean
+  rule (builtin greaterThanEqualsInt (integer)<:Ty (integer)<:Ty):Tm => boolean
+  rule (builtin equalsInt (integer)<:Ty (integer)<:Ty):Tm => boolean
+
+  rule (builtin intToByteString (integer)<:Ty):Tm => (bytestring)<:Ty
+
+  rule (builtin concatenate (bytestring)<:Ty (bytestring)<:Ty):Tm => (bytestring)<:Ty
+
+  rule (builtin take (integer)<:Ty (bytestring)<:Ty):Tm => (bytestring)<:Ty
+  rule (builtin drop (integer)<:Ty (bytestring)<:Ty):Tm => (bytestring)<:Ty
+
+  rule (builtin sha2_256 (bytestring)<:Ty):Tm => (bytestring)<:Ty
+  rule (builtin sha3_256 (bytestring)<:Ty):Tm => (bytestring)<:Ty
+
+  rule (builtin equalsByteString (bytestring)<:Ty (bytestring)<:Ty):Tm => (bytestring)<:Ty
 
   // Restore type and kind environments
   rule
