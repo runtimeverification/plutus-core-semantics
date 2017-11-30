@@ -223,5 +223,12 @@ module PLUTUS-CORE-TYPING
 
   rule T <- (lam X1 X2 XS M) => T <- (lam X1 .VarList (lam X2 XS M))
 
+  syntax Ty ::= #tyconHolder(K, K)
+
+  rule #tyconHolder(MN, TC) => ( con (MN . TC) .TyList )
+
+  rule boolean =>
+    #tyconHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Prelude"),
+                 #parseToken("TyCon@PLUTUS-CORE-SYNTAX", "Boolean"))
 
 endmodule
