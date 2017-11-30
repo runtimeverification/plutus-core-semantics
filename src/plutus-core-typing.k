@@ -71,7 +71,7 @@ module PLUTUS-CORE-TYPING
 
   // tycon
   rule
-    <k> (con QC:QualC TL:TyList) :: (type):Ki => TL :: #getKinds(KSL) ... </k>
+    <k> (con QC:QualTyC TL:TyList) :: (type):Ki => TL :: #getKinds(KSL) ... </k>
     <data> ... C |-> (data C (KSL) AL) ... </data>
 
   // comp
