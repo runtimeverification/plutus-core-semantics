@@ -110,7 +110,9 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "bytestring" ")"
                       | "(" "integer" ")"
                       | "(" "lam" TyVar Ki Ty ")"
-                      | "[" Ty TyList "]"
+                      | TyApp
+
+  syntax TyApp      ::= "[" Ty TyList "]"                           [strict(1)]
 
   // Case clause.
   syntax Cl         ::= "(" QualC "(" VarList ")" Tm ")"
