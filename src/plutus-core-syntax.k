@@ -17,12 +17,9 @@ module PLUTUS-CORE-SYNTAX
   // Module name.
   syntax ModName ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
                    | ".ModName"
-                   | #stringToModName(String)                        [function]
 
   // Constructor name.
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
-                   | #stringToCon(String)                            [function]
-
   syntax TyCon   ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Integer literal.
@@ -92,6 +89,7 @@ module PLUTUS-CORE-SYNTAX
                       | QualN
                       | "(" "isa" Ty Tm ")"
                       | "(" "inst" Tm Ty ")"                        [strict(1)]
+                      // TODO: distinguish NeTmList and TmList
                       | "[" Tm TmList "]"                           [strict(1)]
                       | "(" "builtin" Name Tm ")"           [strict(2), prefer]
                       | "(" "builtin" Name Tm Tm ")"             [strict(2, 3)]
