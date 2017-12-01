@@ -7,3 +7,6 @@
 7. Just to confirm, a program like `(define r [f 3])` is not valid?
 <!-- 8. Inference in `tyapp` rule for kind checking? -->
 9. In CK machine, `case on` typo?
+
+10. S' is confusing in `case` rule for checks
+11. \bar{alt} checks c \bar{T} used in a few place but not defined
