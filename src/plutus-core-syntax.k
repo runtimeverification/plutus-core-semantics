@@ -76,14 +76,16 @@ module PLUTUS-CORE-SYNTAX
   syntax CAList     ::= List{ConArity, ""}
 
   // TODO: current spec still has floats?
-  syntax Tm         ::= "(" "abs" TyVar Tm ")"
+  syntax NonValTm   ::= "(" "abs" TyVar Tm ")"
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
                       | "(" "con" QualC TmList ")"
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "lam" VarList Tm ")"                       [binder]
-                      | Val
                       | SynthTm
+
+  syntax Tm         ::= NonValTm
+                      | Val
 
   syntax SynthTm    ::= Var
                       | QualN
