@@ -23,10 +23,6 @@ module PLUTUS-CORE-TYPING
   syntax K ::= #restoreTEnv(Map)
              | #restoreKEnv(Map)
 
-  syntax KiList ::= #getKinds(KSigList)
-  syntax VarList ::= #getVars(TyList)
-  syntax TyVarList ::= #getTyVars(TyList)
-
   // TODO: add syntax (and semantics) for #getKinds, #getVars, etc.
 
   configuration
@@ -242,5 +238,13 @@ module PLUTUS-CORE-TYPING
   rule boolean =>
     #tyconHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Prelude"),
                  #parseToken("TyCon@PLUTUS-CORE-SYNTAX", "Boolean"))
+
+  syntax KiList ::= #getKinds(KSigList)
+  syntax TyVarList ::= #getTyVars(TyList)
+  syntax TyList ::= #getTys(AltList)
+
+  rule #getKinds(.KSigList) => .KiList
+  rule #getTyVars(.TyList) => .TyVarList
+  rule #getTys(.AltList) => .TyList
 
 endmodule
