@@ -114,23 +114,18 @@ module PLUTUS-CORE-TYPING
     <k> (fun S T) <- (lam X:Var M) => T <- M ~> #restoreTEnv(Rho) ... </k>
     <tenv> Rho => Rho (X |-> S) </tenv>
 
-  syntax K ::= "(" "forall" TyVarList KiList "(" "fun" TyList "[" QualTyC TyVarList "]" ")" ")"
-
   // Checks: con.
-  // rule
-  //   <k> (con QTC TYS) <- (con QC MS) =>
-  //   <data> ... C |-> (data C (KSL) AL) ... </data>
+  syntax ConValid ::= "(" "forall" TyVarList KiList "(" "fun" TyList "[" QualTyC TyVarList "]" ")" ")"
 
-  // TODO: the following will change.
-  // rule
-  //   <k>
-  //     ((con (MN . C) TYS) <- (con QC MS))
-  //       => checksCon(QC, (forall #getTyVars(TYS) #getKinds(KSL)
-  //                          (fun #getTyVars(TYS)
-  //                            (con (MN . C) #getTyVars(TYS)))))
-  //       ~> checksList(TYS, MS)
-  //   </k>
-  //   <data> ... C |-> (data C (KSL) AL) ... </data>
+  // TODO: need to do substitution in #getTys(AL) <-s MS
+  rule
+    <k>
+      (con (MN . C:TyCon) TYS) <- (con QC:QualC MS:TmList)
+        => QC : (forall #getTyVars(TYS) #getKinds(KSL)
+                  (fun #getTys(AL) [ (MN . C) #getTyVars(TYS) ]))
+        ~> #getTys(AL) <-s MS ...
+    </k>
+    <data> ... C |-> (data C (KSL:KSigList) AL:AltList) ... </data>
 
   // Checks: case.
   // TODO.
