@@ -243,6 +243,9 @@ module PLUTUS-CORE-TYPING
     #tyconHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Prelude"),
                  #parseToken("TyCon@PLUTUS-CORE-SYNTAX", "Boolean"))
 
+  rule T <- (case M:NonValTm CLS) => (case M CLS) ~> T
+  rule (case V:Val CLS) ~> T => T <- (case V CLS)
+
   syntax KiList ::= #getKinds(KSigList)
   syntax TyVarList ::= #getTyVars(TyList)
   syntax TyList ::= #getTys(AltList)
