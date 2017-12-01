@@ -41,6 +41,10 @@ module PLUTUS-CORE-TYPING
     <k> (declare N:Name TAU:Ty) => .K ... </k>
     <tenv> ... .Map => (N |-> TAU) ... </tenv>
 
+  rule
+    <k> (data C (KSL:KSigList) AL) => .K ... </k>
+    <data> ... .Map => (C |-> (data C (KSL) AL)) ... </data>
+
   // Type reduction
   rule [ (lam X:TyVar K T) U:Ty ] => T[U / X]
 
