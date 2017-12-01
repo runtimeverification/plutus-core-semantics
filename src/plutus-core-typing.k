@@ -60,7 +60,7 @@ module PLUTUS-CORE-TYPING
   // TODO: rule for tyname?
 
   // fun
-  rule (fun S T) :: (type):Ki => S :: (type):Ki ~> T :: (type):Ki
+  rule (fun S T):Ty :: (type):Ki => S :: (type):Ki ~> T :: (type):Ki
 
   // tycon
   rule
