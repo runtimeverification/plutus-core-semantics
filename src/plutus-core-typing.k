@@ -16,6 +16,7 @@ module PLUTUS-CORE-TYPING
   syntax K ::= checksList(TyList, TmList)
              | Ty "<-" Tm                                    // `Tm` checks `Ty`
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
+             | QualC ":" ConValid
              | TyList "::" KiList
              | checksCon(QualC, Ty)
 
