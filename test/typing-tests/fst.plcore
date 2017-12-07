@@ -1,0 +1,19 @@
+(module Foo
+    (imported)
+    (exported () ())
+    (local () ())
+
+
+    (data Pair ((a (type)) (b (type)))
+          (MkPair a b))
+    
+    
+    (declare fst
+      (forall a (type) (forall b (type)
+        (fun (con Foo.Pair a b) a))))
+    (define fst
+      (abs a (abs b
+        (lam p
+          (case p
+            (Foo.MkPair (x y) x))))))
+)
