@@ -16,6 +16,8 @@ module PLUTUS-CORE-TYPING
   syntax K ::= checksList(TyList, TmList)
              | Ty "<-" Tm                                    // `Tm` checks `Ty`
              | TyList "<-s" TmList
+             | Ty "|-" Ty "<-" Cl
+             | Ty "|-" Ty "<-s" ClList
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
              | TyList "::" KiList
              | Alt "in" AltList
@@ -119,14 +121,24 @@ module PLUTUS-CORE-TYPING
   rule
     <k>
       (con (MN . TC:TyCon) TYS) <- (con (MN . C:Con) MS:TmList)
-        => (C #getTys(AL)) in AL
+        => C in AL
         ~> #getTys(AL) [ #getTyVars(AL) := TYS ] <-s MS
         ...
     </k>
     <data> ... TC |-> (data TC (KSL:KSigList) AL:AltList) ... </data>
 
   // Checks: case.
-  // TODO.
+  rule T <- (case (con QC TL) CLS) => (con QC TL) |- T <-s CLS
+
+  // clause
+  rule
+    <k>
+      (con (MN . TC) TYS) |- T:Ty <- (MN . C (XS) M):Cl
+        => C in AL ~> T <- M ~> #restoreTEnv(Rho)
+        ...
+    </k>
+    <tenv> Rho => Rho #makeMap(XS, #getTys(AL)) </tenv>
+    <data> ... TC |-> (data TC (KSL:KSigList) AL:AltList) ... </data>
 
   // Checks: success.
   rule (comp T) <- (success M) => M <- T
@@ -270,10 +282,14 @@ module PLUTUS-CORE-TYPING
 
   syntax TyList ::= TyList "[" TyVarList ":=" TyList "]"             [function]
   syntax Map ::= #makeMap(TyVarList, TyList)                         [function]
+  syntax Map ::= #makeMap(VarList, TyList)                           [function]
   syntax Ty ::= #subst(Ty, Map)                                      [function]
 
   rule #makeMap(.TyVarList, .TyList) => .Map
-  rule #makeMap(TV TVL, T TL) => (TV |-> T) #makeMap(TVL, TL)
+  rule #makeMap(TV:TyVar TVL, T TL) => (TV |-> T) #makeMap(TVL, TL)
+
+  rule #makeMap(.VarList, .TyList) => .Map
+  rule #makeMap(X:Var XL, T TL) => (X |-> T) #makeMap(XL, TL)
 
   rule #subst(T, M) => T [ M ]
 
@@ -281,7 +297,14 @@ module PLUTUS-CORE-TYPING
   rule (T TL1):TyList [ TVL := TL2 ]
     => #subst(T, #makeMap(TVL, TL2)) (TL1 [ TVL := TL2 ])
 
+  // Types check Terms
+
   rule .TyList <-s .TmList => .K
   rule T TL <-s M ML => T <- M ~> TL <-s ML
+
+  // Type checks list of cluases
+
+  rule _ |- _ <-s .ClList => .K
+  rule T1 |- T2 <-s CL CLS => T1 |- T2 <- CL ~> T1 |- T2 <-s CLS
 
 endmodule
