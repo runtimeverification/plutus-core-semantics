@@ -1,0 +1,22 @@
+(module Foo
+    (imported)
+    (exported () ())
+    (local () ())
+    
+    //
+    // Pair Tools
+    //
+    
+    (data Pair ((a (type)) (b (type)))
+          (MkPair a b))
+    
+    
+    (declare curry
+      (forall a (type) (forall b (type) (forall c (type)
+        (fun (fun (con Foo.Pair a b) c)
+             (fun a (fun b c)))))))
+    (define curry
+      (abs a (abs b (abs c
+        (lam f (lam x (lam y
+          [f (con Foo.MkPair x y)])))))))
+)
