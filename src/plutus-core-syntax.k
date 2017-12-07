@@ -111,8 +111,8 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "con" QualTyC TyList ")"
                       | "(" "comp" Ty ")"
                       | "(" "forall" TyVar Ki Ty ")"
-                      | "(" "bytestring" ")"
-                      | "(" "integer" ")"
+                      | "(bytestring)"
+                      | "(integer)"
                       | "(" "lam" TyVar Ki Ty ")"
                       | TyApp
 
