@@ -77,10 +77,10 @@ module PLUTUS-CORE-TYPING
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   // integer
-  rule (integer)<:Ty :: (type):Ki => .K
+  rule (integer) :: (type):Ki => .K
 
   // bytestring
-  rule (bytestring)<:Ty :: (type):Ki => .K
+  rule (bytestring) :: (type):Ki => .K
 
   // tylam
   rule
@@ -174,35 +174,35 @@ module PLUTUS-CORE-TYPING
   // TODO.
 
   // Synthesis: intval.
-  rule I:Int => (integer)<:Ty
+  rule I:Int => (integer)
 
   // Synthesis: bytestringval.
-  rule B:ByStr => (bytestring)<:Ty
+  rule B:ByStr => (bytestring)
 
   // builtins
-  rule (builtin addInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
-  rule (builtin multiplyInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
-  rule (builtin subtractInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
-  rule (builtin divideInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
-  rule (builtin remainderInt (integer)<:Ty (integer)<:Ty):Tm => (integer)<:Ty
+  rule (builtin addInt (integer) (integer)):Tm => (integer)
+  rule (builtin multiplyInt (integer) (integer)):Tm => (integer)
+  rule (builtin subtractInt (integer) (integer)):Tm => (integer)
+  rule (builtin divideInt (integer) (integer)):Tm => (integer)
+  rule (builtin remainderInt (integer) (integer)):Tm => (integer)
 
-  rule (builtin lessthanInt (integer)<:Ty (integer)<:Ty):Tm => boolean
-  rule (builtin lessthanEqualsInt (integer)<:Ty (integer)<:Ty):Tm => boolean
-  rule (builtin greaterThanInt (integer)<:Ty (integer)<:Ty):Tm => boolean
-  rule (builtin greaterThanEqualsInt (integer)<:Ty (integer)<:Ty):Tm => boolean
-  rule (builtin equalsInt (integer)<:Ty (integer)<:Ty):Tm => boolean
+  rule (builtin lessthanInt (integer) (integer)):Tm => boolean
+  rule (builtin lessthanEqualsInt (integer) (integer)):Tm => boolean
+  rule (builtin greaterThanInt (integer) (integer)):Tm => boolean
+  rule (builtin greaterThanEqualsInt (integer) (integer)):Tm => boolean
+  rule (builtin equalsInt (integer) (integer)):Tm => boolean
 
-  rule (builtin intToByteString (integer)<:Ty):Tm => (bytestring)<:Ty
+  rule (builtin intToByteString (integer)):Tm => (bytestring)
 
-  rule (builtin concatenate (bytestring)<:Ty (bytestring)<:Ty):Tm => (bytestring)<:Ty
+  rule (builtin concatenate (bytestring) (bytestring)):Tm => (bytestring)
 
-  rule (builtin take (integer)<:Ty (bytestring)<:Ty):Tm => (bytestring)<:Ty
-  rule (builtin drop (integer)<:Ty (bytestring)<:Ty):Tm => (bytestring)<:Ty
+  rule (builtin take (integer) (bytestring)):Tm => (bytestring)
+  rule (builtin drop (integer) (bytestring)):Tm => (bytestring)
 
-  rule (builtin sha2_256 (bytestring)<:Ty):Tm => (bytestring)<:Ty
-  rule (builtin sha3_256 (bytestring)<:Ty):Tm => (bytestring)<:Ty
+  rule (builtin sha2_256 (bytestring)):Tm => (bytestring)
+  rule (builtin sha3_256 (bytestring)):Tm => (bytestring)
 
-  rule (builtin equalsByteString (bytestring)<:Ty (bytestring)<:Ty):Tm => (bytestring)<:Ty
+  rule (builtin equalsByteString (bytestring) (bytestring)):Tm => (bytestring)
 
   // Restore type and kind environments
   rule
