@@ -157,7 +157,7 @@ module PLUTUS-CORE-TYPING
     <tenv> ... N |-> T ... </tenv>
 
   // Synthesis: isa
-  rule (isa T M):Tm => T <- M ~> T
+  rule (isa M T):Tm => T <- M ~> T
 
   // Synthesis: inst
   rule (inst (forall X:TyVar K:Ki T) S):Tm => S :: K ~> T[S / X]
@@ -178,29 +178,29 @@ module PLUTUS-CORE-TYPING
   rule B:ByStr => (bytestring)
 
   // builtins
-  rule (builtin addInt (integer) (integer)):Tm => (integer)
-  rule (builtin multiplyInt (integer) (integer)):Tm => (integer)
-  rule (builtin subtractInt (integer) (integer)):Tm => (integer)
-  rule (builtin divideInt (integer) (integer)):Tm => (integer)
-  rule (builtin remainderInt (integer) (integer)):Tm => (integer)
+  rule (builtin addInteger (integer) (integer)):Tm => (integer)
+  rule (builtin multiplyInteger (integer) (integer)):Tm => (integer)
+  rule (builtin subtractInteger (integer) (integer)):Tm => (integer)
+  rule (builtin divideInteger (integer) (integer)):Tm => (integer)
+  rule (builtin remainderInteger (integer) (integer)):Tm => (integer)
 
-  rule (builtin lessthanInt (integer) (integer)):Tm => boolean
-  rule (builtin lessthanEqualsInt (integer) (integer)):Tm => boolean
-  rule (builtin greaterThanInt (integer) (integer)):Tm => boolean
-  rule (builtin greaterThanEqualsInt (integer) (integer)):Tm => boolean
-  rule (builtin equalsInt (integer) (integer)):Tm => boolean
+  rule (builtin lessThanInteger (integer) (integer)):Tm => boolean
+  rule (builtin lessThanEqualsInteger (integer) (integer)):Tm => boolean
+  rule (builtin greaterThanInteger (integer) (integer)):Tm => boolean
+  rule (builtin greaterThanEqualsInteger (integer) (integer)):Tm => boolean
+  rule (builtin equalsInteger (integer) (integer)):Tm => boolean
 
-  rule (builtin intToByteString (integer)):Tm => (bytestring)
+  rule (builtin integerToByteString (integer)):Tm => (bytestring)
 
   rule (builtin concatenate (bytestring) (bytestring)):Tm => (bytestring)
 
-  rule (builtin take (integer) (bytestring)):Tm => (bytestring)
-  rule (builtin drop (integer) (bytestring)):Tm => (bytestring)
+  rule (builtin takeByteString (integer) (bytestring)):Tm => (bytestring)
+  rule (builtin dropByteString (integer) (bytestring)):Tm => (bytestring)
 
   rule (builtin sha2_256 (bytestring)):Tm => (bytestring)
   rule (builtin sha3_256 (bytestring)):Tm => (bytestring)
 
-  rule (builtin equalsByteString (bytestring) (bytestring)):Tm => (bytestring)
+  rule (builtin equalsByteString (bytestring) (bytestring)):Tm => boolean
 
   // Restore type and kind environments
   rule
@@ -235,7 +235,7 @@ module PLUTUS-CORE-TYPING
 
   rule boolean =>
     #tyconHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Prelude"),
-                 #parseToken("TyCon@PLUTUS-CORE-SYNTAX", "Boolean"))
+                 #parseToken("TyCon@PLUTUS-CORE-SYNTAX", "Bool"))
 
   rule T <- (case M:NonValTm CLS) => (case M CLS) ~> T
   rule (case V:Val CLS) ~> T => T <- (case V CLS)
