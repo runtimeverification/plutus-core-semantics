@@ -1,0 +1,90 @@
+(module Prelude
+    (imported)
+    (exported () ())
+    (local () ())
+
+
+    //
+    // Function Tools
+    //
+    
+    (declare id (forall a (type) (fun a a)))
+    (define id
+      (abs a (lam x x)))
+    
+    
+    (declare const
+      (forall a (type) (forall b (type)
+        (fun a (fun b a)))))
+    (define const
+      (abs a (abs b
+        (lam x (lam y x)))))
+    
+    
+    (declare flip
+      (forall a (type) (forall b (type) (forall c (type)
+        (fun (fun a (fun b c))
+             (fun b (fun a c)))))))
+    (define flip
+      (abs a (abs b (abs c
+        (lam f (lam x (lam y
+          [f y x])))))))
+    
+    
+    (declare applyTo
+      (forall a (type) (forall b (type)
+        (fun a (fun (fun a b) b)))))
+    (define applyTo
+      (abs a (abs b
+        (lam x (lam f
+          [f x])))))
+    
+    
+    (declare compose
+      (forall a (type) (forall b (type) (forall c (type)
+        (fun (fun b c)
+             (fun (fun a b)
+                  (fun a c)))))))
+    (define compose
+      (abs a (abs b (abs c
+        (lam f (lam g (lam x
+          [f [g x]])))))))
+    
+    
+    (declare compose2
+      (forall a (type) (forall b (type) (forall c (type) (forall d (type)
+        (fun (fun c d)
+             (fun (fun a (fun b c))
+                  (fun a (fun b d)))))))))
+    (define compose2
+      (abs a (abs b (abs c (abs d
+        (lam f (lam g (lam x (lam y
+          [f [g x y]])))))))))
+    
+    
+    
+    //
+    // Unit Tools
+    //
+    
+    (data Unit () (MkUnit))
+    
+    
+    
+    //
+    // Pair Tools
+    //
+    
+    (data Pair ((a (type)) (b (type)))
+          (MkPair a b))
+    
+    
+    // (declare fst
+    //   (forall a (type) (forall b (type)
+    //     (fun (con Prelude.Pair a b) a))))
+    // (define fst
+    //   (abs a (abs b
+    //     (lam p
+    //       (case p
+    //         (Prelude.MkPair (x y) x))))))
+)
