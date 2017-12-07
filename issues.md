@@ -10,3 +10,6 @@
 
 10. S' is confusing in `case` rule for checks
 11. \bar{alt} checks c \bar{T} used in a few place but not defined
+12. The spec has `(isa Ty Tm)` but the prelude has `(isa Tm Ty)`
+13. The spec has `builtin addInt`, `builtin multiplyInt`, etc. but the prelude has `builtin addInteger`, etc.
+14. The spec has `Prelude.Boolean` but the prelude has `Prelude.Bool`
