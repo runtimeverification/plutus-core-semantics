@@ -82,6 +82,7 @@ module PLUTUS-CORE-SYNTAX
                       // TODO: prefer con (terms) to con (types)?
                       | "(" "con" QualC TmList ")"                     [prefer]
                       | "(" "success" Tm ")"                        [strict(1)]
+                      | "(failure)"
                       | "(" "lam" VarList Tm ")"                       [binder]
                       | SynthTm
 
@@ -101,7 +102,6 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Int
                       | ByStr
-                      | SynthVal
 
   syntax Ki         ::= "(" "type" ")"
                       | "(" "fun" Ki Ki ")"
@@ -155,13 +155,7 @@ module PLUTUS-CORE-SYNTAX
   // Type annotations for terms. Missing from prelude?
   syntax MDec       ::= "(" "declare" Name Ty ")"
 
-  syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
-                      | "(" "failure" ")"
-                      | "(" "success" Val ")"         [prefer, klabel(succVal)]
-                      | SynthVal
-                      | Ty
-
-  syntax SynthVal   ::= "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
+  syntax Val        ::= Ty
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var | TyVar

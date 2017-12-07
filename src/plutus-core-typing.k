@@ -134,7 +134,7 @@ module PLUTUS-CORE-TYPING
   rule (comp T) <- (success M) => M <- T
 
   // Checks: failure.
-  rule (comp T) <- (failure)<:Val => .K
+  rule (comp T) <- (failure) => .K
 
   // Checks: dirchange
   rule T:Ty <- M:SynthTm => M ~> T
