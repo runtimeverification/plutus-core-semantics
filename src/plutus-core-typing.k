@@ -277,8 +277,9 @@ module PLUTUS-CORE-TYPING
 
   rule #subst(T, M) => T [ M ]
 
-  rule (T:Ty TL1:TyList):TyList [ TVL:TyVarList := TL2:TyList ]
-    => #subst(T, #makeMap(TVL, TL2)) (TL1 [ TVL := TL2 ]):TyList
+  rule .TyList [ TVL := TL ] => .TyList
+  rule (T TL1):TyList [ TVL := TL2 ]
+    => #subst(T, #makeMap(TVL, TL2)) (TL1 [ TVL := TL2 ])
 
   rule .TyList <-s .TmList => .K
   rule T TL <-s M ML => T <- M ~> TL <-s ML
