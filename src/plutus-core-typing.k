@@ -17,8 +17,8 @@ module PLUTUS-CORE-TYPING
              | Ty "<-" Tm                                    // `Tm` checks `Ty`
              | TyList "<-s" TmList
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
-             | QualC ":" ConValid
              | TyList "::" KiList
+             | Alt "in" AltList
              | checksCon(QualC, Ty)
 
   syntax K ::= #restoreTEnv(Map)
@@ -115,17 +115,15 @@ module PLUTUS-CORE-TYPING
     <tenv> Rho => Rho (X |-> S) </tenv>
 
   // Checks: con.
-  syntax ConValid ::= "(" "forall" TyVarList KiList "(" "fun" TyList "[" QualTyC TyVarList "]" ")" ")"
-
-  // TODO: need to do substitution in #getTys(AL) <-s MS
+  // TODO: make sure this is right
   rule
     <k>
-      (con (MN . C:TyCon) TYS) <- (con QC:QualC MS:TmList)
-        => QC : (forall #getTyVars(TYS) #getKinds(KSL)
-                  (fun #getTys(AL) [ (MN . C) #getTyVars(TYS) ]))
-        ~> #getTys(AL) <-s MS ...
+      (con (MN . TC:TyCon) TYS) <- (con (MN . C:Con) MS:TmList)
+        => (C #getTys(AL)) in AL
+        ~> #getTys(AL) [ #getTyVars(AL) := TYS ] <-s MS
+        ...
     </k>
-    <data> ... C |-> (data C (KSL:KSigList) AL:AltList) ... </data>
+    <data> ... TC |-> (data TC (KSL:KSigList) AL:AltList) ... </data>
 
   // Checks: case.
   // TODO.
@@ -224,14 +222,6 @@ module PLUTUS-CORE-TYPING
   rule (.DecList ~> _:ModF) => .K
 
   /*****************************************************************************/
-  /**                           OTHER JUDGMENTS                                */
-  /*****************************************************************************/
-
-  // con-valid-local
-  // TODO.
-  rule QC:QualC : CV:ConValid => .K
-
-  /*****************************************************************************/
   /**                        HELPER FUNCTIONALITY                              */
   /*****************************************************************************/
 
@@ -253,6 +243,7 @@ module PLUTUS-CORE-TYPING
 
   syntax KiList ::= #getKinds(KSigList)                              [function]
   syntax TyVarList ::= #getTyVars(TyList)                            [function]
+  syntax TyVarList ::= #getTyVars(AltList)                           [function]
   syntax TyList ::= #getTys(AltList)                                 [function]
 
   // TODO: make sure these are correct.
@@ -267,7 +258,32 @@ module PLUTUS-CORE-TYPING
   rule #getTys((C:Con T:Ty TL:TyList) ALS:AltList) => T #getTys((C TL) ALS)
   rule #getTys((C:Con .TyList) ALS:AltList) => #getTys(ALS)
 
+  rule #getTyVars(.AltList) => .TyVarList
+  rule #getTyVars((C:Con TL:TyList) ALS:AltList) => #getTyVars(TL) ++ #getTyVars(ALS)
+
+  syntax TyVarList ::= TyVarList "++" TyVarList [function]
+  rule .TyVarList ++ YS => YS
+  rule (X XS) ++ YS => X (XS ++ YS)
+
+  rule A in A AL:AltList => .K
+  rule A in A' AL:AltList => A in AL requires A =/=K A'
+
+  syntax TyList ::= TyList "[" TyVarList ":=" TyList "]"             [function]
+
+  // TODO: fix this
+
+  syntax Map ::= #makeMap(TyVarList, TyList)  [function]
+  syntax Ty ::= #subst(Ty, Map) [function]
+
+  rule #makeMap(.TyVarList, .TyList) => .Map
+  rule #makeMap(TV TVL, T TL) => (TV |-> T) #makeMap(TVL, TL)
+
+  rule #subst(T, M) => T [ M ]
+
+  rule (T:Ty TL1:TyList):TyList [ TVL:TyVarList := TL2:TyList ]
+    => #subst(T, #makeMap(TVL, TL2)) (TL1 [ TVL := TL2 ]):TyList
+
   rule .TyList <-s .TmList => .K
-  rule T TS <-s M MS => T <- M ~> TS <-s MS
+  rule T TL <-s M ML => T <- M ~> TL <-s ML
 
 endmodule
