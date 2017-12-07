@@ -261,7 +261,7 @@ module PLUTUS-CORE-TYPING
   rule #getTyVars(.AltList) => .TyVarList
   rule #getTyVars((C:Con TL:TyList) ALS:AltList) => #getTyVars(TL) ++ #getTyVars(ALS)
 
-  syntax TyVarList ::= TyVarList "++" TyVarList [function]
+  syntax TyVarList ::= TyVarList "++" TyVarList                      [function]
   rule .TyVarList ++ YS => YS
   rule (X XS) ++ YS => X (XS ++ YS)
 
@@ -269,11 +269,8 @@ module PLUTUS-CORE-TYPING
   rule A in A' AL:AltList => A in AL requires A =/=K A'
 
   syntax TyList ::= TyList "[" TyVarList ":=" TyList "]"             [function]
-
-  // TODO: fix this
-
-  syntax Map ::= #makeMap(TyVarList, TyList)  [function]
-  syntax Ty ::= #subst(Ty, Map) [function]
+  syntax Map ::= #makeMap(TyVarList, TyList)                         [function]
+  syntax Ty ::= #subst(Ty, Map)                                      [function]
 
   rule #makeMap(.TyVarList, .TyList) => .Map
   rule #makeMap(TV TVL, T TL) => (TV |-> T) #makeMap(TVL, TL)
