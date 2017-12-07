@@ -20,7 +20,7 @@ module PLUTUS-CORE-TYPING
              | Ty "|-" Ty "<-s" ClList
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
              | TyList "::" KiList
-             | Alt "in" AltList
+             | Con "in" AltList
              | checksCon(QualC, Ty)
 
   syntax K ::= #restoreTEnv(Map)
@@ -277,8 +277,8 @@ module PLUTUS-CORE-TYPING
   rule .TyVarList ++ YS => YS
   rule (X XS) ++ YS => X (XS ++ YS)
 
-  rule A in A AL:AltList => .K
-  rule A in A' AL:AltList => A in AL requires A =/=K A'
+  rule C in (C _)  AL:AltList => .K
+  rule C in (C' _) AL:AltList => C in AL requires C =/=K C'
 
   syntax TyList ::= TyList "[" TyVarList ":=" TyList "]"             [function]
   syntax Map ::= #makeMap(TyVarList, TyList)                         [function]
