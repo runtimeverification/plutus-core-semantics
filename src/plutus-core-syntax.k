@@ -79,7 +79,8 @@ module PLUTUS-CORE-SYNTAX
   syntax NonValTm   ::= "(" "abs" TyVar Tm ")"
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
-                      | "(" "con" QualC TmList ")"
+                      // TODO: prefer con (terms) to con (types)?
+                      | "(" "con" QualC TmList ")"                     [prefer]
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "lam" VarList Tm ")"                       [binder]
                       | SynthTm
@@ -92,7 +93,8 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "isa" Ty Tm ")"
                       | "(" "inst" Tm Ty ")"                        [strict(1)]
                       // TODO: distinguish NeTmList and TmList
-                      | "[" Tm TmList "]"                           [strict(1)]
+                      // TODO: prefer term app over type app?
+                      | "[" Tm TmList "]"                   [strict(1), prefer]
                       | "(" "builtin" Name Tm ")"           [strict(2), prefer]
                       | "(" "builtin" Name Tm Tm ")"             [strict(2, 3)]
                       | "(" "compbuiltin" CBName ")"
