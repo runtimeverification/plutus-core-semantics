@@ -91,7 +91,7 @@ module PLUTUS-CORE-SYNTAX
 
   syntax SynthTm    ::= Var
                       | QualN
-                      | "(" "isa" Ty Tm ")"
+                      | "(" "isa" Tm Ty ")"
                       | "(" "inst" Tm Ty ")"                        [strict(1)]
                       // TODO: distinguish NeTmList and TmList
                       // TODO: prefer term app over type app?
