@@ -70,7 +70,7 @@ module PLUTUS-CORE-SYNTAX
   syntax DecList    ::= List{Dec, ""}
 
   syntax ModList    ::= List{ModName , ""}
-  syntax ClList     ::= List{Cl     ,  ""}
+  syntax ClList     ::= List{Cl     ,  ""}                      [klabel(clList)]
 
   syntax ConArity   ::= "(" Con Arity ")"
   syntax CAList     ::= List{ConArity, ""}
