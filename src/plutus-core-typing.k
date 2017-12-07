@@ -302,7 +302,7 @@ module PLUTUS-CORE-TYPING
   rule .TyList <-s .TmList => .K
   rule T TL <-s M ML => T <- M ~> TL <-s ML
 
-  // Type checks list of cluases
+  // Type checks list of clauses
 
   rule _ |- _ <-s .ClList => .K
   rule T1 |- T2 <-s CL CLS => T1 |- T2 <- CL ~> T1 |- T2 <-s CLS
