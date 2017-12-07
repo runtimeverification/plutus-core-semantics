@@ -250,13 +250,22 @@ module PLUTUS-CORE-TYPING
   rule T <- (case M:NonValTm CLS) => (case M CLS) ~> T
   rule (case V:Val CLS) ~> T => T <- (case V CLS)
 
-  syntax KiList ::= #getKinds(KSigList)
-  syntax TyVarList ::= #getTyVars(TyList)
-  syntax TyList ::= #getTys(AltList)
 
+  syntax KiList ::= #getKinds(KSigList)                              [function]
+  syntax TyVarList ::= #getTyVars(TyList)                            [function]
+  syntax TyList ::= #getTys(AltList)                                 [function]
+
+  // TODO: make sure these are correct.
+  // For example #getTyVars likely needs to be more general
   rule #getKinds(.KSigList) => .KiList
+  rule #getKinds((X K) KSL) => K #getKinds(KSL)
+
   rule #getTyVars(.TyList) => .TyVarList
+  rule #getTyVars(X:TyVar XS:TyList) => X #getTyVars(XS)
+
   rule #getTys(.AltList) => .TyList
+  rule #getTys((C:Con T:Ty TL:TyList) ALS:AltList) => T #getTys((C TL) ALS)
+  rule #getTys((C:Con .TyList) ALS:AltList) => #getTys(ALS)
 
   rule .TyList <-s .TmList => .K
   rule T TS <-s M MS => T <- M ~> TS <-s MS
