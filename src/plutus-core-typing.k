@@ -306,8 +306,9 @@ module PLUTUS-CORE-TYPING
     => #subst(T, #makeMap(TVL, TL2)) (TL1 [ TVL := TL2 ])
 
   // Types check Terms
+  // TODO: I think the base case should be .TyList <-s .TmList
 
-  rule .TyList <-s .TmList => .K
+  rule TL <-s .TmList => .K
   rule T TL <-s M ML => T <- M ~> TL <-s ML
 
   // Type checks list of clauses
