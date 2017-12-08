@@ -1,0 +1,57 @@
+(module Foo
+    (imported)
+    (exported () ())
+    (local () ())
+
+    //
+    // Boolean Tools
+    //
+    
+    (data Bool () (True) (False))
+
+    //
+    // Either Tools
+    //
+    
+    (data Either ((a (type)) (b (type)))
+          (Left a)
+          (Right b))
+    
+    
+    (declare either
+      (forall a (type) (forall b (type) (forall c (type)
+        (fun (fun a c)
+             (fun (fun b c)
+                  (fun (con Foo.Either a b) c)))))))
+    (define either
+      (abs a (abs b (abs c
+        (lam f (lam g (lam e
+          (case e
+            (Foo.Left (x) [f x])
+            (Foo.Right (y) [g y])))))))))
+
+
+
+    (declare equalsEither
+      (forall a (type) (forall b (type)
+        (fun (fun a (fun a (con Foo.Bool)))
+          (fun (fun b (fun b (con Foo.Bool)))
+            (fun (con Foo.Either a b)
+              (fun (con Foo.Either a b)
+                (con Foo.Bool))))))))
+    (define equalsEither
+      (abs a (abs b (lam eqA (lam eqB (lam e (lam e'
+        (case e
+          (Foo.Left (x)
+            (case e'
+              (Foo.Left (x') [eqA x x'])
+              (Foo.Right (y')
+                (isa (con Foo.False)
+                     (con Foo.Bool)))))
+          (Foo.Right (y)
+            (case e'
+              (Foo.Left (x')
+                (isa (con Foo.False)
+                     (con Foo.Bool)))
+              (Foo.Right (y') [eqB y y'])))))))))))
+)
