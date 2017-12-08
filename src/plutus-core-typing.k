@@ -21,6 +21,7 @@ module PLUTUS-CORE-TYPING
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
              | TyList "::s" KiList
              | Con "in" AltList
+             | "(" Con VarList ")" "in" AltList
              | checksCon(QualC, Ty)
 
   syntax K ::= #restoreTEnv(Map)
@@ -134,10 +135,10 @@ module PLUTUS-CORE-TYPING
   rule
     <k>
       (con (MN . TC) TYS) |- T:Ty <- (MN . C (XS) M):Cl
-        => C in AL ~> T <- M ~> #restoreTEnv(Rho)
+        => (C XS) in AL ~> T <- M ~> #restoreTEnv(Rho)
         ...
     </k>
-    <tenv> Rho => Rho #makeMap(XS, #getTys(AL)) </tenv>
+    <tenv> Rho </tenv>
     <data> ... TC |-> (data TC (KSL:KSigList) AL:AltList) ... </data>
 
   // Checks: success.
@@ -277,8 +278,13 @@ module PLUTUS-CORE-TYPING
   rule .TyVarList ++ YS => YS
   rule (X XS) ++ YS => X (XS ++ YS)
 
-  rule C in (C _)  AL:AltList => .K
-  rule C in (C' _) AL:AltList => C in AL requires C =/=K C'
+  rule
+    <k> (C XL:VarList) in (C TL) _ => .K ... </k>
+    <tenv> Rho => Rho #makeMap(XL, TL) </tenv>
+  rule (C XL:VarList) in (C' _) AL:AltList => (C XL) in AL
+
+  rule C:Con in (C _)  AL:AltList => .K
+  rule C:Con in (C' _) AL:AltList => C in AL requires C =/=K C'
 
   syntax TyList ::= TyList "[" TyVarList ":=" TyList "]"             [function]
   syntax Map ::= #makeMap(TyVarList, TyList)                         [function]
