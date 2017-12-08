@@ -265,7 +265,9 @@ module PLUTUS-CORE-TYPING
   rule #getKinds((X K) KSL) => K #getKinds(KSL)
 
   rule #getTyVars(.TyList) => .TyVarList
-  rule #getTyVars(X:TyVar XS:TyList) => X #getTyVars(XS)
+  rule #getTyVars(X:TyVar TL:TyList) => X #getTyVars(TL)
+  rule #getTyVars((con QTC:QualTyC TL1) TL2:TyList) => #getTyVars(TL1) ++ #getTyVars(TL2)
+  // More cases?
 
   rule #getTys(.AltList) => .TyList
   rule #getTys((C:Con T:Ty TL:TyList) ALS:AltList) => T #getTys((C TL) ALS)
