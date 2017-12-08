@@ -8,26 +8,21 @@ module PLUTUS-CORE-TYPING
   imports HEX-CONVERSION
   imports SUBSTITUTION
 
-  // syntax Bool ::= checks(Ty, Tm)
-                // | synth(Tm, Ty)
-                // TODO: bug in spec with type application for checksCon?
-                // | hasKind(Ty, Ki)
 
-  syntax K ::= checksList(TyList, TmList)
-             | Ty "<-" Tm                                    // `Tm` checks `Ty`
+  syntax K ::= Ty "<-" Tm                                    // `Tm` checks `Ty`
              | TyList "<-s" TmList
+
              | Ty "|-" Ty "<-" Cl
              | Ty "|-" Ty "<-s" ClList
+
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
              | TyList "::s" KiList
+
              | Con "in" AltList
              | "(" Con VarList ")" "in" AltList
-             | checksCon(QualC, Ty)
 
   syntax K ::= #restoreTEnv(Map)
              | #restoreKEnv(Map)
-
-  // TODO: add syntax (and semantics) for #getKinds, #getVars, etc.
 
   configuration
     <T>
@@ -50,7 +45,7 @@ module PLUTUS-CORE-TYPING
     <data> ... .Map => (C |-> (data C (KSL) AL)) ... </data>
 
   // Type reduction
-  rule [ (lam X:TyVar K T) U:Ty ] => T[U / X]
+  rule [ (lam X:TyVar K T) U:Ty ] => T [ U / X ]
 
   /*****************************************************************************/
   /**                           HAS KIND JUDGMENT                              */
@@ -155,9 +150,6 @@ module PLUTUS-CORE-TYPING
   /*****************************************************************************/
   /**                       THE SYNTHESIS JUDGMENT                             */
   /*****************************************************************************/
-
-
-  // TODO: desugar fun TyList Ty correctly, also forall VarList KiList Ty (abs/lam rules)
 
   // Synthesis: var.
   rule
