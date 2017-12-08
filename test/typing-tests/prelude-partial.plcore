@@ -476,4 +476,193 @@
         (lam n (lam m
           (case m
             (Prelude.Nothing () n)
-            (Prelude.Just (x) x)))))))
+            (Prelude.Just (x) x))))))
+
+    (declare mapMaybe
+      (forall a (type) (forall b (type)
+        (fun (fun a b)
+             (fun (con Prelude.Maybe a)
+                  (con Prelude.Maybe b))))))
+    (define mapMaybe
+      (abs a (abs b
+        (lam f (lam m
+          (case m
+            (Prelude.Nothing ()
+              (isa (con Prelude.Nothing)
+                   (con Prelude.Maybe b)))
+            (Prelude.Just (x)
+              (isa (con Prelude.Just [f x])
+                   (con Prelude.Maybe b)))))))))
+    
+    
+    (declare equalsMaybe
+      (forall a (type)
+        (fun (fun a (fun a (con Prelude.Bool)))
+          (fun (con Prelude.Maybe a)
+            (fun (con Prelude.Maybe a)
+              (con Prelude.Bool))))))
+    (define equalsMaybe
+      (abs a (lam eq (lam m (lam m'
+        (case m
+          (Prelude.Nothing ()
+            (case m'
+              (Prelude.Nothing ()
+                (isa (con Prelude.True)
+                     (con Prelude.Bool)))
+              (Prelude.Just (y)
+                (isa (con Prelude.False)
+                     (con Prelude.Bool)))))
+          (Prelude.Just (x)
+            (case m'
+              (Prelude.Nothing ()
+                (isa (con Prelude.False)
+                     (con Prelude.Bool)))
+              (Prelude.Just (y) [eq x y])))))))))
+    
+    
+    
+    //
+    // Either Tools
+    //
+    
+    (data Either ((a (type)) (b (type)))
+          (Left a)
+          (Right b))
+    
+    
+    (declare either
+      (forall a (type) (forall b (type) (forall c (type)
+        (fun (fun a c)
+             (fun (fun b c)
+                  (fun (con Prelude.Either a b) c)))))))
+    (define either
+      (abs a (abs b (abs c
+        (lam f (lam g (lam e
+          (case e
+            (Prelude.Left (x) [f x])
+            (Prelude.Right (y) [g y])))))))))
+    
+    
+    (declare isLeft
+      (forall a (type) (forall b (type)
+        (fun (con Prelude.Either a b) (con Prelude.Bool)))))
+    (define isLeft
+      (abs a (abs b
+        (lam e
+          (case e
+            (Prelude.Left (x)
+              (isa (con Prelude.True)
+                   (con Prelude.Bool)))
+            (Prelude.Right (y)
+              (isa (con Prelude.False)
+                   (con Prelude.Bool))))))))
+    
+    
+    (declare isRight
+      (forall a (type) (forall b (type)
+        (fun (con Prelude.Either a b) (con Prelude.Bool)))))
+    (define isRight
+      (abs a (abs b
+        (lam e
+          (case e
+            (Prelude.Left (x)
+              (isa (con Prelude.False)
+                   (con Prelude.Bool)))
+            (Prelude.Right (y)
+              (isa (con Prelude.True)
+                   (con Prelude.Bool))))))))
+    
+    
+    (declare eitherToMaybe
+      (forall a (type) (forall b (type)
+        (fun (con Prelude.Either a b)
+             (con Prelude.Maybe b)))))
+    (define eitherToMaybe
+      (abs a (abs b
+        (lam e
+          (case e
+            (Prelude.Left (x)
+              (isa (con Prelude.Nothing)
+                   (con Prelude.Maybe b)))
+            (Prelude.Right (y)
+              (isa (con Prelude.Just y)
+                   (con Prelude.Maybe b))))))))
+    
+    
+    (declare maybeToEither
+      (forall a (type) (forall b (type)
+        (fun a
+          (fun (con Prelude.Maybe b)
+               (con Prelude.Either a b))))))
+    (define maybeToEither
+      (abs a (abs b
+        (lam x (lam m
+          (case m
+            (Prelude.Nothing ()
+              (isa (con Prelude.Left x)
+                   (con Prelude.Either a b)))
+            (Prelude.Just (y)
+              (isa (con Prelude.Right y)
+                   (con Prelude.Either a b)))))))))
+    
+    
+    (declare equalsEither
+      (forall a (type) (forall b (type)
+        (fun (fun a (fun a (con Prelude.Bool)))
+          (fun (fun b (fun b (con Prelude.Bool)))
+            (fun (con Prelude.Either a b)
+              (fun (con Prelude.Either a b)
+                (con Prelude.Bool))))))))
+    (define equalsEither
+      (abs a (abs b (lam eqA (lam eqB (lam e (lam e'
+        (case e
+          (Prelude.Left (x)
+            (case e'
+              (Prelude.Left (x') [eqA x x'])
+              (Prelude.Right (y')
+                (isa (con Prelude.False)
+                     (con Prelude.Bool)))))
+          (Prelude.Right (y)
+            (case e'
+              (Prelude.Left (x')
+                (isa (con Prelude.False)
+                     (con Prelude.Bool)))
+              (Prelude.Right (y') [eqB y y'])))))))))))
+    
+    
+    
+    //
+    // List Tools
+    //
+    
+    (data List ((a (type)))
+          (Nil)
+          (Cons a (con Prelude.List a)))
+    
+    
+    (declare equalsList
+      (forall a (type)
+        (fun (fun a (fun a (con Prelude.Bool)))
+          (fun (con Prelude.List a)
+            (fun (con Prelude.List a)
+              (con Prelude.Bool))))))
+    (define equalsList
+      (abs a (lam eqA (lam xs (lam ys
+        (case xs
+          (Prelude.Nil ()
+            (case ys
+              (Prelude.Nil ()
+                (isa (con Prelude.True)
+                     (con Prelude.Bool)))
+              (Prelude.Cons (y ys')
+                (isa (con Prelude.False)
+                     (con Prelude.Bool)))))
+          (Prelude.Cons (x xs')
+            (case ys
+              (Prelude.Nil ()
+                (isa (con Prelude.False)
+                     (con Prelude.Bool)))
+              (Prelude.Cons (y ys')
+                [Prelude.and
+                  [eqA x y]
+                  [(inst Prelude.equalsList a) eqA xs' ys']]))))))))))
