@@ -19,7 +19,7 @@ module PLUTUS-CORE-TYPING
              | Ty "|-" Ty "<-" Cl
              | Ty "|-" Ty "<-s" ClList
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
-             | TyList "::" KiList
+             | TyList "::s" KiList
              | Con "in" AltList
              | checksCon(QualC, Ty)
 
@@ -67,7 +67,7 @@ module PLUTUS-CORE-TYPING
 
   // tycon
   rule
-    <k> (con QC:QualTyC TL:TyList) :: (type):Ki => TL :: #getKinds(KSL) ... </k>
+    <k> (con QC:QualTyC TL:TyList) :: (type):Ki => TL ::s #getKinds(KSL) ... </k>
     <data> ... C |-> (data C (KSL) AL) ... </data>
 
   // comp
@@ -306,5 +306,10 @@ module PLUTUS-CORE-TYPING
 
   rule _ |- _ <-s .ClList => .K
   rule T1 |- T2 <-s CL CLS => T1 |- T2 <- CL ~> T1 |- T2 <-s CLS
+
+  // Types have kinds KS
+
+  rule .TyList ::s .KiList => .K
+  rule T TL ::s K KL => T :: K ~> TL ::s KL
 
 endmodule
