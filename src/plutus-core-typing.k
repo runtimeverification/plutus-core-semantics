@@ -18,8 +18,8 @@ module PLUTUS-CORE-TYPING
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
              | TyList "::s" KiList
 
-             | Con "in" AltList
-             | "(" Con VarList ")" "in" AltList
+             | "(" Con TyVarList TyList TmList ")" "in" AltList
+             | "(" Con Map VarList ")" "in" AltList
 
   syntax K ::= #restoreTEnv(Map)
              | #restoreKEnv(Map)
@@ -117,8 +117,7 @@ module PLUTUS-CORE-TYPING
   rule
     <k>
       (con (MN . TC:TyCon) TYS) <- (con (MN . C:Con) MS:TmList)
-        => C in AL
-        ~> #getTys(AL) [ #getTyVars(AL) := TYS ] <-s MS
+        => (C #getTyVars(KSL) TYS MS) in AL
         ...
     </k>
     <data> ... TC |-> (data TC (KSL:KSigList) AL:AltList) ... </data>
@@ -129,8 +128,9 @@ module PLUTUS-CORE-TYPING
   // clause
   rule
     <k>
-      (con (MN . TC) TYS) |- T:Ty <- (MN . C (XS) M):Cl
-        => (C XS) in AL ~> T <- M ~> #restoreTEnv(Rho)
+      (con (MN . TC) TYS) |- T:Ty <- (MN . C:Con (XS) M):Cl
+        => (C (#getTyVars(KSL) |->s TYS) XS) in AL
+        ~> T <- M ~> #restoreTEnv(Rho)
         ...
     </k>
     <tenv> Rho </tenv>
@@ -247,6 +247,7 @@ module PLUTUS-CORE-TYPING
 
 
   syntax KiList ::= #getKinds(KSigList)                              [function]
+  syntax TyVarList ::= #getTyVars(KSigList)                          [function]
   syntax TyVarList ::= #getTyVars(TyList)                            [function]
   syntax TyVarList ::= #getTyVars(AltList)                           [function]
   syntax TyList ::= #getTys(AltList)                                 [function]
@@ -255,6 +256,9 @@ module PLUTUS-CORE-TYPING
   // For example #getTyVars likely needs to be more general
   rule #getKinds(.KSigList) => .KiList
   rule #getKinds((X K) KSL) => K #getKinds(KSL)
+
+  rule #getTyVars(.KSigList) => .TyVarList
+  rule #getTyVars((X K) KSL) => X #getTyVars(KSL)
 
   rule #getTyVars(.TyList) => .TyVarList
   rule #getTyVars(X:TyVar TL:TyList) => X #getTyVars(TL)
@@ -272,35 +276,45 @@ module PLUTUS-CORE-TYPING
   rule .TyVarList ++ YS => YS
   rule (X XS) ++ YS => X (XS ++ YS)
 
-  rule
-    <k> (C XL:VarList) in (C TL) _ => .K ... </k>
-    <tenv> Rho => Rho #makeMap(XL, TL) </tenv>
-  rule (C XL:VarList) in (C' _) AL:AltList => (C XL) in AL
+  // Helper for checks: con, checking if Con in AltList
+  // Substitution must be done in TyList before checks judgment
 
-  rule C:Con in (C _)  AL:AltList => .K
-  rule C:Con in (C' _) AL:AltList => C in AL requires C =/=K C'
+  rule (C:Con TVL TYS MS) in (C:Con  TL':TyList) _
+    => TL' [ TVL := TYS ] <-s MS
+  rule (C:Con TVL TYS:TyList MS) in (C':Con TL':TyList) AL:AltList
+    => (C TVL TYS MS) in AL
+    requires C =/=K C'
+
+  // Helper for clause: checking if Con in AltList
+  // Substitution must be done in type environment
+
+  rule
+    <k> (C:Con M:Map XL:VarList) in (C:Con TL':TyList) _ => .K ... </k>
+    <tenv> Rho => Rho #makeMap(XL, TL', M) </tenv>
+  rule (C:Con M:Map XL:VarList) in (C':Con TL':TyList) AL:AltList
+    => (C M XL) in AL
+    requires C =/=K C'
 
   syntax TyList ::= TyList "[" TyVarList ":=" TyList "]"             [function]
-  syntax Map ::= #makeMap(TyVarList, TyList)                         [function]
-  syntax Map ::= #makeMap(VarList, TyList)                           [function]
+  syntax Map ::= TyVarList "|->s" TyList                             [function]
   syntax Ty ::= #subst(Ty, Map)                                      [function]
+  syntax Map ::= #makeMap(VarList, TyList, Map)                      [function]
 
-  rule #makeMap(.TyVarList, .TyList) => .Map
-  rule #makeMap(TV:TyVar TVL, T TL) => (TV |-> T) #makeMap(TVL, TL)
+  rule #makeMap(.VarList, _, _) => .Map
+  rule #makeMap(X XL, T TL, M) => (X |-> T [ M ]) #makeMap(XL, TL, M)
 
-  rule #makeMap(.VarList, .TyList) => .Map
-  rule #makeMap(X:Var XL, T TL) => (X |-> T) #makeMap(XL, TL)
+  rule .TyVarList |->s .TyList => .Map
+  rule TV:TyVar TVL |->s T TL => TV |-> T (TVL |->s TL)
 
   rule #subst(T, M) => T [ M ]
 
   rule .TyList [ TVL := TL ] => .TyList
   rule (T TL1):TyList [ TVL := TL2 ]
-    => #subst(T, #makeMap(TVL, TL2)) (TL1 [ TVL := TL2 ])
+    => #subst(T, TVL |->s TL2) (TL1 [ TVL := TL2 ])
 
   // Types check Terms
-  // TODO: I think the base case should be .TyList <-s .TmList
 
-  rule TL <-s .TmList => .K
+  rule .TyList <-s .TmList => .K
   rule T TL <-s M ML => T <- M ~> TL <-s ML
 
   // Type checks list of clauses
