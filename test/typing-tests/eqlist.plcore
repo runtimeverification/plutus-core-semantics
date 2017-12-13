@@ -1,0 +1,60 @@
+(module Foo
+    (imported)
+    (exported () ())
+    (local () ())
+
+    
+    //
+    // Boolean Tools
+    //
+    
+    (data Bool () (True) (False))
+
+    (declare and
+      (fun (con Foo.Bool)
+           (fun (con Foo.Bool)
+                (con Foo.Bool))))
+    (define and
+      (lam x (lam y
+        (case x
+          (Foo.True () y)
+          (Foo.False ()
+            (isa (con Foo.False)
+                 (con Foo.Bool)))))))
+
+
+    //
+    // List Tools
+    //
+    
+    (data List ((a (type)))
+          (Nil)
+          (Cons a (con Foo.List a)))
+    
+    
+    (declare equalsList
+      (forall a (type)
+        (fun (fun a (fun a (con Foo.Bool)))
+          (fun (con Foo.List a)
+            (fun (con Foo.List a)
+              (con Foo.Bool))))))
+    (define equalsList
+      (abs a (lam eqA (lam xs (lam ys
+        (case xs
+          (Foo.Nil ()
+            (case ys
+              (Foo.Nil ()
+                (isa (con Foo.True)
+                     (con Foo.Bool)))
+              (Foo.Cons (y ys')
+                (isa (con Foo.False)
+                     (con Foo.Bool)))))
+          (Foo.Cons (x xs')
+            (case ys
+              (Foo.Nil ()
+                (isa (con Foo.False)
+                     (con Foo.Bool)))
+              (Foo.Cons (y ys')
+                [Foo.and
+                  [eqA x y]
+                  [(inst Foo.equalsList a) eqA xs' ys']]))))))))))
