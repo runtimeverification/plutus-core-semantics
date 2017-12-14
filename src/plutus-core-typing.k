@@ -18,7 +18,7 @@ module PLUTUS-CORE-TYPING
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
              | TyList "::s" KiList
 
-             | "(" Con TyVarList TyList TmList ")" "in" AltList
+             | "(" Con Map TmList ")"  "in" AltList
              | "(" Con Map VarList ")" "in" AltList
 
   syntax K ::= #restoreTEnv(Map)
@@ -117,28 +117,45 @@ module PLUTUS-CORE-TYPING
     <tenv> Rho => Rho (X |-> S) </tenv>
 
   // Checks: con.
-  // TODO: make sure this is right
   rule
     <k>
       (con (MN . TC:TyCon) TYS) <- (con (MN . C:Con) MS:TmList)
-        => (C #getTyVars(KSL) TYS MS) in AL
+        => (C (#getTyVars(KSL) := TYS) MS) in AL
         ...
     </k>
     <data> ... TC |-> (data TC (KSL:KSigList) AL:AltList) ... </data>
 
+  // Helper for checks: con, checking if Con in AltList.
+  // Substitution must be done in TyList before checks judgment
+
+  rule (C:Con M:Map MS) in (C:Con TL':TyList) _ => TL' [[ M ]] <-s MS
+  rule (C:Con M:Map MS:TmList) in (C':Con TL':TyList) AL:AltList
+    => (C M MS) in AL
+    requires C =/=K C'
+
   // Checks: case.
   rule T <- (case (con QC TL) CLS) => (con QC TL) |- T <-s CLS
 
-  // clause
+  // clause - called by checks: case
   rule
     <k>
       (con (MN . TC) TYS) |- T:Ty <- (MN . C:Con (XS) M):Cl
-        => (C (#getTyVars(KSL) |->s TYS) XS) in AL
+        => (C (#getTyVars(KSL) := TYS) XS) in AL
         ~> T <- M ~> #restoreTEnv(Rho)
         ...
     </k>
     <tenv> Rho </tenv>
     <data> ... TC |-> (data TC (KSL:KSigList) AL:AltList) ... </data>
+
+  // Helper for clause: checking if Con in AltList
+  // Substitution must be done in type environment
+
+  rule
+    <k> (C:Con M:Map XL:VarList) in (C:Con TL':TyList) _ => .K ... </k>
+    <tenv> Rho => Rho (XL := TL' [[ M ]]) </tenv>
+  rule (C:Con M:Map XL:VarList) in (C':Con TL':TyList) AL:AltList
+    => (C M XL) in AL
+    requires C =/=K C'
 
   // Checks: success.
   rule (comp T) <- (success M) => M <- T
@@ -234,87 +251,60 @@ module PLUTUS-CORE-TYPING
   /**                        HELPER FUNCTIONALITY                              */
   /*****************************************************************************/
 
-  rule [ F:Val M1 M2 MS ] => [ [ F M1 ] M2 MS ]
+  // Desugar multi-argument application/lambdas
 
+  rule [ F:Val M1 M2 MS ] => [ [ F M1 ] M2 MS ]
   rule T <- (lam X1 X2 XS M) => T <- (lam X1 .VarList (lam X2 XS M))
 
-  syntax Ty ::= #tyconHolder(K, K)
+  // Sugar for boolean type - boolean = Prelude.Bool.
+  // #tyconHolder needed for parsing
 
+  syntax Ty ::= #tyconHolder(K, K)
   rule #tyconHolder(MN, TC) => ( con (MN . TC) .TyList )
 
   rule boolean =>
     #tyconHolder(#parseToken("ModName@PLUTUS-CORE-SYNTAX", "Prelude"),
                  #parseToken("TyCon@PLUTUS-CORE-SYNTAX", "Bool"))
 
+  // When checking type of case statement, move to the top of the K cell so
+  // the first argument evaluates to a value. Then typecheck.
+
   rule T <- (case M:NonValTm CLS) => (case M CLS) ~> T
   rule (case V:Val CLS) ~> T => T <- (case V CLS)
 
+  // Get Kinds and TyVars from KSigList
 
   syntax KiList ::= #getKinds(KSigList)                              [function]
   syntax TyVarList ::= #getTyVars(KSigList)                          [function]
-  syntax TyVarList ::= #getTyVars(TyList)                            [function]
-  syntax TyVarList ::= #getTyVars(AltList)                           [function]
-  syntax TyList ::= #getTys(AltList)                                 [function]
 
-  // TODO: make sure these are correct.
-  // For example #getTyVars likely needs to be more general
   rule #getKinds(.KSigList) => .KiList
   rule #getKinds((X K) KSL) => K #getKinds(KSL)
 
   rule #getTyVars(.KSigList) => .TyVarList
   rule #getTyVars((X K) KSL) => X #getTyVars(KSL)
 
-  rule #getTyVars(.TyList) => .TyVarList
-  rule #getTyVars(X:TyVar TL:TyList) => X #getTyVars(TL)
-  rule #getTyVars((con QTC:QualTyC TL1) TL2:TyList) => #getTyVars(TL1) ++ #getTyVars(TL2)
-  // More cases?
+  // Bind list of variables to list of types, pointwise
 
-  rule #getTys(.AltList) => .TyList
-  rule #getTys((C:Con T:Ty TL:TyList) ALS:AltList) => T #getTys((C TL) ALS)
-  rule #getTys((C:Con .TyList) ALS:AltList) => #getTys(ALS)
+  syntax Map ::= VarList ":=" TyList
+  syntax Map ::= TyVarList ":=" TyList                               [function]
 
-  rule #getTyVars(.AltList) => .TyVarList
-  rule #getTyVars((C:Con TL:TyList) ALS:AltList) => #getTyVars(TL) ++ #getTyVars(ALS)
+  rule .VarList := .TyList => .Map
+  rule V:Var VL := T TL => V |-> T (VL := TL)
 
-  syntax TyVarList ::= TyVarList "++" TyVarList                      [function]
-  rule .TyVarList ++ YS => YS
-  rule (X XS) ++ YS => X (XS ++ YS)
+  rule .TyVarList := .TyList => .Map
+  rule TV:TyVar TVL := T TL => TV |-> T (TVL := TL)
 
-  // Helper for checks: con, checking if Con in AltList
-  // Substitution must be done in TyList before checks judgment
+  // Helper for substitution, needed for parsing
 
-  rule (C:Con TVL TYS MS) in (C:Con  TL':TyList) _
-    => TL' [ TVL := TYS ] <-s MS
-  rule (C:Con TVL TYS:TyList MS) in (C':Con TL':TyList) AL:AltList
-    => (C TVL TYS MS) in AL
-    requires C =/=K C'
-
-  // Helper for clause: checking if Con in AltList
-  // Substitution must be done in type environment
-
-  rule
-    <k> (C:Con M:Map XL:VarList) in (C:Con TL':TyList) _ => .K ... </k>
-    <tenv> Rho => Rho #makeMap(XL, TL', M) </tenv>
-  rule (C:Con M:Map XL:VarList) in (C':Con TL':TyList) AL:AltList
-    => (C M XL) in AL
-    requires C =/=K C'
-
-  syntax TyList ::= TyList "[" TyVarList ":=" TyList "]"             [function]
-  syntax Map ::= TyVarList "|->s" TyList                             [function]
   syntax Ty ::= #subst(Ty, Map)                                      [function]
-  syntax Map ::= #makeMap(VarList, TyList, Map)                      [function]
-
-  rule #makeMap(.VarList, _, _) => .Map
-  rule #makeMap(X XL, T TL, M) => (X |-> T [ M ]) #makeMap(XL, TL, M)
-
-  rule .TyVarList |->s .TyList => .Map
-  rule TV:TyVar TVL |->s T TL => TV |-> T (TVL |->s TL)
-
   rule #subst(T, M) => T [ M ]
 
-  rule .TyList [ TVL := TL ] => .TyList
-  rule (T TL1):TyList [ TVL := TL2 ]
-    => #subst(T, TVL |->s TL2) (TL1 [ TVL := TL2 ])
+  // Perform substitution in a TyList pointwise via a Map
+
+  syntax TyList ::= TyList "[[" Map "]]"                             [function]
+
+  rule .TyList [[ _:Map ]] => .TyList
+  rule (T TL):TyList [[ M:Map ]] => #subst(T, M) (TL [[ M ]])
 
   // Types check Terms
 
