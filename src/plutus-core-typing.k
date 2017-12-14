@@ -18,6 +18,8 @@ module PLUTUS-CORE-TYPING
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
              | TyList "::s" KiList
 
+             | AltList "::a" Ki
+
              | "(" Con Map TmList ")"  "in" AltList
              | "(" Con Map VarList ")" "in" AltList
 
@@ -40,9 +42,15 @@ module PLUTUS-CORE-TYPING
     <k> (declare N:Name TAU:Ty) => .K ... </k>
     <tenv> ... .Map => (N |-> TAU) ... </tenv>
 
+  // Valid data declaration
   rule
-    <k> (data C (KSL:KSigList) AL) => .K ... </k>
+    <k> (data C (KSL:KSigList) AL) => AL ::a (type) ~> #restoreKEnv(Rho) ... </k>
     <data> ... .Map => (C |-> (data C (KSL) AL)) ... </data>
+    <kenv> Rho => Rho (#getTyVars(KSL) := #getKinds(KSL)) </kenv>
+
+  rule .AltList ::a K => .K
+  rule (C .TyList) AL ::a K => AL ::a K
+  rule (C T TL) AL ::a K => T :: K ~> (C TL) AL ::a K
 
   // Type reduction
   rule [ (lam X:TyVar K T) U:Ty ] => T [ U / X ]
@@ -283,16 +291,20 @@ module PLUTUS-CORE-TYPING
   rule #getTyVars(.KSigList) => .TyVarList
   rule #getTyVars((X K) KSL) => X #getTyVars(KSL)
 
-  // Bind list of variables to list of types, pointwise
+  // Bind list of variables to list of types/kinds, pointwise
 
-  syntax Map ::= VarList ":=" TyList
+  syntax Map ::= VarList ":=" TyList                                 [function]
   syntax Map ::= TyVarList ":=" TyList                               [function]
+  syntax Map ::= TyVarList ":=" KiList                               [function]
 
   rule .VarList := .TyList => .Map
   rule V:Var VL := T TL => V |-> T (VL := TL)
 
   rule .TyVarList := .TyList => .Map
-  rule TV:TyVar TVL := T TL => TV |-> T (TVL := TL)
+  rule TV:TyVar TVL := T:Ty TL => TV |-> T (TVL := TL)
+
+  rule .TyVarList := .KiList => .Map
+  rule TV:TyVar TVL := K:Ki KL => TV |-> K (TVL := KL)
 
   // Helper for substitution, needed for parsing
 
