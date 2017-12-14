@@ -12,7 +12,7 @@ module PLUTUS-CORE-TYPING
   syntax K ::= Ty "<-" Tm                                    // `Tm` checks `Ty`
              | TyList "<-s" TmList
 
-             | Ty "|-" Ty "<-" Cl
+             | Ty "|-" Ty "<-" Cl                          // `Cl` has type `Ty`
              | Ty "|-" Ty "<-s" ClList
 
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
