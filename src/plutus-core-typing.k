@@ -5,6 +5,9 @@ module PLUTUS-CORE-TYPING
   imports PLUTUS-CORE-SYNTAX
   imports SUBSTITUTION
 
+  /*****************************************************************************/
+  /**                 SYNTAX FOR SYNTHESIS, CHECKING, ETC.                     */
+  /*****************************************************************************/
 
   syntax K ::= Ty "<-" Tm                                    // `Tm` checks `Ty`
              | TyList "<-s" TmList
@@ -15,13 +18,17 @@ module PLUTUS-CORE-TYPING
              | Ty "::" Ki                                  // `Ty` has kind `Ki`
              | TyList "::s" KiList
 
-             | AltList "::a" Ki
+             | AltList "::a" Ki                        //`AltList` has kind `Ki`
 
              | "(" Con Map TmList ")"  "in" AltList
              | "(" Con Map VarList ")" "in" AltList
 
   syntax K ::= #restoreTEnv(Map)
              | #restoreKEnv(Map)
+
+  /*****************************************************************************/
+  /**                             CONFIGURATION                                */
+  /*****************************************************************************/
 
   configuration
     <T>
@@ -35,6 +42,7 @@ module PLUTUS-CORE-TYPING
   // Process the definitions in order.
   rule D:Dec DS:DecList => D ~> DS
 
+  // Add declaration to type environment
   rule
     <k> (declare N:Name TAU:Ty) => .K ... </k>
     <tenv> ... .Map => (N |-> TAU) ... </tenv>
@@ -45,6 +53,7 @@ module PLUTUS-CORE-TYPING
     <data> ... .Map => (C |-> (data C (KSL) AL)) ... </data>
     <kenv> Rho => Rho (#getTyVars(KSL) := #getKinds(KSL)) </kenv>
 
+  // AltList has kind K
   rule .AltList ::a K => .K
   rule (C .TyList) AL ::a K => AL ::a K
   rule (C T TL) AL ::a K => T :: K ~> (C TL) AL ::a K
