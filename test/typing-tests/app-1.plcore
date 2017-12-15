@@ -1,5 +1,6 @@
+(program
 (module Foo (imported) (exported () ()) (local () ())
   (declare f (fun (integer) (integer)))
   (declare r2 (integer))
   (define f (lam x x))
-  (define r2 [Foo.f 3]))
+  (define r2 [Foo.f 3])))

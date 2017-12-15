@@ -69,8 +69,8 @@ module PLUTUS-CORE-SYNTAX
   // syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
   syntax DecList    ::= List{Dec, ""}
 
-  syntax ModList    ::= List{ModName , ""}
-  syntax ClList     ::= List{Cl     ,  ""}                      [klabel(clList)]
+  syntax ModList    ::= List{Mod, ""}                         [klabel(modList)]
+  syntax ClList     ::= List{Cl ,  ""}                         [klabel(clList)]
 
   syntax ConArity   ::= "(" Con Arity ")"
   syntax CAList     ::= List{ConArity, ""}
@@ -128,7 +128,6 @@ module PLUTUS-CORE-SYNTAX
   syntax Alt        ::= "(" Con TyList ")"
 
   // Program.
-  // TODO: make program a Prg
   syntax Prg        ::= "(" "program" ModList ")"
 
   // Module.

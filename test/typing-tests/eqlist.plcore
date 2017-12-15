@@ -1,3 +1,4 @@
+(program
 (module Foo
     (imported)
     (exported () ())
@@ -57,4 +58,4 @@
               (Foo.Cons (y ys')
                 [Foo.and
                   [eqA x y]
-                  [(inst Foo.equalsList a) eqA xs' ys']]))))))))))
+                  [(inst Foo.equalsList a) eqA xs' ys']])))))))))))
