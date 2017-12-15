@@ -1,3 +1,4 @@
+(program
 (module Foo
     (imported)
     (exported () ())
@@ -27,4 +28,4 @@
                    (con Prelude.Maybe b)))
             (Prelude.Just (x)
               (isa (con Prelude.Just [f x])
-                   (con Prelude.Maybe b))))))))))
+                   (con Prelude.Maybe b)))))))))))

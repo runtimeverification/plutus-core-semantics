@@ -32,7 +32,7 @@ module PLUTUS-CORE-TYPING
 
   configuration
     <T>
-      <k> $PGM:Mod </k>
+      <k> $PGM:Prg </k>
       <tenv> .Map </tenv>
       <kenv> .Map </kenv>
       <data> .Map </data>
@@ -251,19 +251,25 @@ module PLUTUS-CORE-TYPING
     <k> #restoreKEnv(Rho) => .K ... </k>
     <kenv> _ => Rho </kenv>
 
-  syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
-
-  rule
-    <k>
-      (module MN:ModName IS ES LS DEFS) => DEFS ~> (moduleF MN IS ES LS)
-    </k>
-    <mod> CurrMN => MN </mod>
-
-  rule (.DecList ~> _:ModF) => .K
+  // Typecheck modules in order
+  rule (program M:Mod ML:ModList) => M ~> ML:ModList
+  rule .ModList => .K
 
   /*****************************************************************************/
   /**                        HELPER FUNCTIONALITY                              */
   /*****************************************************************************/
+
+  // Explicit strictness - process DEFS of module
+
+  syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
+
+  rule
+    <k>
+      (module MN:ModName IS ES LS DEFS) => DEFS ~> (moduleF MN IS ES LS) ...
+    </k>
+    <mod> _ => MN </mod>
+
+  rule (.DecList ~> _:ModF) => .K
 
   // Desugar multi-argument application/lambdas
 

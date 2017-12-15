@@ -1,4 +1,5 @@
+(program
 (module Foo (imported) (exported () ()) (local () ())
   (declare r2 (integer))
   (define r2
-    [(isa (fun (integer) (fun (integer) (integer))) (lam x (lam y (builtin addInt x y)))) 2 3]))
+    [(isa (lam x (lam y (builtin addInteger x y))) (fun (integer) (fun (integer) (integer)))) 2 3])))
