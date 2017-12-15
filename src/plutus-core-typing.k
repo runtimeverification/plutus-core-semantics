@@ -1,11 +1,8 @@
 require "plutus-core-syntax.k"
-require "hex-conversion.k"
 require "substitution.k"
 
 module PLUTUS-CORE-TYPING
   imports PLUTUS-CORE-SYNTAX
-  imports KRYPTO
-  imports HEX-CONVERSION
   imports SUBSTITUTION
 
 
