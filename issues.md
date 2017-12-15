@@ -15,5 +15,7 @@
 10. The spec has `builtin addInt`, `builtin multiplyInt`, etc. but the prelude has `builtin addInteger`, etc.
 11. The spec has `Prelude.Boolean` but the prelude has `Prelude.Bool`
 12. Can you elaborate on what the \bar{S} and \bar{alpha} refers to in the `con` rule for checks and `case` rule? It seems it is related to the specific `Alt` that matches the constructor but this is not very clear and a bit confusing to me.
+13. There doesn't seem to be any rule for `declare`. Related, I thought `define` should do a checking judgment against the declared type (if such a type exists), there doesn't seem to be a rule for this either.
+14. Can you please point us to where in the spec judgments check for well-kindedness? For example should it be in the `isa` judgment?
 
 In general, when new variables appear in the conditions of a rule that are not in the conclusion of a rule, it is often confusing as to where they came from, at least for me.
