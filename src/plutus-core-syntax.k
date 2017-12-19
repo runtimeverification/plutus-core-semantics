@@ -116,7 +116,7 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "lam" TyVar Ki Ty ")"
                       | TyApp
 
-  syntax TyApp      ::= "[" Ty TyList "]"                           [strict(1)]
+  syntax TyApp      ::= "[" Ty TyList "]"
 
   // Case clause.
   syntax Cl         ::= "(" QualC "(" VarList ")" Tm ")"
@@ -154,7 +154,7 @@ module PLUTUS-CORE-SYNTAX
   // Type annotations for terms. Missing from prelude?
   syntax MDec       ::= "(" "declare" Name Ty ")"
 
-  syntax Val        ::= Ty
+  syntax Val        ::= Ty | Ki
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var | TyVar
