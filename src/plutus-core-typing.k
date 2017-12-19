@@ -65,50 +65,61 @@ module PLUTUS-CORE-TYPING
   /**                           HAS KIND JUDGMENT                              */
   /*****************************************************************************/
 
+  syntax Ki ::= #kindOf(Ty)
+
+  rule T :: K => #kindOf(T) ~> K
+  rule K:Ki ~> K => .K
+
   // tyvar
   rule
-    <k> X :: K => .K ... </k>
+    <k> #kindOf(X) => K ... </k>
     <kenv> ... X |-> K ... </kenv>
 
   // TODO: rule for tyname?
 
   // fun
-  rule (fun S T):Ty :: (type):Ki => S :: (type):Ki ~> T :: (type):Ki
+  rule #kindOf((fun S T)) => S :: (type):Ki ~> T :: (type):Ki ~> (type):Ki
 
   // tycon
   rule
     <k>
-      (con (MN . TC:TyCon) TL:TyList) :: (type):Ki
-        => TL ::s #getKinds(KSL)
+      #kindOf((con (MN . TC:TyCon) TL:TyList))
+        => TL ::s #getKinds(KSL) ~> (type):Ki
         ...
     </k>
     <data> ... TC |-> (data TC (KSL) AL) ... </data>
 
   // comp
-  rule (comp T):Ty :: (type):Ki => T :: (type):Ki
+  rule #kindOf((comp T)) => T :: (type):Ki ~> (type):Ki
 
   // forall
   rule
-    <k> (forall X:TyVar K:Ki T) :: (type):Ki => T :: (type):Ki ~> #restoreKEnv(Rho) ... </k>
+    <k> #kindOf((forall X:TyVar K:Ki T)) => T :: (type):Ki ~> (type):Ki ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> K) </kenv>
 
   // integer
-  rule (integer) :: (type):Ki => .K
+  rule #kindOf((integer)) => (type):Ki
 
   // bytestring
-  rule (bytestring) :: (type):Ki => .K
+  rule #kindOf((bytestring)) => (type):Ki
+
+  // Wrappers for tylam and tyapp
+  syntax K ::= #kindOfHolderApp(Ty) | #kindOfHolderFun(Ki)
 
   // tylam
+  rule K:Ki ~> #kindOfHolderFun(J) => (fun J K):Ki
   rule
-    <k> (lam X J T) :: (fun J K) => T :: K ~> #restoreKEnv(Rho) ... </k>
+    <k> #kindOf((lam X J T)) => #kindOf(T) ~> #kindOfHolderFun(J) ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> J) </kenv>
 
   // tyapp
-  rule [ (lam X J S) T:Ty ] :: K => (lam X J S) :: (fun J K) ~> T :: J
 
-  rule
-    <k> [ X:TyVar T:Ty ] :: K => [ (lam X J S) T ] :: K ... </k>
-    <kenv> ... X |-> (lam X J S) ... </kenv>
+  // syntax for tyapp after first arg is evaluated, probably can be removed
+  syntax Ty ::= "[" Ki Ty "]"
+
+  rule #kindOf([ (fun J:Ki K) T ]) => T :: J ~> K
+  rule #kindOf([ T1:Ty T2 ]) => #kindOf(T1) ~> #kindOfHolder(T2)
+  rule K:Ki ~> #kindOfHolderApp(T) => #kindOf([ K T ])
 
   rule
     <k> (define N:Name M:Tm) => TAU <- M ... </k>
