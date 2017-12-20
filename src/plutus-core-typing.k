@@ -65,7 +65,7 @@ module PLUTUS-CORE-TYPING
   /**                           HAS KIND JUDGMENT                              */
   /*****************************************************************************/
 
-  syntax Ki ::= #kindOf(Ty)
+  syntax K ::= #kindOf(Ty)
 
   rule T :: K => #kindOf(T) ~> K
   rule K:Ki ~> K => .K
@@ -103,9 +103,6 @@ module PLUTUS-CORE-TYPING
   // bytestring
   rule #kindOf((bytestring)) => (type):Ki
 
-  // Wrappers for tylam and tyapp
-  syntax K ::= #kindOfHolderApp(Ty) | #kindOfHolderFun(Ki)
-
   // tylam
   rule K:Ki ~> #kindOfHolderFun(J) => (fun J K):Ki
   rule
@@ -115,11 +112,7 @@ module PLUTUS-CORE-TYPING
   // tyapp
 
   // syntax for tyapp after first arg is evaluated, probably can be removed
-  syntax Ty ::= "[" Ki Ty "]"
-
   rule #kindOf([ (fun J:Ki K) T ]) => T :: J ~> K
-  rule #kindOf([ T1:Ty T2 ]) => #kindOf(T1) ~> #kindOfHolder(T2)
-  rule K:Ki ~> #kindOfHolderApp(T) => #kindOf([ K T ])
 
   rule
     <k> (define N:Name M:Tm) => TAU <- M ... </k>
@@ -253,15 +246,6 @@ module PLUTUS-CORE-TYPING
 
   rule (builtin equalsByteString (bytestring) (bytestring)):Tm => boolean
 
-  // Restore type and kind environments
-  rule
-    <k> #restoreTEnv(Rho) => .K ... </k>
-    <tenv> _ => Rho </tenv>
-
-  rule
-    <k> #restoreKEnv(Rho) => .K ... </k>
-    <kenv> _ => Rho </kenv>
-
   // Typecheck modules in order
   rule (program M:Mod ML:ModList) => M ~> ML:ModList
   rule .ModList => .K
@@ -282,10 +266,38 @@ module PLUTUS-CORE-TYPING
 
   rule (.DecList ~> _:ModF) => .K
 
+  // Restore type and kind environments
+
+  rule
+    <k> #restoreTEnv(Rho) => .K ... </k>
+    <tenv> _ => Rho </tenv>
+
+  rule
+    <k> #restoreKEnv(Rho) => .K ... </k>
+    <kenv> _ => Rho </kenv>
+
+  // Restore type environment when evaluated Kind is at top of K cell
+
+  rule K:Ki ~> #restoreKEnv(Rho) => #restoreKEnv(Rho) ~> K
+
+  // Wrappers for tylam and tyapp
+
+  syntax K ::= #kindOfHolderApp(Ty) | #kindOfHolderFun(Ki)
+
+  // Explicit strictness for type application
+
+  syntax Ty ::= "[" Ki Ty "]" // not needed if Kinds are Types
+
+  rule #kindOf([ T1:Ty T2 ]) => #kindOf(T1) ~> #kindOfHolderApp(T2)
+  rule K:Ki ~> #kindOfHolderApp(T) => #kindOf([ K T ])
+
   // Desugar multi-argument application/lambdas
 
   rule [ F:Val M1 M2 MS ] => [ [ F M1 ] M2 MS ]
   rule T <- (lam X1 X2 XS M) => T <- (lam X1 .VarList (lam X2 XS M))
+
+  rule #kindOf([ T1 T2 T3 TL ]) => #kindOf([ [ T1 T2 ] T3 TL ])
+  rule [ T1 T2 T3 TL:TyList ] => [ [ T1 T2 ] T3 TL ]
 
   // Sugar for boolean type - boolean = Prelude.Bool.
   // #tyconHolder needed for parsing
