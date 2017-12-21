@@ -109,9 +109,7 @@ module PLUTUS-CORE-TYPING
     <k> #kindOf((lam X J T)) => #kindOf(T) ~> #kindOfHolderFun(J) ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> J) </kenv>
 
-  // tyapp
-
-  // syntax for tyapp after first arg is evaluated, probably can be removed
+  // tyapp - explicit strictness in helper functionality
   rule #kindOf([ (fun J:Ki K) T ]) => T :: J ~> K
 
   rule
@@ -284,7 +282,7 @@ module PLUTUS-CORE-TYPING
 
   syntax K ::= #kindOfHolderApp(Ty) | #kindOfHolderFun(Ki)
 
-  // Explicit strictness for type application
+  // Explicit strictness for tyapp
 
   syntax Ty ::= "[" Ki Ty "]" // not needed if Kinds are Types
 
