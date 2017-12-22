@@ -109,8 +109,12 @@ module PLUTUS-CORE-TYPING
     <k> #kindOf((lam X J T)) => #kindOf(T) ~> #kindOfHolderFun(J) ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> J) </kenv>
 
-  // tyapp - explicit strictness in helper functionality
+  // tyapp
+  rule #kindOf([ T1:Ty T2 ]) => #kindOf(T1) ~> #kindOfHolderApp(T2)
+  rule K:Ki ~> #kindOfHolderApp(T) => #kindOf([ K T ])
+
   rule #kindOf([ (fun J:Ki K) T ]) => T :: J ~> K
+
 
   rule
     <k> (define N:Name M:Tm) => TAU <- M ... </k>
@@ -282,12 +286,9 @@ module PLUTUS-CORE-TYPING
 
   syntax K ::= #kindOfHolderApp(Ty) | #kindOfHolderFun(Ki)
 
-  // Explicit strictness for tyapp
+  // Syntax for explicit strictness for tyapp, not needed if Kinds are Types
 
-  syntax Ty ::= "[" Ki Ty "]" // not needed if Kinds are Types
-
-  rule #kindOf([ T1:Ty T2 ]) => #kindOf(T1) ~> #kindOfHolderApp(T2)
-  rule K:Ki ~> #kindOfHolderApp(T) => #kindOf([ K T ])
+  syntax Ty ::= "[" Ki Ty "]"
 
   // Desugar multi-argument application/lambdas
 
