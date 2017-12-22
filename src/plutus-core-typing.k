@@ -109,10 +109,11 @@ module PLUTUS-CORE-TYPING
     <k> #kindOf((lam X J T)) => #kindOf(T) ~> #kindOfHolderFun(J) ~> #restoreKEnv(Rho) ... </k>
     <kenv> Rho => Rho (X |-> J) </kenv>
 
-  // tyapp
+  // tyapp strictness
   rule #kindOf([ T1:Ty T2 ]) => #kindOf(T1) ~> #kindOfHolderApp(T2)
   rule K:Ki ~> #kindOfHolderApp(T) => #kindOf([ K T ])
 
+  // tyapp
   rule #kindOf([ (fun J:Ki K) T ]) => T :: J ~> K
 
 
