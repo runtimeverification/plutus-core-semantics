@@ -1,3 +1,5 @@
+(program
+
 (module Prelude (imported) (exported () ()) (local () ())
 
 (define equalsInt
@@ -716,4 +718,6 @@
     (case [Prelude.evalMASTPath path]
       (cl Prelude.False () (con Prelude.False))
       (cl Prelude.True () (builtin equalsByteString hash [Prelude.hashMASTPath path]))))))
+)
+
 )
