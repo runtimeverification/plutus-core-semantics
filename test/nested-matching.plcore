@@ -1,3 +1,5 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
   (define result
     (case (con Nat.Pair (con Nat.Pair 1 2) (con Nat.Pair 3 4))
@@ -7,3 +9,5 @@
               (Foo.NotThis (x) -2)
               (Nat.Pair (x y) (builtin multiplyInt x y))
               (Foo.NotThisEither (x) -2))))))
+
+)

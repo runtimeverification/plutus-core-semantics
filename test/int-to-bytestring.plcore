@@ -1,3 +1,5 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
   (define bs1 (builtin intToByteString 1128))
   (define bs2 (builtin intToByteString 9))
@@ -6,3 +8,5 @@
   (define bs5 (builtin intToByteString 17))
   (define bs6 (builtin intToByteString 37858))
   (define bs7 (builtin intToByteString 0)))
+
+)

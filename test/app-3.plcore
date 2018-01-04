@@ -1,4 +1,8 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
   (declare r2 integer)
   (define r2
     [(lam x (lam y (builtin addInt x y))) 2 3 ]))
+
+)

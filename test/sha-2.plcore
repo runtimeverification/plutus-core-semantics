@@ -1,2 +1,6 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
   (define result (builtin sha2_256 #ABCD)))
+
+)
