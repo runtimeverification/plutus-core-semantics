@@ -8,7 +8,7 @@ typing: src/typing/plutus-core.k src/typing/plutus-core-syntax.k src/typing/plut
 exec: src/execution/plutus-core.k src/execution/plutus-core-syntax.k src/execution/plutus-core-execution.k
 	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/execution/plutus-core.k
 	touch plutus-core-kompiled
-	cp -r plutus-core-kompiled src/typing
+	cp -r plutus-core-kompiled src/execution
 	rm -rf plutus-core-kompiled
 
 test: exec

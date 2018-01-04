@@ -9,15 +9,11 @@ module FLIP-SPEC
     <lenv> L => (x |-> Y) (y |-> X) </lenv>
     <genv> E GENV:Map (F |-> closure(.Map, x, (lam y T:Tm))) </genv>
     <mod> MN:ModName </mod>
-    <gas> G => G -Int 3 </gas>
-    when (G -Int 3 >=Int 0)
 
   rule
     <k> [F:QualN Y:Int X:Int] => T ~> L ... </k>
     <lenv> L => (x |-> Y) (y |-> X) </lenv>
     <genv> E GENV:Map (F |-> closure(.Map, x, (lam y T:Tm))) </genv>
     <mod> MN:ModName </mod>
-    <gas> G => G -Int 3 </gas>
-    when (G -Int 3 >=Int 0)
 
 endmodule

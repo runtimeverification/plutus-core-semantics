@@ -35,9 +35,6 @@ module PLUTUS-CORE-EXECUTION
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C):QualC .ValList )
 
-  syntax ModName ::= #stringToModName(String) [function]
-  syntax Con ::= #stringToCon(String) [function]
-
   rule #stringToModName(S:String)
     => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
   rule #stringToCon(S:String) => #parseToken("Con@PLUTUS-CORE-SYNTAX", S)

@@ -9,13 +9,11 @@ module APPLYTO-SPEC
     <lenv> L => (x |-> X) </lenv>
     <genv> E GENV:Map (F |-> closure(.Map, x, T:Tm)) </genv>
     <mod> MN:ModName </mod>
-    <gas> _ => _ </gas>
 
   rule
     <k> [F:QualN X:Int] => T ~> L ... </k>
     <lenv> L => (x |-> X) </lenv>
     <genv> E GENV:Map (F |-> closure(.Map, x, T:Tm)) </genv>
     <mod> MN:ModName </mod>
-    <gas> _ => _ </gas>
 
 endmodule
