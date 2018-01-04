@@ -15,10 +15,13 @@ module PLUTUS-CORE-SYNTAX
 
   // Module name.
   syntax ModName ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+                   | #stringToModName(String)                        [function]
                    | ".ModName"
 
   // Constructor name.
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+                   | #stringToCon(String)                            [function]
+
   syntax TyCon   ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Integer literal.

@@ -10,13 +10,11 @@ module ID-SPEC
           X
       ]
       =>
-      (con (#stringToModName("Prelude") . #stringToCon("True")) .ValList)
+      (con (#stringToModName("Prelude") . #stringToCon("True")):QualC .ValList)
       ...
     </k>
     <genv> E GENV </genv>
-    <gas> G => G -Int 8 </gas>
     when notBool ((#stringToModName("Prelude") . id):QualN in keys(E)) andBool
          notBool ((#stringToModName("Prelude") . equalsInt):QualN in keys(E))
-         andBool (G -Int 8 >=Int 0)
 
 endmodule

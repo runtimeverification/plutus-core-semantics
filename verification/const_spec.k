@@ -5,10 +5,8 @@ module CONST-SPEC
   rule
     <k> (define result [(#stringToModName("Prelude") . const):QualN X:Int Y:Int]):Def => .K ... </k>
     <lenv> _ => .Map </lenv>
-    <genv> E GENV => E GENV (MN . result) |-> X </genv>
+    <genv> E GENV => E GENV (MN . result):QualN |-> X </genv>
     <mod> MN:ModName </mod>
-    <gas> G => G -Int 5 </gas>
-    when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Prelude") . const):QualN in keys(E))
-         andBool (G -Int 5 >=Int 0)
+    when notBool ((MN . result):QualN in keys(E GENV)) andBool notBool ((#stringToModName("Prelude") . const):QualN in keys(E))
 
 endmodule
