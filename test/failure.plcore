@@ -1,3 +1,7 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
 (define result (failure))
+)
+
 )

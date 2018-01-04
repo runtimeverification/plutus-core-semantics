@@ -1,4 +1,8 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
   (define result
     (case (con Nat.Pair 1 2)
       (Nat.Pair (x y) (con Nat.Pair y x)))))
+
+)

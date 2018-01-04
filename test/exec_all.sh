@@ -3,5 +3,5 @@
 for file in `ls *.plcore`;
   do
     printf "Running $file\n"
-    krun -d .. $file
+    krun -d ../src/execution $file
 done;

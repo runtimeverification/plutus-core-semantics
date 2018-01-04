@@ -8,7 +8,7 @@ module PLUTUS-CORE-EXECUTION
 
   configuration
     <T>
-      <k> $PGM:Mod </k>
+      <k> $PGM:Prg </k>
       <lenv> .Map </lenv>
       <genv> .Map </genv>
       <mod> .ModName </mod>
@@ -33,7 +33,10 @@ module PLUTUS-CORE-EXECUTION
 
   syntax Tm ::= #conHolder(K, K)
               | #qualCHolder(K, K)
-  rule #conHolder(MN, C) => ( con (MN . C) .ValList )
+  rule #conHolder(MN, C) => ( con (MN . C):QualC .ValList )
+
+  syntax ModName ::= #stringToModName(String) [function]
+  syntax Con ::= #stringToCon(String) [function]
 
   rule #stringToModName(S:String)
     => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
@@ -130,12 +133,16 @@ module PLUTUS-CORE-EXECUTION
   // Desugar let expression to lambda expression
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
 
+  // Process modules in order
+  rule (program M:Mod ML:ModList) => M ~> ML:ModList
+  rule .ModList => .K
+
   // Process the definitions in order.
   rule D:Dec DS:DecList => D ~> DS
 
   // Ignoring typing stuff
   rule ( declare N:Name T:Ty ) => .K
-  rule ( data C:Con ( KSL:KSigList ) AL:AltList ) => .K
+  rule ( data C:TyCon ( KSL:KSigList ) AL:AltList ) => .K
   rule ( isa M:Tm T:Ty ) => .K
   rule ( abs V:Var M:Tm ):Tm => M
   rule ( inst M:Tm T:Ty ) => .K
@@ -150,7 +157,7 @@ module PLUTUS-CORE-EXECUTION
 
   rule
     <k>
-      ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS )
+      ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS ) ...
     </k>
     <mod> CurrMN => MN </mod>
 
