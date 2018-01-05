@@ -1,7 +1,7 @@
 (program
 
 (module Foo (imported) (exported () ()) (local () ())
-(define result (builtin addInt 2 2))
+(define result (builtin addInteger 2 2))
 )
 
 )

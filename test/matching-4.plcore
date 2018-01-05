@@ -7,7 +7,7 @@
           (Nat.NotThisTwo ()    -2)
           (Nat.NotThisThree (y) -3)
           (Nat.NotThisFour  (y)  -4)
-          (Nat.Foo (x) (builtin multiplyInt x 30))
+          (Nat.Foo (x) (builtin multiplyInteger x 30))
           (Nat.NotThisFive ()  -6))))
 
 )

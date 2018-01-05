@@ -2,9 +2,9 @@
 
 (module Foo (imported) (exported () ()) (local () ())
   (define r1 [(lam x y y) 1 2])
-  (define r2 [(lam x y z (builtin addInt 10 z)) 1 2 3])
-  (define r3 [(lam x y (builtin addInt x y)) 10 20])
-  (define r4 [(lam x y z (builtin addInt x (builtin addInt y z))) 10 20 5])
+  (define r2 [(lam x y z (builtin addInteger 10 z)) 1 2 3])
+  (define r3 [(lam x y (builtin addInteger x y)) 10 20])
+  (define r4 [(lam x y z (builtin addInteger x (builtin addInteger y z))) 10 20 5])
   (define r5 [[(lam f g [(lam x x) f]) (lam x y y) (lam x y x)] #A #B]))
 
 )

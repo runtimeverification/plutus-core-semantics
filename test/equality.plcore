@@ -1,8 +1,8 @@
 (program
 
 (module Foo (imported) (exported () ()) (local () ())
-  (define r1 (builtin equalsInt 2 2))
-  (define r2 (builtin equalsInt 2 3))
+  (define r1 (builtin equalsInteger 2 2))
+  (define r2 (builtin equalsInteger 2 3))
   (define r5 (builtin equalsByteString #AAA #AAA))
   (define r6 (builtin equalsByteString #AAA #111))
 )
