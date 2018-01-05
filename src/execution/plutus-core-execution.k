@@ -18,15 +18,12 @@ module PLUTUS-CORE-EXECUTION
   /***********************  BUILT-IN REDUCTIONS   ****************************/
   /***************************************************************************/
 
-  rule ( builtin addInt:Name       I1:Int I2:Int ) => I1 +Int I2
-  rule ( builtin subtractInt:Name  I1:Int I2:Int ) => I1 -Int I2
-  rule ( builtin multiplyInt:Name  I1:Int I2:Int )
-    => I1 *Int I2
-  rule ( builtin divideInt:Name    I1:Int I2:Int )
-    => I1 /Int I2
+  rule ( builtin addInteger:Name       I1:Int I2:Int ) => I1 +Int I2
+  rule ( builtin subtractInteger:Name  I1:Int I2:Int ) => I1 -Int I2
+  rule ( builtin multiplyInteger:Name  I1:Int I2:Int ) => I1 *Int I2
+  rule ( builtin divideInteger:Name    I1:Int I2:Int ) => I1 /Int I2
     when I2 =/=Int 0
-  rule ( builtin remainderInt:Name I1:Int I2:Int )
-    => I1 %Int I2
+  rule ( builtin remainderInteger:Name I1:Int I2:Int ) => I1 %Int I2
     when I2 =/=Int 0
 
   // TODO: define semantics for compbuiltin.
@@ -45,19 +42,22 @@ module PLUTUS-CORE-EXECUTION
   rule #primFalse
     => #conHolder(#stringToModName("Prelude"), #stringToCon("False"))
 
-  rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue
-                                                       [transition]
-  rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #primFalse
-                                                       when I1 =/=Int I2
-                                                       [transition]
-  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primTrue
-                                                       when I1 <Int I2
-  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primFalse
-                                                       when notBool (I1 <Int I2)
+  rule ( builtin equalsInteger:Name I:Int I:Int        ) => #primTrue
+    [transition]
+  rule ( builtin equalsInteger:Name I1:Int I2:Int      ) => #primFalse
+    when I1 =/=Int I2
+    [transition]
+  rule ( builtin lessThanInteger:Name I1:Int I2:Int    ) => #primTrue
+    when I1 <Int I2
+  rule ( builtin lessThanInteger:Name I1:Int I2:Int    ) => #primFalse
+    when notBool (I1 <Int I2)
+  rule ( builtin greaterThanInteger:Name I1:Int I2:Int ) => #primTrue
+    when I1 >Int I2
+  rule ( builtin greaterThanInteger:Name I1:Int I2:Int ) => #primFalse
+    when notBool (I1 >Int I2)
 
-  rule ( builtin intToByteString:Name 0 )    => #toByStr("0")
-  rule ( builtin intToByteString:Name I:Int)
-    => #toByStr(#toHex(I))
+  rule ( builtin integerToByteString:Name 0 )    => #toByStr("0")
+  rule ( builtin integerToByteString:Name I:Int) => #toByStr(#toHex(I))
     when I =/=Int 0
 
   syntax ByStr ::= #toByStr ( String )                                [function]
@@ -67,16 +67,15 @@ module PLUTUS-CORE-EXECUTION
   rule #toString(B:ByStr):String
     => substrString(#toStringVerbatim(B), 1, lengthString(#toStringVerbatim(B)))
 
-  rule ( builtin take:Name N:Int B:ByStr )
+  rule ( builtin takeByteString:Name N:Int B:ByStr )
     => #toByStr(substrString(#toString(B), 0, N))
 
-  rule ( builtin drop:Name N:Int B:ByStr )
+  rule ( builtin dropByteString:Name N:Int B:ByStr )
     => #toByStr(substrString(#toString(B), N, lengthString(#toString(B))))
 
   rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
     => #toByStr(#toString(B1) +String #toString(B2))
 
-  // TODO: no gas encoding chosen for now
   rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
   rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
