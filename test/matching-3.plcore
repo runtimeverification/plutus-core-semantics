@@ -3,7 +3,7 @@
 (module Foo (imported) (exported () ()) (local () ())
   (define result
     (case (con Nat.Pair 3 7)
-          (Nat.Pair (x y) (builtin multiplyInt x y))
+          (Nat.Pair (x y) (builtin multiplyInteger x y))
           (Nat.NotThis ()  -1)))
   (define swapped
     (case (con Nat.Pair 1 2)

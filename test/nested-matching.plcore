@@ -7,7 +7,7 @@
           (Nat.Pair (p1 p2)
             (case p2
               (Foo.NotThis (x) -2)
-              (Nat.Pair (x y) (builtin multiplyInt x y))
+              (Nat.Pair (x y) (builtin multiplyInteger x y))
               (Foo.NotThisEither (x) -2))))))
 
 )

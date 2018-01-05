@@ -2,8 +2,8 @@
 
 (module Foo (imported) (exported () ()) (local () ())
 (define b1
-  (builtin take
-   5 (builtin drop
+  (builtin takeByteString
+   5 (builtin dropByteString
      1 (builtin concatenate
        #123456 #789ABC))))
 
