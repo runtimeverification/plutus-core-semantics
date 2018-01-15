@@ -8,10 +8,16 @@ module PLUTUS-CORE-EXECUTION
 
   configuration
     <T>
-      <k> $PGM:Prg </k>
+      initERC20Cell(Init)  // including the ERC20-K configuration.
+      // <k> $PGM:Prg </k>
       <lenv> .Map </lenv>
       <genv> .Map </genv>
       <mod> .ModName </mod>
+      // <state> .Map </state>
+      // <in stream="stdin"> .List </in>
+      // <out stream="stdout"> .List </out>
+      <throwAsPrint> false:Bool </throwAsPrint> // for print THROW
+      <printStrings> true:Bool </printStrings>  // for tests
     </T>
 
   /***************************************************************************/
@@ -201,4 +207,26 @@ module PLUTUS-CORE-EXECUTION
 
   rule (success M):Tm => M ~> #freezeSucc()
   rule V:Val ~> #freezeSucc() => (success V):Val
+
+
+/* Next we define the special "make" constructs which create and modify the
+   ERC20-K state.  One should be careful with these constructs, because any
+   mistake can make ERC20-K behave unexpectedly.  Such operations should not
+   exist in normal implementations of languages for smart contracts.  */
+
+ rule <k> makeAccount(A,V) => .K ...</k>
+       <accounts>... .Bag => <account> <id> A </id> <balance> V </balance> </account> ...</accounts>
+       <allowances>... .Bag => <allowance> <owner> A </owner> <spenders> .Bag </spenders> </allowance> ...</allowances>
+  rule <k> makeAllowance(A,B) => .K ...</k> <owner> A </owner>
+       <spenders>... .Bag => <allow> <spender> B </spender> <amount> 0 </amount> </allow> ...</spenders>
+  rule <k> makeTotalSupply(I) => .K ...</k> <supply> _ => I </supply> requires I >=Int 0
+  rule <k> makeCaller(I:Int) => .K ...</k> <caller> _ => I </caller>
+  rule <k> makeBalance(I:Int) => .K ...</k> <caller> Owner </caller> <id> Owner </id> <balance> _ => I </balance>
+  rule <k> makeThrowAsPrintTrue  => .K ...</k> <throwAsPrint> _ => true </throwAsPrint>
+  rule <k> makeThrowAsPrintFalse => .K ...</k> <throwAsPrint> _ => false </throwAsPrint>
+//  rule <k> throw => false ...</k> <throwAsPrint> true </throwAsPrint> <out>... .List => ListItem("THROW\n") </out>
+  rule <k> makePrintStringsTrue  => .K ...</k> <printStrings> _ => true  </printStrings>
+  rule <k> makePrintStringsFalse => .K ...</k> <printStrings> _ => false </printStrings>
+
+
 endmodule

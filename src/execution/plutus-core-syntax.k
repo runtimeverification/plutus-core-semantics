@@ -1,6 +1,9 @@
+require "erc20.k"
+
 module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
+  imports ERC20
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
