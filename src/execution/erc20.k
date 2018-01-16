@@ -9,14 +9,14 @@
 module ERC20
   syntax Value   ::= Int  // this can be changed
   syntax Address ::= Int  // this can be changed
-  syntax AExp ::= Value | Address
+  syntax Def ::= Value | Address
                 | "totalSupply" "(" ")"
-                | "balanceOf" "(" AExp ")"                       [strict]
-                | "allowance" "(" AExp "," AExp ")"              [strict]
-  syntax BExp ::= Bool
-                | "approve" "(" AExp "," AExp ")"                [strict]
-                | "transfer" "(" AExp "," AExp ")"               [strict]
-                | "transferFrom" "(" AExp "," AExp "," AExp ")"  [strict]
+                | "balanceOf" "(" Def ")"                       [strict]
+                | "allowance" "(" Def "," Def ")"              [strict]
+  syntax Def ::= Bool
+                | "approve" "(" Def "," Def ")"                [strict]
+                | "transfer" "(" Def "," Def ")"               [strict]
+                | "transferFrom" "(" Def "," Def "," Def ")"  [strict]
                 | "throw"
   syntax Event ::= "Transfer" "(" Address "," Address "," Value ")"
                  | "Approval" "(" Address "," Address "," Value ")"
@@ -181,19 +181,23 @@ module ERC20
       orBool Value >Int BalanceFrom
       orBool Value >Int Allowance   // `transfer` does not check allowance
 
-  syntax Stmt ::= AExp ";"                               [strict]
-                | BExp ";"                               [strict]
+
 /* The "make" statements below allow us to programmatically interfere
    with the ERC20-K configuration.  Such statements would not be
    possible/allowed in a normal programming language for smart contracts. */
-                | "makeAccount" "(" AExp "," AExp")"     [prefer, strict]
-                | "makeAllowance" "(" AExp "," AExp ")"  [prefer, strict]
-                | "makeTotalSupply" "(" AExp ")"         [prefer, strict]
-                | "makeCaller" "(" AExp ")"              [prefer, strict]
-                | "makeBalance" "(" AExp ")"             [prefer, strict]
-                | "makeThrowAsPrintTrue"                 [prefer]
-                | "makeThrowAsPrintFalse"                [prefer]
-                | "makePrintStringsTrue"                 [prefer]
-                | "makePrintStringsFalse"                [prefer]
+
+  syntax Tm
+  syntax Def ::= Def ";" [strict]
+               | "makeAccount" "(" Tm "," Tm")"         [prefer, strict]
+               | "makeAllowance" "(" Tm "," Tm ")"      [prefer, strict]
+               | "makeTotalSupply" "(" Tm ")"           [prefer, strict]
+               | "makeCaller" "(" Tm ")"                [prefer, strict]
+               | "makeBalance" "(" Tm ")"               [prefer, strict]
+               | "makeThrowAsPrintTrue"                 [prefer]
+               | "makeThrowAsPrintFalse"                [prefer]
+               | "makePrintStringsTrue"                 [prefer]
+               | "makePrintStringsFalse"                [prefer]
+
+  syntax KResult ::= Bool
 
 endmodule
