@@ -168,6 +168,7 @@ module PLUTUS-CORE-EXECUTION
     <genv> ... QN |-> V ... </genv>
 
   rule (.DecList ~> _:ModF ) => .K
+  rule .DecList => .K
 
   /***************************************************************************/
   /************************   PATTERN MATCHING   *****************************/
@@ -208,13 +209,68 @@ module PLUTUS-CORE-EXECUTION
   rule (success M):Tm => M ~> #freezeSucc()
   rule V:Val ~> #freezeSucc() => (success V):Val
 
+  /***************************************************************************/
+  /************************   ERC 20 CONSTRUCTS   ****************************/
+  /***************************************************************************/
 
-/* Next we define the special "make" constructs which create and modify the
-   ERC20-K state.  One should be careful with these constructs, because any
-   mistake can make ERC20-K behave unexpectedly.  Such operations should not
-   exist in normal implementations of languages for smart contracts.  */
+  rule _:Bool; => .K
+  rule _:Int; => .K
 
- rule <k> makeAccount(A,V) => .K ...</k>
+  // ---PREAMBLE----------
+  // This preamble creates some initial configuration:
+  //   accounts, allowances, supply, caller.
+  // Recall that this ERC20 semantics assumes that the total supply, all the
+  // accounts and all their allowances (including those which are 0), as well
+  // as the caller given.  Then the code is executed on the caller's behalf.
+
+  rule test.preamble() =>
+
+    makeAccount(10,100)
+    makeAccount(9,90)
+    makeAccount(8,80)
+    makeAccount(7,70)
+    makeAccount(6,60)
+    makeAccount(5,50)
+    makeAccount(4,40)
+    makeAccount(3,30)
+    makeAccount(2,20)
+    makeAccount(1,10)
+
+    test.allowances(10)
+    test.allowances(9)
+    test.allowances(8)
+    test.allowances(7)
+    test.allowances(6)
+    test.allowances(5)
+    test.allowances(4)
+    test.allowances(3)
+    test.allowances(2)
+    test.allowances(1)
+
+    makeTotalSupply(550)
+    (declare caller integer)
+    (define caller 7)
+    makeCaller(#stringToModName("Foo") . caller)
+
+  rule test.allowances(I:Int) =>
+
+    makeAllowance(I,10)
+    makeAllowance(I,9)
+    makeAllowance(I,8)
+    makeAllowance(I,7)
+    makeAllowance(I,6)
+    makeAllowance(I,5)
+    makeAllowance(I,4)
+    makeAllowance(I,3)
+    makeAllowance(I,2)
+    makeAllowance(I,1)
+
+  // Next we define the special "make" constructs which create and modify the
+  // ERC20-K state.  One should be careful with these constructs, because any
+  // mistake can make ERC20-K behave unexpectedly.  Such operations should not
+  // exist in normal implementations of languages for smart contracts.
+
+  rule <k> makeAccount(A,V) => .K ...</k>
        <accounts>... .Bag => <account> <id> A </id> <balance> V </balance> </account> ...</accounts>
        <allowances>... .Bag => <allowance> <owner> A </owner> <spenders> .Bag </spenders> </allowance> ...</allowances>
   rule <k> makeAllowance(A,B) => .K ...</k> <owner> A </owner>
