@@ -7,7 +7,7 @@ module PLUTUS-CORE-EXECUTION
   imports HEX-CONVERSION
 
   configuration
-    <T>
+    <PLUTUS>
       initERC20Cell(Init)  // including the ERC20-K configuration.
       // <k> $PGM:Prg </k>
       <lenv> .Map </lenv>
@@ -18,7 +18,7 @@ module PLUTUS-CORE-EXECUTION
       // <out stream="stdout"> .List </out>
       <throwAsPrint> false:Bool </throwAsPrint> // for print THROW
       <printStrings> true:Bool </printStrings>  // for tests
-    </T>
+    </PLUTUS>
 
   /***************************************************************************/
   /***********************  BUILT-IN REDUCTIONS   ****************************/
