@@ -6,7 +6,7 @@
 
   // Testing allowance(Owner,Spender) when Owner = Spender = caller.
 
-  test.allowance(Foo.caller, Foo.caller);
+  test.allowance(9, 5);
 
 )
 

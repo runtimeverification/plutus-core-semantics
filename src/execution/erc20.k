@@ -203,6 +203,6 @@ module ERC20
                | "makePrintStringsTrue"                 [prefer]
                | "makePrintStringsFalse"                [prefer]
 
-  syntax KResult ::= ERCBool
+  syntax Val ::= ERCBool
 
 endmodule
