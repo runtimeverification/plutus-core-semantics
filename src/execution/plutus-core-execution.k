@@ -13,11 +13,10 @@ module PLUTUS-CORE-EXECUTION
       <lenv> .Map </lenv>
       <genv> .Map </genv>
       <mod> .ModName </mod>
-      // <state> .Map </state>
-      // <in stream="stdin"> .List </in>
-      // <out stream="stdout"> .List </out>
-      <throwAsPrint> false:Bool </throwAsPrint> // for print THROW
-      <printStrings> true:Bool </printStrings>  // for tests
+      <in> .List </in>
+      <out> .List </out>
+      <throwAsPrint> ERCFalse:ERCBool </throwAsPrint> // for print THROW
+      <printStrings> ERCTrue:ERCBool </printStrings>  // for tests
     </PLUTUS>
 
   /***************************************************************************/
@@ -278,11 +277,24 @@ module PLUTUS-CORE-EXECUTION
   rule <k> makeTotalSupply(I) => ERCTrue ...</k> <supply> _ => I </supply> requires I >=Int 0
   rule <k> makeCaller(I:Int) => ERCTrue ...</k> <caller> _ => I </caller>
   rule <k> makeBalance(I:Int) => ERCTrue ...</k> <caller> Owner </caller> <id> Owner </id> <balance> _ => I </balance>
-  rule <k> makeThrowAsPrintTrue  => ERCTrue ...</k> <throwAsPrint> _ => true </throwAsPrint>
-  rule <k> makeThrowAsPrintFalse => ERCTrue ...</k> <throwAsPrint> _ => false </throwAsPrint>
+  rule <k> makeThrowAsPrintTrue  => ERCTrue ...</k> <throwAsPrint> _ => ERCTrue </throwAsPrint>
+  rule <k> makeThrowAsPrintFalse => ERCTrue ...</k> <throwAsPrint> _ => ERCFalse </throwAsPrint>
 //  rule <k> throw => false ...</k> <throwAsPrint> true </throwAsPrint> <out>... .List => ListItem("THROW\n") </out>
-  rule <k> makePrintStringsTrue  => ERCTrue ...</k> <printStrings> _ => true  </printStrings>
-  rule <k> makePrintStringsFalse => ERCTrue ...</k> <printStrings> _ => false </printStrings>
+  rule <k> makePrintStringsTrue  => ERCTrue ...</k> <printStrings> _ => ERCTrue  </printStrings>
+  rule <k> makePrintStringsFalse => ERCTrue ...</k> <printStrings> _ => ERCFalse </printStrings>
 
+
+  syntax K ::= "out" "(" TmDef ")" [prefer, strict]
+  rule <k> out(V:Val) => V ... </k>
+       <out> ... .List => ListItem(V) </out>
+
+  rule test.makeBalance(Value:TmDef) => out(makeBalance(Value))
+  rule test.makeCaller(Id:TmDef) => out(makeCaller(Id))
+  rule test.makeTotalSupply(Value:TmDef) => out(makeTotalSupply(Value))
+  rule test.balanceOf(Id:TmDef) => out(balanceOf(Id))
+  rule test.allowance(Owner, Spender) => out(allowance(Owner, Spender))
+  rule test.approve(Spender, Allowance) => out(approve(Spender, Allowance))
+  rule test.transfer(To, Value) => out(transfer(To, Value))
+  rule test.transferFrom(From, To, Value) => out(transferFrom(From, To, Value))
 
 endmodule
