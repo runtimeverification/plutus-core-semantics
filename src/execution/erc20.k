@@ -9,14 +9,20 @@
 module ERC20
   syntax Value   ::= Int  // this can be changed
   syntax Address ::= Int  // this can be changed
+
+  syntax Tm
+  syntax TmDef ::= Tm | Def  // For parsing purposes with Plutus
+
+  syntax ERCBool ::= "ERCTrue" | "ERCFalse"
+
   syntax Def ::= Value | Address
                 | "totalSupply" "(" ")"
-                | "balanceOf" "(" Def ")"                       [strict]
-                | "allowance" "(" Def "," Def ")"              [strict]
-  syntax Def ::= Bool
-                | "approve" "(" Def "," Def ")"                [strict]
-                | "transfer" "(" Def "," Def ")"               [strict]
-                | "transferFrom" "(" Def "," Def "," Def ")"  [strict]
+                | "balanceOf" "(" TmDef ")"                       [strict]
+                | "allowance" "(" TmDef "," TmDef ")"              [strict]
+  syntax Def ::= ERCBool
+                | "approve" "(" TmDef "," TmDef ")"                [strict]
+                | "transfer" "(" TmDef "," TmDef ")"               [strict]
+                | "transferFrom" "(" TmDef "," TmDef "," TmDef ")"  [strict]
                 | "throw"
   syntax Event ::= "Transfer" "(" Address "," Address "," Value ")"
                  | "Approval" "(" Address "," Address "," Value ")"
@@ -62,7 +68,7 @@ module ERC20
        <spender> Spender </spender>
        <amount> Allowance </amount>
 
-  rule <k> approve(Spender, Allowance) => true ...</k>
+  rule <k> approve(Spender, Allowance) => ERCTrue ...</k>
        <caller> Owner </caller>
        <owner> Owner </owner>
        <spender> Spender </spender>
@@ -73,7 +79,7 @@ module ERC20
   rule <k> approve(_, Allowance) => throw ...</k>
     requires Allowance <Int 0
 
-  rule <k> transfer(To, Value) => true ...</k>
+  rule <k> transfer(To, Value) => ERCTrue ...</k>
        <caller> From </caller>
        <account>
          <id> From </id>
@@ -89,7 +95,7 @@ module ERC20
      andBool Value <=Int BalanceFrom
      andBool BalanceTo +Int Value <=Int MAXVALUE
 
-  rule <k> transfer(From, Value) => true ...</k>
+  rule <k> transfer(From, Value) => ERCTrue ...</k>
        <caller> From </caller>
        <id> From </id>
        <balance> BalanceFrom </balance>
@@ -119,7 +125,7 @@ module ERC20
     requires Value <Int 0
       orBool Value >Int BalanceFrom
 
-  rule <k> transferFrom(From, To, Value) => true ...</k>
+  rule <k> transferFrom(From, To, Value) => ERCTrue ...</k>
        <caller> Caller </caller>
        <owner> From </owner>
        <spender> Caller </spender>
@@ -139,7 +145,7 @@ module ERC20
      andBool Value <=Int Allowance   // `transfer` does not check allowance
      andBool BalanceTo +Int Value <=Int MAXVALUE
 
-  rule <k> transferFrom(From, From, Value) => true ...</k>
+  rule <k> transferFrom(From, From, Value) => ERCTrue ...</k>
        <caller> Caller </caller>
        <owner> From </owner>
        <spender> Caller </spender>
@@ -186,18 +192,17 @@ module ERC20
    with the ERC20-K configuration.  Such statements would not be
    possible/allowed in a normal programming language for smart contracts. */
 
-  syntax Tm
   syntax Def ::= Def ";" [strict]
-               | "makeAccount" "(" Tm "," Tm")"         [prefer, strict]
-               | "makeAllowance" "(" Tm "," Tm ")"      [prefer, strict]
-               | "makeTotalSupply" "(" Tm ")"           [prefer, strict]
-               | "makeCaller" "(" Tm ")"                [prefer, strict]
-               | "makeBalance" "(" Tm ")"               [prefer, strict]
+               | "makeAccount" "(" TmDef "," TmDef")"         [prefer, strict]
+               | "makeAllowance" "(" TmDef "," TmDef ")"      [prefer, strict]
+               | "makeTotalSupply" "(" TmDef ")"           [prefer, strict]
+               | "makeCaller" "(" TmDef ")"                [prefer, strict]
+               | "makeBalance" "(" TmDef ")"               [prefer, strict]
                | "makeThrowAsPrintTrue"                 [prefer]
                | "makeThrowAsPrintFalse"                [prefer]
                | "makePrintStringsTrue"                 [prefer]
                | "makePrintStringsFalse"                [prefer]
 
-  syntax KResult ::= Bool
+  syntax KResult ::= ERCBool
 
 endmodule
