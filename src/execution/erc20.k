@@ -17,13 +17,13 @@ module ERC20
 
   syntax Def ::= Value | Address
                 | "totalSupply" "(" ")"
-                | "balanceOf" "(" TmDef ")"                       [strict]
-                | "allowance" "(" TmDef "," TmDef ")"              [strict]
+                | "balanceOf" "(" TmDef ")"                         [strict]
+                | "allowance" "(" TmDef "," TmDef ")"               [strict]
   syntax Def ::= ERCBool
-                | "approve" "(" TmDef "," TmDef ")"                [strict]
-                | "transfer" "(" TmDef "," TmDef ")"               [strict]
+                | "approve" "(" TmDef "," TmDef ")"                 [strict]
+                | "transfer" "(" TmDef "," TmDef ")"                [strict]
                 | "transferFrom" "(" TmDef "," TmDef "," TmDef ")"  [strict]
-                | "throw"
+                | "throw"                                           [prefer]
   syntax Event ::= "Transfer" "(" Address "," Address "," Value ")"
                  | "Approval" "(" Address "," Address "," Value ")"
   syntax EventLog ::= "Events:"

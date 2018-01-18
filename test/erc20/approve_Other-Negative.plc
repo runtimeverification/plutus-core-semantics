@@ -1,0 +1,13 @@
+(program
+
+(module Foo (imported) (exported () ()) (local () ())
+
+  test.preamble()
+
+  // Testing allowance(Owner,Spender) when Owner = Spender = caller.
+
+  test.approve(3, -1);
+
+)
+
+)
