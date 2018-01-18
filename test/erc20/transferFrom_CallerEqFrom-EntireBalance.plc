@@ -1,0 +1,15 @@
+(program
+
+(module Foo (imported) (exported () ()) (local () ())
+
+  test.preamble()
+
+  // Testing transferFrom(From,To,Value) when From = caller.
+  // Entire balance allowed and transfered.
+
+  test.approve(Foo.caller, 70);
+  test.transferFrom(7, 4, 70);  // balance of caller is 70
+
+)
+
+)
