@@ -1,3 +1,6 @@
 src/plutus-core-kompiled
 plutus-core-kompiled
 src/tmp.txt
+test/erc20/diff.sh
+test/erc20/README.md
+test/erc20/config.xml
