@@ -1,0 +1,9 @@
+(program
+
+(module Foo (imported) (exported () ()) (local () ())
+
+  test.preamble()
+
+)
+
+)
