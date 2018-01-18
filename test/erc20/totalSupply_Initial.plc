@@ -1,0 +1,13 @@
+(program
+
+(module Foo (imported) (exported () ()) (local () ())
+
+  test.preamble()
+
+  // Testing totalSupply() on initial configuration
+
+  test.totalSupply();
+
+)
+
+)

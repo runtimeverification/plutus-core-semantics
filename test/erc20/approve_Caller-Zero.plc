@@ -4,7 +4,8 @@
 
   test.preamble()
 
-  // Testing allowance(Owner,Spender) when Owner = Spender = caller.
+  // Testing approve(Spender,Allowance) when Spender = caller and Allowance = 0.
+  // Might be useful in order to throw when transferring to yourself.
 
   test.approve(Foo.caller, 0);
 

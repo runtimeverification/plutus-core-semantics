@@ -292,6 +292,7 @@ module PLUTUS-CORE-EXECUTION
   rule test.makeBalance(Value:TmDef) => out(makeBalance(Value))
   rule test.makeCaller(Id:TmDef) => out(makeCaller(Id))
   rule test.makeTotalSupply(Value:TmDef) => out(makeTotalSupply(Value))
+  rule test.totalSupply() => out(totalSupply())
   rule test.balanceOf(Id:TmDef) => out(balanceOf(Id))
   rule test.allowance(Owner, Spender) => out(allowance(Owner, Spender))
   rule test.approve(Spender, Allowance) => out(approve(Spender, Allowance))
