@@ -1,0 +1,509 @@
+<PLUTUS>
+  <ERC20>
+    <caller> 9 </caller>
+    <k> . </k>
+    <accounts>
+      <account>
+        <id> 1 </id>
+        <balance> 10 </balance>
+      </account>
+      <account>
+        <id> 2 </id>
+        <balance> 20 </balance>
+      </account>
+      <account>
+        <id> 3 </id>
+        <balance> 30 </balance>
+      </account>
+      <account>
+        <id> 4 </id>
+        <balance> 40 </balance>
+      </account>
+      <account>
+        <id> 5 </id>
+        <balance> 50 </balance>
+      </account>
+      <account>
+        <id> 6 </id>
+        <balance> 60 </balance>
+      </account>
+      <account>
+        <id> 7 </id>
+        <balance> 70 </balance>
+      </account>
+      <account>
+        <id> 8 </id>
+        <balance> 80 </balance>
+      </account>
+      <account>
+        <id> 9 </id>
+        <balance> 90 </balance>
+      </account>
+      <account>
+        <id> 10 </id>
+        <balance> 100 </balance>
+      </account>
+    </accounts>
+    <allowances>
+      <allowance>
+        <owner> 1 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+      <allowance>
+        <owner> 2 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+      <allowance>
+        <owner> 3 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+      <allowance>
+        <owner> 4 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+      <allowance>
+        <owner> 5 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+      <allowance>
+        <owner> 6 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+      <allowance>
+        <owner> 7 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 69 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+      <allowance>
+        <owner> 8 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+      <allowance>
+        <owner> 9 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+      <allowance>
+        <owner> 10 </owner>
+        <spenders>
+          <allow>
+            <spender> 1 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 2 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 3 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 4 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 5 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 6 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 7 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 8 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 9 </spender>
+            <amount> 0 </amount>
+          </allow>
+          <allow>
+            <spender> 10 </spender>
+            <amount> 0 </amount>
+          </allow>
+        </spenders>
+      </allowance>
+    </allowances>
+    <log> Events:  Approval ( 7 , 9 , 69 ) </log>
+    <supply> 550 </supply>
+  </ERC20>
+  <lenv> .Map </lenv>
+  <genv> ( Foo . caller ) |-> 7 </genv>
+  <mod> Foo </mod>
+  <in> .List </in>
+  <out> ListItem ( ERCTrue ) ListItem ( ERCTrue ) ListItem ( "THROW\n" ) ListItem ( ERCFalse ) </out>
+  <throwAsPrint> ERCTrue </throwAsPrint>
+  <printStrings> ERCTrue </printStrings>
+</PLUTUS>
