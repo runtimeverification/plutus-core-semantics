@@ -250,6 +250,7 @@ module PLUTUS-CORE-EXECUTION
     (declare caller integer)
     (define caller 7)
     makeCaller((#stringToModName("Foo") . caller):QualN);
+    makeThrowAsPrintTrue;
 
   rule test.allowances(I:Int) =>
 
@@ -279,7 +280,7 @@ module PLUTUS-CORE-EXECUTION
   rule <k> makeBalance(I:Int) => ERCTrue ...</k> <caller> Owner </caller> <id> Owner </id> <balance> _ => I </balance>
   rule <k> makeThrowAsPrintTrue  => ERCTrue ...</k> <throwAsPrint> _ => ERCTrue </throwAsPrint>
   rule <k> makeThrowAsPrintFalse => ERCTrue ...</k> <throwAsPrint> _ => ERCFalse </throwAsPrint>
-//  rule <k> throw => false ...</k> <throwAsPrint> true </throwAsPrint> <out>... .List => ListItem("THROW\n") </out>
+  rule <k> throw => ERCFalse ...</k> <throwAsPrint> ERCTrue </throwAsPrint> <out>... .List => ListItem("THROW\n") </out>
   rule <k> makePrintStringsTrue  => ERCTrue ...</k> <printStrings> _ => ERCTrue  </printStrings>
   rule <k> makePrintStringsFalse => ERCTrue ...</k> <printStrings> _ => ERCFalse </printStrings>
 
