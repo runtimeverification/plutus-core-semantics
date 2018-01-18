@@ -4,7 +4,7 @@
 
   test.preamble()
 
-  // Testing allowance(Owner,Spender) when Owner = Spender = caller.
+  // Testing allowance after switching caller and approving new allowance.
 
   test.allowance(9, 7);   // check current allowance of 9 for 7 is 0
   test.makeCaller(9);     // switch caller to 9

@@ -179,6 +179,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Def ::= "test.makeBalance" "(" TmDef ")" [prefer, strict]
                | "test.makeCaller" "(" TmDef ")" [prefer, strict]
                | "test.makeTotalSupply" "(" TmDef ")" [prefer, strict]
+               | "test.totalSupply" "(" ")" [prefer, strict]               
                | "test.balanceOf" "(" TmDef ")" [prefer, strict]
                | "test.allowance" "(" TmDef "," TmDef ")" [prefer, strict]
                | "test.approve" "(" TmDef "," TmDef ")" [prefer, strict]
