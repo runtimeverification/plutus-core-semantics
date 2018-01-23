@@ -1,1 +1,1 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . bs7 ) |-> #0 ( Foo . bs5 ) |-> #11 ( Foo . bs6 ) |-> #93E2 ( Foo . bs3 ) |-> #F ( Foo . bs4 ) |-> #10 ( Foo . bs1 ) |-> #468 ( Foo . bs2 ) |-> #9 </genv> <mod> Foo </mod> <sym> .Map </sym> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . bs7 ) |-> #0 ( Foo . bs5 ) |-> #11 ( Foo . bs6 ) |-> #93E2 ( Foo . bs3 ) |-> #F ( Foo . bs4 ) |-> #10 ( Foo . bs1 ) |-> #468 ( Foo . bs2 ) |-> #9 </genv> <mod> Foo </mod> </T>

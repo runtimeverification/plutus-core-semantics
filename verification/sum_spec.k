@@ -4,11 +4,11 @@ module SUM-SPEC
   // Proof that 1 + ... + n = n(n+1)/2
   
   rule
-    <k> (define result [#stringToModName("Foo") . sum N:Int 0]):Def => .K ... </k>
+    <k> (define result [(#stringToModName("Foo") . sum):QualN N:Int 0]):Def => .K ... </k>
     <lenv> _ => .Map </lenv>
-    <genv> E GENV => E GENV (MN . result) |-> ((N +Int 1) *Int N /Int 2) </genv>
+    <genv> E GENV => E GENV (MN . result):QualN |-> ((N +Int 1) *Int N /Int 2) </genv>
     <mod> MN:ModName </mod>
-    when notBool ((MN . result) in keys(E GENV)) andBool notBool ((#stringToModName("Foo") . sum):QualN in keys(E))
+    when notBool ((MN . result):QualN in keys(E GENV)) andBool notBool ((#stringToModName("Foo") . sum):QualN in keys(E))
          andBool N >=Int 0
 
   rule
@@ -16,5 +16,6 @@ module SUM-SPEC
     <lenv> ... n |-> N:Int s |-> S:Int ... </lenv>
     <genv> E GENV:Map </genv>
     <mod> MN:ModName </mod>
+    when N >Int 0
 
 endmodule

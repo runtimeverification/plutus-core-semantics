@@ -1,1 +1,1 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . b1 ) |-> #ABCDEF ( Foo . b2 ) |-> #ABBB ( Foo . b3 ) |-> #123456 </genv> <mod> Foo </mod> <sym> .Map </sym> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . b1 ) |-> #ABCDEF ( Foo . b2 ) |-> #ABBB ( Foo . b3 ) |-> #123456 </genv> <mod> Foo </mod> </T>

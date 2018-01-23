@@ -10,7 +10,7 @@ module ID-SPEC
           X
       ]
       =>
-      (con (#stringToModName("Prelude") . #stringToCon("True")) .ValList)
+      (con (#stringToModName("Prelude") . #stringToCon("True")):QualC .ValList)
       ...
     </k>
     <genv> E GENV </genv>

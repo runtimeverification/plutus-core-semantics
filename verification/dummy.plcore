@@ -1,1 +1,1 @@
-(module Foo (imported) (exported () ()) (local () ()))
+(program (module Foo (imported) (exported () ()) (local () ())))

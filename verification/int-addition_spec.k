@@ -5,11 +5,11 @@ module INT-ADDITION-SPEC
   rule
     <k> (define result (builtin addInt X:Int Y:Int)):Def => .K ... </k>
     <lenv> _ => .Map </lenv>
-    <genv> E => E (MN . result) |-> X +Int Y </genv>
+    <genv> E => E (MN . result):QualN |-> X +Int Y </genv>
       // must name E rather than using ... here,
       // so we can write the frame condition that Foo.result hasn't
       // already been defined.
     <mod> MN:ModName </mod>
-    when notBool ((MN . result) in keys(E))
+    when notBool ((MN . result):QualN in keys(E))
 
 endmodule

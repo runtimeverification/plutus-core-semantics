@@ -1,0 +1,27 @@
+(program
+(module Foo
+    (imported)
+    (exported () ())
+    (local () ())
+
+
+    //
+    // Either Tools
+    //
+    
+    (data Either ((a (type)) (b (type)))
+          (Left a)
+          (Right b))
+    
+    
+    (declare either
+      (forall a (type) (forall b (type) (forall c (type)
+        (fun (fun a c)
+             (fun (fun b c)
+                  (fun (con Foo.Either a b) c)))))))
+    (define either
+      (abs a (abs b (abs c
+        (lam f (lam g (lam e
+          (case e
+            (Foo.Left (x) [f x])
+            (Foo.Right (y) [g y])))))))))))

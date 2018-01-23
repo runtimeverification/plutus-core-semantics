@@ -1,0 +1,4 @@
+(program
+(module Foo (imported) (exported () ()) (local () ())
+  (declare f (fun (integer) (integer)))
+  (define f (lam x x))))

@@ -1,1 +1,1 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> 90 </genv> <mod> Foo </mod> <sym> .Map </sym> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> 90 </genv> <mod> Foo </mod> </T>

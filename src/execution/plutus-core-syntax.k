@@ -8,23 +8,25 @@ module PLUTUS-CORE-SYNTAX
 
   // Name.
   syntax Name    ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
+  syntax TyName  ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
+
+  // CompBuiltin.
+  syntax CBName  ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
   // Module name.
   syntax ModName ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
-                   | ".ModName"
                    | #stringToModName(String)                        [function]
+                   | ".ModName"
 
   // Constructor name.
   syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
                    | #stringToCon(String)                            [function]
 
+  syntax TyCon   ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+
   // Integer literal.
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
   // expression as that in the Plutus Core specification.
-
-  /* TODO: Add hook to ensure floats are always of the correct format */
-  syntax PlFloat ::= r"[\\+\\-]?[0-9]+(\\.[0-9]+(([eE][+-]?[0-9]+)?|([eE][+-]?[0-9])+))" [token]
-  syntax Float   ::= #toFloat(PlFloat)                                [function]
 
   // Exponent.
   syntax Exp     ::= r"[eE][+-]?[0-9]+"                                 [token]
@@ -38,9 +40,12 @@ module PLUTUS-CORE-SYNTAX
   // Arity.
   syntax Arity   ::= r"[0-9]+"                                          [token]
 
+  // TODO: Make sure preferring Var over TyVar is ok.
   // Variable.
   syntax Var     ::= r"[a-z][a-zA-Z0-9\\_']*"                           [token]
-                   | symInt(Var)                                       [prefer]
+
+  // Type Variable.
+  syntax TyVar     ::= r"[a-z][a-zA-Z0-9\\_']*"                  [token, avoid]
 
   /***************************************************************************/
   /*****************************   GRAMMAR   *********************************/
@@ -48,24 +53,38 @@ module PLUTUS-CORE-SYNTAX
 
   // Qualified name and constructor.
   syntax QualN      ::= ModName "." Name
+  syntax QualTyN    ::= ModName "." TyName
   syntax QualC      ::= ModName "." Con
+  syntax QualTyC    ::= ModName "." TyCon
 
   syntax NameList   ::= List{Name, ""}
   syntax TmList     ::= List{Tm, ""}                           [klabel(tmList)]
+  syntax TyList     ::= List{Ty, ""}                           [klabel(tyList)]
+  syntax AltList    ::= List{Alt, ""}                         [klabel(altList)]
+  syntax KiList     ::= List{Ki, ""}                           [klabel(kiList)]
+  syntax KSigList   ::= List{KSig, ""}                       [klabel(ksigList)]
   syntax ValList    ::= List{Val, ""}                         [klabel(valList)]
   syntax VarList    ::= List{Var, ""}                         [klabel(varList)]
+  syntax TyVarList  ::= List{TyVar, ""}                     [klabel(tyvarList)]
   syntax QualCList  ::= List{QualC  ,  ""}
 
-  syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
+  // syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
+  syntax DecList    ::= List{Dec, ""}
 
-  syntax ModList    ::= List{ModName , ""}
-  syntax ClList     ::= List{Cl     ,  ""}
+  syntax ModList    ::= List{Mod, ""}                         [klabel(modList)]
+  syntax ClList     ::= List{Cl ,  ""}                         [klabel(clList)]
 
   syntax ConArity   ::= "(" Con Arity ")"
   syntax CAList     ::= List{ConArity, ""}
 
+  // TODO: current spec still has floats?
+
   syntax Tm         ::= Var
                       | QualN
+                      | "(" "isa" Tm Ty ")"
+                      | "(" "abs" Var Tm ")"
+                      | "(" "inst" Tm Ty ")"
+                      // TODO: remove let?
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
                         // Application.
                       | "[" Tm TmList "]"                           [strict(1)]
@@ -76,20 +95,41 @@ module PLUTUS-CORE-SYNTAX
                                                             [strict(2), prefer]
                       | "(" "builtin" Name Tm Tm ")"
                                                                  [strict(2, 3)]
+                      | "(" "compbuiltin" CBName ")"
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
-                      | #tmHolder(Float)
                       | "(" "lam" VarList Tm ")"                       [binder]
 
+  syntax Ki         ::= "(" "type" ")"
+                      | "(" "fun" Ki Ki ")"
+
+  syntax Ty         ::= TyVar
+                      | "(" "fun" Ty Ty ")"
+                      | "(" "con" QualTyC TyList ")"
+                      | "(" "comp" Ty ")"
+                      | "(" "forall" TyVar Ki Ty ")"
+                      | "(bytestring)"
+                      | "(integer)"
+                      | "(" "lam" TyVar Ki Ty ")"
+                      | TyApp
+
+  syntax TyApp      ::= "[" Ty TyList "]"
+
   // Case clause.
-  syntax Cl         ::= "(" "cl" QualC "(" VarList ")" Tm ")"
+  syntax Cl         ::= "(" QualC "(" VarList ")" Tm ")"
+
+  // Kind signature.
+  syntax KSig       ::= "(" TyVar Ki ")"
+
+  // Alternative.
+  syntax Alt        ::= "(" Con TyList ")"
 
   // Program.
   syntax Prg        ::= "(" "program" ModList ")"
 
   // Module.
-  syntax Mod        ::= "(" "module" ModName ImpD ExpD LocD DefList ")"
+  syntax Mod        ::= "(" "module" ModName ImpD ExpD LocD DecList ")"
 
   // Import declarations.
   syntax ImpD       ::= "(" "imported" ModList ")"
@@ -98,27 +138,31 @@ module PLUTUS-CORE-SYNTAX
   syntax ExpD       ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
   syntax LocD       ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
 
+  syntax Dec        ::= Def
+                      | TDec
+                      | MDec
+                      | DDec
+
   syntax Def        ::= "(" "define" Name Tm ")"                    [strict(2)]
 
-  syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
-                      | InstrVal
-                      | Int
-                      | PlFloat
-                      | ByStr
+  syntax TDec       ::= "(" "type" Name Ty ")"
 
-  syntax InstrVal   ::= "(" "failure" ")"
-                      | "(" "txhash"  ")"
-                      | "(" "blocknum" ")"
-                      | "(" "blocktime" ")"
+  syntax DDec       ::= "(" "data" TyCon "(" KSigList ")" AltList ")"
+
+  // Type annotations for terms. Missing from prelude?
+  syntax MDec       ::= "(" "declare" Name Ty ")"
+
+  syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
+                      | "(" "failure" ")"
                       | "(" "success" Val ")"         [prefer, klabel(succVal)]
                       | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
+                      | Int
+                      | ByStr
 
   syntax KResult    ::= Val
-  syntax KVariable  ::= Var
+  syntax KVariable  ::= Var | TyVar
 
   syntax String     ::= #toStringVerbatim(ByStr)   [ function
-                                                   , hook(STRING.token2string)]
-                      | #toStringFloat(PlFloat)    [ function
                                                    , hook(STRING.token2string)]
                       | #toString(ByStr)                             [function]
 

@@ -1,7 +1,11 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
-(define b1 (builtin drop 1 #123456))
+(define b1 (builtin dropByteString 1 #123456))
 
-(define b2 (builtin drop 2 #123456))
+(define b2 (builtin dropByteString 2 #123456))
 
-(define b3 (builtin drop 3 #123456))
+(define b3 (builtin dropByteString 3 #123456))
+)
+
 )

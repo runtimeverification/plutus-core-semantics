@@ -1,1 +1,0 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . f1 ) |-> 3 ( Foo . f2 ) |-> 2 ( Foo . f3 ) |-> 0 </genv> <mod> Foo </mod> <sym> .Map </sym> </T>

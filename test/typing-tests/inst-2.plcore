@@ -1,0 +1,7 @@
+(program
+(module Foo (imported) (exported () ()) (local () ())
+  (declare id (forall a (type) (fun a a)))
+  (define id (abs a (lam x x)))
+  (declare result (fun (integer) (fun (integer) (integer))))
+  (define result
+    (lam x y [(inst Foo.id (integer)) (builtin subtractInteger x y)]))))

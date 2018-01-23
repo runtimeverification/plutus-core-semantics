@@ -1,14 +1,24 @@
-plutus-core-kompiled: src/plutus-core.k src/plutus-core-syntax.k src/plutus-core-execution.k
-	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/plutus-core.k
-	touch plutus-core-kompiled # workaround for kompile not updating mtime
-# reported as https://github.com/kframework/k/issues/2327
+typing: src/typing/plutus-core.k src/typing/plutus-core-syntax.k src/typing/plutus-core-typing.k
+	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/typing/plutus-core.k
+	touch plutus-core-kompiled
+	cp -r plutus-core-kompiled src/typing
+	rm -rf plutus-core-kompiled
+# workaround for kompile not updating mtime, reported as https://github.com/kframework/k/issues/2327
 
-test: plutus-core-kompiled
+exec: src/execution/plutus-core.k src/execution/plutus-core-syntax.k src/execution/plutus-core-execution.k
+	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/execution/plutus-core.k
+	touch plutus-core-kompiled
+	cp -r plutus-core-kompiled src/execution
+	rm -rf plutus-core-kompiled
+
+test: exec
 	cd test && ./test_all.sh
-verify: plutus-core-kompiled
+
+verify: exec
 	cd verification && ./verify_all.sh
 
 clean:
-	rm -rf plutus-core-kompiled
+	rm -rf src/typing/plutus-core-kompiled
+	rm -rf src/execution/plutus-core-kompiled
 
 .PHONY: test clean

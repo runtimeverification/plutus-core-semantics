@@ -1,4 +1,8 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
 (define result
-  (let 2 x (builtin addInt x x)))
+  (let 2 x (builtin addInteger x x)))
+)
+
 )

@@ -1,0 +1,31 @@
+(program
+(module Foo
+    (imported)
+    (exported () ())
+    (local () ())
+
+
+    //
+    // List Tools
+    //
+    
+    (data List ((a (type)))
+          (Nil)
+          (Cons a (con Foo.List a)))
+
+
+    (declare append
+      (forall a (type)
+        (fun (con Foo.List a)
+             (fun (con Foo.List a)
+                  (con Foo.List a)))))
+    (define append
+      (abs a
+        (lam xs (lam ys
+          (case xs
+            (Foo.Nil () ys)
+            (Foo.Cons (x xs')
+              (isa (con Foo.Cons
+                     x
+                     [(inst Foo.append a) xs' ys])
+                   (con Foo.List a))))))))))

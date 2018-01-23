@@ -1,1 +1,1 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . c3 ) |-> ( con Prelude . True .ValList ) ( Foo . c4 ) |-> ( con Prelude . False .ValList ) ( Foo . c1 ) |-> ( con Prelude . True .ValList ) ( Foo . c2 ) |-> ( con Prelude . False .ValList ) </genv> <mod> Foo </mod> <sym> .Map </sym> </T>
+<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . c1 ) |-> ( con Prelude . True .ValList ) ( Foo . c2 ) |-> ( con Prelude . False .ValList ) </genv> <mod> Foo </mod> </T>

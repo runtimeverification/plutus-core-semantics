@@ -1,0 +1,7 @@
+(program
+(module Foo (imported) (exported () ()) (local () ())
+  (declare id (forall a (type) (fun a a)))
+  (define id (abs a (lam x x)))
+  (declare result (fun (bytestring) (bytestring)))
+  (define result
+    (lam x (builtin takeByteString [[(inst Foo.id (fun (integer) (integer))) (lam y y)] 3] x)))))

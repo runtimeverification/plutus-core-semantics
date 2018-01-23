@@ -1,0 +1,9 @@
+(program
+(module Foo (imported) (exported () ()) (local () ())
+  (data Bool () (True) (False))
+  (declare result (fun (con Foo.Bool) (con Foo.Bool)))
+  (define result
+    (lam x
+      (case x
+        (Foo.True  () (con Foo.False))
+        (Foo.False () (con Foo.True)))))))

@@ -1,0 +1,25 @@
+(program
+(module Foo
+    (imported)
+    (exported () ())
+    (local () ())
+
+
+    //
+    // Maybe Tools
+    //
+    
+    (data Maybe ((a (type)))
+          (Nothing)
+          (Just a))
+    
+    
+    (declare maybe
+      (forall a (type) (forall b (type)
+        (fun b (fun (fun a b) (fun (con Foo.Maybe a) b))))))
+    (define maybe
+      (abs a (abs b
+        (lam n (lam j (lam m
+          (case m
+            (Foo.Nothing () n)
+            (Foo.Just (x) [j x]))))))))))

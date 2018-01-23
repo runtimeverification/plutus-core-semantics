@@ -8,28 +8,29 @@ module PLUTUS-CORE-EXECUTION
 
   configuration
     <T>
-      <k> $PGM:Mod </k>
+      <k> $PGM:Prg </k>
       <lenv> .Map </lenv>
       <genv> .Map </genv>
       <mod> .ModName </mod>
-      <sym> .Map </sym>
     </T>
 
   /***************************************************************************/
   /***********************  BUILT-IN REDUCTIONS   ****************************/
   /***************************************************************************/
 
-  rule ( builtin addInt:Name       I1:Int I2:Int ) => I1 +Int I2
-  rule ( builtin subtractInt:Name  I1:Int I2:Int ) => I1 -Int I2
-  rule ( builtin multiplyInt:Name  I1:Int I2:Int ) => I1 *Int I2
-  rule ( builtin divideInt:Name    I1:Int I2:Int ) => I1 /Int I2
-                                                        when I2 =/=Int 0
-  rule ( builtin remainderInt:Name I1:Int I2:Int ) => I1 %Int I2
-                                                        when I2 =/=Int 0
+  rule ( builtin addInteger:Name       I1:Int I2:Int ) => I1 +Int I2
+  rule ( builtin subtractInteger:Name  I1:Int I2:Int ) => I1 -Int I2
+  rule ( builtin multiplyInteger:Name  I1:Int I2:Int ) => I1 *Int I2
+  rule ( builtin divideInteger:Name    I1:Int I2:Int ) => I1 /Int I2
+    when I2 =/=Int 0
+  rule ( builtin remainderInteger:Name I1:Int I2:Int ) => I1 %Int I2
+    when I2 =/=Int 0
+
+  // TODO: define semantics for compbuiltin.
 
   syntax Tm ::= #conHolder(K, K)
               | #qualCHolder(K, K)
-  rule #conHolder(MN, C) => ( con (MN . C) .ValList )
+  rule #conHolder(MN, C) => ( con (MN . C):QualC .ValList )
 
   rule #stringToModName(S:String)
     => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
@@ -41,50 +42,23 @@ module PLUTUS-CORE-EXECUTION
   rule #primFalse
     => #conHolder(#stringToModName("Prelude"), #stringToCon("False"))
 
-  rule ( builtin equalsInt:Name I:Int I:Int     ) => #primTrue [transition]
-  rule ( builtin equalsInt:Name I1:Int I2:Int   ) => #primFalse
-                                                       when I1 =/=Int I2
-                                                       [transition]
-  rule ( builtin lessThanInt:Name I1:Int I2:Int ) => #primTrue
-                                                       when I1 <Int I2
-  rule ( builtin lessThanInt:Name I1:Int I2:Int )
-    => #primFalse when notBool (I1 <Int I2)
+  rule ( builtin equalsInteger:Name I:Int I:Int        ) => #primTrue
+    [transition]
+  rule ( builtin equalsInteger:Name I1:Int I2:Int      ) => #primFalse
+    when I1 =/=Int I2
+    [transition]
+  rule ( builtin lessThanInteger:Name I1:Int I2:Int    ) => #primTrue
+    when I1 <Int I2
+  rule ( builtin lessThanInteger:Name I1:Int I2:Int    ) => #primFalse
+    when notBool (I1 <Int I2)
+  rule ( builtin greaterThanInteger:Name I1:Int I2:Int ) => #primTrue
+    when I1 >Int I2
+  rule ( builtin greaterThanInteger:Name I1:Int I2:Int ) => #primFalse
+    when notBool (I1 >Int I2)
 
-  // TODO: Figure out _why_ 53 and 11.
-  rule ( builtin intToFloat:Name   I:Int ) => #toPlFloat(Int2Float(I, 53, 11))
-
-  rule ( builtin intToByteString:Name 0 )    => #toByStr("0")
-  rule ( builtin intToByteString:Name I:Int) => #toByStr(#toHex(I))
+  rule ( builtin integerToByteString:Name 0 )    => #toByStr("0")
+  rule ( builtin integerToByteString:Name I:Int) => #toByStr(#toHex(I))
     when I =/=Int 0
-
-  rule ( builtin addFloat:Name      F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) +Float #toFloat(F2))
-  rule ( builtin subtractFloat:Name F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) -Float #toFloat(F2))
-  rule ( builtin multiplyFloat:Name F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) *Float #toFloat(F2))
-  rule ( builtin divideFloat:Name   F1:PlFloat F2:PlFloat )
-    => #toPlFloat(#toFloat(F1) /Float #toFloat(F2))
-  rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
-    => #primTrue when #toFloat(F1) <Float #toFloat(F2)
-  rule ( builtin lessThanFloat:Name F1:PlFloat F2:PlFloat )
-    => #primFalse when notBool (#toFloat(F1) <Float #toFloat(F2))
-  rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
-    => #primTrue when #toFloat(F1) ==Float #toFloat(F2)
-  rule ( builtin equalsFloat:Name   F1:PlFloat F2:PlFloat )
-    => #primFalse when #toFloat(F1) =/=Float #toFloat(F2)
-
-
-  rule ( builtin ceil:Name  F:PlFloat ) => #toPlFloat(ceilFloat(#toFloat(F)))
-  rule ( builtin floor:Name F:PlFloat ) => #toPlFloat(floorFloat(#toFloat(F)))
-  rule ( builtin round:Name F:PlFloat )
-    => Float2Int(roundFloat(#toFloat(F), 2, 2))
-
-  syntax PlFloat ::= #toPlFloat(Float)                                [function]
-  rule #toPlFloat(F:Float)
-    => #parseToken("PlFloat@PLUTUS-CORE-SYNTAX", Float2String(F))
-  rule #toFloat(F:PlFloat)
-    => #parseToken("Float@FLOAT-SYNTAX", #toStringFloat(F))
 
   syntax ByStr ::= #toByStr ( String )                                [function]
   rule #toByStr(S:String)
@@ -93,10 +67,10 @@ module PLUTUS-CORE-EXECUTION
   rule #toString(B:ByStr):String
     => substrString(#toStringVerbatim(B), 1, lengthString(#toStringVerbatim(B)))
 
-  rule ( builtin take:Name N:Int B:ByStr )
+  rule ( builtin takeByteString:Name N:Int B:ByStr )
     => #toByStr(substrString(#toString(B), 0, N))
 
-  rule ( builtin drop:Name N:Int B:ByStr )
+  rule ( builtin dropByteString:Name N:Int B:ByStr )
     => #toByStr(substrString(#toString(B), N, lengthString(#toString(B))))
 
   rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
@@ -105,10 +79,11 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
   rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
-  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primTrue
-    when #toString(B1) ==String #toString(B2)
-  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr ) => #primFalse
-    when #toString(B1) =/=String #toString(B2)
+  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+    => #primTrue when #toString(B1) ==String #toString(B2)
+
+  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+    => #primFalse when #toString(B1) =/=String #toString(B2)
 
   /***************************************************************************/
   /************************   LOCAL REDUCTIONS   *****************************/
@@ -154,8 +129,19 @@ module PLUTUS-CORE-EXECUTION
   // Desugar let expression to lambda expression
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
 
+  // Process modules in order
+  rule (program M:Mod ML:ModList) => M ~> ML:ModList
+  rule .ModList => .K
+
   // Process the definitions in order.
-  rule D:Def DS:DefList => D ~> DS
+  rule D:Dec DS:DecList => D ~> DS
+
+  // Ignoring typing stuff
+  rule ( declare N:Name T:Ty ) => .K
+  rule ( data C:TyCon ( KSL:KSigList ) AL:AltList ) => .K
+  rule ( isa M:Tm T:Ty ) => .K
+  rule ( abs V:Var M:Tm ):Tm => M
+  rule ( inst M:Tm T:Ty ) => .K
 
   rule
     <k> ( define N:Name V:Val ) => .K ... </k>
@@ -167,7 +153,7 @@ module PLUTUS-CORE-EXECUTION
 
   rule
     <k>
-      ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS )
+      ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS ) ...
     </k>
     <mod> CurrMN => MN </mod>
 
@@ -175,7 +161,7 @@ module PLUTUS-CORE-EXECUTION
     <k> QN:QualN => V ... </k>
     <genv> ... QN |-> V ... </genv>
 
-  rule (.DefList ~> _:ModF ) => .K
+  rule (.DecList ~> _:ModF ) => .K
 
   /***************************************************************************/
   /************************   PATTERN MATCHING   *****************************/
@@ -188,7 +174,7 @@ module PLUTUS-CORE-EXECUTION
   syntax Tm ::= "#ifTm" Bool "#then" Tm "#else" Tm "#fi"             [function]
 
   rule ( case ( con QC:QualC MS:ValList )
-              ( cl QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
+              ( QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
     => #ifTm (QC ==K QC') #then [ ( lam XS M ) #toTermList(MS) ]
                           #else ( case ( con QC:QualC MS:ValList ) CL )
        #fi
@@ -215,9 +201,4 @@ module PLUTUS-CORE-EXECUTION
 
   rule (success M):Tm => M ~> #freezeSucc()
   rule V:Val ~> #freezeSucc() => (success V):Val
-
-  rule
-    <k> symInt(X:Var) => ?V:Int ... </k>
-    <sym> ... .Map => X |-> ?V ... </sym>
-
 endmodule

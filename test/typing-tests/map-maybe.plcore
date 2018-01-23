@@ -1,0 +1,31 @@
+(program
+(module Foo
+    (imported)
+    (exported () ())
+    (local () ())
+
+
+    //
+    // Maybe Tools
+    //
+    
+    (data Maybe ((a (type)))
+          (Nothing)
+          (Just a))
+    
+    
+    (declare mapMaybe
+      (forall a (type) (forall b (type)
+        (fun (fun a b)
+             (fun (con Prelude.Maybe a)
+                  (con Prelude.Maybe b))))))
+    (define mapMaybe
+      (abs a (abs b
+        (lam f (lam m
+          (case m
+            (Prelude.Nothing ()
+              (isa (con Prelude.Nothing)
+                   (con Prelude.Maybe b)))
+            (Prelude.Just (x)
+              (isa (con Prelude.Just [f x])
+                   (con Prelude.Maybe b)))))))))))

@@ -1,3 +1,7 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
-(define result [ (lam f [f 12]) (lam x (builtin addInt x 8)) ])
+  (declare result integer)
+  (define result [ (lam f [f 12]) (lam x (builtin addInteger x 8)) ]))
+
 )

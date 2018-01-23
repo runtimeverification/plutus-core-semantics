@@ -1,9 +1,13 @@
+(program
+
 (module Foo (imported) (exported () ()) (local () ())
   (define result
     (case (con Nat.Pair (con Nat.Pair 1 2) (con Nat.Pair 3 4))
-          (cl Nat.NotThis ()  -1)
-          (cl Nat.Pair (p1 p2)
+          (Nat.NotThis ()  -1)
+          (Nat.Pair (p1 p2)
             (case p2
-              (cl Foo.NotThis (x) -2)
-              (cl Nat.Pair (x y) (builtin multiplyInt x y))
-              (cl Foo.NotThisEither (x) -2))))))
+              (Foo.NotThis (x) -2)
+              (Nat.Pair (x y) (builtin multiplyInteger x y))
+              (Foo.NotThisEither (x) -2))))))
+
+)
