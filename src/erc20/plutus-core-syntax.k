@@ -1,6 +1,9 @@
+require "erc20.k"
+
 module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
+  imports ERC20
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
@@ -57,7 +60,7 @@ module PLUTUS-CORE-SYNTAX
   syntax QualC      ::= ModName "." Con
   syntax QualTyC    ::= ModName "." TyCon
 
-  syntax NameList   ::= List{Name, ""}
+  syntax NameList   ::= List{Name, ""}                       [klabel(nameList)]
   syntax TmList     ::= List{Tm, ""}                           [klabel(tmList)]
   syntax TyList     ::= List{Ty, ""}                           [klabel(tyList)]
   syntax AltList    ::= List{Alt, ""}                         [klabel(altList)]
@@ -69,7 +72,7 @@ module PLUTUS-CORE-SYNTAX
   syntax QualCList  ::= List{QualC  ,  ""}
 
   // syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
-  syntax DecList    ::= List{Dec, ""}
+  syntax DecList    ::= List{Dec, ""}                         [klabel(decList)]
 
   syntax ModList    ::= List{Mod, ""}                         [klabel(modList)]
   syntax ClList     ::= List{Cl ,  ""}                         [klabel(clList)]
@@ -165,5 +168,22 @@ module PLUTUS-CORE-SYNTAX
   syntax String     ::= #toStringVerbatim(ByStr)   [ function
                                                    , hook(STRING.token2string)]
                       | #toString(ByStr)                             [function]
+
+  /***************************************************************************/
+  /**************************   ERC 20 SYNTAX   ******************************/
+  /***************************************************************************/
+
+  syntax Dec ::= "test.preamble" "(" ")" [macro]
+               | "test.allowances" "(" Tm ")" [prefer, strict]
+
+  syntax Def ::= "test.makeBalance" "(" TmDef ")" [prefer, strict]
+               | "test.makeCaller" "(" TmDef ")" [prefer, strict]
+               | "test.makeTotalSupply" "(" TmDef ")" [prefer, strict]
+               | "test.totalSupply" "(" ")" [prefer, strict]               
+               | "test.balanceOf" "(" TmDef ")" [prefer, strict]
+               | "test.allowance" "(" TmDef "," TmDef ")" [prefer, strict]
+               | "test.approve" "(" TmDef "," TmDef ")" [prefer, strict]
+               | "test.transfer" "(" TmDef "," TmDef ")" [prefer, strict]
+               | "test.transferFrom" "(" TmDef "," TmDef "," TmDef ")" [prefer, strict]
 
 endmodule
