@@ -192,16 +192,15 @@ module ERC20
    with the ERC20-K configuration.  Such statements would not be
    possible/allowed in a normal programming language for smart contracts. */
 
-  syntax Def ::= Def ";" [strict]
-               | "makeAccount" "(" TmDef "," TmDef")"         [prefer, strict]
-               | "makeAllowance" "(" TmDef "," TmDef ")"      [prefer, strict]
-               | "makeTotalSupply" "(" TmDef ")"           [prefer, strict]
-               | "makeCaller" "(" TmDef ")"                [prefer, strict]
-               | "makeBalance" "(" TmDef ")"               [prefer, strict]
-               | "makeThrowAsPrintTrue"                 [prefer]
-               | "makeThrowAsPrintFalse"                [prefer]
-               | "makePrintStringsTrue"                 [prefer]
-               | "makePrintStringsFalse"                [prefer]
+  syntax Def ::= "makeAccount" "(" TmDef "," TmDef")"          [prefer, strict]
+               | "makeAllowance" "(" TmDef "," TmDef ")"       [prefer, strict]
+               | "makeTotalSupply" "(" TmDef ")"               [prefer, strict]
+               | "makeCaller" "(" TmDef ")"                    [prefer, strict]
+               | "makeBalance" "(" TmDef ")"                   [prefer, strict]
+               | "makeThrowAsPrintTrue"                                [prefer]
+               | "makeThrowAsPrintFalse"                               [prefer]
+               | "makePrintStringsTrue"                                [prefer]
+               | "makePrintStringsFalse"                               [prefer]
 
   syntax Val ::= ERCBool
 

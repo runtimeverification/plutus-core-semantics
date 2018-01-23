@@ -6,7 +6,7 @@
 
   // Testing transfer(To,Value) when To != caller and Value < 0.
 
-  test.transfer(3, -1);
+  test.transfer(3, -1)
 
 )
 

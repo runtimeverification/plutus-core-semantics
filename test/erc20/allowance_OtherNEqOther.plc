@@ -6,7 +6,7 @@
 
   // Testing allowance(Owner,Spender) when Owner, Spender, caller are different.
 
-  test.allowance(9, 5);
+  test.allowance(9, 5)
 
 )
 

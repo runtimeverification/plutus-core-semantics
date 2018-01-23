@@ -6,7 +6,7 @@
 
   // Testing totalSupply() on initial configuration
 
-  test.totalSupply();
+  test.totalSupply()
 
 )
 
