@@ -503,7 +503,7 @@
   <genv> ( Foo . caller ) |-> 7 </genv>
   <mod> Foo </mod>
   <in> .List </in>
-  <out> ListItem ( ERCTrue ) ListItem ( 737 ) </out>
+  <out> ListItem ( 737 ) </out>
   <throwAsPrint> ERCTrue </throwAsPrint>
   <printStrings> ERCTrue </printStrings>
 </PLUTUS>

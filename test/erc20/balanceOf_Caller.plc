@@ -6,7 +6,7 @@
 
   // Testing balanceOf(Owner) when Owner is the caller.
 
-  test.balanceOf(Foo.caller);
+  test.balanceOf(Foo.caller)
 
 )
 

@@ -8,8 +8,8 @@
   // specifically lower than Value.  So the allowance is irrelevant for transfer.
   // The allowance is only relevant for transferFrom.
 
-  test.approve(Foo.caller, 20);   // set caller allowance for itself below 23
-  test.transfer(Foo.caller, 23);  // transfer 23 to itself, larger than allowance 20
+  test.approve(Foo.caller, 20)   // set caller allowance for itself below 23
+  test.transfer(Foo.caller, 23)  // transfer 23 to itself, larger than allowance 20
 
 )
 

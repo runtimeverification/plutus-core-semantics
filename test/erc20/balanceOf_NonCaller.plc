@@ -6,7 +6,7 @@
 
   // Testing balanceOf(Owner) when Owner is not the caller.
 
-  test.balanceOf(9);
+  test.balanceOf(9)
 
 )
 

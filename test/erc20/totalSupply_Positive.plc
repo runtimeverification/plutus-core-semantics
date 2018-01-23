@@ -6,8 +6,8 @@
 
   // Testing totalSupply() still works after changing it to a positive value.
 
-  test.makeTotalSupply(737);
-  test.totalSupply();
+  test.makeTotalSupply(737)
+  test.totalSupply()
 
 )
 
