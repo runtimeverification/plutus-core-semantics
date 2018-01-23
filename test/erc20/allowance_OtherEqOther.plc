@@ -4,7 +4,7 @@
 
   test.preamble()
 
-  // Testing allowance(Owner,Spender) when Spender = Owner != caller
+  ;; Testing allowance(Owner,Spender) when Spender = Owner != caller
 
   test.allowance(2, 2)
 

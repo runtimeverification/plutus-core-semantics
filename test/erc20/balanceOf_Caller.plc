@@ -4,7 +4,7 @@
 
   test.preamble()
 
-  // Testing balanceOf(Owner) when Owner is the caller.
+  ;; Testing balanceOf(Owner) when Owner is the caller.
 
   test.balanceOf(Foo.caller)
 
