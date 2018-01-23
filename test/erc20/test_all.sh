@@ -25,12 +25,14 @@ function final_report () {
 for file in `ls *.plc`;
   do
     begin_case $file
-    krun -d ../../src/erc20 $file > temp.xml
+    cat $file | sed -e 's/;/\/\//g' > temp.txt
+    krun -d ../../src/erc20 temp.txt > temp.xml
     xmllint --format temp.xml | tail -n +2 | sed -e 's/&gt;/>/g' | diff $file.out - > /dev/null;
     if [ $? != 0 ]
       then report_case 1 $file
       else report_case 0 $file
     fi;
+    rm temp.txt
     rm temp.xml
     (( COUNT+=1 ));
 done;

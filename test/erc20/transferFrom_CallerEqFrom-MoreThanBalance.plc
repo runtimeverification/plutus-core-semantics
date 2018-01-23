@@ -4,11 +4,11 @@
 
   test.preamble()
 
-  // Testing transferFrom(From,To,Value) when From = caller
-  // and Value > BalanceFrom.
+  ;; Testing transferFrom(From,To,Value) when From = caller
+  ;; and Value > BalanceFrom.
 
   test.approve(Foo.caller, 71)
-  test.transferFrom(Foo.caller, 4, 71)  // balance of Foo.caller is 70
+  test.transferFrom(Foo.caller, 4, 71)  ;; balance of Foo.caller is 70
 
 )
 
