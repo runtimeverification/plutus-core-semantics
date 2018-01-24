@@ -227,6 +227,10 @@ module PLUTUS-CORE-EXECUTION
   rule V:Val ~> MS:TmList ~> #freezeCon(QC:QualC, VL:ValList)
     => MS ~> #freezeCon(QC, V VL)
 
+  /***************************************************************************/
+  /***********************   AUXILIARY FUNCTIONS  ****************************/
+  /***************************************************************************/
+
   syntax ValList ::= #reverse(ValList)                               [function]
                    | #reverseAux(ValList, ValList)                   [function]
 
@@ -236,4 +240,18 @@ module PLUTUS-CORE-EXECUTION
 
   rule (success M):Tm => M ~> #freezeSucc()
   rule V:Val ~> #freezeSucc() => (success V):Val
+
+  syntax Bool ::= ModName "#in_mn" ModNmList                            [function]
+                | Name "#in_n" NameList                                [function]
+
+  rule MN:ModName #in_mn .ModNmList => false:Bool
+  rule MN:ModName #in_mn MN:ModName MNL:ModNmList => true:Bool
+  rule MN:ModName #in_mn MN':ModName MNL:ModNmList => MN #in_mn MNL
+    when MN =/=K MN'
+
+  rule N:Name #in_n .NameList => false:Bool
+  rule N:Name #in_n N:Name NL:NameList => true:Bool
+  rule N:Name #in_n N':Name NL:NameList => N #in_n NL
+    when N =/=K N'
+
 endmodule
