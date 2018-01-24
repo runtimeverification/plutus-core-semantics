@@ -174,9 +174,29 @@ module PLUTUS-CORE-EXECUTION
              ... </module>)
 
   rule
-    <k> QN:QualN => V ... </k>
-    <genv> ... QN |-> V ... </genv>
+    <k> (MN . N):QualN => V ... </k>
+    <genv> ... (MN . N):QualN |-> V ... </genv>
+    <curr> 1 </curr>
+    <name> MN </name>
 
+  rule
+    <k> (MN' . N):QualN => V ... </k>
+    <genv> ... (MN' . N):QualN |-> V ... </genv>
+    <module>
+      <curr> 1 </curr>
+      <name> MN </name>
+      <import> MNL </import>
+      <exportC> _ </exportC>
+      <exportN> _ </exportN>
+    </module>
+    <module>
+      <curr> 0 </curr>
+      <name> MN' </name>
+      <import> _ </import>
+      <exportC> _ </exportC>
+      <exportN> NL </exportN>
+    </module>
+    when (MN' #in_mn MNL) andBool (N #in_n NL)
 
   /***************************************************************************/
   /************************   PATTERN MATCHING   *****************************/
