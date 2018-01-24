@@ -153,7 +153,8 @@ module PLUTUS-CORE-EXECUTION
 
   rule
     <k> ( define N:Name V:Val ) => .K ... </k>
-    <mod> MN </mod>
+    <curr> 1 </curr>
+    <name> MN </name>
     <lenv> _ => .Map </lenv>
     <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
 
