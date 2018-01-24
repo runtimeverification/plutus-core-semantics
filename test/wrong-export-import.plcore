@@ -1,0 +1,14 @@
+(program
+
+(module Foo (imported) (exported () (r2)) (local () ())
+  (define r1 2)
+  (define r2 (builtin equalsInteger 2 3))
+  (define r5 (builtin equalsByteString #AAA #AAA))
+  (define r6 (builtin equalsByteString #AAA #111))
+)
+
+(module Bar (imported Foo) (exported () ()) (local () ())
+  (define r7 (builtin equalsInteger Foo.r1 2))
+)
+
+)
