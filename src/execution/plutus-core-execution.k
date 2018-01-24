@@ -163,9 +163,15 @@ module PLUTUS-CORE-EXECUTION
 
   rule
     <k>
-      ( module MN:ModName IS ES LS DEFS ) => DEFS ~> ( moduleF MN IS ES LS ) ...
+      ( module MN:ModName (imported MNL) (exported (CAL) (NL)) LS DEFS ) => DEFS ...
     </k>
-    <mod> CurrMN => MN </mod>
+    (.Bag => <module> ...
+               <curr> 1 </curr>
+               <name> MN </name>
+               <import> MNL </import>
+               <exportC> CAL </exportC>
+               <exportN> NL </exportN>
+             ... </module>)
 
   rule
     <k> QN:QualN => V ... </k>
