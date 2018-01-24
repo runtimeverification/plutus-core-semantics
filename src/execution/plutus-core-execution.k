@@ -158,7 +158,8 @@ module PLUTUS-CORE-EXECUTION
     <lenv> _ => .Map </lenv>
     <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
 
-  syntax ModF ::= "(" "moduleF" ModName ImpD ExpD LocD ")"
+  rule <k> .DecList => .K ... </k>
+       <curr> 1 => 0 </curr>
 
   rule
     <k>
@@ -170,7 +171,6 @@ module PLUTUS-CORE-EXECUTION
     <k> QN:QualN => V ... </k>
     <genv> ... QN |-> V ... </genv>
 
-  rule (.DecList ~> _:ModF ) => .K
 
   /***************************************************************************/
   /************************   PATTERN MATCHING   *****************************/
