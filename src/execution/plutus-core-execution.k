@@ -138,8 +138,8 @@ module PLUTUS-CORE-EXECUTION
   rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
 
   // Process modules in order
-  rule (program M:Mod ML:ModList) => M ~> ML:ModList
-  rule .ModList => .K
+  rule (program M:Mod ML:ModList) => M ~> (program ML:ModList)
+  rule (program .ModList) => .K
 
   // Process the definitions in order.
   rule D:Dec DS:DecList => D ~> DS
