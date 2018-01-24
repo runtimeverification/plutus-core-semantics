@@ -151,16 +151,7 @@ module PLUTUS-CORE-EXECUTION
   rule ( abs V:Var M:Tm ):Tm => M
   rule ( inst M:Tm T:Ty ) => .K
 
-  rule
-    <k> ( define N:Name V:Val ) => .K ... </k>
-    <curr> 1 </curr>
-    <name> MN </name>
-    <lenv> _ => .Map </lenv>
-    <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
-
-  rule <k> .DecList => .K ... </k>
-       <curr> 1 => 0 </curr>
-
+  // Begin processing a module, add new <module> cell
   rule
     <k>
       ( module MN:ModName (imported MNL) (exported (CAL) (NL)) LS DEFS ) => DEFS ...
@@ -171,14 +162,29 @@ module PLUTUS-CORE-EXECUTION
                <import> MNL </import>
                <exportC> CAL </exportC>
                <exportN> NL </exportN>
-             ... </module>)
+        ... </module>)
 
+  // Add V to env of current module
+  rule
+    <k> ( define N:Name V:Val ) => .K ... </k>
+    <curr> 1 </curr>
+    <name> MN </name>
+    <lenv> _ => .Map </lenv>
+    <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
+
+  // Finishing processing a module as there are no more definitions
+  rule <k> .DecList => .K ... </k>
+       <curr> 1 => 0 </curr>
+
+  // Qualified Name reduces if it is in the current module
   rule
     <k> (MN . N):QualN => V ... </k>
     <genv> ... (MN . N):QualN |-> V ... </genv>
     <curr> 1 </curr>
     <name> MN </name>
 
+  // Qualified name reduces if the name is exported from a different module
+  // which is imported by the current module
   rule
     <k> (MN' . N):QualN => V ... </k>
     <genv> ... (MN' . N):QualN |-> V ... </genv>
