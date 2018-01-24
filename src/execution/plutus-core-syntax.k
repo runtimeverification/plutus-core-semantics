@@ -69,13 +69,14 @@ module PLUTUS-CORE-SYNTAX
   syntax QualCList  ::= List{QualC  ,  ""}
 
   // syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
-  syntax DecList    ::= List{Dec, ""}
+  syntax DecList    ::= List{Dec, ""}                         [klabel(declist)]
 
   syntax ModList    ::= List{Mod, ""}                         [klabel(modList)]
+  syntax ModNmList  ::= List{ModName, ""}                 [klabel(modNameList)]
   syntax ClList     ::= List{Cl ,  ""}                         [klabel(clList)]
 
   syntax ConArity   ::= "(" Con Arity ")"
-  syntax CAList     ::= List{ConArity, ""}
+  syntax CAList     ::= List{ConArity, ""}                     [klabel(caList)]
 
   // TODO: current spec still has floats?
 
@@ -132,7 +133,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Mod        ::= "(" "module" ModName ImpD ExpD LocD DecList ")"
 
   // Import declarations.
-  syntax ImpD       ::= "(" "imported" ModList ")"
+  syntax ImpD       ::= "(" "imported" ModNmList ")"
 
   // Export and local declarations.
   syntax ExpD       ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"

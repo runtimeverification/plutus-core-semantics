@@ -11,7 +11,15 @@ module PLUTUS-CORE-EXECUTION
       <k> $PGM:Prg </k>
       <lenv> .Map </lenv>
       <genv> .Map </genv>
-      <mod> .ModName </mod>
+      <modules>
+        <module multiplicity="*">
+          <curr> 0 </curr>
+          <name> .ModName </name>
+          <import> .ModNmList </import>
+          <exportC> .CAList </exportC>
+          <exportN> .NameList </exportN>
+        </module>
+      </modules>
     </T>
 
   /***************************************************************************/
