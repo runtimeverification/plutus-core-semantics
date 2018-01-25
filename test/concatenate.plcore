@@ -1,6 +1,6 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
 (define b1 (builtin concatenate #ABC #DEF))
 
 (define b3 (builtin concatenate #123 #456))

@@ -1,13 +1,13 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
   (define result
     (let
       (lam x
         (case x
-          (Bool.True  () (con Bool.False))
-          (Bool.False () (con Bool.True))))
+          (Prelude.True  () (con Prelude.False))
+          (Prelude.False () (con Prelude.True))))
         negate
-        [negate [negate (con Bool.True)]])))
+        [negate [negate (con Prelude.True)]])))
 
 )

@@ -1,6 +1,6 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
 (define four
   (let (lam s (lam z [s z]))           one
   (let (lam s (lam z [s [s [s z]]]))   three

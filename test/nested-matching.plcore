@@ -1,13 +1,15 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
   (define result
-    (case (con Nat.Pair (con Nat.Pair 1 2) (con Nat.Pair 3 4))
-          (Nat.NotThis ()  -1)
-          (Nat.Pair (p1 p2)
+    (case (con Prelude.MkPair (con Prelude.MkPair 1 2) (con Prelude.MkPair 3 4))
+          (Prelude.NotThis ()  -1)
+          (Prelude.MkPair (p1 p2)
             (case p2
               (Foo.NotThis (x) -2)
-              (Nat.Pair (x y) (builtin multiplyInteger x y))
-              (Foo.NotThisEither (x) -2))))))
+              (Prelude.MkPair (x y) (builtin multiplyInteger x y))
+              (Foo.NotThisEither (x) -2)))))
+
+)
 
 )

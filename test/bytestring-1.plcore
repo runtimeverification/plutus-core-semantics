@@ -1,6 +1,6 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
 (define b1
   (builtin takeByteString
    5 (builtin dropByteString
