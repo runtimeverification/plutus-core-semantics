@@ -1,6 +1,6 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
   (define r1 [(lam x y y) 1 2])
   (define r2 [(lam x y z (builtin addInteger 10 z)) 1 2 3])
   (define r3 [(lam x y (builtin addInteger x y)) 10 20])

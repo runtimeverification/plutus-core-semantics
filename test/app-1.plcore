@@ -1,6 +1,6 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
   (declare r1 integer)
   (define r1
     (let (lam x (builtin addInteger x 5)) addFive [addFive 10]))

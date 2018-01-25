@@ -1,9 +1,8 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
   (define result
-    (case (con Nat.S (con Nat.Z))
-          (Nat.S (x) (con Nat.Z))
-          (Nat.Z ()  -1))))
+    (case (con Prelude.MkPair 1 2)
+      (Prelude.MkPair (x y) (con Prelude.MkPair y x)))))
 
 )

@@ -1,6 +1,6 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
   (define four (builtin addInteger 2 2))
 
   (define result (builtin multiplyInteger Foo.four Foo.four))

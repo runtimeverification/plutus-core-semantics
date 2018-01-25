@@ -1,9 +1,13 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
   (define result
-    (case (con SomeMod.Foo 1)
-          (SomeMod.Foo (x)  (builtin addInteger 10 x))
-          (SomeMod.NotThis ()  -1))))
+    (case (con Prelude.MkPair 3 7)
+          (Prelude.MkPair (x y) (builtin multiplyInteger x y))))
+  (define swapped
+    (case (con Prelude.MkPair 1 2)
+      (Prelude.MkPair (x y) (con Prelude.MkPair y x))))
+
+)
 
 )

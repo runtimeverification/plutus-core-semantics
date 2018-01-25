@@ -1,6 +1,6 @@
 (program
 
-(module Foo (imported) (exported () ()) (local () ())
+(module Foo (import) (export () ())
   (define bs1 (builtin integerToByteString 1128))
   (define bs2 (builtin integerToByteString 9))
   (define bs3 (builtin integerToByteString 15))
