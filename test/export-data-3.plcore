@@ -1,0 +1,18 @@
+(program
+
+(module Nat (import) (export ((MyPair (Pair NotThis))) ())
+  (data MyPair ()
+        (Pair (integer) (integer))
+        (NotThis))
+)
+
+(module Foo (import Nat) (export () ())
+  (define result
+    (case (con Nat.Pair 3 7)
+          (Nat.Pair (x y) (builtin multiplyInteger x y))
+          (Nat.NotThis ()  -1)))
+  (define swapped
+    (case (con Nat.Pair 1 2)
+      (Nat.Pair (x y) (con Nat.Pair y x)))))
+
+)

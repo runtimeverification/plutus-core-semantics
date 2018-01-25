@@ -1,0 +1,15 @@
+(program
+
+(module Nat (import) (export ((MyNat (S Z))) ())
+  (data MyNat ()
+        (S (con Nat.MyNat))
+        (Z))
+)
+
+(module Foo (import Nat) (export () ())
+  (define result
+    (case (con Nat.S (con Nat.Z))
+          (Nat.S (x) (con Nat.Z))
+          (Nat.Z ()  -1))))
+
+)

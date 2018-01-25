@@ -1,0 +1,23 @@
+(program
+
+(module Nat (import) (export ((MyType (Foo NotThisOne NotThisTwo NotThisThree NotThisFour Foo NotThisFive))) ())
+  (data MyType ()
+        (Foo (integer))
+        (NotThisOne)
+        (NotThisTwo)
+        (NotThisThree (integer))
+        (NotThisFour (integer))
+        (NotThisFive))
+)
+
+(module Foo (import Nat) (export () ())
+  (define result
+    (case (con Nat.Foo 3)
+          (Nat.NotThisOne ()    -1)
+          (Nat.NotThisTwo ()    -2)
+          (Nat.NotThisThree (y) -3)
+          (Nat.NotThisFour  (y)  -4)
+          (Nat.Foo (x) (builtin multiplyInteger x 30))
+          (Nat.NotThisFive ()  -6))))
+
+)
