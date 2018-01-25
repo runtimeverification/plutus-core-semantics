@@ -1,0 +1,15 @@
+(program
+
+(module SomeMod (import) (export ((MyType (This NotThis))) ())
+  (data MyType ()
+        (This (integer))
+        (NotThis))
+)
+
+(module Foo (import SomeMod) (export () ())
+  (define result
+    (case (con SomeMod.This 1)
+          (SomeMod.This (x)  (builtin addInteger 10 x))
+          (SomeMod.NotThis ()  -1))))
+
+)
