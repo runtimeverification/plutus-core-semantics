@@ -290,17 +290,25 @@ module PLUTUS-CORE-EXECUTION
   rule (success M):Tm => M ~> #freezeSucc()
   rule V:Val ~> #freezeSucc() => (success V):Val
 
-  syntax Bool ::= ModName "#in_mn" ModNmList                            [function]
-                | Name "#in_n" NameList                                [function]
+  syntax Bool ::= ModName "#in_mn" ModNmList                         [function]
+                | Name "#in_n" NameList                              [function]
+                | Con "#in_tx" TyExpList                             [function]
 
   rule MN:ModName #in_mn .ModNmList => false:Bool
-  rule MN:ModName #in_mn MN:ModName MNL:ModNmList => true:Bool
+  rule MN:ModName #in_mn MN:ModName _:ModNmList => true:Bool
   rule MN:ModName #in_mn MN':ModName MNL:ModNmList => MN #in_mn MNL
     when MN =/=K MN'
 
   rule N:Name #in_n .NameList => false:Bool
-  rule N:Name #in_n N:Name NL:NameList => true:Bool
+  rule N:Name #in_n N:Name _:NameList => true:Bool
   rule N:Name #in_n N':Name NL:NameList => N #in_n NL
     when N =/=K N'
+
+  rule C:Con #in_tx .TyExpList => false:Bool
+  rule C:Con #in_tx _:TyName TXL:TyExpList => C #in_tx TXL
+  rule C:Con #in_tx (_:TyCon (.ConList)) TXL:TyExpList => C #in_tx TXL
+  rule C:Con #in_tx (_:TyCon (C _:ConList)) TXL:TyExpList => true:Bool
+  rule C:Con #in_tx (TC:TyCon (C' CL:ConList)) TXL:TyExpList => C #in_tx (TC (CL)) TXL
+    when C =/=K C'
 
 endmodule
