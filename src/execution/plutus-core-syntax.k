@@ -75,8 +75,7 @@ module PLUTUS-CORE-SYNTAX
   syntax ModNmList  ::= List{ModName, ""}                 [klabel(modNameList)]
   syntax ClList     ::= List{Cl ,  ""}                         [klabel(clList)]
 
-  syntax ConArity   ::= "(" Con Arity ")"
-  syntax CAList     ::= List{ConArity, ""}                     [klabel(caList)]
+  syntax ConList    ::= List{Con, ""}                         [klabel(conList)]
 
   // TODO: current spec still has floats?
 
@@ -130,14 +129,18 @@ module PLUTUS-CORE-SYNTAX
   syntax Prg        ::= "(" "program" ModList ")"
 
   // Module.
-  syntax Mod        ::= "(" "module" ModName ImpD ExpD LocD DecList ")"
+  syntax Mod        ::= "(" "module" ModName ImpD ExpD DecList ")"
 
   // Import declarations.
-  syntax ImpD       ::= "(" "imported" ModNmList ")"
+  syntax ImpD       ::= "(" "import" ModNmList ")"
 
   // Export and local declarations.
-  syntax ExpD       ::= "(" "exported" "(" CAList ")" "(" NameList ")" ")"
-  syntax LocD       ::= "(" "local"    "(" CAList ")" "(" NameList ")" ")"
+  syntax ExpD       ::= "(" "export" "(" TyExpList ")" "(" NameList ")" ")"
+
+  syntax TyExport   ::= TyName
+                      | "(" TyCon "(" ConList ")" ")"
+
+  syntax TyExpList  ::= List{TyExport, ""}               [klabel(tyExportList)]
 
   syntax Dec        ::= Def
                       | TDec
