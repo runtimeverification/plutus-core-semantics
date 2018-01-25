@@ -16,8 +16,8 @@ module PLUTUS-CORE-EXECUTION
           <curr> 0 </curr>
           <name> .ModName </name>
           <import> .ModNmList </import>
-          <exportC> .CAList </exportC>
-          <exportN> .NameList </exportN>
+          <exportTy> .TyExpList </exportTy>
+          <exportTm> .NameList </exportTm>
         </module>
       </modules>
     </T>
@@ -154,14 +154,14 @@ module PLUTUS-CORE-EXECUTION
   // Begin processing a module, add new <module> cell
   rule
     <k>
-      ( module MN:ModName (imported MNL) (exported (CAL) (NL)) LS DEFS ) => DEFS ...
+      ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) => DEFS ...
     </k>
     (.Bag => <module> ...
                <curr> 1 </curr>
                <name> MN </name>
                <import> MNL </import>
-               <exportC> CAL </exportC>
-               <exportN> NL </exportN>
+               <exportTy> TXL </exportTy>
+               <exportTm> NL </exportTm>
         ... </module>)
 
   // Add V to env of current module
@@ -192,15 +192,15 @@ module PLUTUS-CORE-EXECUTION
       <curr> 1 </curr>
       <name> MN </name>
       <import> MNL </import>
-      <exportC> _ </exportC>
-      <exportN> _ </exportN>
+      <exportTy> _ </exportTy>
+      <exportTm> _ </exportTm>
     </module>
     <module>
       <curr> 0 </curr>
       <name> MN' </name>
       <import> _ </import>
-      <exportC> _ </exportC>
-      <exportN> NL </exportN>
+      <exportTy> _ </exportTy>
+      <exportTm> NL </exportTm>
     </module>
     when (MN' #in_mn MNL) andBool (N #in_n NL)
 
