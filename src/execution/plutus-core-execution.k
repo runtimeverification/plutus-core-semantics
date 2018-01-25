@@ -214,11 +214,54 @@ module PLUTUS-CORE-EXECUTION
 
   syntax Tm ::= "#ifTm" Bool "#then" Tm "#else" Tm "#fi"             [function]
 
-  rule ( case ( con QC:QualC MS:ValList )
-              ( QC':QualC ( XS:VarList ) M:Tm ) CL:ClList )
-    => #ifTm (QC ==K QC') #then [ ( lam XS M ) #toTermList(MS) ]
-                          #else ( case ( con QC:QualC MS:ValList ) CL )
+  // QualC is ok if it was defined in the current module
+  rule
+    <k> ( case ( con (MN . C):QualC MS:ValList )
+               ( (MN' . C'):QualC ( XS:VarList ) M:Tm ) CL:ClList )
+      => #ifTm (C ==K C' andBool MN ==K MN') #then [ ( lam XS M ) #toTermList(MS) ]
+                          #else ( case ( con (MN . C):QualC MS:ValList ) CL )
+         #fi ...
+    </k>
+    <curr> 1 </curr>
+    <name> MN </name>
+
+  // Or if it was defined in another module and approapriately imported/exported
+  // TODO: probably need to check exportTy better
+  rule
+    <k> ( case ( con (MN' . C):QualC MS:ValList )
+               ( (MN'' . C'):QualC ( XS:VarList ) M:Tm ) CL:ClList )
+      => #ifTm (C ==K C' andBool MN' ==K MN'')
+           #then [ ( lam XS M ) #toTermList(MS) ]
+           #else ( case ( con (MN' . C):QualC MS:ValList ) CL )
+         #fi ...
+    </k>
+    <module>
+      <curr> 1 </curr>
+      <name> MN </name>
+      <import> MNL </import>
+      <exportTy> _ </exportTy>
+      <exportTm> _ </exportTm>
+    </module>
+    <module>
+      <curr> 0 </curr>
+      <name> MN' </name>
+      <import> _ </import>
+      <exportTy> TXL </exportTy>
+      <exportTm> _ </exportTm>
+    </module>
+    when (MN' #in_mn MNL) andBool (C #in_tx TXL)
+    // TODO: do we also require C' #in_tx TXL?
+
+  // For using datatypes define in the prelude.
+  // TODO: This rule should be removed when we have imports/exports between files
+  rule ( case ( con (MN . C):QualC MS:ValList )
+              ( (MN' . C'):QualC ( XS:VarList ) M:Tm ) CL:ClList )
+    => #ifTm (C ==K C' andBool MN ==K MN')
+         #then [ ( lam XS M ) #toTermList(MS) ]
+         #else ( case ( con (MN . C):QualC MS:ValList ) CL )
        #fi
+    when MN ==K #stringToModName("Prelude")
+
 
   rule #ifTm true #then M #else _ #fi => M
   rule #ifTm false #then _ #else M #fi => M
