@@ -307,11 +307,13 @@ module PLUTUS-CORE-EXECUTION
                 | Name "#in_n" NameList                              [function]
                 | Con "#in_tx" TyExpList                             [function]
 
+  // module name in module name list
   rule MN:ModName #in_mn .ModNmList => false:Bool
   rule MN:ModName #in_mn MN:ModName _:ModNmList => true:Bool
   rule MN:ModName #in_mn MN':ModName MNL:ModNmList => MN #in_mn MNL
     when MN =/=K MN'
 
+  // name in name list
   rule N:Name #in_n .NameList => false:Bool
   rule N:Name #in_n N:Name _:NameList => true:Bool
   rule N:Name #in_n N':Name NL:NameList => N #in_n NL
