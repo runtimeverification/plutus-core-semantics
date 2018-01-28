@@ -1,0 +1,21 @@
+(program
+
+(module Foo (import) (export () (r1 r2 r3 r5))
+  (declare r1 (integer))
+  (define r1 (builtin addInteger 2 2))
+
+  (declare r2 (integer))
+  (define r2 3)
+
+  (declare r3 (integer))
+  (define r3 (builtin addInteger 2 3))
+
+  (define r5 (builtin equalsByteString #AAA #AAA))
+  (define r6 (builtin equalsByteString #AAA #111))
+)
+
+(module Bar (import Foo) (export () ())
+  (define r7 (builtin multiplyInteger Foo.r1 Foo.r3))
+)
+
+)

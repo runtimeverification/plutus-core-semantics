@@ -1,6 +1,7 @@
 (program
 
 (module Foo (import) (export () (r1))
+  (declare r1 (integer))
   (define r1 2)
   (define r2 (builtin equalsInteger 2 3))
   (define r5 (builtin equalsByteString #AAA #AAA))
