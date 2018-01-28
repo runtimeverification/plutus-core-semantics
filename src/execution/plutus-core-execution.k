@@ -15,6 +15,7 @@ module PLUTUS-CORE-EXECUTION
         <module multiplicity="*">
           <curr> 0 </curr>
           <name> .ModName </name>
+          <data> .TyExpList </data>
           <decl> .NameList </decl>
           <import> .ModNmList </import>
           <exportTy> .TyExpList </exportTy>
@@ -146,12 +147,13 @@ module PLUTUS-CORE-EXECUTION
   rule D:Dec DS:DecList => D ~> DS
 
   // Ignoring typing stuff
-  rule ( data C:TyCon ( KSL:KSigList ) AL:AltList ) => .K
   rule ( isa M:Tm T:Ty ) => .K
   rule ( abs V:Var M:Tm ):Tm => M
   rule ( inst M:Tm T:Ty ) => .K
 
   // Begin processing a module, add new <module> cell
+  //rule ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) .DecList => DEFS
+
   rule
     <k>
       ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) => DEFS ...
@@ -159,11 +161,18 @@ module PLUTUS-CORE-EXECUTION
     (.Bag => <module> ...
                <curr> 1 </curr>
                <name> MN </name>
+               <data> .TyExpList </data>
                <decl> .NameList </decl>
                <import> MNL </import>
                <exportTy> TXL </exportTy>
                <exportTm> NL </exportTm>
         ... </module>)
+
+  // Add data declaration to data subcell
+  rule
+    <k> ( data TC:TyCon ( KSL:KSigList ) AL:AltList ) => .K ... </k>
+    <curr> 1 </curr>
+    <data> DL => ( TC ( #getConList(AL) ) ) DL </data>
 
   // Add declared name to decls
   rule
@@ -200,6 +209,7 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 1 </curr>
       <name> MN </name>
+      <data> _ </data>
       <decl> _ </decl>
       <import> MNL </import>
       <exportTy> _ </exportTy>
@@ -208,6 +218,7 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 0 </curr>
       <name> MN' </name>
+      <data> _ </data>
       <decl> DL </decl>
       <import> _ </import>
       <exportTy> _ </exportTy>
@@ -249,6 +260,7 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 1 </curr>
       <name> MN </name>
+      <data> _ </data>
       <decl> _ </decl>
       <import> MNL </import>
       <exportTy> _ </exportTy>
@@ -257,6 +269,7 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 0 </curr>
       <name> MN' </name>
+      <data> _ </data>
       <decl> _ </decl>
       <import> _ </import>
       <exportTy> TXL </exportTy>
@@ -325,5 +338,10 @@ module PLUTUS-CORE-EXECUTION
   rule C:Con #in_tx (_:TyCon (C _:ConList)) TXL:TyExpList => true:Bool
   rule C:Con #in_tx (TC:TyCon (C' CL:ConList)) TXL:TyExpList => C #in_tx (TC (CL)) TXL
     when C =/=K C'
+
+  syntax ConList ::= #getConList(AltList)                            [function]
+
+  rule #getConList(.AltList) => .ConList
+  rule #getConList( (C:Con TL:TyList) AL:AltList ) => C #getConList(AL)
 
 endmodule
