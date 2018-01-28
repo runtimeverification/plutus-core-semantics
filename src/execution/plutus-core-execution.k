@@ -15,6 +15,8 @@ module PLUTUS-CORE-EXECUTION
         <module multiplicity="*">
           <curr> 0 </curr>
           <name> .ModName </name>
+          <data> .TyExpList </data>
+          <decl> .NameList </decl>
           <import> .ModNmList </import>
           <exportTy> .TyExpList </exportTy>
           <exportTm> .NameList </exportTm>
@@ -145,13 +147,13 @@ module PLUTUS-CORE-EXECUTION
   rule D:Dec DS:DecList => D ~> DS
 
   // Ignoring typing stuff
-  rule ( declare N:Name T:Ty ) => .K
-  rule ( data C:TyCon ( KSL:KSigList ) AL:AltList ) => .K
   rule ( isa M:Tm T:Ty ) => .K
   rule ( abs V:Var M:Tm ):Tm => M
   rule ( inst M:Tm T:Ty ) => .K
 
   // Begin processing a module, add new <module> cell
+  //rule ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) .DecList => DEFS
+
   rule
     <k>
       ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) => DEFS ...
@@ -159,10 +161,24 @@ module PLUTUS-CORE-EXECUTION
     (.Bag => <module> ...
                <curr> 1 </curr>
                <name> MN </name>
+               <data> .TyExpList </data>
+               <decl> .NameList </decl>
                <import> MNL </import>
                <exportTy> TXL </exportTy>
                <exportTm> NL </exportTm>
         ... </module>)
+
+  // Add data declaration to data subcell
+  rule
+    <k> ( data TC:TyCon ( KSL:KSigList ) AL:AltList ) => .K ... </k>
+    <curr> 1 </curr>
+    <data> DL => ( TC ( #getConList(AL) ) ) DL </data>
+
+  // Add declared name to decls
+  rule
+    <k> ( declare N:Name T:Ty ) => .K ... </k>
+    <curr> 1 </curr>
+    <decl> DL => N DL </decl>
 
   // Add V to env of current module
   rule
@@ -182,6 +198,8 @@ module PLUTUS-CORE-EXECUTION
     <genv> ... (MN . N):QualN |-> V ... </genv>
     <curr> 1 </curr>
     <name> MN </name>
+    <decl> DL </decl>
+    when N #in_n DL
 
   // Qualified name reduces if the name is exported from a different module
   // which is imported by the current module
@@ -191,6 +209,8 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 1 </curr>
       <name> MN </name>
+      <data> _ </data>
+      <decl> _ </decl>
       <import> MNL </import>
       <exportTy> _ </exportTy>
       <exportTm> _ </exportTm>
@@ -198,11 +218,13 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 0 </curr>
       <name> MN' </name>
+      <data> _ </data>
+      <decl> DL </decl>
       <import> _ </import>
       <exportTy> _ </exportTy>
       <exportTm> NL </exportTm>
     </module>
-    when (MN' #in_mn MNL) andBool (N #in_n NL)
+    when (MN' #in_mn MNL) andBool (N #in_n NL) andBool (N #in_n DL)
 
   /***************************************************************************/
   /************************   PATTERN MATCHING   *****************************/
@@ -238,6 +260,8 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 1 </curr>
       <name> MN </name>
+      <data> _ </data>
+      <decl> _ </decl>
       <import> MNL </import>
       <exportTy> _ </exportTy>
       <exportTm> _ </exportTm>
@@ -245,6 +269,8 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 0 </curr>
       <name> MN' </name>
+      <data> _ </data>
+      <decl> _ </decl>
       <import> _ </import>
       <exportTy> TXL </exportTy>
       <exportTm> _ </exportTm>
@@ -294,11 +320,13 @@ module PLUTUS-CORE-EXECUTION
                 | Name "#in_n" NameList                              [function]
                 | Con "#in_tx" TyExpList                             [function]
 
+  // module name in module name list
   rule MN:ModName #in_mn .ModNmList => false:Bool
   rule MN:ModName #in_mn MN:ModName _:ModNmList => true:Bool
   rule MN:ModName #in_mn MN':ModName MNL:ModNmList => MN #in_mn MNL
     when MN =/=K MN'
 
+  // name in name list
   rule N:Name #in_n .NameList => false:Bool
   rule N:Name #in_n N:Name _:NameList => true:Bool
   rule N:Name #in_n N':Name NL:NameList => N #in_n NL
@@ -310,5 +338,10 @@ module PLUTUS-CORE-EXECUTION
   rule C:Con #in_tx (_:TyCon (C _:ConList)) TXL:TyExpList => true:Bool
   rule C:Con #in_tx (TC:TyCon (C' CL:ConList)) TXL:TyExpList => C #in_tx (TC (CL)) TXL
     when C =/=K C'
+
+  syntax ConList ::= #getConList(AltList)                            [function]
+
+  rule #getConList(.AltList) => .ConList
+  rule #getConList( (C:Con TL:TyList) AL:AltList ) => C #getConList(AL)
 
 endmodule
