@@ -15,6 +15,7 @@ module PLUTUS-CORE-EXECUTION
         <module multiplicity="*">
           <curr> 0 </curr>
           <name> .ModName </name>
+          <decl> .NameList </decl>
           <import> .ModNmList </import>
           <exportTy> .TyExpList </exportTy>
           <exportTm> .NameList </exportTm>
@@ -145,7 +146,6 @@ module PLUTUS-CORE-EXECUTION
   rule D:Dec DS:DecList => D ~> DS
 
   // Ignoring typing stuff
-  rule ( declare N:Name T:Ty ) => .K
   rule ( data C:TyCon ( KSL:KSigList ) AL:AltList ) => .K
   rule ( isa M:Tm T:Ty ) => .K
   rule ( abs V:Var M:Tm ):Tm => M
@@ -159,10 +159,17 @@ module PLUTUS-CORE-EXECUTION
     (.Bag => <module> ...
                <curr> 1 </curr>
                <name> MN </name>
+               <decl> .NameList </decl>
                <import> MNL </import>
                <exportTy> TXL </exportTy>
                <exportTm> NL </exportTm>
         ... </module>)
+
+  // Add declared name to decls
+  rule
+    <k> ( declare N:Name T:Ty ) => .K ... </k>
+    <curr> 1 </curr>
+    <decl> DL => N DL </decl>
 
   // Add V to env of current module
   rule
@@ -182,6 +189,8 @@ module PLUTUS-CORE-EXECUTION
     <genv> ... (MN . N):QualN |-> V ... </genv>
     <curr> 1 </curr>
     <name> MN </name>
+    <decl> DL </decl>
+    when N #in_n DL
 
   // Qualified name reduces if the name is exported from a different module
   // which is imported by the current module
@@ -191,6 +200,7 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 1 </curr>
       <name> MN </name>
+      <decl> _ </decl>
       <import> MNL </import>
       <exportTy> _ </exportTy>
       <exportTm> _ </exportTm>
@@ -198,11 +208,12 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 0 </curr>
       <name> MN' </name>
+      <decl> DL </decl>
       <import> _ </import>
       <exportTy> _ </exportTy>
       <exportTm> NL </exportTm>
     </module>
-    when (MN' #in_mn MNL) andBool (N #in_n NL)
+    when (MN' #in_mn MNL) andBool (N #in_n NL) andBool (N #in_n DL)
 
   /***************************************************************************/
   /************************   PATTERN MATCHING   *****************************/
@@ -238,6 +249,7 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 1 </curr>
       <name> MN </name>
+      <decl> _ </decl>
       <import> MNL </import>
       <exportTy> _ </exportTy>
       <exportTm> _ </exportTm>
@@ -245,6 +257,7 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 0 </curr>
       <name> MN' </name>
+      <decl> _ </decl>
       <import> _ </import>
       <exportTy> TXL </exportTy>
       <exportTm> _ </exportTm>
