@@ -329,6 +329,7 @@ module PLUTUS-CORE-EXECUTION
                 | Name "#in_n" NameList                              [function]
                 | Con "#in_tx" TyExpList                             [function]
                 | ConList "#in_tx2" TyExpList                        [function]
+                | Con "#in_cl" ConList                               [function]
 
   // module name in module name list
   rule MN:ModName #in_mn .ModNmList => false:Bool
@@ -342,13 +343,20 @@ module PLUTUS-CORE-EXECUTION
   rule N:Name #in_n N':Name NL:NameList => N #in_n NL
     when N =/=K N'
 
+  // con in con list
+  rule C:Con #in_cl .ConList => false:Bool
+  rule C:Con #in_cl C:Con _:ConList => true:Bool
+  rule C:Con #in_cl C':Con CL:ConList => C #in_cl CL
+    when C =/=K C'
+
   // conlist in tyexplist
   // TODO: conlists can have different order
   rule CL:ConList #in_tx2 .TyExpList => false:Bool
-  rule CL:ConList #in_tx2 (_:TyCon (CL)) _:TyExpList => true:Bool
+  rule CL:ConList #in_tx2 (_:TyCon (CL')) _:TyExpList => true:Bool
+    when CL #equal_cl CL'
   rule CL:ConList #in_tx2 _:TyName TXL:TyExpList => CL #in_tx2 TXL
   rule CL:ConList #in_tx2 (_:TyCon (CL')) TXL:TyExpList => CL #in_tx2 TXL
-    when CL =/=K CL'
+    when notBool (CL #equal_cl CL')
 
   rule C:Con #in_tx .TyExpList => false:Bool
   rule C:Con #in_tx _:TyName TXL:TyExpList => C #in_tx TXL
@@ -365,5 +373,13 @@ module PLUTUS-CORE-EXECUTION
 
   rule #gather(.ClList) => .ConList
   rule #gather( ( (MN . C):QualC ( XS:VarList ) M:Tm ) CL:ClList ) => C #gather(CL)
+
+  syntax Bool ::= ConList "#equal_cl" ConList                        [function]
+                | ConList "#subset_cl" ConList                       [function]
+
+  rule CL #equal_cl CL' => CL #subset_cl CL' andBool CL' #subset_cl CL
+
+  rule .ConList #subset_cl CL' => true:Bool
+  rule (C CL) #subset_cl CL' => C #in_cl CL' andBool CL #subset_cl CL'
 
 endmodule
