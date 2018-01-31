@@ -13,6 +13,7 @@
           (Nat.NotThis ()  -1)))
   (define swapped
     (case (con Nat.Pair 1 2)
-      (Nat.Pair (x y) (con Nat.Pair y x)))))
+      (Nat.Pair (x y) (con Nat.Pair y x))
+      (Nat.NotThis () (con Nat.Pair 1 1)))))
 
 )

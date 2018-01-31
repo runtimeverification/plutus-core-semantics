@@ -6,9 +6,9 @@
           (Prelude.NotThis ()  -1)
           (Prelude.MkPair (p1 p2)
             (case p2
-              (Foo.NotThis (x) -2)
+              (Prelude.NotThis (x) -2)
               (Prelude.MkPair (x y) (builtin multiplyInteger x y))
-              (Foo.NotThisEither (x) -2)))))
+              (Prelude.NotThisEither (x) -2)))))
 
 )
 
