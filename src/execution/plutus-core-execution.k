@@ -172,7 +172,7 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> ( data TC:TyCon ( KSL:KSigList ) AL:AltList ) => .K ... </k>
     <curr> 1 </curr>
-    <data> DL => ( TC ( #getConList(AL) ) ) DL </data>
+    <data> DL => ( TC ( #getConListAlt(AL) ) ) DL </data>
 
   // Add declared name to decls
   rule
@@ -235,37 +235,26 @@ module PLUTUS-CORE-EXECUTION
   rule #toTermList(M:Val MS:ValList) => M #toTermList(MS)
 
   syntax Tm ::= "#ifTm" Bool "#then" Tm "#else" Tm "#fi"             [function]
+  rule #ifTm true #then M #else _ #fi => M
+  rule #ifTm false #then _ #else M #fi => M
 
-  syntax K ::= "#valid" "(" ModName ")"
+  // Marker that case match is valid to be executed
+  syntax K ::= "#valid"
 
-  //
+  // Case match is valid if the type was defined in the current module and
+  // all clauses match all constructors
   rule
-    <k> ( case M CLS ) => #valid(MN) ~> ( case M CLS ) ... </k>
-    <name> MN </name>
-    <data> TXL </data>
-    when #gather(CLS) #in_tx2 TXL
-
-  // QualC is ok if it was defined in the current module
-  rule
-    <k> ( case ( con (MN . C):QualC MS:ValList )
-               ( (MN' . C'):QualC ( XS:VarList ) M:Tm ) CL:ClList )
-      => #ifTm (C ==K C' andBool MN ==K MN') #then [ ( lam XS M ) #toTermList(MS) ]
-                          #else ( case ( con (MN . C):QualC MS:ValList ) CL )
-         #fi ...
-    </k>
+    <k> ( case M CLS ) => #valid ~> ( case M CLS ) ... </k>
     <curr> 1 </curr>
     <name> MN </name>
+    <data> TXL </data>
+    when #getConListCl(CLS) #in_tx TXL
 
-  // Or if it was defined in another module and approapriately imported/exported
-  // TODO: probably need to check exportTy better
+  // Case match is valid if the type was defined in another module, all
+  // clauses match all constructors, all constructors are exported from that
+  // module, and that module is importad from the current module
   rule
-    <k> ( case ( con (MN' . C):QualC MS:ValList )
-               ( (MN'' . C'):QualC ( XS:VarList ) M:Tm ) CL:ClList )
-      => #ifTm (C ==K C' andBool MN' ==K MN'')
-           #then [ ( lam XS M ) #toTermList(MS) ]
-           #else ( case ( con (MN' . C):QualC MS:ValList ) CL )
-         #fi ...
-    </k>
+    <k> ( case M CLS ) => #valid ~> ( case M CLS ) ... </k>
     <module>
       <curr> 1 </curr>
       <name> MN </name>
@@ -278,28 +267,33 @@ module PLUTUS-CORE-EXECUTION
     <module>
       <curr> 0 </curr>
       <name> MN' </name>
-      <data> _ </data>
+      <data> TXL </data>
       <decl> _ </decl>
       <import> _ </import>
-      <exportTy> TXL </exportTy>
-      <exportTm> _ </exportTm>
+      <exportTy> TXL' </exportTy>
+      <exportTm> _ </exportTm>      
     </module>
-    when (MN' #in_mn MNL) andBool (C #in_tx TXL)
-    // TODO: do we also require C' #in_tx TXL?
+    when #getConListCl(CLS) #in_tx TXL andBool #getConListCl(CLS) #in_tx TXL'
+                                       andBool MN' #in_mn MNL
+
+  // Can progress processing case match if it was determined valid
+  rule
+    #valid ~>
+      ( ( case ( con (MN . C):QualC MS:ValList )
+               ( (MN . C'):QualC ( XS:VarList ) M:Tm ) CL:ClList )
+        => #ifTm (C ==K C')
+             #then [ ( lam XS M ) #toTermList(MS) ]
+             #else ( case ( con (MN . C):QualC MS:ValList ) CL )
+           #fi
+      )
+
+  // clear #valid off K cell if we are no longer processing case match
+  rule (#valid => .K) ~> [ M:Tm MS ]
 
   // For using datatypes define in the prelude.
   // TODO: This rule should be removed when we have imports/exports between files
-  rule ( case ( con (MN . C):QualC MS:ValList )
-              ( (MN' . C'):QualC ( XS:VarList ) M:Tm ) CL:ClList )
-    => #ifTm (C ==K C' andBool MN ==K MN')
-         #then [ ( lam XS M ) #toTermList(MS) ]
-         #else ( case ( con (MN . C):QualC MS:ValList ) CL )
-       #fi
+  rule (.K => #valid) ~> ( case ( con (MN . C):QualC MS:ValList ) CLS:ClList )
     when MN ==K #stringToModName("Prelude")
-
-
-  rule #ifTm true #then M #else _ #fi => M
-  rule #ifTm false #then _ #else M #fi => M
 
   // Convert TmList into ValList and convert (success Tm) into (success Val)
   syntax K ::= #freezeCon(QualC, ValList)
@@ -327,8 +321,7 @@ module PLUTUS-CORE-EXECUTION
 
   syntax Bool ::= ModName "#in_mn" ModNmList                         [function]
                 | Name "#in_n" NameList                              [function]
-                | Con "#in_tx" TyExpList                             [function]
-                | ConList "#in_tx2" TyExpList                        [function]
+                | ConList "#in_tx" TyExpList                         [function]
                 | Con "#in_cl" ConList                               [function]
 
   // module name in module name list
@@ -350,30 +343,14 @@ module PLUTUS-CORE-EXECUTION
     when C =/=K C'
 
   // conlist in tyexplist
-  // TODO: conlists can have different order
-  rule CL:ConList #in_tx2 .TyExpList => false:Bool
-  rule CL:ConList #in_tx2 (_:TyCon (CL')) _:TyExpList => true:Bool
+  rule CL:ConList #in_tx .TyExpList => false:Bool
+  rule CL:ConList #in_tx (_:TyCon (CL')) _:TyExpList => true:Bool
     when CL #equal_cl CL'
-  rule CL:ConList #in_tx2 _:TyName TXL:TyExpList => CL #in_tx2 TXL
-  rule CL:ConList #in_tx2 (_:TyCon (CL')) TXL:TyExpList => CL #in_tx2 TXL
+  rule CL:ConList #in_tx _:TyName TXL:TyExpList => CL #in_tx TXL
+  rule CL:ConList #in_tx (_:TyCon (CL')) TXL:TyExpList => CL #in_tx TXL
     when notBool (CL #equal_cl CL')
 
-  rule C:Con #in_tx .TyExpList => false:Bool
-  rule C:Con #in_tx _:TyName TXL:TyExpList => C #in_tx TXL
-  rule C:Con #in_tx (_:TyCon (.ConList)) TXL:TyExpList => C #in_tx TXL
-  rule C:Con #in_tx (_:TyCon (C _:ConList)) TXL:TyExpList => true:Bool
-  rule C:Con #in_tx (TC:TyCon (C' CL:ConList)) TXL:TyExpList => C #in_tx (TC (CL)) TXL
-    when C =/=K C'
-
-  syntax ConList ::= #getConList(AltList)                            [function]
-                   | #gather(ClList)                                 [function]
-
-  rule #getConList(.AltList) => .ConList
-  rule #getConList( (C:Con TL:TyList) AL:AltList ) => C #getConList(AL)
-
-  rule #gather(.ClList) => .ConList
-  rule #gather( ( (MN . C):QualC ( XS:VarList ) M:Tm ) CL:ClList ) => C #gather(CL)
-
+  // for equality of two conlists when viewed as sets
   syntax Bool ::= ConList "#equal_cl" ConList                        [function]
                 | ConList "#subset_cl" ConList                       [function]
 
@@ -381,5 +358,18 @@ module PLUTUS-CORE-EXECUTION
 
   rule .ConList #subset_cl CL' => true:Bool
   rule (C CL) #subset_cl CL' => C #in_cl CL' andBool CL #subset_cl CL'
+
+  // Gathering Cons from AltList, ClList
+  syntax ConList ::= #getConListAlt(AltList)                         [function]
+                   | #getConListCl(ClList)                           [function]
+
+  // Get ConList from AltList
+  rule #getConListAlt(.AltList) => .ConList
+  rule #getConListAlt( (C:Con TL:TyList) AL:AltList ) => C #getConListAlt(AL)
+
+  // Get ConList from ClList
+  rule #getConListCl(.ClList) => .ConList
+  rule #getConListCl( ( (MN . C):QualC ( XS:VarList ) M:Tm ) CL:ClList )
+    => C #getConListCl(CL)
 
 endmodule
