@@ -236,6 +236,15 @@ module PLUTUS-CORE-EXECUTION
 
   syntax Tm ::= "#ifTm" Bool "#then" Tm "#else" Tm "#fi"             [function]
 
+  syntax K ::= "#valid" "(" ModName ")"
+
+  //
+  rule
+    <k> ( case M CLS ) => #valid(MN) ~> ( case M CLS ) ... </k>
+    <name> MN </name>
+    <data> TXL </data>
+    when #gather(CLS) #in_tx2 TXL
+
   // QualC is ok if it was defined in the current module
   rule
     <k> ( case ( con (MN . C):QualC MS:ValList )
@@ -319,6 +328,7 @@ module PLUTUS-CORE-EXECUTION
   syntax Bool ::= ModName "#in_mn" ModNmList                         [function]
                 | Name "#in_n" NameList                              [function]
                 | Con "#in_tx" TyExpList                             [function]
+                | ConList "#in_tx2" TyExpList                        [function]
 
   // module name in module name list
   rule MN:ModName #in_mn .ModNmList => false:Bool
@@ -332,6 +342,14 @@ module PLUTUS-CORE-EXECUTION
   rule N:Name #in_n N':Name NL:NameList => N #in_n NL
     when N =/=K N'
 
+  // conlist in tyexplist
+  // TODO: conlists can have different order
+  rule CL:ConList #in_tx2 .TyExpList => false:Bool
+  rule CL:ConList #in_tx2 (_:TyCon (CL)) _:TyExpList => true:Bool
+  rule CL:ConList #in_tx2 _:TyName TXL:TyExpList => CL #in_tx2 TXL
+  rule CL:ConList #in_tx2 (_:TyCon (CL')) TXL:TyExpList => CL #in_tx2 TXL
+    when CL =/=K CL'
+
   rule C:Con #in_tx .TyExpList => false:Bool
   rule C:Con #in_tx _:TyName TXL:TyExpList => C #in_tx TXL
   rule C:Con #in_tx (_:TyCon (.ConList)) TXL:TyExpList => C #in_tx TXL
@@ -340,8 +358,12 @@ module PLUTUS-CORE-EXECUTION
     when C =/=K C'
 
   syntax ConList ::= #getConList(AltList)                            [function]
+                   | #gather(ClList)                                 [function]
 
   rule #getConList(.AltList) => .ConList
   rule #getConList( (C:Con TL:TyList) AL:AltList ) => C #getConList(AL)
+
+  rule #gather(.ClList) => .ConList
+  rule #gather( ( (MN . C):QualC ( XS:VarList ) M:Tm ) CL:ClList ) => C #gather(CL)
 
 endmodule
