@@ -1,0 +1,7 @@
+(program
+
+(module Bar (import Foo) (export () ())
+  (define one 1)
+)
+
+)
