@@ -11,6 +11,12 @@ exec: src/execution/plutus-core.k src/execution/plutus-core-syntax.k src/executi
 	cp -r plutus-core-kompiled src/execution
 	rm -rf plutus-core-kompiled
 
+trans: src/translation/plutus-core.k src/translation/plutus-core-syntax.k src/translation/plutus-core-translation.k
+	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/translation/plutus-core.k
+	touch plutus-core-kompiled
+	cp -r plutus-core-kompiled src/translation
+	rm -rf plutus-core-kompiled
+
 erc: src/execution/plutus-core.k src/execution/plutus-core-syntax.k src/execution/plutus-core-execution.k
 	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/erc20/plutus-core.k
 	touch plutus-core-kompiled
@@ -29,6 +35,7 @@ verify: exec
 clean:
 	rm -rf src/typing/plutus-core-kompiled
 	rm -rf src/execution/plutus-core-kompiled
+	rm -rf src/translation/plutus-core-kompiled
 	rm -rf src/erc20/plutus-core-kompiled
 
 .PHONY: test clean

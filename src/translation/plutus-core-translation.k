@@ -1,0 +1,345 @@
+require "plutus-core-syntax.k"
+require "imp-syntax.k"
+
+module PLUTUS-CORE-TRANSLATION
+  imports PLUTUS-CORE-SYNTAX
+  imports KRYPTO
+  imports IMP-SYNTAX
+
+  configuration
+    <T>
+      <k> $PGM:Prg </k>
+      <lenv> .Map </lenv>
+      <genv> .Map </genv>
+      <modules>
+        <module multiplicity="*">
+          <curr> 0 </curr>
+          <name> .ModName </name>
+          <data> .TyExpList </data>
+          <decl> .NameList </decl>
+          <import> .ModNmList </import>
+          <exportTy> .TyExpList </exportTy>
+          <exportTm> .NameList </exportTm>
+        </module>
+      </modules>
+    </T>
+
+  /***************************************************************************/
+  /***********************  BUILT-IN REDUCTIONS   ****************************/
+  /***************************************************************************/
+
+  rule ( builtin addInteger:Name       E1:IELEExp E2:IELEExp ) => E1 + E2
+  rule ( builtin subtractInteger:Name  E1:IELEExp E2:IELEExp ) => E1 - E2
+  rule ( builtin multiplyInteger:Name  E1:IELEExp E2:IELEExp ) => E1 * E2
+  rule ( builtin divideInteger:Name    E1:IELEExp E2:IELEExp ) => E1 / E2
+  rule ( builtin remainderInteger:Name E1:IELEExp E2:IELEExp ) => E1 % E2
+
+  // TODO: define semantics for compbuiltin.
+
+  syntax Tm ::= #conHolder(K, K)
+              | #qualCHolder(K, K)
+  rule #conHolder(MN, C) => ( con (MN . C):QualC .ValList )
+
+  rule #stringToModName(S:String)
+    => #parseToken("ModName@PLUTUS-CORE-SYNTAX", S)
+  rule #stringToCon(S:String) => #parseToken("Con@PLUTUS-CORE-SYNTAX", S)
+
+  rule ( builtin equalsInteger:Name E1:IELEExp E2:IELEExp      ) => E1 == E2
+  rule ( builtin lessThanInteger:Name E1:IELEExp E2:IELEExp    ) => E1 < E2
+  rule ( builtin greaterThanInteger:Name E1:IELEExp E2:IELEExp ) => E1 > E2
+
+  // rule ( builtin integerToByteString:Name 0 )    => #toByStr("0")
+  // rule ( builtin integerToByteString:Name I:Int) => #toByStr(#toHex(I))
+  //   when I =/=Int 0
+
+  // syntax ByStr ::= #toByStr ( String )                                [function]
+  // rule #toByStr(S:String)
+  //   => #parseToken("ByStr@PLUTUS-CORE-SYNTAX", ("#" +String S))
+
+  // rule #toString(B:ByStr):String
+  //   => substrString(#toStringVerbatim(B), 1, lengthString(#toStringVerbatim(B)))
+
+  // rule ( builtin takeByteString:Name N:Int B:ByStr )
+  //   => #toByStr(substrString(#toString(B), 0, N))
+
+  // rule ( builtin dropByteString:Name N:Int B:ByStr )
+  //   => #toByStr(substrString(#toString(B), N, lengthString(#toString(B))))
+
+  // rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
+  //   => #toByStr(#toString(B1) +String #toString(B2))
+
+  // rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
+  // rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
+
+  // rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+  //   => #primTrue when #toString(B1) ==String #toString(B2)
+
+  // rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+  //   => #primFalse when #toString(B1) =/=String #toString(B2)
+
+  /***************************************************************************/
+  /************************   LOCAL REDUCTIONS   *****************************/
+  /***************************************************************************/
+
+  // rule [ F:Val M1:Tm M2:Tm MS:TmList ] => [ [ F M1 ] M2 MS ]
+
+  // // From desugaring constructors, we may have lambda expressions with no
+  // // variables and application to an empty TmList.
+  // rule ( lam .VarList M:Tm ) => M
+  // rule [ V:Val .TmList ] => V
+
+  // // When a lambda abstracts more than one variable, desugar it to a
+  // // combination of unary lambdas.
+  // rule ( lam X1:Var X2:Var XS:VarList M:Tm )
+  //   => ( lam X1 .VarList ( lam X2 XS M ) )
+
+  syntax Cl ::= closure(Map, Var, Tm)
+
+  // // Wrapper around function application in order to make application strict
+  // syntax Tm ::= app(Tm, Tm)                                            [strict]
+  // rule [ F:Val M:Tm ] => app(F, M)
+  
+  // rule
+  //   <k> ( lam X:Var M:Tm ):Tm => closure(Rho, X, M) ... </k>
+  //   <lenv> Rho </lenv>
+  //   [structural]
+
+  // rule
+  //   <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
+  //   <lenv> Rho' => Rho[X <- V] </lenv>
+  //   [structural]
+
+  // rule
+  //   <k> _:Val ~> (Rho => .K) ... </k>
+  //   <lenv> _ => Rho </lenv>
+  //   [structural]
+
+  // rule
+  //   <k> X:Var => V ... </k>
+  //   <lenv> ... X |-> V ... </lenv>
+
+  // // Desugar let expression to lambda expression
+  // rule ( let N:Tm X:Var M:Tm ):Tm => [ ( lam X M ) N ]
+
+  // Process modules in order
+  rule (program M:Mod ML:ModList) => M ~> (program ML:ModList)
+  rule (program .ModList) => .K
+
+  // // Process the definitions in order.
+  // rule D:Dec DS:DecList => D ~> DS
+
+  // // Ignoring typing stuff
+  // rule ( isa M:Tm T:Ty ) => .K
+  // rule ( abs V:Var M:Tm ):Tm => M
+  // rule ( inst M:Tm T:Ty ) => .K
+
+  // // Begin processing a module, add new <module> cell
+  // //rule ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) .DecList => DEFS
+
+  rule ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) => DEFS
+
+  // // Add data declaration to data subcell
+  // rule
+  //   <k> ( data TC:TyCon ( KSL:KSigList ) AL:AltList ) => .K ... </k>
+  //   <curr> 1 </curr>
+  //   <data> DL => ( TC ( #getConListAlt(AL) ) ) DL </data>
+
+  // // Add declared name to decls
+  // rule
+  //   <k> ( declare N:Name T:Ty ) => .K ... </k>
+  //   <curr> 1 </curr>
+  //   <decl> DL => N DL </decl>
+
+  // // Add V to env of current module
+  // rule
+  //   <k> ( define N:Name V:Val ) => .K ... </k>
+  //   <curr> 1 </curr>
+  //   <name> MN </name>
+  //   <lenv> _ => .Map </lenv>
+  //   <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
+
+  // // Finishing processing a module as there are no more definitions
+  // rule <k> .DecList => .K ... </k>
+  //      <curr> 1 => 0 </curr>
+
+  // // Qualified Name reduces if it is in the current module
+  // rule
+  //   <k> (MN . N):QualN => V ... </k>
+  //   <genv> ... (MN . N):QualN |-> V ... </genv>
+  //   <curr> 1 </curr>
+  //   <name> MN </name>
+  //   <decl> DL </decl>
+  //   when N #in_n DL
+
+  // // Qualified name reduces if the name is exported from a different module
+  // // which is imported by the current module
+  // rule
+  //   <k> (MN' . N):QualN => V ... </k>
+  //   <genv> ... (MN' . N):QualN |-> V ... </genv>
+  //   <module>
+  //     <curr> 1 </curr>
+  //     <name> MN </name>
+  //     <data> _ </data>
+  //     <decl> _ </decl>
+  //     <import> MNL </import>
+  //     <exportTy> _ </exportTy>
+  //     <exportTm> _ </exportTm>
+  //   </module>
+  //   <module>
+  //     <curr> 0 </curr>
+  //     <name> MN' </name>
+  //     <data> _ </data>
+  //     <decl> DL </decl>
+  //     <import> _ </import>
+  //     <exportTy> _ </exportTy>
+  //     <exportTm> NL </exportTm>
+  //   </module>
+  //   when (MN' #in_mn MNL) andBool (N #in_n NL) andBool (N #in_n DL)
+
+  // /***************************************************************************/
+  // /************************   PATTERN MATCHING   *****************************/
+  // /***************************************************************************/
+
+  // syntax TmList ::= #toTermList(ValList)                             [function]
+  // rule #toTermList(.ValList) => .TmList
+  // rule #toTermList(M:Val MS:ValList) => M #toTermList(MS)
+
+  // syntax Tm ::= "#ifTm" Bool "#then" Tm "#else" Tm "#fi"             [function]
+  // rule #ifTm true #then M #else _ #fi => M
+  // rule #ifTm false #then _ #else M #fi => M
+
+  // // Marker that case match is valid to be executed
+  // syntax K ::= "#valid"
+
+  // // Case match is valid if the type was defined in the current module and
+  // // all clauses match all constructors
+  // rule
+  //   <k> ( case M CLS ) => #valid ~> ( case M CLS ) ... </k>
+  //   <curr> 1 </curr>
+  //   <name> MN </name>
+  //   <data> TXL </data>
+  //   when #getConListCl(CLS) #in_tx TXL
+
+  // // Case match is valid if the type was defined in another module, all
+  // // clauses match all constructors, all constructors are exported from that
+  // // module, and that module is importad from the current module
+  // rule
+  //   <k> ( case M CLS ) => #valid ~> ( case M CLS ) ... </k>
+  //   <module>
+  //     <curr> 1 </curr>
+  //     <name> MN </name>
+  //     <data> _ </data>
+  //     <decl> _ </decl>
+  //     <import> MNL </import>
+  //     <exportTy> _ </exportTy>
+  //     <exportTm> _ </exportTm>
+  //   </module>
+  //   <module>
+  //     <curr> 0 </curr>
+  //     <name> MN' </name>
+  //     <data> TXL </data>
+  //     <decl> _ </decl>
+  //     <import> _ </import>
+  //     <exportTy> TXL' </exportTy>
+  //     <exportTm> _ </exportTm>      
+  //   </module>
+  //   when #getConListCl(CLS) #in_tx TXL andBool #getConListCl(CLS) #in_tx TXL'
+  //                                      andBool MN' #in_mn MNL
+
+  // // Can progress processing case match if it was determined valid
+  // rule
+  //   #valid ~>
+  //     ( ( case ( con (MN . C):QualC MS:ValList )
+  //              ( (MN . C'):QualC ( XS:VarList ) M:Tm ) CL:ClList )
+  //       => #ifTm (C ==K C')
+  //            #then [ ( lam XS M ) #toTermList(MS) ]
+  //            #else ( case ( con (MN . C):QualC MS:ValList ) CL )
+  //          #fi
+  //     )
+
+  // // clear #valid off K cell if we are no longer processing case match
+  // rule (#valid => .K) ~> [ M:Tm MS ]
+
+  // // For using datatypes define in the prelude.
+  // // TODO: This rule should be removed when we have imports/exports between files
+  // rule (.K => #valid) ~> ( case ( con (MN . C):QualC MS:ValList ) CLS:ClList )
+  //   when MN ==K #stringToModName("Prelude")
+
+  // // Convert TmList into ValList and convert (success Tm) into (success Val)
+  // syntax K ::= #freezeCon(QualC, ValList)
+  //            | "#freezeSucc()"
+
+  // rule ( con QC:QualC MS:TmList ) => MS ~> #freezeCon(QC, .ValList)
+  // rule .TmList ~> #freezeCon(QC:QualC, VL:ValList) => ( con QC #reverse(VL) )
+  // rule (M:Tm MS:TmList => M ~> MS) ~> #freezeCon(QC:QualC, VL:ValList)
+  // rule V:Val ~> MS:TmList ~> #freezeCon(QC:QualC, VL:ValList)
+  //   => MS ~> #freezeCon(QC, V VL)
+
+  // /***************************************************************************/
+  // /***********************   AUXILIARY FUNCTIONS  ****************************/
+  // /***************************************************************************/
+
+  // syntax ValList ::= #reverse(ValList)                               [function]
+  //                  | #reverseAux(ValList, ValList)                   [function]
+
+  // rule #reverse(V:ValList) => #reverseAux(V, .ValList)
+  // rule #reverseAux(.ValList, VL:ValList) => VL
+  // rule #reverseAux(V:Val VL1:ValList, VL2:ValList) => #reverseAux(VL1, V VL2)
+
+  // rule (success M):Tm => M ~> #freezeSucc()
+  // rule V:Val ~> #freezeSucc() => (success V):Val
+
+  // syntax Bool ::= ModName "#in_mn" ModNmList                         [function]
+  //               | Name "#in_n" NameList                              [function]
+  //               | ConList "#in_tx" TyExpList                         [function]
+  //               | Con "#in_cl" ConList                               [function]
+
+  // // module name in module name list
+  // rule MN:ModName #in_mn .ModNmList => false:Bool
+  // rule MN:ModName #in_mn MN:ModName _:ModNmList => true:Bool
+  // rule MN:ModName #in_mn MN':ModName MNL:ModNmList => MN #in_mn MNL
+  //   when MN =/=K MN'
+
+  // // name in name list
+  // rule N:Name #in_n .NameList => false:Bool
+  // rule N:Name #in_n N:Name _:NameList => true:Bool
+  // rule N:Name #in_n N':Name NL:NameList => N #in_n NL
+  //   when N =/=K N'
+
+  // // con in con list
+  // rule C:Con #in_cl .ConList => false:Bool
+  // rule C:Con #in_cl C:Con _:ConList => true:Bool
+  // rule C:Con #in_cl C':Con CL:ConList => C #in_cl CL
+  //   when C =/=K C'
+
+  // // conlist in tyexplist
+  // rule CL:ConList #in_tx .TyExpList => false:Bool
+  // rule CL:ConList #in_tx (_:TyCon (CL')) _:TyExpList => true:Bool
+  //   when CL #equal_cl CL'
+  // rule CL:ConList #in_tx _:TyName TXL:TyExpList => CL #in_tx TXL
+  // rule CL:ConList #in_tx (_:TyCon (CL')) TXL:TyExpList => CL #in_tx TXL
+  //   when notBool (CL #equal_cl CL')
+
+  // // for equality of two conlists when viewed as sets
+  // syntax Bool ::= ConList "#equal_cl" ConList                        [function]
+  //               | ConList "#subset_cl" ConList                       [function]
+
+  // rule CL #equal_cl CL' => CL #subset_cl CL' andBool CL' #subset_cl CL
+
+  // rule .ConList #subset_cl CL' => true:Bool
+  // rule (C CL) #subset_cl CL' => C #in_cl CL' andBool CL #subset_cl CL'
+
+  // // Gathering Cons from AltList, ClList
+  // syntax ConList ::= #getConListAlt(AltList)                         [function]
+  //                  | #getConListCl(ClList)                           [function]
+
+  // // Get ConList from AltList
+  // rule #getConListAlt(.AltList) => .ConList
+  // rule #getConListAlt( (C:Con TL:TyList) AL:AltList ) => C #getConListAlt(AL)
+
+  // // Get ConList from ClList
+  // rule #getConListCl(.ClList) => .ConList
+  // rule #getConListCl( ( (MN . C):QualC ( XS:VarList ) M:Tm ) CL:ClList )
+  //   => C #getConListCl(CL)
+
+endmodule
