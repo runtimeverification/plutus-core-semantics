@@ -93,7 +93,15 @@ module PLUTUS-CORE-TRANSLATION
   // rule ( lam X1:Var X2:Var XS:VarList M:Tm )
   //   => ( lam X1 .VarList ( lam X2 XS M ) )
 
-  syntax Cl ::= closure(Map, Var, Tm)
+  syntax Tm ::= #closure(Map, Var, Tm)
+              // converted lambda: takes in environment variable
+              | #convLam(Id, Id, Tm)                                [strict(3)]
+
+
+  rule #stringToId(S:String) => #parseToken("Id@ID", S)
+
+  rule #convLam(ENV, X, IE:IELEExp)
+    => function #stringToId("test") (ENV, X) { IE ; }
 
   // // Wrapper around function application in order to make application strict
   // syntax Tm ::= app(Tm, Tm)                                            [strict]
