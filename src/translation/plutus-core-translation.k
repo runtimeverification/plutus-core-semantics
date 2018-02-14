@@ -97,6 +97,29 @@ module PLUTUS-CORE-TRANSLATION
               // converted lambda: takes in environment variable
               | #convLam(Id, Id, Tm)                                [strict(3)]
 
+  // get free variables
+  syntax VarList ::= #getFreeVars(Tm)                                [function]
+                   | VarList "#vl_union" VarList                     [function]
+                   | VarList "#vl_minus" VarList                     [function]
+
+  rule #getFreeVars(X:Var) => X
+  rule #getFreeVars([M:Tm M1:Tm]) => #getFreeVars(M) #vl_union #getFreeVars(M1)
+  rule #getFreeVars([M:Tm M1:Tm M2:Tm MS:TmList]) => #getFreeVars([[M M1] M2 MS])
+  rule #getFreeVars((lam XL:VarList M:Tm)) => #getFreeVars(M) #vl_minus XL
+
+  // TODO: figure out why below is not parsing
+  syntax Bool ::= Var "#in_var" VarList                              [function]
+
+  rule .VarList #vl_union XL':VarList => XL'
+  rule X:Var XL:VarList #vl_union XL':VarList => XL #vl_union XL'
+    (when (X #in_var XL'))
+  rule X:Var XL:VarList #vl_union XL':VarList => XL #vl_union X XL'
+    (when (notBool (X #in_var XL')))
+
+  rule X:Var #in_var .VarList => false:Bool
+  rule X:Var #in_var X:Var _:VarList => true:Bool
+  rule X:Var #in_var X':Var XL:VarList => X #in_var XL
+    (when (X =/=K X'))
 
   rule #stringToId(S:String) => #parseToken("Id@ID", S)
 
