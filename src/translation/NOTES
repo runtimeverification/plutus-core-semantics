@@ -1,0 +1,36 @@
+Closure conversion
+==================
+
+First approximation of a manual conversion of a simple example.
+
+```
+    add  = (lambda x (lambda y (x + y)))
+=>  add  = convert(lambda x (lambda y (x + y)), .Map)
+=>  add  = closure((env, x) -> convert(lambda y (x + y), 'x' |-> x), .Map)     ' Top level lambda directly convert to fn   
+=>  add  = closure((env, x) -> closure(fn_1, 'x' |-> x), .Map)                 ' Inner Lambda: Promote and replace with function name + env
+    fn_1 = closure((env, y) -> env.x + y, 'x' |-> x)
+```
+
+
+```
+    add2 = convert(add(2), .Map)
+=>  add2 = apply(func(add), env(add), 2)
+=>  add2 = closure(fn_1, 'x' |-> 2)
+```
+
+```
+    addz  = closure(fn_1, 'x' |-> z)
+    add2z = convert(add(z)(2), .Map)
+          = apply(func(addz), env(addz), 2)
+          = apply(fn_1, 'x' |-> z, 2)
+          = apply(closure((env, y) -> env.x + y, 'x' |-> x), 'x' |-> z, 2)
+          = apply(closure((env, y) -> env.x + y, 'x' |-> z)           , 2)
+          = z + 2
+```
+
+```
+    add2' = (lambda z (add(z)(2)))
+=>  add2' = convert(lambda z (add(z)(2)), .Map)
+=>  add2' = closure((env, z) -> convert(add(z)(2), 'z' |-> z), .Map)
+=>  add2' = closure((env, z) -> z + 2, .Map)
+```
