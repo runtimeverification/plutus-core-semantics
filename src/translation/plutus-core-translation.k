@@ -80,9 +80,26 @@ module PLUTUS-CORE-TRANSLATION
   // rule ( lam X1:Var X2:Var XS:VarList M:Tm )
   //   => ( lam X1 .VarList ( lam X2 XS M ) )
 
-  syntax Tm ::= #closure(Map, Var, Tm)
-              // converted lambda: takes in environment variable
-              | #convLam(Id, Id, Tm)                                [strict(3)]
+  // TODO: semantics for #map2args
+  syntax Ids ::= #map2args(Map)                                      [function]
+
+  syntax Id ::= #nameToId(Name)                                      [function]
+              | #varToId(Var)                                        [function]
+
+  syntax K ::= #closure(Name, Var, Tm, Map)                         [strict(3)]
+
+  syntax Tm ::= IELEExp
+  syntax Val ::= IELEExp
+
+  rule X:Var => #varToId(X)
+
+  rule #closure(N, X, IE:IELEExp, M)
+    => function #nameToId(N) (#varToId(X), #map2args(M)) {
+         IE ;
+       }
+
+  rule (define N:Name (lam X:Var T:Tm))
+    => #closure(N, X, T, .Map)
 
   // get free variables
   syntax VarList ::= #getFreeVars(Tm)                                [function]
@@ -113,11 +130,6 @@ module PLUTUS-CORE-TRANSLATION
   rule #minusAux(X XL, X, XL') => #minusAux(XL, X, XL')
   rule #minusAux(X XL, X', XL') => #minusAux(XL, X, X XL')
     when X =/=K X'
-
-  rule #stringToId(S:String) => #parseToken("Id@ID", S)
-
-  rule #convLam(ENV, X, IE:IELEExp)
-    => function #stringToId("test") (ENV, X) { IE ; }
 
   // // Wrapper around function application in order to make application strict
   // syntax Tm ::= app(Tm, Tm)                                            [strict]
