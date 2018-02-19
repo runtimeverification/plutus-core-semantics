@@ -5,7 +5,7 @@ module IMP-SYNTAX
   syntax Decl ::= "var" IELEExps ";"
                 | "function" Id "(" Ids ")" Block
 
-  syntax IELEExp ::= Int | Bool | String | Id
+  syntax IELEExp ::= Int | String | Id // | Bool
                | "(" IELEExp ")"             [bracket]
                | "++" IELEExp
                > IELEExp "[" IELEExps "]"        [strict]
