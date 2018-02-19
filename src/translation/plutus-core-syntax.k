@@ -3,7 +3,7 @@ require "imp-syntax.k"
 module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
-  imports IMP-SYNTAX
+  imports MAP
 
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
@@ -103,7 +103,6 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
                       | "(" "lam" VarList Tm ")"                       [binder]
-                      | IELEExp
 
   syntax Ki         ::= "(" "type" ")"
                       | "(" "fun" Ki Ki ")"
@@ -166,7 +165,6 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
                       | Int
                       | ByStr
-                      | IELEExp
 
   syntax KResult    ::= Val
   syntax KVariable  ::= Var | TyVar
