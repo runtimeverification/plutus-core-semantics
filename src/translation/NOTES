@@ -4,18 +4,23 @@ Closure conversion
 First approximation of a manual conversion of a simple example.
 
 ```
-    add  = (lambda x (lambda y (x + y)))
-=>  add  = convert(lambda x (lambda y (x + y)), .Map)
-=>  add  = closure((env, x) -> convert(lambda y (x + y), 'x' |-> x), .Map)     ' Top level lambda directly convert to fn   
-=>  add  = closure((env, x) -> closure(fn_1, 'x' |-> x), .Map)                 ' Inner Lambda: Promote and replace with function name + env
-    fn_1 = closure((env, y) -> env.x + y, 'x' |-> x)
+    add = (lambda x (lambda y (x + y)))
+=>  add = convert(lambda x (lambda y (x + y)), .Map)
+=>  add = closure((env, x) -> convert(lambda y (x + y), 'x' |-> x), .Map)      ' Top level lambda directly convert to fn
+=>  add      = closure((env, x) -> closure(fn_1, 'x' |-> x), .Map)             ' Inner Lambda: Promote and replace with function name + env
+    add.fn_1 = closure((env, y) -> env.x + y, 'x' |-> x)
+=>  add      = ...
+    add.fn_1 = function(env.x, y) { ret env.x + y; }
 ```
-
 
 ```
     add2 = convert(add(2), .Map)
 =>  add2 = apply(func(add), env(add), 2)
 =>  add2 = closure(fn_1, 'x' |-> 2)
+=>  add2 = function(y) {
+             x = 2;
+             ret add.fn_1(x, 2);
+           }
 ```
 
 ```
@@ -33,4 +38,7 @@ First approximation of a manual conversion of a simple example.
 =>  add2' = convert(lambda z (add(z)(2)), .Map)
 =>  add2' = closure((env, z) -> convert(add(z)(2), 'z' |-> z), .Map)
 =>  add2' = closure((env, z) -> z + 2, .Map)
+=>  add2' = function(z) {
+              ret z + 2
+            }
 ```
