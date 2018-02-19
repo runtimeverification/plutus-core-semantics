@@ -8,20 +8,7 @@ module PLUTUS-CORE-TRANSLATION
 
   configuration
     <T>
-      <k> $PGM:Prg </k>
-      <lenv> .Map </lenv>
-      <genv> .Map </genv>
-      <modules>
-        <module multiplicity="*">
-          <curr> 0 </curr>
-          <name> .ModName </name>
-          <data> .TyExpList </data>
-          <decl> .NameList </decl>
-          <import> .ModNmList </import>
-          <exportTy> .TyExpList </exportTy>
-          <exportTm> .NameList </exportTm>
-        </module>
-      </modules>
+      <k> $PGM:Dec </k>
     </T>
 
   /***************************************************************************/
