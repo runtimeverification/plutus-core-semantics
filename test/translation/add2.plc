@@ -1,0 +1,1 @@
+(define foo (lam x (builtin addInteger x 2)))
