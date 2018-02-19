@@ -19,7 +19,7 @@ First approximation of a manual conversion of a simple example.
 =>  add2 = closure(fn_1, 'x' |-> 2)
 =>  add2 = function(y) {
              x = 2;
-             ret add.fn_1(x, 2);
+             ret add.fn_1(2, y);
            }
 ```
 
