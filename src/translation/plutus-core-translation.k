@@ -99,27 +99,33 @@ module PLUTUS-CORE-TRANSLATION
 
   // get free variables
   syntax VarList ::= #getFreeVars(Tm)                                [function]
-                   | VarList "#vl_union" VarList                     [function]
-                   | VarList "#vl_minus" VarList                     [function]
+                   | VarList "#vlUnion" VarList                      [function]
+                   | VarList "#vlMinus" Var                          [function]
+                   | #minusAux(VarList, Var, VarList)                [function]
 
   rule #getFreeVars(X:Var) => X
-  rule #getFreeVars([M:Tm M1:Tm]) => #getFreeVars(M) #vl_union #getFreeVars(M1)
+  rule #getFreeVars([M:Tm M1:Tm]) => #getFreeVars(M) #vlUnion #getFreeVars(M1)
   rule #getFreeVars([M:Tm M1:Tm M2:Tm MS:TmList]) => #getFreeVars([[M M1] M2 MS])
-  rule #getFreeVars((lam XL:VarList M:Tm)) => #getFreeVars(M) #vl_minus XL
+  rule #getFreeVars((lam X:Var .VarList M:Tm)) => #getFreeVars(M) #vlMinus X
 
-  // TODO: figure out why below is not parsing
-  syntax Bool ::= Var "#in_var" VarList                              [function]
+  syntax Bool ::= Var "#inVar" VarList                               [function]
 
-  rule .VarList #vl_union XL':VarList => XL'
-  rule X:Var XL:VarList #vl_union XL':VarList => XL #vl_union XL'
-    (when (X #in_var XL'))
-  rule X:Var XL:VarList #vl_union XL':VarList => XL #vl_union X XL'
-    (when (notBool (X #in_var XL')))
+  rule .VarList #vlUnion XL':VarList => XL'
+  rule (X:Var XL:VarList) #vlUnion XL':VarList => XL #vlUnion XL'
+    when X #inVar XL'
+  rule (X:Var XL:VarList) #vlUnion XL':VarList => XL #vlUnion X XL'
+    when notBool (X #inVar XL')
 
-  rule X:Var #in_var .VarList => false:Bool
-  rule X:Var #in_var X:Var _:VarList => true:Bool
-  rule X:Var #in_var X':Var XL:VarList => X #in_var XL
-    (when (X =/=K X'))
+  rule X:Var #inVar .VarList => false:Bool
+  rule X:Var #inVar X:Var _:VarList => true:Bool
+  rule X:Var #inVar X':Var XL:VarList => X #inVar XL
+    when X =/=K X'
+
+  rule XL:VarList #vlMinus X:Var => #minusAux(XL, X, .VarList)
+  rule #minusAux(.VarList, _, XL) => XL
+  rule #minusAux(X XL, X, XL') => #minusAux(XL, X, XL')
+  rule #minusAux(X XL, X', XL') => #minusAux(XL, X, X XL')
+    when X =/=K X'
 
   rule #stringToId(S:String) => #parseToken("Id@ID", S)
 
@@ -320,10 +326,10 @@ module PLUTUS-CORE-TRANSLATION
   // rule (success M):Tm => M ~> #freezeSucc()
   // rule V:Val ~> #freezeSucc() => (success V):Val
 
-  // syntax Bool ::= ModName "#in_mn" ModNmList                         [function]
-  //               | Name "#in_n" NameList                              [function]
-  //               | ConList "#in_tx" TyExpList                         [function]
-  //               | Con "#in_cl" ConList                               [function]
+  syntax Bool ::= ModName "#in_mn" ModNmList                         [function]
+                | Name "#in_n" NameList                              [function]
+                | ConList "#in_tx" TyExpList                         [function]
+                | Con "#in_cl" ConList                               [function]
 
   // // module name in module name list
   // rule MN:ModName #in_mn .ModNmList => false:Bool
