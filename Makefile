@@ -3,7 +3,6 @@
 
 .PHONY: all test-exec test-erc test-typing test-translation
 
-
 all:    .build/execution/plutus-core-kompiled/kore.txt      \
         .build/erc20/plutus-core-kompiled/kore.txt          \
         .build/translation/plutus-core-kompiled/kore.txt   \
@@ -19,4 +18,5 @@ test-verify: .build/execution/plutus-core-kompiled/kore.txt
 	cd verification && ./verify_all.sh
 
 test-translation: .build/translation/plutus-core-kompiled/kore.txt
-	krun -d .build/translation/ test/translation/add2.plc
+	krun -d .build/translation/ test/translation/add.plc     | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g'
+	krun -d .build/translation/ test/translation/add2.plc    | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g'
