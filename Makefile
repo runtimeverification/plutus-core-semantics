@@ -1,7 +1,13 @@
 .build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $(wildcard src/%/*.k)
 	kompile -d .build/$*/ --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
 
-.PHONY: test-exec test-erc test-typing test-translation
+.PHONY: all test-exec test-erc test-typing test-translation
+
+
+all:    .build/execution/plutus-core-kompiled/kore.txt      \
+        .build/erc20/plutus-core-kompiled/kore.txt          \
+        .build/translation/plutus-core-kompiled/kore.txt   \
+        .build/typing/plutus-core-kompiled/kore.txt
 
 test-exec: .build/execution/plutus-core-kompiled/kore.txt
 	cd test && ./test_exec.sh
