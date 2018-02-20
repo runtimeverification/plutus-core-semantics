@@ -1,41 +1,16 @@
-typing: src/typing/plutus-core.k src/typing/plutus-core-syntax.k src/typing/plutus-core-typing.k
-	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/typing/plutus-core.k
-	touch plutus-core-kompiled
-	cp -r plutus-core-kompiled src/typing
-	rm -rf plutus-core-kompiled
-# workaround for kompile not updating mtime, reported as https://github.com/kframework/k/issues/2327
+.build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $(wildcard src/%/*.k)
+	kompile -d .build/$*/ --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
 
-exec: src/execution/plutus-core.k src/execution/plutus-core-syntax.k src/execution/plutus-core-execution.k
-	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/execution/plutus-core.k
-	touch plutus-core-kompiled
-	cp -r plutus-core-kompiled src/execution
-	rm -rf plutus-core-kompiled
+.PHONY: test-exec test-erc test-typing test-translation
 
-trans: src/translation/plutus-core.k src/translation/plutus-core-syntax.k src/translation/plutus-core-translation.k
-	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/translation/plutus-core.k
-	touch plutus-core-kompiled
-	cp -r plutus-core-kompiled src/translation
-	rm -rf plutus-core-kompiled
-
-erc: src/execution/plutus-core.k src/execution/plutus-core-syntax.k src/execution/plutus-core-execution.k
-	kompile -d . --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/erc20/plutus-core.k
-	touch plutus-core-kompiled
-	cp -r plutus-core-kompiled src/erc20
-	rm -rf plutus-core-kompiled
-
-test: exec
+test-exec: .build/execution/plutus-core-kompiled/kore.txt
 	cd test && ./test_exec.sh
 
-test_erc: erc
+test-erc: .build/erc/plutus-core-kompiled/kore.txt
 	cd test/erc20 && ./test_all.sh
 
-verify: exec
+test-verify: .build/execution/plutus-core-kompiled/kore.txt
 	cd verification && ./verify_all.sh
 
-clean:
-	rm -rf src/typing/plutus-core-kompiled
-	rm -rf src/execution/plutus-core-kompiled
-	rm -rf src/translation/plutus-core-kompiled
-	rm -rf src/erc20/plutus-core-kompiled
-
-.PHONY: test clean
+test-translation: .build/translation/plutus-core-kompiled/kore.txt
+	krun -d .build/translation/ test/translation/add2.plc
