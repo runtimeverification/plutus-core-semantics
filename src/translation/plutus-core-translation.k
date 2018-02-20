@@ -9,6 +9,7 @@ module PLUTUS-CORE-TRANSLATION
   configuration
     <T>
       <k> $PGM:Dec </k>
+      <functions> .Map </functions>
     </T>
 
   /***************************************************************************/
@@ -65,6 +66,47 @@ module PLUTUS-CORE-TRANSLATION
   //   => #primFalse when #toString(B1) =/=String #toString(B2)
 
   /***************************************************************************/
+  /************************  Closure Completion  *****************************/
+  /***************************************************************************/
+
+  syntax Tm ::= IELEExp
+  syntax Val ::= IELEExp
+
+  syntax Tm ::= #closure(Name, Var, Tm, Map)                         [strict(3)]
+  syntax Val ::= #freeLambda(Var, Tm)
+  syntax Name ::= "#freshName"
+  syntax Id ::= #varToId(Var)
+              | #nameToId(Name)
+  syntax IELEExp ::= #bindEnvSyntax(Map)
+                   | #allocSyntax(Int)
+                   | #allocBind(IELEExps)
+
+  rule (define N:Name (lam X:Var T:Tm))
+    => #closure(N, X, T, .Map)
+
+  rule #closure(N, X, #freeLambda(Y, T), M)
+    => #closure(N, X, #closure(#freshName, Y, T, M (X |-> X)), M)
+
+  // TODO: E needs to access env
+  rule <k> #closure(N, X, E:IELEExp, M) =>
+           #allocBind( String2Id("c")    = #allocSyntax(1 +Int size(M))
+                     , String2Id("c")[0] = !N
+                     , #bindEnvSyntax(M)
+                     )
+        ... </k>
+       <functions> ... .Map => !N:Int |->
+               function #nameToId(N) (String2Id("env"), #varToId(X)) {
+                    E ;
+               }
+       </functions> 
+
+
+  rule (lam X:Var T:Tm):Tm
+    => #freeLambda(X, T) 
+
+  rule X:Var => #varToId(X)
+
+  /***************************************************************************/
   /************************   LOCAL REDUCTIONS   *****************************/
   /***************************************************************************/
 
@@ -81,55 +123,7 @@ module PLUTUS-CORE-TRANSLATION
   //   => ( lam X1 .VarList ( lam X2 XS M ) )
 
   // TODO: semantics for #map2args
-  syntax Ids ::= #map2args(Map)                                      [function]
 
-  syntax Id ::= #nameToId(Name)                                      [function]
-              | #varToId(Var)                                        [function]
-
-  syntax K ::= #closure(Name, Var, Tm, Map)                         [strict(3)]
-
-  syntax Tm ::= IELEExp
-  syntax Val ::= IELEExp
-
-  rule X:Var => #varToId(X)
-
-  rule #closure(N, X, IE:IELEExp, M)
-    => function #nameToId(N) (#varToId(X), #map2args(M)) {
-         IE ;
-       }
-
-  rule (define N:Name (lam X:Var T:Tm))
-    => #closure(N, X, T, .Map)
-
-  // get free variables
-  syntax VarList ::= #getFreeVars(Tm)                                [function]
-                   | VarList "#vlUnion" VarList                      [function]
-                   | VarList "#vlMinus" Var                          [function]
-                   | #minusAux(VarList, Var, VarList)                [function]
-
-  rule #getFreeVars(X:Var) => X
-  rule #getFreeVars([M:Tm M1:Tm]) => #getFreeVars(M) #vlUnion #getFreeVars(M1)
-  rule #getFreeVars([M:Tm M1:Tm M2:Tm MS:TmList]) => #getFreeVars([[M M1] M2 MS])
-  rule #getFreeVars((lam X:Var .VarList M:Tm)) => #getFreeVars(M) #vlMinus X
-
-  syntax Bool ::= Var "#inVar" VarList                               [function]
-
-  rule .VarList #vlUnion XL':VarList => XL'
-  rule (X:Var XL:VarList) #vlUnion XL':VarList => XL #vlUnion XL'
-    when X #inVar XL'
-  rule (X:Var XL:VarList) #vlUnion XL':VarList => XL #vlUnion X XL'
-    when notBool (X #inVar XL')
-
-  rule X:Var #inVar .VarList => false:Bool
-  rule X:Var #inVar X:Var _:VarList => true:Bool
-  rule X:Var #inVar X':Var XL:VarList => X #inVar XL
-    when X =/=K X'
-
-  rule XL:VarList #vlMinus X:Var => #minusAux(XL, X, .VarList)
-  rule #minusAux(.VarList, _, XL) => XL
-  rule #minusAux(X XL, X, XL') => #minusAux(XL, X, XL')
-  rule #minusAux(X XL, X', XL') => #minusAux(XL, X, X XL')
-    when X =/=K X'
 
   // // Wrapper around function application in order to make application strict
   // syntax Tm ::= app(Tm, Tm)                                            [strict]
