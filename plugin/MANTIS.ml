@@ -19,6 +19,11 @@ let hook_isCodeEmpty c _ _ config _ = match c with
   [Bool (Cache.is_code_empty acct)]
 | _ -> failwith "isCodeEmpty"
 
+let hook_accountExists c _ _ config _ = match c with
+  [Int acct] ->
+  [Bool (Cache.account_exists acct)]
+| _ -> failwith "accountExists"
+
 let hook_getStorageData c _ _ config _ = match c with
   [Int acct], [Int index] ->
   [Int (Cache.get_storage_data acct index)]

@@ -37,13 +37,6 @@ let be_int i =
     ""
   with Break i -> String.sub be i (len - i)
 
-let be_int_width i width =
-  let be = be_int i in
-  let unpadded_byte_width = String.length be in
-  let padded = Bytes.make width '\000' in
-  Bytes.blit_string be 0 padded (width - unpadded_byte_width) unpadded_byte_width;
-  padded
-
 let of_z z =
   if Z.equal z Z.zero then Bytes.of_string "\000" else
   let twos = if Z.gt z Z.zero then z else Z.extract z 0 (z_bits (Z.sub (Z.mul (Z.neg z) (Z.of_int 2)) Z.one)) in
@@ -53,14 +46,19 @@ let of_z z =
   else
     Bytes.of_string big_endian
 
+let of_z_width width i =
+  let be = be_int i in
+  let unpadded_byte_width = String.length be in
+  let padded = Bytes.make width '\000' in
+  Bytes.blit_string be 0 padded (width - unpadded_byte_width) unpadded_byte_width;
+  padded
 
-let of_z_width width z =
-  let twos = if Z.gt z Z.zero then z else Z.extract z 0 (z_bits (Z.sub (Z.mul (Z.neg z) (Z.of_int 2)) Z.one)) in
-  be_int_width twos width
+let to_z_unsigned b =
+  let little_endian = rev_string (Bytes.to_string b) in
+  Z.of_bits little_endian
 
 let to_z b =
-  let little_endian = rev_string (Bytes.to_string b) in
-  let unsigned = Z.of_bits little_endian in
+  let unsigned = to_z_unsigned b in
   if Bytes.length b > 0 && is_negative (Bytes.get b 0) then
   Z.signed_extract unsigned 0 (Bytes.length b * 8)
   else unsigned
@@ -92,7 +90,7 @@ module InMemoryWorldState = struct
     try
       let acct = StringMap.find id !accounts  in
       {Msg_types.nonce=acct.nonce;Msg_types.balance=acct.balance;code_empty=Bytes.length acct.code = 0}
-    with Not_found -> {Msg_types.nonce=zero;Msg_types.balance=zero;code_empty=true}
+    with Not_found -> {Msg_types.nonce=Bytes.empty;Msg_types.balance=Bytes.empty;code_empty=true}
 
   let get_storage_data id offset =
     let id = Bytes.to_string id in
@@ -141,6 +139,8 @@ module NetworkWorldState = struct
                Msg_pb.decode_blockhash).hash
 end
 
+let _VERSION = "1.1" (* TODO: get from file in submodule *)
+
 let serve addr (run_transaction : Msg_types.call_context -> Msg_types.call_result) =
   (* server side *)
   let process_transactions chans : unit =
@@ -166,17 +166,16 @@ let serve addr (run_transaction : Msg_types.call_context -> Msg_types.call_resul
                     close_in in_chan; close_out out_chan in
     (try
       let hello = input_framed in_chan Msg_pb.decode_hello in
-      if hello.config = Iele_config && String.equal hello.version "1.0" then
+      if String.equal hello.version _VERSION then
         process_transactions chans
     with
-      exn -> finish (); raise exn);
+      exn -> prerr_endline(Printexc.to_string exn); Printexc.print_backtrace stderr; finish (); raise exn);
     finish ()
   in
   let serve_on socket =
     while true do
       let conn = Unix.accept socket in
-      let _ = Thread.create accept_connection conn in
-      ()
+      if Array.length Sys.argv > 2 && Sys.argv.(2) = "debug" then accept_connection conn else let _ = Thread.create accept_connection conn in ()
     done
   in
   let print_addr = function
@@ -203,7 +202,7 @@ let send addr ctx =
   in
   let sock = create_socket addr in
   let chans = (Unix.in_channel_of_descr sock, Unix.out_channel_of_descr sock) in
-  let hello = {version="1.0";config=Iele_config} in
+  let hello = {version=_VERSION;config=Iele_config} in
     output_framed (snd chans) Msg_pb.encode_hello hello;
     output_framed (snd chans) Msg_pb.encode_call_context ctx;
     let result = ref None in

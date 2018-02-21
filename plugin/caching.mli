@@ -8,6 +8,7 @@ module type KWorldState = sig
   val get_code : Z.t -> string
   val get_blockhash : Z.t -> Z.t
   val is_code_empty : Z.t -> bool
+  val account_exists : Z.t -> bool
 
   val clear : unit -> unit
 end
