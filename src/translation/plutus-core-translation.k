@@ -8,6 +8,7 @@ module PLUTUS-CORE-TRANSLATION
   configuration
     <T>
       <k> $PGM:Dec </k>
+      <functions> .Map:Map </functions>
     </T>
 
 // Convert Lambdas
@@ -29,14 +30,35 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax Name ::= "#freshName"
 
+// Closures are then converted to IELE functions
+
+  syntax FunctionDefinition ::= #toIELEFunction(Name, FunctionParameters, Instructions)
+  syntax LocalName ::= #stringToLocalName(String)
+
+// Alloc bind allocates a closure and binds the correct "function pointer" and environment
+
+  syntax Instructions ::= #allocBind(Name, Int, Map)
+
+  // TODO: E needs to access env
+  rule <k> #closure(N, X, I:Instructions, M) =>
+           #allocBind(N, !N, M)
+        ... </k>
+       <functions> ...
+             .Map
+         => (!N:Int |-> #toIELEFunction(N, (#stringToLocalName("%env"), #varToLocalName(X)), I))
+       </functions>
+
+
 // Other constructs
 // ----------------
 
 // Currently, we put off implementing the details of IELE syntax:
 
-  syntax Val ::= #toIELESyntax(Tm)
+  syntax Instructions ::= #toIELESyntax(Tm)
+  syntax LocalName    ::= #varToLocalName(Var)
+  syntax Val ::= Instructions | LocalName
 
-  rule X:Var => #toIELESyntax(X)
+  rule X:Var => #varToLocalName(X)
   rule ( builtin N:Name T1 T2 ) => #toIELESyntax(( builtin N T1 T2 ))
 
 endmodule
