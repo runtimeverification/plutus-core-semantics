@@ -27,8 +27,9 @@ test-erc: .build/erc/plutus-core-kompiled/kore.txt
 test-verify: .build/execution/plutus-core-kompiled/kore.txt
 	cd verification && ./verify_all.sh
 
-test-translation: .build/translation/plutus-core-kompiled/kore.txt
-	krun -d .build/translation/ test/translation/add.plc     | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g'
-	krun -d .build/translation/ test/translation/add2.plc    | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g'
+test-translation: .build/translation/plutus-core-kompiled/kore.txt \
+                  test/translation/add.out  test/translation/add2.out
+	git diff --exit-code test/translation/*.out
 
-
+test/translation/%.out: test/translation/%.plc .build/translation/plutus-core-kompiled/kore.txt
+	krun -d .build/translation/ $< | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g' > $@
