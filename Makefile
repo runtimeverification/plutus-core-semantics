@@ -29,7 +29,9 @@ $(k_submodule)/make.timestamp:
 # Build
 # -----
 
-.build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $(wildcard src/%/*.k) deps
+# Allow expansion of $* in wildcard; See https://stackoverflow.com/questions/15948822/directory-wildcard-in-makefile-pattern-rule
+.SECONDEXPANSION:
+.build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $$(wildcard src/$$*/*.k) deps
 	$(k_bin)/kompile --debug --verbose --directory .build/$*/ \
 					 --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
 
