@@ -1,0 +1,3 @@
+<T>
+  <k> ( define foo ( lam x  .VarList ( builtin addInteger x 2 ) ) ) </k>
+</T>

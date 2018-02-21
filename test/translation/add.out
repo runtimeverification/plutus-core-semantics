@@ -1,0 +1,3 @@
+<T>
+  <k> ( define add ( lam x  .VarList ( lam y  .VarList ( builtin addInteger x y ) ) ) ) </k>
+</T>
