@@ -17,39 +17,39 @@ module PLUTUS-CORE-TRANSLATION
 // Convert Lambdas
 // ---------------
 
-  syntax Tm ::= #closure(Name, Var, Tm, Map)                         [strict(3)]
+  syntax Tm ::= #closure(LocalName, Var, Tm, Map)                         [strict(3)]
 
 // Top-level lambdas uses the names that the user has given them...
   rule (define N:Name (lam X:Var T:Tm))
-   => #closure(N, X, T, .Map)
+   => #closure(#freshLocalName, X, T, .Map)
 
 // ... whereas nested lambdas are assigned a fresh name
   rule #closure(N, X:Var, #freeLambda(Y, T), M)
-    => #closure(N, X, #closure(#freshName, Y, T, M (X:Var |-> X:Var)), M)
+    => #closure(N, X, #closure(#freshLocalName, Y, T, M (X:Var |-> X:Var)), M)
 
   syntax Val ::= #freeLambda(Var, Tm)
   rule (lam X:Var T:Tm):Tm
     => #freeLambda(X, T)
 
-  syntax Name ::= "#freshName"
+  syntax LocalName ::= "#freshLocalName"
 
 // These are then converted to IELEFunctions (though we just abstract this for now.)
 
-  syntax FunctionDefinition ::= #toIELEFunction(Name, FunctionParameters, Instructions)
+  syntax FunctionDefinition ::= #toIELEFunction(LocalName, FunctionParameters, Instructions)
   syntax LocalName ::= #stringToLocalName(String)
 
   // TODO: E needs to access env
-  rule <k> #closure(N, X, I:Instructions, M) =>
-           #allocBind(N, !N, M)
+  rule <k> #closure(LN:LocalName, X, I:Instructions, M) =>
+           #allocBind(LN, !N, M)
         ... </k>
        <functions> ...
              .Map
-         => (!N:Int |-> #toIELEFunction(N, (#stringToLocalName("%env"), #varToLocalName(X)), I))
+         => (!N:Int |-> #toIELEFunction(LN, (#stringToLocalName("%env"), #varToLocalName(X)), I))
        </functions>
 
 // `#allocBind` will allocate memory for a closure and initialize it with the correct "function pointer" and environment
 
-  syntax Instructions ::= #allocBind(Name, Int, Map)
+  syntax Instructions ::= #allocBind(LocalName, Int, Map)
 
 // Other constructs
 // ----------------
