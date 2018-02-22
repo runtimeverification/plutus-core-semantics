@@ -66,10 +66,13 @@ module PLUTUS-CORE-TRANSLATION
 
 // Currently, we put off implementing the details of IELE syntax:
 
-  syntax Instructions ::= #toIELESyntax(Tm)
-  syntax Val ::= Instructions | LocalName
-
+  syntax Val ::= Instruction | Instructions | LocalName
   rule X:Var => #varToLocalName(X)
-  rule ( builtin N:Name T1 T2 ) => #toIELESyntax(( builtin N T1 T2 ))
+
+  syntax Tm ::= Operand
+  rule ( builtin addInteger O1:Operand O2:Operand ):Tm
+    => ((#stringToLocalName(#freshString) = add O1 , O2)
+        .Instructions
+       ):Instructions
 
 endmodule
