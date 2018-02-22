@@ -14,6 +14,19 @@ module PLUTUS-CORE-TRANSLATION
 // We translate each declaration iteratively
   rule D:Dec DS:DecList => D:Dec ~> DS:DecList
 
+// Helpers
+// -------
+  syntax LocalName ::= #stringToLocalName(String)                   [function]
+  rule #stringToLocalName(S) => #parseToken("LocalName@IELE-COMMON", "%" +String S)
+
+  syntax String       ::= #varToString(Var)       [function, hook(STRING.token2string)]
+  syntax LocalName    ::= #varToLocalName(Var)    [function]
+  rule #varToLocalName(V:Var) => #stringToLocalName(#varToString(V))
+
+  syntax LocalName ::= "#freshLocalName"                            [function]
+  rule #freshLocalName:LocalName
+    => #stringToLocalName("freshLocalName" +String Int2String(!N))
+
 // Convert Lambdas
 // ---------------
 
@@ -31,12 +44,9 @@ module PLUTUS-CORE-TRANSLATION
   rule (lam X:Var T:Tm):Tm
     => #freeLambda(X, T)
 
-  syntax LocalName ::= "#freshLocalName"
-
 // These are then converted to IELEFunctions (though we just abstract this for now.)
 
   syntax FunctionDefinition ::= #toIELEFunction(LocalName, FunctionParameters, Instructions)
-  syntax LocalName ::= #stringToLocalName(String)
 
   // TODO: E needs to access env
   rule <k> #closure(LN:LocalName, X, I:Instructions, M) =>
@@ -44,7 +54,7 @@ module PLUTUS-CORE-TRANSLATION
         ... </k>
        <functions> ...
              .Map
-         => (!N:Int |-> #toIELEFunction(LN, (#stringToLocalName("%env"), #varToLocalName(X)), I))
+         => (!N:Int |-> #toIELEFunction(LN, (#stringToLocalName("env"), #varToLocalName(X)), I))
        </functions>
 
 // `#allocBind` will allocate memory for a closure and initialize it with the correct "function pointer" and environment
@@ -57,7 +67,6 @@ module PLUTUS-CORE-TRANSLATION
 // Currently, we put off implementing the details of IELE syntax:
 
   syntax Instructions ::= #toIELESyntax(Tm)
-  syntax LocalName    ::= #varToLocalName(Var)
   syntax Val ::= Instructions | LocalName
 
   rule X:Var => #varToLocalName(X)
