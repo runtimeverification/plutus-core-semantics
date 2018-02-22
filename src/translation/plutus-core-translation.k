@@ -7,9 +7,12 @@ module PLUTUS-CORE-TRANSLATION
 
   configuration
     <T>
-      <k> $PGM:Dec </k>
+      <k> $PGM:DecList </k>
       <functions> .Map:Map </functions>
     </T>
+
+// We translate each declaration iteratively
+  rule D:Dec DS:DecList => D:Dec ~> DS:DecList
 
 // Convert Lambdas
 // ---------------
@@ -47,8 +50,6 @@ module PLUTUS-CORE-TRANSLATION
 // `#allocBind` will allocate memory for a closure and initialize it with the correct "function pointer" and environment
 
   syntax Instructions ::= #allocBind(Name, Int, Map)
-
-
 
 // Other constructs
 // ----------------
