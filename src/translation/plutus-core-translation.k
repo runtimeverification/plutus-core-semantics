@@ -26,22 +26,22 @@ module PLUTUS-CORE-TRANSLATION
   syntax LocalName    ::= #varToLocalName(Var)    [function]
   rule #varToLocalName(V:Var) => #stringToLocalName(#varToString(V))
 
-  syntax LocalName ::= "#freshLocalName"                            [function]
-  rule #freshLocalName:LocalName
-    => #stringToLocalName("freshLocalName" +String Int2String(!N))
+  syntax String ::= "#freshString"                            [function]
+  rule #freshString:String
+    => "fresh" +String Int2String(!N)
 
 // Convert Lambdas
 // ---------------
 
-  syntax Tm ::= #closure(LocalName, Var, Tm, Map)                         [strict(3)]
+  syntax Tm ::= #closure(String, Var, Tm, Map)                         [strict(3)]
 
 // Top-level lambdas uses the names that the user has given them...
   rule (define N:Name (lam X:Var T:Tm))
-   => #closure(#freshLocalName, X, T, .Map)
+   => #closure(#freshString, X, T, .Map)
 
 // ... whereas nested lambdas are assigned a fresh name
   rule #closure(N, X:Var, #freeLambda(Y, T), M)
-    => #closure(N, X, #closure(#freshLocalName, Y, T, M (X:Var |-> X:Var)), M)
+    => #closure(N, X, #closure(#freshString, Y, T, M (X:Var |-> X:Var)), M)
 
   syntax Val ::= #freeLambda(Var, Tm)
   rule (lam X:Var T:Tm):Tm
@@ -49,23 +49,23 @@ module PLUTUS-CORE-TRANSLATION
 
 // These are then converted to IELEFunctions (though we just abstract this for now.)
 
-  syntax FunctionDefinition ::= #toIELEFunction(LocalName, FunctionParameters, Instructions)
+  syntax FunctionDefinition ::= #toIELEFunction(String, FunctionParameters, Instructions)
 
   // TODO: E needs to access env
-  rule <k> #closure(LN:LocalName, X, I:Instructions, M) =>
-           #allocBind(LN, !N, M)
+  rule <k> #closure(NAME:String, X, I:Instructions, M) =>
+           #allocBind(NAME, !N, M)
         ... </k>
        <functions> ...
              .Map
-         => (!N:Int |-> #toIELEFunction(LN, (#stringToLocalName("env"), #varToLocalName(X)), I))
+         => (!N:Int |-> #toIELEFunction(NAME, (#stringToLocalName("env"), #varToLocalName(X)), I))
        </functions>
 
 // `#allocBind` will allocate memory for a closure and initialize it with the correct "function pointer" and environment
 
-  syntax Instructions ::= #allocBind(LocalName, Int, Map)
-  syntax Instructions ::= #bindEnv(LocalName, Map)              [function]
-  rule #allocBind(N, I, E) => (N = call @alloc(1 +Int size(E))
-                               store I, N
+  syntax Instructions ::= #allocBind(String, Int, Map)
+  syntax Instructions ::= #bindEnv(String, Map)              [function]
+  rule #allocBind(N, I, E) => (#stringToLocalName(N) = call @alloc(1 +Int size(E))
+                               store I, #stringToLocalName(N)
                                #bindEnv(N, E)
                               ):Instructions
 // TODO: Handle order of multiple variables
