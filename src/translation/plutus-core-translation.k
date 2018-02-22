@@ -3,7 +3,10 @@ require "iele-syntax.k"
 
 module PLUTUS-CORE-TRANSLATION
   imports PLUTUS-CORE-SYNTAX
-  imports IELE-SYNTAX
+
+// Pull off some stunts to avoid ambiguities between `.K` and IELEName
+  imports IELE-COMMON
+  syntax IeleName ::=  r"(?<![A-Za-z0-9\\_\\-\\$])[a-zA-Z\\_\\-\\$][0-9a-zA-Z\\_\\-\\$]*" [token, notInRules, prec(3)]
 
   configuration
     <T>
@@ -60,6 +63,14 @@ module PLUTUS-CORE-TRANSLATION
 // `#allocBind` will allocate memory for a closure and initialize it with the correct "function pointer" and environment
 
   syntax Instructions ::= #allocBind(LocalName, Int, Map)
+  syntax Instructions ::= #bindEnv(LocalName, Map)              [function]
+  rule #allocBind(N, I, E) => (N = call @alloc(1 +Int size(E))
+                               store I, N
+                               #bindEnv(N, E)
+                              ):Instructions
+// TODO: Handle order of multiple variables
+  rule #bindEnv(N, .Map) => .Instructions
+
 
 // Other constructs
 // ----------------
