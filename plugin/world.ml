@@ -163,7 +163,8 @@ let serve addr (run_transaction : Msg_types.call_context -> Msg_types.call_resul
     let chans = (in_chan,out_chan) in
     ThreadLocal.put connections chans;
     let finish () = ThreadLocal.remove connections;
-                    close_in in_chan; close_out out_chan in
+                    Unix.shutdown fd Unix.SHUTDOWN_SEND;
+                    Unix.close fd in
     (try
       let hello = input_framed in_chan Msg_pb.decode_hello in
       if String.equal hello.version _VERSION then
@@ -185,7 +186,18 @@ let serve addr (run_transaction : Msg_types.call_context -> Msg_types.call_resul
   let create_socket addr =
     let open Unix in
     let sock = socket PF_INET SOCK_STREAM 0 in
-    Unix.bind sock addr;
+    let timeout = ref 1 in
+    while (
+      try
+        Unix.bind sock addr;
+        false
+      with Unix.Unix_error(Unix.EADDRINUSE, _, _) -> 
+        print_endline("Socket in use, retrying in " ^ (string_of_int !timeout) ^ "...");
+        true
+    ) do
+      Unix.sleep !timeout;
+      timeout := !timeout + 1
+    done;
     listen sock 10;
     let new_addr = Unix.getsockname sock in
     print_endline("Listening for requests at address " ^ (print_addr new_addr));
