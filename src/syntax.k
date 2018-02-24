@@ -1,4 +1,6 @@
 module PLUTUS-CORE-SYNTAX
+  imports DOMAINS-SYNTAX
+  imports BUILTIN-ID-TOKENS
   imports INT
   imports FLOAT
   imports STRING
@@ -8,6 +10,11 @@ module PLUTUS-CORE-SYNTAX
   /***********************    LEXICAL GRAMMAR   ******************************/
   /***************************************************************************/
 
+  syntax LowerName ::= r"[a-z][a-zA-Z0-9\\_']*"             [token, autoReject]
+                     | #LowerId                             [token, autoReject]
+  syntax UpperName ::= r"[A-Z][a-zA-Z0-9\\_']*"             [token, autoReject]
+                     | #UpperId                             [token, autoReject]
+
   syntax BuiltinName ::=  "addInteger" | "subtractInteger"
                        | "multiplyInteger" | "divideInteger" | "remainderInteger"
                        | "equalsInteger" | "lessThanInteger" | "greaterThanInteger"
@@ -16,23 +23,23 @@ module PLUTUS-CORE-SYNTAX
                        | "sha3_256" | "sha2_256"
 
   // Name.
-  syntax Name    ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
-  syntax TyName  ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
+  syntax Name    ::= LowerName
+  syntax TyName  ::= LowerName
 
   // Builtin Name
   // CompBuiltin.
-  syntax CBName  ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
+  syntax CBName  ::= LowerName
 
   // Module name.
-  syntax ModName ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+  syntax ModName ::= UpperName
                    | #stringToModName(String)                        [function]
                    | ".ModName"
 
   // Constructor name.
-  syntax Con     ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+  syntax Con     ::= UpperName
                    | #stringToCon(String)                            [function]
 
-  syntax TyCon   ::= r"[A-Z][a-zA-Z0-9\\_']*"                    [token, avoid]
+  syntax TyCon   ::= UpperName
 
   // Integer literal.
   // NOTE: K's builtin `Int` sort is based on exactly the same regular
@@ -52,7 +59,7 @@ module PLUTUS-CORE-SYNTAX
 
   // TODO: Make sure preferring Var over TyVar is ok.
   // Variable.
-  syntax Var     ::= r"[a-z][a-zA-Z0-9\\_']*"                           [token]
+  syntax Var     ::= LowerName
 
   // Type Variable.
   syntax TyVar     ::= r"[a-z][a-zA-Z0-9\\_']*"                  [token, avoid]
