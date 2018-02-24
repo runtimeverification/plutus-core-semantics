@@ -1,8 +1,7 @@
-require "imp-syntax.k"
-
 module PLUTUS-CORE-SYNTAX
   imports INT
   imports FLOAT
+  imports STRING
   imports MAP
 
   /***************************************************************************/
