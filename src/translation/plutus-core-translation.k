@@ -40,7 +40,9 @@ module PLUTUS-CORE-TRANSLATION
 // Convert Lambdas
 // ---------------
 
-  syntax Tm ::= #closure(String, Var, Tm, Map)                         [strict(3)]
+  syntax Tm  ::= #closure(String, Var, Tm, Map)                         [strict(3)]
+               | #replaceFreeVar(Tm, Var, Int)                          [function]
+  syntax Val ::= #freeVar(Var, Int)
 
 // Top-level lambdas uses the names that the user has given them...
   rule (define N:Name (lam X:Var T:Tm))
@@ -48,7 +50,16 @@ module PLUTUS-CORE-TRANSLATION
 
 // ... whereas nested lambdas are assigned a fresh name
   rule #closure(N, X:Var, #freeLambda(Y, T), M)
-    => #closure(N, X, #closure(#freshString, Y, T, (X:Var |-> X:Var) M), M)
+    => #closure(N, X, #closure( #freshString, Y
+                              , #replaceFreeVar(T, X, size(M))
+                              , (size(M) |-> X:Var) M)
+                              , M )
+
+// Mark free variables so that we can look up their values in the env map.
+  rule #replaceFreeVar(X:Var, X    , OFFSET) => (#freeVar(X, OFFSET)):Val
+  rule #replaceFreeVar(X:Var, Y:Var, OFFSET) => X:Var             when (X:Var =/=K Y:Var)
+  rule #replaceFreeVar((builtin N T1 T2), Y:Var, OFFSET)
+    => (builtin N #replaceFreeVar(T1, Y, OFFSET) #replaceFreeVar(T2, Y, OFFSET))
 
   syntax Val ::= #freeLambda(Var, Tm)
   rule (lam X:Var T:Tm):Tm
@@ -72,17 +83,17 @@ module PLUTUS-CORE-TRANSLATION
 // `#allocBind` will allocate memory for a closure and initialize it with the correct "function pointer" and environment
 
   syntax Instructions ::= #allocBind(String, Int, Map)       [function]
-  syntax Instructions ::= #bindEnv(LocalName, Map)              [function]
+  syntax Instructions ::= #bindEnv(Map)                      [function]
   rule #allocBind(N, I, E) => (#stringToLocalName(N) = call @alloc(1 +Int size(E))
                                store I, #stringToLocalName(N)
-                               #intToLocalName(!M) = #stringToLocalName(N)
-                               #bindEnv(#intToLocalName(!M), E)
+                               #bindEnv(E)
                               ):Instructions
 // TODO: Handle order of multiple variables
-  rule #bindEnv(N, .Map) => .Instructions
-  rule #bindEnv(N, (X:Var |-> Y:Var) M:Map) => (N = add N, 1
-                                         store #varToLocalName(X), N
-                                         #bindEnv(N, M)
+  rule #bindEnv(.Map) => .Instructions
+  rule #bindEnv((OFF:Int |-> V:Var) M:Map) => (
+                                         #intToLocalName(!N) = add #stringToLocalName("env"), (OFF +Int 1)
+                                         store #varToLocalName(V), #intToLocalName(!N)
+                                         #bindEnv(M)
                                         ):Instructions
 
 
@@ -94,10 +105,30 @@ module PLUTUS-CORE-TRANSLATION
   syntax Val ::= Instruction | Instructions | LocalName
   rule X:Var => #varToLocalName(X)
 
-  syntax Tm ::= Operand
-  rule ( builtin addInteger O1:Operand O2:Operand ):Tm
-    => ((#stringToLocalName(#freshString) = add O1 , O2)
-        .Instructions
-       ):Instructions
+  syntax Instructions ::= #loadOperand(Tm, LocalName)               [function]
+  rule #loadOperand(I:Int              , LN) => .Instructions
+  rule #loadOperand(V:Var              , LN) => .Instructions
+  rule #loadOperand(N:LocalName        , LN) => .Instructions
+  rule #loadOperand(#freeVar(V, OFFSET), LN) => (%addr = add #stringToLocalName("env"), OFFSET
+                                                 LN    = load %addr
+                                                ):Instructions
+
+  syntax Operand ::= #useOperand(Tm, LocalName)                     [function]
+  rule #useOperand(I:Int              , LN) => I:Int
+  rule #useOperand(V:Var              , LN) => #varToLocalName(V:Var)
+  rule #useOperand(N:LocalName        , LN) => N:LocalName
+  rule #useOperand(#freeVar(V, OFFSET), LN) => LN:LocalName
+
+  syntax Instructions ::= #concatInsList(Instructions, Instructions) [function]
+  rule #concatInsList(.Instructions, IS) => IS:Instructions
+  rule #concatInsList(I IS, IS')         => #concatInsList(IS, I IS')
+
+  rule (builtin addInteger T1:Tm T2:Tm):Tm
+    => #concatInsList(
+         #concatInsList(#loadOperand(T1, #intToLocalName(!N1)),
+                        #loadOperand(T2, #intToLocalName(!N2))),
+         #stringToLocalName(#freshString)
+                = add #useOperand(T1, #intToLocalName(!N1))
+                    , #useOperand(T2, #intToLocalName(!N2)))
 
 endmodule
