@@ -154,7 +154,7 @@ module PLUTUS-CORE-TRANSLATION
 // ----------------
 
    syntax PreInstructions ::= Instructions
-   syntax Val ::= Instructions
+   syntax KResult         ::= Instructions
 
    syntax PreInstructions ::= #concatInsList(PreInstructions, PreInstructions) [strict]
    rule #concatInsList(IS, .Instructions) => IS:Instructions
