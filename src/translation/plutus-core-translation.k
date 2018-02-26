@@ -28,7 +28,9 @@ module PLUTUS-CORE-TRANSLATION
                       => <function>
                            <name>   #nameToGlobalName(N:Name) </name>
                            <jumpId> -1                        </jumpId>
-                           <k>      #loadOperand(T:Tm, #stringToLocalName("ret"))</k>
+                           <k>      #concatInsList(#loadOperand(T:Tm, #stringToLocalName("ret")),
+                                                   ret #useOperand(T:Tm, #stringToLocalName("ret")) .Instructions)
+                           </k>
                            <env>    .Map                      </env>
                            <params> .LocalNames               </params>
                          </function>
