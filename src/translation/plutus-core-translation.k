@@ -60,6 +60,7 @@ module PLUTUS-CORE-TRANSLATION
           ...
         </functions>
 
+  rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
 // Helpers
 // -------
 
