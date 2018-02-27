@@ -10,7 +10,8 @@ module PLUTUS-CORE-TRANSLATION
 
   configuration
     <T>
-      <plutus> $PGM:DecList ~> #createAlloc:K ~> #createInit:K </plutus>
+      <plutus> $PGM:DecList ~> #createAlloc:K ~> #createInit:K ~> #createDispatch:K </plutus>
+      <dispatchedFunctionsLeft> 1 </dispatchedFunctionsLeft>
       <functions>
         <function multiplicity="*" type="Bag">
           <name>   (@noname):GlobalName </name>
@@ -18,13 +19,12 @@ module PLUTUS-CORE-TRANSLATION
           <k>      .K                    </k>
           <env>    .Map                  </env>
           <params> .VarList              </params>
+          <hasDispatchEntry> false:Bool  </hasDispatchEntry>
         </function>
-
-
       </functions>
     </T>
 
-  syntax K ::= "#createAlloc" | "#createInit"
+  syntax K ::= "#createAlloc" | "#createInit" | "#createDispatch"
   rule <plutus> .DecList => .K ... </plutus>
 
 // We translate each declaration iteratively
@@ -38,6 +38,7 @@ module PLUTUS-CORE-TRANSLATION
                            </k>
                            <env>    .Map                      </env>
                            <params> .VarList                  </params>
+                           <hasDispatchEntry> true:Bool       </hasDispatchEntry>
                          </function>
                        )
        </functions>
@@ -78,7 +79,7 @@ module PLUTUS-CORE-TRANSLATION
   syntax Tm ::= #replaceFreeVar(Tm, Var, Int)                          [function]
   syntax Tm ::= #freeVar(Var, Int)
   rule #replaceFreeVar(X:Var, X    , OFFSET) => #freeVar(X, OFFSET)
-  rule #replaceFreeVar(X:Var, Y:Var, OFFSET) => X:Var             when (X:Var =/=K Y:Var)
+  rule #replaceFreeVar(X:Var, Y:Var, OFFSET) => X:Var               when (X:Var =/=K Y:Var)
   rule #replaceFreeVar(I:Int, X    , OFFSET) => I:Int
   rule #replaceFreeVar(#freeVar(Y, J), X    , OFFSET) => #freeVar(Y:Var, J:Int)
 
@@ -138,6 +139,7 @@ module PLUTUS-CORE-TRANSLATION
              <name> N:GlobalName </name>
              <params> VS:VarList </params>
              <jumpId> J:Int </jumpId>
+             <hasDispatchEntry> _ </hasDispatchEntry>
            </function>
            (  .Bag
            => <function>
@@ -148,9 +150,11 @@ module PLUTUS-CORE-TRANSLATION
                 </k>
                 <env>    #addParamsToEnv(VS:VarList, M:Map) </env>
                 <params> X </params>
+                <hasDispatchEntry> false:Bool </hasDispatchEntry>
               </function>
            )
         </functions>
+        <dispatchedFunctionsLeft> DFL => DFL +Int 1 </dispatchedFunctionsLeft>
 
    rule #loadOperand([T1:Tm T2:Tm], LN)
      => #concatInsList(
@@ -195,6 +199,7 @@ module PLUTUS-CORE-TRANSLATION
                             </k>
                             <env>    .Map                  </env>
                             <params> size .VarList         </params>
+                            <hasDispatchEntry> true:Bool   </hasDispatchEntry>
                           </function>
                         )
         </functions>
@@ -209,7 +214,55 @@ module PLUTUS-CORE-TRANSLATION
                             </k>
                             <env>    .Map                  </env>
                             <params> size .VarList         </params>
+                            <hasDispatchEntry> true:Bool        </hasDispatchEntry>
                           </function>
                         )
         </functions>
+
+   syntax PreInstructions ::= "#dispatchJumpTable"
+                            | #dispatchCheckCond(Int, GlobalName)
+                            | #dispatchCall     (Int, GlobalName)
+   rule <plutus> #createDispatch:K => .K ... </plutus>
+        <dispatchedFunctionsLeft> DFL => DFL -Int 1 </dispatchedFunctionsLeft>
+        <functions> ... ( .Bag
+                       => <function>
+                            <name>   (@dispatch):GlobalName </name>
+                            <jumpId> -1                   </jumpId>
+                            <k>
+                                 #concatInsList( %fptr = load %closure .Instructions
+                                               , #dispatchJumpTable )
+
+                            </k>
+                            <env>    .Map                   </env>
+                            <params> closure param .VarList </params>
+                            <hasDispatchEntry> true:Bool        </hasDispatchEntry>
+                          </function>
+                        )
+        </functions>
+
+    rule <k> #dispatchJumpTable:PreInstructions
+                => #concatInsList( #dispatchCheckCond(JI, FN)
+                                 , #concatInsList( #dispatchJumpTable
+                                                 , #dispatchCall(JI, FN)))
+            ...
+         </k>
+         <dispatchedFunctionsLeft> DFL => DFL -Int 1 </dispatchedFunctionsLeft>
+         <function>
+            <name>   FN     </name>
+            <jumpId> JI     </jumpId>
+            <k>      _:PreInstructions    </k>
+            <env>    _:Map  </env>
+            <params> _:VarList  </params>
+            <hasDispatchEntry> false:Bool => true:Bool </hasDispatchEntry>
+         </function>
+
+    rule <k> #dispatchJumpTable:PreInstructions => .Instructions ... </k>
+         <dispatchedFunctionsLeft> DFL => DFL -Int 1 </dispatchedFunctionsLeft>
+
+    rule #dispatchCall(JI, GN)
+      => (call GN(%closure, %param) .Instructions)
+    rule #dispatchCheckCond(JI:Int, GN:GlobalName)
+      => %cond = cmp eq %fptr, JI:Int
+         br %cond, lableme
+
 endmodule
