@@ -83,7 +83,11 @@ module PLUTUS-CORE-TRANSLATION
   rule #replaceFreeVar(#freeVar(Y, J), X    , OFFSET) => #freeVar(Y:Var, J:Int)
 
   rule #replaceFreeVar((lam X:Var T), X:Var, OFFSET) => ((lam X:Var T)):Tm
-  rule #replaceFreeVar((lam X:Var T), Y:Var, OFFSET) => ((lam X:Var #replaceFreeVar(T, Y, OFFSET))):Tm      [owise]
+  rule #replaceFreeVar((lam X:Var T), Y:Var, OFFSET) => ((lam X:Var #replaceFreeVar(T, Y, OFFSET))):Tm
+    when (X:Var =/=K Y:Var)
+
+  rule #replaceFreeVar([T1 T2], X:Var, OFFSET)
+    => [#replaceFreeVar(T1, X, OFFSET) #replaceFreeVar(T2, X, OFFSET)]
 
   rule #replaceFreeVar((builtin N T1 T2), Y:Var, OFFSET)
     => (builtin N #replaceFreeVar(T1, Y, OFFSET) #replaceFreeVar(T2, Y, OFFSET))
@@ -148,6 +152,14 @@ module PLUTUS-CORE-TRANSLATION
            )
         </functions>
 
+   rule #loadOperand([T1:Tm T2:Tm], LN)
+     => #concatInsList(
+          #concatInsList( #loadOperand(T1, #intToLocalName(!N))
+                        , #loadOperand(T2, #intToLocalName(!M)))
+           , LN = call @dispatch( #useOperand(T1, #intToLocalName(!N))
+                                , #useOperand(T2, #intToLocalName(!M)))
+                        .Instructions
+                      )
 
 
    rule #useOperand((builtin addInteger T1:Tm T2:Tm), LN)
@@ -164,6 +176,7 @@ module PLUTUS-CORE-TRANSLATION
    rule #useOperand(V:Var              , LN) => #varToLocalName(V:Var)
    rule #useOperand(#freeVar(V, OFFSET), LN) => LN:LocalName
    rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
+   rule #useOperand([T1 T2], LN:LocalName) => LN:LocalName
 
 // Generate static functions
 // -------------------------
