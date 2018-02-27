@@ -37,10 +37,19 @@ module PLUTUS-CORE-TRANSLATION
                        )
        </functions>
 
+  syntax Tm ::= #replaceFreeVarsForParams(Tm, VarList, Int)             [function]
+  rule #replaceFreeVarsForParams(T:Tm, X:Var   , OFFSET) => #replaceFreeVar(T:Tm, X:Var, OFFSET)
+  rule #replaceFreeVarsForParams(T:Tm, .VarList, OFFSET) => T:Tm
+
+  syntax Map ::= #addParamsToEnv(VarList, Map)             [function]
+  rule #addParamsToEnv(X:Var   , MAP:Map) => (size(MAP) |-> X:Var):Map MAP:Map
+  rule #addParamsToEnv(.VarList, MAP:Map) => MAP:Map
+
   rule <functions>
+          ...
            <function>
              <k> #loadOperand((lam X:Var T:Tm), LN:LocalName)
-              => #allocBind(LN, !N, M:Map)
+              => #allocBind(LN, !N, #addParamsToEnv(VS:VarList, M:Map))
               ... </k>
              <env> M </env>
              <name> N:GlobalName </name>
@@ -51,14 +60,13 @@ module PLUTUS-CORE-TRANSLATION
            => <function>
                 <name>   #intToGlobalName(!N)  </name>
                 <jumpId> !N                    </jumpId>
-                <k>      #concatInsList(#loadOperand(#replaceFreeVar(T:Tm, X:Var, size(M)), #stringToLocalName("ret")),
-                                        ret #useOperand(#replaceFreeVar(T:Tm, X:Var, size(M)), #stringToLocalName("ret")) .Instructions)
+                <k>      #concatInsList(#loadOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), #stringToLocalName("ret")),
+                                        ret #useOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), #stringToLocalName("ret")) .Instructions)
                 </k>
-                <env>    ((size(M)):Int |-> X:Var):Map M:Map </env>
-                <params> X</params>
+                <env>    #addParamsToEnv(VS:VarList, M:Map) </env>
+                <params> X </params>
               </function>
            )
-          ...
         </functions>
 
   rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
@@ -175,7 +183,7 @@ module PLUTUS-CORE-TRANSLATION
                                                   LN    = load %addr
                                                  ):Instructions
    rule #useOperand((builtin addInteger T1:Tm T2:Tm), LN)
-     => LN
+     => LN:LocalName
    rule #loadOperand((builtin addInteger T1:Tm T2:Tm), LN)
      => #concatInsList(
          #concatInsList(#loadOperand(T1, #intToLocalName(!N1)),
