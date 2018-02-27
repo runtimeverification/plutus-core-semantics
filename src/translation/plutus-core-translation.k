@@ -50,32 +50,6 @@ module PLUTUS-CORE-TRANSLATION
   rule #addParamsToEnv(X:Var   , MAP:Map) => (size(MAP) |-> X:Var):Map MAP:Map
   rule #addParamsToEnv(.VarList, MAP:Map) => MAP:Map
 
-  rule <functions>
-          ...
-           <function>
-             <k> #loadOperand((lam X:Var T:Tm), LN:LocalName)
-              => #allocBind(LN, !N, #addParamsToEnv(VS:VarList, M:Map))
-              ... </k>
-             <env> M </env>
-             <name> N:GlobalName </name>
-             <params> VS:VarList </params>
-             <jumpId> J:Int </jumpId>
-           </function>
-           (  .Bag
-           => <function>
-                <name>   #intToGlobalName(!N)  </name>
-                <jumpId> !N                    </jumpId>
-                <k>      #concatInsList(#loadOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), %ret),
-                                        ret #useOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), %ret) .Instructions)
-                </k>
-                <env>    #addParamsToEnv(VS:VarList, M:Map) </env>
-                <params> X </params>
-              </function>
-           )
-        </functions>
-
-  rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
-
 // Helpers
 // -------
 
@@ -150,6 +124,32 @@ module PLUTUS-CORE-TRANSLATION
    rule #loadOperand(#freeVar(V, OFFSET), LN) => (%addr = add %env, (OFFSET +Int 1)
                                                   LN    = load %addr
                                                  ):Instructions
+   rule <functions>
+          ...
+           <function>
+             <k> #loadOperand((lam X:Var T:Tm), LN:LocalName)
+              => #allocBind(LN, !N, #addParamsToEnv(VS:VarList, M:Map))
+              ... </k>
+             <env> M </env>
+             <name> N:GlobalName </name>
+             <params> VS:VarList </params>
+             <jumpId> J:Int </jumpId>
+           </function>
+           (  .Bag
+           => <function>
+                <name>   #intToGlobalName(!N)  </name>
+                <jumpId> !N                    </jumpId>
+                <k>      #concatInsList(#loadOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), %ret),
+                                        ret #useOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), %ret) .Instructions)
+                </k>
+                <env>    #addParamsToEnv(VS:VarList, M:Map) </env>
+                <params> X </params>
+              </function>
+           )
+        </functions>
+
+
+
    rule #useOperand((builtin addInteger T1:Tm T2:Tm), LN)
      => LN:LocalName
    rule #loadOperand((builtin addInteger T1:Tm T2:Tm), LN)
@@ -163,6 +163,7 @@ module PLUTUS-CORE-TRANSLATION
    rule #useOperand(I:Int              , LN) => I:Int
    rule #useOperand(V:Var              , LN) => #varToLocalName(V:Var)
    rule #useOperand(#freeVar(V, OFFSET), LN) => LN:LocalName
+   rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
 
 // Generate static functions
 // -------------------------
