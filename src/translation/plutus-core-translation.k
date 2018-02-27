@@ -17,7 +17,7 @@ module PLUTUS-CORE-TRANSLATION
           <jumpId> -1                   </jumpId>
           <k>      .K                    </k>
           <env>    .Map                  </env>
-          <params> .LocalNames          </params>
+          <params> .VarList              </params>
         </function>
       </functions>
     </T>
@@ -32,7 +32,7 @@ module PLUTUS-CORE-TRANSLATION
                                                    ret #useOperand(T:Tm, #stringToLocalName("ret")) .Instructions)
                            </k>
                            <env>    .Map                      </env>
-                           <params> .LocalNames               </params>
+                           <params> .VarList                  </params>
                          </function>
                        )
        </functions>
@@ -44,7 +44,7 @@ module PLUTUS-CORE-TRANSLATION
               ... </k>
              <env> M </env>
              <name> N:GlobalName </name>
-             <params> LNS:LocalNames </params>
+             <params> VS:VarList </params>
              <jumpId> J:Int </jumpId>
            </function>
            (  .Bag
@@ -55,7 +55,7 @@ module PLUTUS-CORE-TRANSLATION
                                         ret #useOperand(#replaceFreeVar(T:Tm, X:Var, size(M)), #stringToLocalName("ret")) .Instructions)
                 </k>
                 <env>    ((size(M)):Int |-> X:Var):Map M:Map </env>
-                <params> #varToLocalName(X)    </params>
+                <params> X</params>
               </function>
            )
           ...
