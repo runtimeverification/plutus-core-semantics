@@ -10,7 +10,7 @@ module PLUTUS-CORE-TRANSLATION
 
   configuration
     <T>
-      <plutus> $PGM:DecList </plutus>
+      <plutus> $PGM:DecList ~> #createAlloc:K ~> #createInit:K </plutus>
       <functions>
         <function multiplicity="*" type="Bag">
           <name>   (@noname):GlobalName </name>
@@ -19,11 +19,16 @@ module PLUTUS-CORE-TRANSLATION
           <env>    .Map                  </env>
           <params> .VarList              </params>
         </function>
+
+
       </functions>
     </T>
 
+  syntax K ::= "#createAlloc" | "#createInit"
+  rule <plutus> .DecList => .K ... </plutus>
+
 // We translate each declaration iteratively
-  rule <plutus>(define N:Name T:Tm) DS:DecList => DS</plutus>
+  rule <plutus>(define N:Name T:Tm) DS:DecList => DS:DecList ... </plutus>
        <functions> ... ( .Bag
                       => <function>
                            <name>   #nameToGlobalName(N:Name) </name>
@@ -137,7 +142,7 @@ module PLUTUS-CORE-TRANSLATION
 //         ... </k>
 //        <functions> ...
 //              .Map
-//          => (!N:Int |-> #toIELEFunction(NAME, (#stringToLocalName("env"), #varToLocalName(X)), I))
+//          => (!N:Int |-> #toIELEFunction(NAME, (%env, #varToLocalName(X)), I))
 //        </functions>
 
 
@@ -192,4 +197,38 @@ module PLUTUS-CORE-TRANSLATION
    rule #useOperand(V:Var              , LN) => #varToLocalName(V:Var)
    rule #useOperand(#freeVar(V, OFFSET), LN) => LN:LocalName
 
+// Generate static functions
+// -------------------------
+
+   rule <plutus> #createAlloc:K => .K ... </plutus>
+        <functions> ... ( .Bag
+                       => <function>
+                            <name>   (@alloc):GlobalName </name>
+                            <jumpId> -1                   </jumpId>
+                            <k>      %alloc_counter_ptr = 0
+                                     %alloced = load %alloc_counter_ptr
+                                     %ret = %alloced
+                                     %alloced = add %size, %alloced
+                                     store  %alloced, %alloc_counter_ptr
+                                     ret %ret
+                            </k>
+                            <env>    .Map                  </env>
+                            <params> size .VarList         </params>
+                          </function>
+                        )
+        </functions>
+
+   rule <plutus> #createInit:K => .K ... </plutus>
+        <functions> ... ( .Bag
+                       => <function>
+                            <name>   (@init):GlobalName </name>
+                            <jumpId> -1                   </jumpId>
+                            <k>      %alloc_counter_ptr = 0
+                                     store  1, %alloc_counter_ptr
+                            </k>
+                            <env>    .Map                  </env>
+                            <params> size .VarList         </params>
+                          </function>
+                        )
+        </functions>
 endmodule
