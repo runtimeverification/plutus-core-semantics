@@ -28,8 +28,8 @@ module PLUTUS-CORE-TRANSLATION
                       => <function>
                            <name>   #nameToGlobalName(N:Name) </name>
                            <jumpId> -1                        </jumpId>
-                           <k>      #concatInsList(#loadOperand(T:Tm, #stringToLocalName("ret")),
-                                                   ret #useOperand(T:Tm, #stringToLocalName("ret")) .Instructions)
+                           <k>      #concatInsList(#loadOperand(T:Tm, %ret),
+                                                   ret #useOperand(T:Tm, %ret) .Instructions)
                            </k>
                            <env>    .Map                      </env>
                            <params> .VarList                  </params>
@@ -60,8 +60,8 @@ module PLUTUS-CORE-TRANSLATION
            => <function>
                 <name>   #intToGlobalName(!N)  </name>
                 <jumpId> !N                    </jumpId>
-                <k>      #concatInsList(#loadOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), #stringToLocalName("ret")),
-                                        ret #useOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), #stringToLocalName("ret")) .Instructions)
+                <k>      #concatInsList(#loadOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), %ret),
+                                        ret #useOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), %ret) .Instructions)
                 </k>
                 <env>    #addParamsToEnv(VS:VarList, M:Map) </env>
                 <params> X </params>
@@ -75,25 +75,21 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax GlobalName ::= #nameToGlobalName(Name)                           [function]
 
-   syntax LocalName ::= #stringToLocalName(String)                   [function]
-   rule #stringToLocalName(S) => #parseToken("LocalName@IELE-COMMON", "%" +String S)
+  syntax GlobalName ::= #stringToGlobalName(String)                   [function]
+  rule #stringToGlobalName(S) => #parseToken("GlobalName@IELE-COMMON", "@" +String S)
+  syntax GlobalName ::= #intToGlobalName(Int)       [function]
+  rule #intToGlobalName(N:Int)
+    => #stringToGlobalName("fresh" +String Int2String(N:Int))
 
-   syntax GlobalName ::= #stringToGlobalName(String)                   [function]
-   rule #stringToGlobalName(S) => #parseToken("GlobalName@IELE-COMMON", "@" +String S)
-   syntax GlobalName ::= #intToGlobalName(Int)       [function]
-   rule #intToGlobalName(N:Int)
-     => #stringToGlobalName("fresh" +String Int2String(N:Int))
+  syntax String       ::= #varToString(Var)       [function, hook(STRING.token2string)]
+  syntax LocalName    ::= #varToLocalName(Var)    [function]
+  rule #varToLocalName(V:Var) => #stringToLocalName(#varToString(V))
 
-   syntax String       ::= #varToString(Var)       [function, hook(STRING.token2string)]
-   syntax LocalName    ::= #varToLocalName(Var)    [function]
-   rule #varToLocalName(V:Var) => #stringToLocalName(#varToString(V))
+  syntax LocalName ::= #stringToLocalName(String)                   [function]
+  rule #stringToLocalName(S) => #parseToken("LocalName@IELE-COMMON", "%" +String S)
 
   syntax LocalName ::= #intToLocalName(Int)       [function]
-  rule #intToLocalName(N)
-    => #stringToLocalName("fresh" +String Int2String(N))
-  syntax String ::= "#freshString"                            [function]
-  rule #freshString:String
-    => "fresh" +String Int2String(!N)
+  rule #intToLocalName(N) => #stringToLocalName("fresh" +String Int2String(N))
 
 // // Convert Lambdas
 // // ---------------
@@ -179,7 +175,7 @@ module PLUTUS-CORE-TRANSLATION
    syntax PreInstructions ::= #loadOperand(Tm, LocalName)
    rule #loadOperand(I:Int              , LN) => .Instructions
    rule #loadOperand(V:Var              , LN) => .Instructions
-   rule #loadOperand(#freeVar(V, OFFSET), LN) => (%addr = add #stringToLocalName("env"), OFFSET
+   rule #loadOperand(#freeVar(V, OFFSET), LN) => (%addr = add %env, (OFFSET +Int 1)
                                                   LN    = load %addr
                                                  ):Instructions
    rule #useOperand((builtin addInteger T1:Tm T2:Tm), LN)
