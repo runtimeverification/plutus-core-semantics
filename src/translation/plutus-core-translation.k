@@ -40,7 +40,7 @@ module PLUTUS-CORE-TRANSLATION
   rule <functions>
            <function>
              <k> #loadOperand((lam X:Var T:Tm), LN:LocalName)
-              => #allocBind(#freshString, !N, ((size(M)):Int |-> X:Var):Map M:Map)
+              => #allocBind(LN, !N, M:Map)
               ... </k>
              <env> M </env>
              <name> N:GlobalName </name>
@@ -51,7 +51,8 @@ module PLUTUS-CORE-TRANSLATION
            => <function>
                 <name>   #intToGlobalName(!N)  </name>
                 <jumpId> !N                    </jumpId>
-                <k>      #loadOperand(#replaceFreeVar(T:Tm, X:Var, size(M)), #stringToLocalName("ret"))
+                <k>      #concatInsList(#loadOperand(#replaceFreeVar(T:Tm, X:Var, size(M)), #stringToLocalName("ret")),
+                                        ret #useOperand(#replaceFreeVar(T:Tm, X:Var, size(M)), #stringToLocalName("ret")) .Instructions)
                 </k>
                 <env>    ((size(M)):Int |-> X:Var):Map M:Map </env>
                 <params> #varToLocalName(X)    </params>
@@ -108,8 +109,11 @@ module PLUTUS-CORE-TRANSLATION
   rule #replaceFreeVar(X:Var, X    , OFFSET) => #freeVar(X, OFFSET)
   rule #replaceFreeVar(X:Var, Y:Var, OFFSET) => X:Var             when (X:Var =/=K Y:Var)
   rule #replaceFreeVar(I:Int, X    , OFFSET) => I:Int
-  rule #replaceFreeVar((lam X:Var T), Y:Var, OFFSET)
-    => ((lam X:Var T)):Tm
+  rule #replaceFreeVar(#freeVar(Y, J), X    , OFFSET) => #freeVar(Y:Var, J:Int)
+
+  rule #replaceFreeVar((lam X:Var T), X:Var, OFFSET) => ((lam X:Var T)):Tm
+  rule #replaceFreeVar((lam X:Var T), Y:Var, OFFSET) => ((lam X:Var #replaceFreeVar(T, Y, OFFSET))):Tm      [owise]
+
   rule #replaceFreeVar((builtin N T1 T2), Y:Var, OFFSET)
     => (builtin N #replaceFreeVar(T1, Y, OFFSET) #replaceFreeVar(T2, Y, OFFSET))
 
@@ -136,11 +140,11 @@ module PLUTUS-CORE-TRANSLATION
 
 // `#allocBind` will allocate memory for a closure and initialize it with the correct "function pointer" and environment
 
-  syntax Instructions ::= #allocBind(String, Int, Map)       [function]
+  syntax Instructions ::= #allocBind(LocalName, Int, Map)       [function]
   syntax Instructions ::= #bindEnv(Map, LocalName)                      [function]
-  rule #allocBind(N, I, E) => (#stringToLocalName(N) = call @alloc(1 +Int size(E))
-                               store I, #stringToLocalName(N)
-                               #bindEnv(E, #stringToLocalName(N))
+  rule #allocBind(N, I, E) => (N = call @alloc(1 +Int size(E))
+                               store I, N:LocalName
+                               #bindEnv(E, N)
                               ):Instructions
 
   rule #bindEnv(.Map, _) => .Instructions
@@ -157,11 +161,11 @@ module PLUTUS-CORE-TRANSLATION
    syntax KResult         ::= Instructions
 
    syntax PreInstructions ::= #concatInsList(PreInstructions, PreInstructions) [strict]
-   rule #concatInsList(IS, .Instructions) => IS:Instructions
-   rule #concatInsList(IS, I IS')         => #concatInsList(#addInsToBack(IS, I .Instructions), IS')
+   rule #concatInsList(IS:Instructions, .Instructions) => IS:Instructions
+   rule #concatInsList(IS:Instructions, I IS')         => #concatInsList(#addInsToBack(IS:Instructions, I:Instruction .Instructions), IS')
 
    syntax Instructions ::= #addInsToBack(Instructions, Instructions) [function]
-   rule #addInsToBack(.Instructions, IS) => IS
+   rule #addInsToBack(.Instructions, IS) => IS:Instructions
    rule #addInsToBack(I IS, IS') => I #addInsToBack(IS, IS')
 
    syntax PreInstructions ::= #loadOperand(Tm, LocalName)
@@ -170,6 +174,8 @@ module PLUTUS-CORE-TRANSLATION
    rule #loadOperand(#freeVar(V, OFFSET), LN) => (%addr = add #stringToLocalName("env"), OFFSET
                                                   LN    = load %addr
                                                  ):Instructions
+   rule #useOperand((builtin addInteger T1:Tm T2:Tm), LN)
+     => LN
    rule #loadOperand((builtin addInteger T1:Tm T2:Tm), LN)
      => #concatInsList(
          #concatInsList(#loadOperand(T1, #intToLocalName(!N1)),
