@@ -75,6 +75,7 @@ module PLUTUS-CORE-TRANSLATION
         </functions>
 
   rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
+
 // Helpers
 // -------
 
@@ -96,21 +97,8 @@ module PLUTUS-CORE-TRANSLATION
   syntax LocalName ::= #intToLocalName(Int)       [function]
   rule #intToLocalName(N) => #stringToLocalName("fresh" +String Int2String(N))
 
-// // Convert Lambdas
-// // ---------------
-
-//   syntax Tm  ::= #closure(String, Var, Tm, Map)                         [strict(3)]
-
-// // Top-level lambdas uses the names that the user has given them...
-//   rule (define N:Name (lam X:Var T:Tm))
-//     => #closure(#freshString, X, T, .Map)
-
-// // ... whereas nested lambdas are assigned a fresh name
-//   rule #closure(N, X:Var, #freeLambda(Y, T), M)
-//     => #closure(N, X, #closure( #freshString, Y
-//                               , #replaceFreeVar(T, X, size(M))
-//                               , (size(M) |-> X:Var) M)
-//                               , M )
+// Convert Lambdas
+// ---------------
 
 // Mark free variables so that we can look up their values in the env map.
   syntax Tm ::= #replaceFreeVar(Tm, Var, Int)                          [function]
@@ -125,27 +113,6 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #replaceFreeVar((builtin N T1 T2), Y:Var, OFFSET)
     => (builtin N #replaceFreeVar(T1, Y, OFFSET) #replaceFreeVar(T2, Y, OFFSET))
-
-//   syntax Val ::= #freeLambda(Var, Tm)
-//   rule (lam X:Var T:Tm):Tm
-//     => #freeLambda(X, T)
-
-// // These are then converted to IELEFunctions (though we just abstract this for now.)
-
-//   syntax FunctionDefinition ::= #toIELEFunction(String, FunctionParameters, Instructions) [function]
-//   rule #toIELEFunction(N, PARAMS, I)
-//     => define #stringToGlobalName(N) (PARAMS) { I .LabeledBlocks }
-
-//   // TODO: E needs to access env
-//   rule <k> #closure(NAME:String, X, I:Instructions, M) =>
-//            #allocBind(NAME, !N, M)
-//         ... </k>
-//        <functions> ...
-//              .Map
-//          => (!N:Int |-> #toIELEFunction(NAME, (%env, #varToLocalName(X)), I))
-//        </functions>
-
-
 
 // `#allocBind` will allocate memory for a closure and initialize it with the correct "function pointer" and environment
 
