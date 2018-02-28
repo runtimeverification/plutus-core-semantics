@@ -54,13 +54,15 @@ module PLUTUS-CORE-TRANSLATION
 // Helpers
 // -------
 
-  syntax GlobalName ::= #nameToGlobalName(Name)                           [function]
-
   syntax GlobalName ::= #stringToGlobalName(String)                   [function]
   rule #stringToGlobalName(S) => #parseToken("GlobalName@IELE-COMMON", "@" +String S)
   syntax GlobalName ::= #intToGlobalName(Int)       [function]
   rule #intToGlobalName(N:Int)
     => #stringToGlobalName("fresh" +String Int2String(N:Int))
+
+  syntax String     ::= #nameToString(Name)       [function, hook(STRING.token2string)]
+  syntax GlobalName ::= #nameToGlobalName(Name)                              [function]
+  rule #nameToGlobalName(N:Name) => #stringToGlobalName(#nameToString(N))
 
   syntax String       ::= #varToString(Var)       [function, hook(STRING.token2string)]
   syntax LocalName    ::= #varToLocalName(Var)    [function]
