@@ -257,7 +257,7 @@ module PLUTUS-CORE-TRANSLATION
          </function>
 
     rule <k> #dispatchJumpTable:PreInstructions => .Instructions ... </k>
-         <dispatchedFunctionsLeft> DFL => DFL -Int 1 </dispatchedFunctionsLeft>
+         <dispatchedFunctionsLeft> 0 => -1 </dispatchedFunctionsLeft>
 
     rule #dispatchCall(JI, GN)
       => (call GN(%closure, %param) .Instructions)
