@@ -29,7 +29,8 @@ $(k_submodule)/make.timestamp:
 # -----
 
 .build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $(wildcard src/%/*.k)
-	kompile -d .build/$*/ --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
+	$(k_bin)/kompile --debug --verbose --directory .build/$*/ \
+					 --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
 
 build: execution translation erc typing
 
@@ -55,4 +56,4 @@ test-translation: .build/translation/plutus-core-kompiled/kore.txt \
 	git diff --exit-code test/translation/*.out
 
 test/translation/%.out: test/translation/%.plc .build/translation/plutus-core-kompiled/kore.txt
-	krun -d .build/translation/ $< | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g' > $@
+	$(k_bin)/krun -d .build/translation/ $< | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g' > $@
