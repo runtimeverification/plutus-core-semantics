@@ -74,6 +74,9 @@ module PLUTUS-CORE-TRANSLATION
   syntax LocalName ::= #intToLocalName(Int)       [function]
   rule #intToLocalName(N) => #stringToLocalName("fresh" +String Int2String(N))
 
+  syntax IeleName ::= #stringToIeleName(String)                   [function]
+  rule #stringToIeleName(S) => #parseToken("IeleName@IELE-COMMON", S)
+
 // Convert Lambdas
 // ---------------
 
@@ -265,6 +268,6 @@ module PLUTUS-CORE-TRANSLATION
       => (call GN(%closure, %param) .Instructions)
     rule #dispatchCheckCond(JI:Int, GN:GlobalName)
       => %cond = cmp eq %fptr, JI:Int
-         br %cond, lableme
+         br %cond, #stringToIeleName("label" +String Int2String(JI:Int))
 
 endmodule
