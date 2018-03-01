@@ -264,8 +264,11 @@ module PLUTUS-CORE-TRANSLATION
     rule <k> #dispatchJumpTable:PreInstructions => .Instructions ... </k>
          <dispatchedFunctionsLeft> 0 => -1 </dispatchedFunctionsLeft>
 
+    syntax Instruction ::= #block(IeleName)
+
     rule #dispatchCall(JI, GN)
-      => (call GN(%closure, %param) .Instructions)
+      => #block(#stringToIeleName("label" +String Int2String(JI:Int)))
+         call GN(%closure, %param)
     rule #dispatchCheckCond(JI:Int, GN:GlobalName)
       => %cond = cmp eq %fptr, JI:Int
          br %cond, #stringToIeleName("label" +String Int2String(JI:Int))
