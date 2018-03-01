@@ -176,7 +176,7 @@ let serve addr (run_transaction : Msg_types.call_context -> Msg_types.call_resul
   let serve_on socket =
     while true do
       let conn = Unix.accept socket in
-      if Array.length Sys.argv > 2 && Sys.argv.(2) = "debug" then accept_connection conn else let _ = Thread.create accept_connection conn in ()
+      if Array.length Sys.argv > 3 && Sys.argv.(3) = "debug" then accept_connection conn else let _ = Thread.create accept_connection conn in ()
     done
   in
   let print_addr = function
