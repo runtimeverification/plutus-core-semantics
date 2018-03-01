@@ -1,22 +1,30 @@
-.build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $(wildcard src/%/*.k)
-	kompile -d .build/$*/ --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
+# Settings
+# --------
 
-.PHONY: all clean \
+.PHONY: all clean build \
         execution translation erc20 typing \
         test-exec test-erc test-typing test-translation
 
-all:    .build/execution/plutus-core-kompiled/kore.txt      \
-        .build/erc20/plutus-core-kompiled/kore.txt          \
-        .build/translation/plutus-core-kompiled/kore.txt   \
-        .build/typing/plutus-core-kompiled/kore.txt
+all: build
 
 clean:
 	rm -rf .build
+
+# Build
+# -----
+
+.build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $(wildcard src/%/*.k)
+	kompile -d .build/$*/ --debug --verbose --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
+
+build: execution translation erc typing
 
 execution:   .build/execution/plutus-core-kompiled/kore.txt
 translation: .build/translation/plutus-core-kompiled/kore.txt
 erc:         .build/erc/plutus-core-kompiled/kore.txt
 typing:      .build/typing/plutus-core-kompiled/kore.txt
+
+# Testing
+# -------
 
 test-exec: .build/execution/plutus-core-kompiled/kore.txt
 	cd test && ./test_exec.sh
