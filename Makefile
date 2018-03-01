@@ -1,7 +1,11 @@
 # Settings
 # --------
 
-.PHONY: all clean build \
+build_dir:=$(CURDIR)/.build
+k_submodule:=$(build_dir)/k
+k_bin:=$(k_submodule)/k-distribution/target/release/k/bin
+
+.PHONY: all clean build deps \
         execution translation erc20 typing \
         test-exec test-erc test-typing test-translation
 
@@ -9,6 +13,17 @@ all: build
 
 clean:
 	rm -rf .build
+
+# Dependencies
+# ------------
+
+deps: $(k_submodule)/make.timestamp
+
+$(k_submodule)/make.timestamp:
+	git submodule update --init -- $(k_submodule)
+	cd $(k_submodule) \
+		&& mvn package -q -DskipTests
+	touch $(k_submodule)/make.timestamp
 
 # Build
 # -----
