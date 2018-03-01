@@ -7,6 +7,7 @@ k_bin:=$(k_submodule)/k-distribution/target/release/k/bin
 
 .PHONY: all clean build deps \
         execution translation erc20 typing \
+        test test-passing test-failing \
         test-execution test-erc20 test-typing test-translation
 
 all: build
@@ -41,6 +42,10 @@ typing:      .build/typing/plutus-core-kompiled/kore.txt
 
 # Testing
 # -------
+
+test: test-passing test-failing
+test-passing: test-translation test-execution
+test-failing: test-erc20 test-verify
 
 test-execution: .build/execution/plutus-core-kompiled/kore.txt
 	cd test && ./test_exec.sh
