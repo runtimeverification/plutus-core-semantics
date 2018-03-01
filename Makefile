@@ -7,8 +7,9 @@ k_bin:=$(k_submodule)/k-distribution/target/release/k/bin
 
 .PHONY: all clean build deps \
         execution translation erc20 typing \
-        test test-passing test-failing \
-        test-execution test-erc20 test-typing test-translation
+        test test-passing test-failing test-verify
+        # Somehow SECONDEXPANSION and PHONY are interacting poorly, meaning these can't be PHONY
+        # test-execution test-erc20 test-typing test-translation
 
 all: build
 
