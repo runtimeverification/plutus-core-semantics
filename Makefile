@@ -49,18 +49,12 @@ test: test-passing test-failing
 test-passing: test-translation test-execution
 test-failing: test-erc20 test-verify
 
-test-execution: .build/execution/plutus-core-kompiled/kore.txt
-	cd test && ./test_exec.sh
-
-test-erc20: .build/erc20/plutus-core-kompiled/kore.txt
-	cd test/erc20 && ./test_all.sh
-
 test-verify: .build/execution/plutus-core-kompiled/kore.txt
 	cd verification && ./verify_all.sh
 
-test-translation: .build/translation/plutus-core-kompiled/kore.txt \
-                  test/translation/add.out  test/translation/add2.out
-	git diff --exit-code test/translation/*.out
+# TODO: Should wildcard on *.plc and patsubst to change extension, but that isn't quite workin
+test-%: .build/%/plutus-core-kompiled/kore.txt  $$(wildcard test/$$*/*.out)
+	git diff --exit-code test/$*/*.out
 
-test/translation/%.out: test/translation/%.plc .build/translation/plutus-core-kompiled/kore.txt
-	$(k_bin)/krun -d .build/translation/ $< | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g' > $@
+test/%.out: test/%.plc .build/$$(dir $$*)/plutus-core-kompiled/kore.txt
+	$(k_bin)/krun --directory .build/$(dir $*)/ $< | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g' > $@
