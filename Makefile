@@ -60,4 +60,5 @@ test-%: .build/%/plutus-core-kompiled/kore.txt  $$(wildcard test/$$*/*.out)
 	git diff --exit-code test/$*/*.out
 
 test/%.out: test/%.plc .build/$$(dir $$*)/plutus-core-kompiled/kore.txt
-	$(k_bin)/krun --directory .build/$(dir $*)/ $< | xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g' > $@
+	$(k_bin)/krun --debug --directory .build/$(dir $*)/ $< \
+		| xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g' > $@
