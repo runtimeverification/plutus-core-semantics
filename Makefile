@@ -19,7 +19,9 @@ clean:
 # Dependencies
 # ------------
 
-deps: $(k_submodule)/make.timestamp
+dep_files:=$(k_submodule)/make.timestamp
+
+deps: $(dep_files)
 
 $(k_submodule)/make.timestamp:
 	git submodule update --init -- $(k_submodule)
@@ -32,7 +34,7 @@ $(k_submodule)/make.timestamp:
 
 # Allow expansion of $* in wildcard; See https://stackoverflow.com/questions/15948822/directory-wildcard-in-makefile-pattern-rule
 .SECONDEXPANSION:
-.build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $$(wildcard src/$$*/*.k) deps
+.build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $$(wildcard src/$$*/*.k) $(dep_files)
 	$(k_bin)/kompile --debug --verbose --directory .build/$*/ \
 					 --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
 
