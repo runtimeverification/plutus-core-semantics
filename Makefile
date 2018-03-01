@@ -7,7 +7,7 @@ k_bin:=$(k_submodule)/k-distribution/target/release/k/bin
 
 .PHONY: all clean build deps \
         execution translation erc20 typing \
-        test-exec test-erc test-typing test-translation
+        test-exec test-erc20 test-typing test-translation
 
 all: build
 
@@ -32,11 +32,11 @@ $(k_submodule)/make.timestamp:
 	$(k_bin)/kompile --debug --verbose --directory .build/$*/ \
 					 --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
 
-build: execution translation erc typing
+build: execution translation erc20 typing
 
 execution:   .build/execution/plutus-core-kompiled/kore.txt
 translation: .build/translation/plutus-core-kompiled/kore.txt
-erc:         .build/erc/plutus-core-kompiled/kore.txt
+erc20:       .build/erc20/plutus-core-kompiled/kore.txt
 typing:      .build/typing/plutus-core-kompiled/kore.txt
 
 # Testing
@@ -45,7 +45,7 @@ typing:      .build/typing/plutus-core-kompiled/kore.txt
 test-exec: .build/execution/plutus-core-kompiled/kore.txt
 	cd test && ./test_exec.sh
 
-test-erc: .build/erc/plutus-core-kompiled/kore.txt
+test-erc20: .build/erc20/plutus-core-kompiled/kore.txt
 	cd test/erc20 && ./test_all.sh
 
 test-verify: .build/execution/plutus-core-kompiled/kore.txt
