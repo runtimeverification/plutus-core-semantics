@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+set -e      # Exit immediately if any command fails
+set -u      # Using undefined variables is an error. Exit immediately
+
+# Utilities
+# ---------
+
+die()      { echo -e "FATAL:" "$@" >&2 ; exit 1 ; }
+
+pretty_diff() {
+    git --no-pager diff --no-index "$@"
+}
+
+# Environment Setup
+# -----------------
+
+run_env() {
+    local build_dir="$(pwd)/.build"
+    local release_dir="$build_dir/k/k-distribution/target/release/k"
+    export PATH="$release_dir/lib/native/linux:$release_dir/lib/native/linux64:$release_dir/bin/:$PATH"
+}
+
+# Runners
+# -------
+
+run_krun() {
+    local backend=$1  ; shift
+    local run_file=$1 ; shift
+    run_env
+    export K_OPTS=-Xss500m
+    krun --directory .build/$backend/ "$run_file" "$@"
+}
+
+run_kprove() {
+    local backend="$1"    ; shift
+    local proof_file="$1" ; shift
+    local init_file="$1"  ; shift
+    [[ -f "$proof_file" ]] || die "$proof_file does not exist"
+    [[ -f "$init_file"  ]] || die "$init_file does not exist"
+    run_env
+    export K_OPTS=-Xmx2G
+    ( krun --directory .build/$backend --z3-executable "$init_file" --prove "$proof_file" "$@" )
+}
+
+run_kdebug() {
+    local backend="$1"    ; shift
+    local debug_file="$1" ; shift
+    ( run_krun "$backend" "$debug_file" --debugger "$@" )
+}
+
+run_test() {
+    local test_file="$1" ; shift
+    local without_test="${test_file#test/}"
+    local backend="${without_test%/*}"
+    local expected_file="test/${without_test%.plc}.out"
+    [[ ! -f "$expected_file" ]] && expected_file="test/$without_test.out"
+    [[ -f "$test_file" ]] && [[ -f "$expected_file" ]] && [[ -d "src/$backend" ]] \
+        || die "Do not know how to run '$test_file' as a test."
+    ( local output_file="$(mktemp output.XXXXXX)"
+      trap "rm -rf $output_file" INT TERM EXIT
+      run_krun "$backend" "$test_file" "$@" > "$output_file"
+      pretty_diff "$expected_file" "$output_file"
+    )
+}
+
+# Main
+# ----
+
+cd "$(dirname $0)"
+
+# main functionality
+run_command="$1" ; shift
+case "$run_command" in
+
+    # Running
+    run)   run_krun   "$@" ;;
+    debug) run_kdebug "$@" ;;
+    prove) run_kprove "$@" ;;
+
+    # Testing
+    test)  run_test   "$@" ;;
+
+    *) echo "
+    usage: $0 [run|debug|prove] <backend> <file> <K args>*
+           $0 test                        <file> <K args>*
+
+       # Running
+       # -------
+       $0 run   <backend> <pgm>          Run a single PLC program
+       $0 debug <backend> <pgm>          Run a single PLC program in the debugger
+       $0 prove <backend> <spec> <pgm>   Attempt to prove claim over PLC program
+
+       Note: <pgm> is a path to a file containing a PLC program.
+             <spec> is a K reachability claim file.
+             <backend> is one of [erc20|execution|translation|typing]
+
+       # Testing
+       # -------
+       $0 test <pgm>    Run a single PLC program like it's a test
+
+       Note: This command is more for devs and CI servers.
+" ; exit ;;
+esac
