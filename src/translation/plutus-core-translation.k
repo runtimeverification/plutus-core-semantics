@@ -3,6 +3,7 @@ require "iele-syntax.k"
 
 module PLUTUS-CORE-TRANSLATION
   imports PLUTUS-CORE-SYNTAX
+//  imports BAG-SIZE
 
 // Pull off some stunts to avoid ambiguities between `.K` and IELEName
   imports IELE-COMMON
@@ -11,15 +12,18 @@ module PLUTUS-CORE-TRANSLATION
   configuration
     <T>
       <plutus> $PGM:DecList ~> #createAlloc:K ~> #createInit:K ~> #createDispatch:K </plutus>
-      <dispatchedFunctionsLeft> 1 </dispatchedFunctionsLeft>
+      <totalFunctions> 0 </totalFunctions>
+      <totalReadyForDispatch> 0 </totalReadyForDispatch>
+      <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
       <functions>
         <function multiplicity="*" type="Bag">
-          <name>   (@noname):GlobalName </name>
-          <jumpId> -1                   </jumpId>
-          <k>      .K                    </k>
-          <env>    .Map                  </env>
+          <name>   (@noname):GlobalName  </name>
           <params> .VarList              </params>
+          <env>    .Map                  </env>
+          <k>      .K                    </k>
+          <jumpId> -1                    </jumpId>
           <hasDispatchEntry> false:Bool  </hasDispatchEntry>
+          <readyForDispatch> false:Bool  </readyForDispatch>
         </function>
       </functions>
     </T>
@@ -29,6 +33,7 @@ module PLUTUS-CORE-TRANSLATION
 
 // We translate each declaration iteratively
   rule <plutus>(define N:Name T:Tm) DS:DecList => DS:DecList ... </plutus>
+       <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
        <functions> ... ( .Bag
                       => <function>
                            <name>   #nameToGlobalName(N:Name) </name>
@@ -38,7 +43,8 @@ module PLUTUS-CORE-TRANSLATION
                            </k>
                            <env>    .Map                      </env>
                            <params> .VarList                  </params>
-                           <hasDispatchEntry> true:Bool       </hasDispatchEntry>
+                           <hasDispatchEntry> true:Bool        </hasDispatchEntry>
+                           <readyForDispatch> false:Bool       </readyForDispatch>
                          </function>
                        )
        </functions>
@@ -144,6 +150,7 @@ module PLUTUS-CORE-TRANSLATION
              <name> N:GlobalName </name>
              <params> VS:VarList </params>
              <jumpId> J:Int </jumpId>
+             <readyForDispatch> _ </readyForDispatch>
              <hasDispatchEntry> _ </hasDispatchEntry>
            </function>
            (  .Bag
@@ -155,11 +162,13 @@ module PLUTUS-CORE-TRANSLATION
                 </k>
                 <env>    #addParamsToEnv(VS:VarList, M:Map) </env>
                 <params> X </params>
-                <hasDispatchEntry> false:Bool </hasDispatchEntry>
+                <hasDispatchEntry> false:Bool        </hasDispatchEntry>
+                <readyForDispatch> false:Bool </readyForDispatch>
               </function>
            )
         </functions>
         <dispatchedFunctionsLeft> DFL => DFL +Int 1 </dispatchedFunctionsLeft>
+        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
 
    rule #loadOperand([T1:Tm T2:Tm], LN)
      => #concatInsList(
@@ -204,10 +213,12 @@ module PLUTUS-CORE-TRANSLATION
                             </k>
                             <env>    .Map                  </env>
                             <params> size .VarList         </params>
-                            <hasDispatchEntry> true:Bool   </hasDispatchEntry>
+                            <hasDispatchEntry> true:Bool        </hasDispatchEntry>
+                            <readyForDispatch> false:Bool   </readyForDispatch>
                           </function>
                         )
         </functions>
+        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
 
    rule <plutus> #createInit:K => .K ... </plutus>
         <functions> ... ( .Bag
@@ -218,17 +229,18 @@ module PLUTUS-CORE-TRANSLATION
                                      store  1, %alloc_counter_ptr
                             </k>
                             <env>    .Map                  </env>
-                            <params> size .VarList         </params>
+                            <params> .VarList         </params>
                             <hasDispatchEntry> true:Bool        </hasDispatchEntry>
+                            <readyForDispatch> false:Bool        </readyForDispatch>
                           </function>
                         )
         </functions>
+        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
 
    syntax PreInstructions ::= "#dispatchJumpTable"
                             | #dispatchCheckCond(Int, GlobalName)
                             | #dispatchCall     (Int, GlobalName)
    rule <plutus> #createDispatch:K => .K ... </plutus>
-        <dispatchedFunctionsLeft> DFL => DFL -Int 1 </dispatchedFunctionsLeft>
         <functions> ... ( .Bag
                        => <function>
                             <name>   (@dispatch):GlobalName </name>
@@ -241,9 +253,11 @@ module PLUTUS-CORE-TRANSLATION
                             <env>    .Map                   </env>
                             <params> closure param .VarList </params>
                             <hasDispatchEntry> true:Bool        </hasDispatchEntry>
+                            <readyForDispatch> false:Bool        </readyForDispatch>
                           </function>
                         )
         </functions>
+        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
 
     rule <k> #dispatchJumpTable:PreInstructions
                 => #concatInsList( #dispatchCheckCond(JI, FN)
@@ -255,14 +269,30 @@ module PLUTUS-CORE-TRANSLATION
          <function>
             <name>   FN     </name>
             <jumpId> JI     </jumpId>
-            <k>      _:PreInstructions    </k>
+            <k>      _:Instructions    </k>
             <env>    _:Map  </env>
             <params> _:VarList  </params>
             <hasDispatchEntry> false:Bool => true:Bool </hasDispatchEntry>
+            <readyForDispatch> true:Bool               </readyForDispatch>
          </function>
 
+    rule <function>
+            <name>   _     </name>
+            <jumpId> _     </jumpId>
+            <k>      _:Instructions    </k>
+            <env>    _:Map  </env>
+            <params> _:VarList  </params>
+            <hasDispatchEntry> _:Bool </hasDispatchEntry>
+            <readyForDispatch> false:Bool => true:Bool               </readyForDispatch>
+         </function>
+         <totalReadyForDispatch> TR => TR +Int 1 </totalReadyForDispatch>
+
+// Once all functions execpt @dispatch have been processed, ther are no more entrys to be dispatched
     rule <k> #dispatchJumpTable:PreInstructions => .Instructions ... </k>
-         <dispatchedFunctionsLeft> 0 => -1 </dispatchedFunctionsLeft>
+         <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
+         <totalReadyForDispatch> TRFD:Int </totalReadyForDispatch>
+         <totalFunctions> TF:Int </totalFunctions>
+      when TF:Int ==K (TRFD:Int +Int 1)
 
     syntax Instruction ::= #block(IeleName)
 
