@@ -48,17 +48,22 @@ typing:      .build/typing/plutus-core-kompiled/kore.txt
 # Testing
 # -------
 
+TEST=./kplc test
+
 test: test-passing test-failing
 test-passing: test-translation test-execution
 test-failing: test-erc20 test-verify
 
+translation_tests:=$(wildcard test/translation/*.plc)
+execution_tests:=$(wildcard test/execution/*.plc)
+erc20_tests:=$(wildcard test/erc20/*.plc)
+
 test-verify: .build/execution/plutus-core-kompiled/kore.txt
 	cd verification && ./verify_all.sh
 
-# TODO: Should wildcard on *.plc and patsubst to change extension, but that isn't quite workin
-test-%: .build/%/plutus-core-kompiled/kore.txt  $$(wildcard test/$$*/*.out)
-	git diff --exit-code test/$*/*.out
+test-translation: $(translation_tests:=.test)
+test-execution: $(execution_tests:=.test)
+test-erc20: $(erc20_tests:=.test)
 
-test/%.out: test/%.plc .build/$$(dir $$*)/plutus-core-kompiled/kore.txt
-	$(k_bin)/krun --debug --directory .build/$(dir $*)/ $< \
-		| xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g' > $@
+test/%.plc.test: .build/$$(dir $$*)/plutus-core-kompiled/kore.txt
+	$(TEST) test/$*.plc
