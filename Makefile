@@ -37,6 +37,10 @@ $(k_submodule)/make.timestamp:
 .build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $$(wildcard src/$$*/*.k) $(dep_files)
 	$(k_bin)/kompile --debug --verbose --directory .build/$*/ \
 					 --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
+# Since the kore.txt targets aren't explicitly mentioned as targets, it treats
+# them as intermediate targets and deletes them when it is done. Marking
+# them as PRECIOUS prevents this.
+.PRECIOUS: .build/%/plutus-core-kompiled/kore.txt
 
 build: execution translation erc20 typing
 
