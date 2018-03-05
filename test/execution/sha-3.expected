@@ -1,1 +1,16 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> #34bbdf1adad011d1feeb7c17864589b07af0cbc2759b0d402e248f55abc5bad9 </genv> <mod> Foo </mod> </T>
+<T>
+  <k> . </k>
+  <lenv> .Map </lenv>
+  <genv> ( Foo . result ) |-> #34bbdf1adad011d1feeb7c17864589b07af0cbc2759b0d402e248f55abc5bad9 </genv>
+  <modules>
+    <module>
+      <curr> 0 </curr>
+      <name> Foo </name>
+      <data> .TyExpList </data>
+      <decl> .NameList </decl>
+      <import> .ModNmList </import>
+      <exportTy> .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+  </modules>
+</T>
