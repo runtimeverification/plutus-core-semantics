@@ -1,0 +1,16 @@
+<T>
+  <k> . </k>
+  <lenv> .Map </lenv>
+  <genv> ( Bar . one ) |-> 1 </genv>
+  <modules>
+    <module>
+      <curr> 0 </curr>
+      <name> Bar </name>
+      <data> .TyExpList </data>
+      <decl> .NameList </decl>
+      <import> Foo  .ModNmList </import>
+      <exportTy> .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+  </modules>
+</T>

@@ -1,0 +1,25 @@
+<T>
+  <k> . </k>
+  <lenv> .Map </lenv>
+  <genv> ( Foo . result ) |-> 21 ( Foo . swapped ) |-> ( con Nat . Pair 2  ( 1  .ValList ) ) </genv>
+  <modules>
+    <module>
+      <curr> 0 </curr>
+      <name> Foo </name>
+      <data> .TyExpList </data>
+      <decl> .NameList </decl>
+      <import> Nat  .ModNmList </import>
+      <exportTy> .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+    <module>
+      <curr> 0 </curr>
+      <name> Nat </name>
+      <data> ( MyPair ( Pair  ( NotThis  .ConList ) ) )  .TyExpList </data>
+      <decl> .NameList </decl>
+      <import> .ModNmList </import>
+      <exportTy> ( MyPair ( Pair  ( NotThis  .ConList ) ) )  .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+  </modules>
+</T>
