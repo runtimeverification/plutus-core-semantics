@@ -4,11 +4,11 @@
 
   test.preamble()
 
-  ;; Testing transferFrom(From,To,Value) when From = To = caller.
-  ;; Transfer entire balance to yourself.
+  // Testing transferFrom(From,To,Value) when From = To = caller.
+  // Transfer entire balance to yourself.
 
-  test.approve(Foo.caller, 70)   ;; allow entire balance
-  test.transferFrom(Foo.caller, Foo.caller, 70)  ;; transfer entire balance
+  test.approve(Foo.caller, 70)   // allow entire balance
+  test.transferFrom(Foo.caller, Foo.caller, 70)  // transfer entire balance
 
 )
 
