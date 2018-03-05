@@ -1,0 +1,25 @@
+<T>
+  <k> . </k>
+  <lenv> .Map </lenv>
+  <genv> ( Foo . result ) |-> 90 </genv>
+  <modules>
+    <module>
+      <curr> 0 </curr>
+      <name> Foo </name>
+      <data> .TyExpList </data>
+      <decl> .NameList </decl>
+      <import> Nat  .ModNmList </import>
+      <exportTy> .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+    <module>
+      <curr> 0 </curr>
+      <name> Nat </name>
+      <data> ( MyType ( Foo  ( NotThisOne  ( NotThisTwo  ( NotThisThree  ( NotThisFour  ( NotThisFive  .ConList ) ) ) ) ) ) )  .TyExpList </data>
+      <decl> .NameList </decl>
+      <import> .ModNmList </import>
+      <exportTy> ( MyType ( Foo  ( NotThisOne  ( NotThisTwo  ( NotThisThree  ( NotThisFour  ( Foo  ( NotThisFive  .ConList ) ) ) ) ) ) ) )  .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+  </modules>
+</T>

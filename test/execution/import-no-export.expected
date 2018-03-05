@@ -1,0 +1,25 @@
+<T>
+  <k> ( Bar . r1 ) ~> #freezer(builtin___)0 ( multiplyInteger , 2 ) ~> #freezer(define__)0 ( r2 ) ~> .DecList ~> ( program .ModList ) </k>
+  <lenv> .Map </lenv>
+  <genv> ( Bar . r1 ) |-> 21 </genv>
+  <modules>
+    <module>
+      <curr> 1 </curr>
+      <name> Baz </name>
+      <data> .TyExpList </data>
+      <decl> r2  .NameList </decl>
+      <import> Bar  .ModNmList </import>
+      <exportTy> .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+    <module>
+      <curr> 0 </curr>
+      <name> Bar </name>
+      <data> .TyExpList </data>
+      <decl> r1  .NameList </decl>
+      <import> .ModNmList </import>
+      <exportTy> .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+  </modules>
+</T>
