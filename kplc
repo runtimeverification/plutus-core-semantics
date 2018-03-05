@@ -25,41 +25,41 @@ run_env() {
 # -------
 
 run_krun() {
-    local backend=$1  ; shift
+    local driver=$1   ; shift
     local run_file=$1 ; shift
     run_env
     export K_OPTS=-Xss500m
-    krun --directory .build/$backend/ "$run_file" "$@"
+    krun --directory .build/$driver/ "$run_file" "$@"
 }
 
 run_kprove() {
-    local backend="$1"    ; shift
+    local driver="$1"     ; shift
     local proof_file="$1" ; shift
     local init_file="$1"  ; shift
     [[ -f "$proof_file" ]] || die "$proof_file does not exist"
     [[ -f "$init_file"  ]] || die "$init_file does not exist"
     run_env
     export K_OPTS=-Xmx2G
-    ( krun --directory .build/$backend --z3-executable "$init_file" --prove "$proof_file" "$@" )
+    ( krun --directory .build/$driver --z3-executable "$init_file" --prove "$proof_file" "$@" )
 }
 
 run_kdebug() {
-    local backend="$1"    ; shift
+    local driver="$1"     ; shift
     local debug_file="$1" ; shift
-    ( run_krun "$backend" "$debug_file" --debugger "$@" )
+    ( run_krun "$driver" "$debug_file" --debugger "$@" )
 }
 
 run_test() {
     local test_file="$1" ; shift
     local without_test="${test_file#test/}"
-    local backend="${without_test%/*}"
+    local driver="${without_test%/*}"
     local expected_file="test/${without_test%.plc}.out"
     [[ ! -f "$expected_file" ]] && expected_file="test/$without_test.out"
-    [[ -f "$test_file" ]] && [[ -f "$expected_file" ]] && [[ -d "src/$backend" ]] \
+    [[ -f "$test_file" ]] && [[ -f "$expected_file" ]] && [[ -d "src/$driver" ]] \
         || die "Do not know how to run '$test_file' as a test."
     ( local output_file="$(mktemp output.XXXXXX)"
       trap "rm -rf $output_file" INT TERM EXIT
-      run_krun "$backend" "$test_file" "$@" > "$output_file"
+      run_krun "$driver" "$test_file" "$@" > "$output_file"
       pretty_diff "$expected_file" "$output_file"
     )
 }
@@ -82,18 +82,18 @@ case "$run_command" in
     test)  run_test   "$@" ;;
 
     *) echo "
-    usage: $0 [run|debug|prove] <backend> <file> <K args>*
-           $0 test                        <file> <K args>*
+    usage: $0 [run|debug|prove] <driver> <file> <K args>*
+           $0 test                       <file> <K args>*
 
        # Running
        # -------
-       $0 run   <backend> <pgm>          Run a single PLC program
-       $0 debug <backend> <pgm>          Run a single PLC program in the debugger
-       $0 prove <backend> <spec> <pgm>   Attempt to prove claim over PLC program
+       $0 run   <driver> <pgm>          Run a single PLC program
+       $0 debug <driver> <pgm>          Run a single PLC program in the debugger
+       $0 prove <driver> <spec> <pgm>   Attempt to prove claim over PLC program
 
        Note: <pgm> is a path to a file containing a PLC program.
              <spec> is a K reachability claim file.
-             <backend> is one of [erc20|execution|translation|typing]
+             <driver> is one of [erc20|execution|translation|typing]
 
        # Testing
        # -------
