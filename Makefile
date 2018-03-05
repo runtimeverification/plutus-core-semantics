@@ -5,7 +5,7 @@ build_dir:=$(CURDIR)/.build
 k_submodule:=$(build_dir)/k
 k_bin:=$(k_submodule)/k-distribution/target/release/k/bin
 
-.PHONY: all clean build deps \
+.PHONY: all clean build deps ocaml-deps \
         execution translation erc20 typing \
         test test-passing test-failing test-verify test-verify-commented
         # Somehow SECONDEXPANSION and PHONY are interacting poorly, meaning these can't be PHONY
@@ -21,7 +21,7 @@ clean:
 
 dep_files:=$(k_submodule)/make.timestamp
 
-deps: $(dep_files)
+deps: $(dep_files) ocaml-deps
 
 $(k_submodule)/make.timestamp:
 	git submodule update --init -- $(k_submodule)
@@ -29,25 +29,36 @@ $(k_submodule)/make.timestamp:
 		&& mvn package -q -DskipTests
 	touch $(k_submodule)/make.timestamp
 
+ocaml-deps:
+	opam init --quiet --no-setup
+	opam repository add k "$(k_submodule)/k-distribution/target/release/k/lib/opam" \
+	    || opam repository set-url k "$(k_submodule)/k-distribution/target/release/k/lib/opam"
+	opam update
+	opam switch 4.03.0+k
+	eval $$(opam config env) \
+	opam install --yes mlgmp zarith uuidm
+
 # Build
 # -----
 
 # Allow expansion of $* in wildcard; See https://stackoverflow.com/questions/15948822/directory-wildcard-in-makefile-pattern-rule
 .SECONDEXPANSION:
-.build/%/plutus-core-kompiled/kore.txt: src/%/plutus-core.k $(wildcard src/*.k) $$(wildcard src/$$*/*.k) $(dep_files)
+
+.build/%/plutus-core-kompiled/interpreter: src/%/plutus-core.k $(wildcard src/*.k) $$(wildcard src/$$*/*.k) $(dep_files)
+	eval $$(opam config env) \
 	$(k_bin)/kompile --debug --verbose --directory .build/$*/ \
 					 --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
-# Since the kore.txt targets aren't explicitly mentioned as targets, it treats
+# Since the `interpreter` targets aren't explicitly mentioned as targets, it treats
 # them as intermediate targets and deletes them when it is done. Marking
 # them as PRECIOUS prevents this.
-.PRECIOUS: .build/%/plutus-core-kompiled/kore.txt
+.PRECIOUS: .build/%/plutus-core-kompiled/interpreter
 
 build: execution translation erc20 typing
 
-execution:   .build/execution/plutus-core-kompiled/kore.txt
-translation: .build/translation/plutus-core-kompiled/kore.txt
-erc20:       .build/erc20/plutus-core-kompiled/kore.txt
-typing:      .build/typing/plutus-core-kompiled/kore.txt
+execution:   .build/execution/plutus-core-kompiled/interpreter
+translation: .build/translation/plutus-core-kompiled/interpreter
+erc20:       .build/erc20/plutus-core-kompiled/interpreter
+typing:      .build/typing/plutus-core-kompiled/interpreter
 
 # Testing
 # -------
@@ -66,10 +77,10 @@ test-translation: $(translation_tests:=.test)
 test-execution: $(execution_tests:=.test)
 test-erc20: $(erc20_tests:=.test)
 
-test/%.plc.test: .build/$$(dir $$*)/plutus-core-kompiled/kore.txt
+test/%.plc.test: .build/$$(dir $$*)/plutus-core-kompiled/interpreter
 	$(TEST) test/$*.plc
 
-test-verify: .build/execution/plutus-core-kompiled/kore.txt
+test-verify: .build/execution/plutus-core-kompiled/interpreter
 	./kplc prove execution verification/int-addition_spec.k             verification/dummy.plcore
 	./kplc prove execution verification/int-addition-with-import_spec.k verification/int-addition-lib.plcore
 	./kplc prove execution verification/equality_spec.k                 verification/dummy.plcore
@@ -89,7 +100,7 @@ test-verify: .build/execution/plutus-core-kompiled/kore.txt
 	./kplc prove execution verification/maybe-nothing_spec.k            verification/prelude.plc
 	./kplc prove execution verification/maybe-just_spec.k               verification/prelude.plc
 
-test-verify-commented: .build/execution/plutus-core-kompiled/kore.txt
+test-verify-commented: .build/execution/plutus-core-kompiled/timestamp
 	./kplc prove execution verification/id_spec.k                       verification/prelude.plc
 	./kplc prove execution verification/fst_spec.k                      verification/prelude.plc
 	./kplc prove execution verification/snd_spec.k                      verification/prelude.plc
