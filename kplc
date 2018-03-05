@@ -12,6 +12,10 @@ pretty_diff() {
     git --no-pager diff --no-index "$@"
 }
 
+krun_lint() {
+    xmllint --format - | tail -n +2 | sed -e 's/&gt;/>/g'
+}
+
 # Environment Setup
 # -----------------
 
@@ -29,7 +33,7 @@ run_krun() {
     local run_file=$1 ; shift
     run_env
     export K_OPTS=-Xss500m
-    krun --directory .build/$driver/ "$run_file" "$@"
+    krun --directory .build/$driver/ "$run_file" "$@" | krun_lint
 }
 
 run_kprove() {
