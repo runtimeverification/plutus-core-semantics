@@ -58,13 +58,11 @@ run_test() {
     local without_test="${test_file#test/}"
     local driver="${without_test%/*}"
     local expected_file="test/${without_test%.plc}.expected"
+    local output_file="test/${without_test%.plc}.out"
     [[ -f "$test_file" ]] && [[ -f "$expected_file" ]] && [[ -d "src/$driver" ]] \
         || die "Do not know how to run '$test_file' as a test."
-    ( local output_file="$(mktemp output.XXXXXX)"
-      trap "rm -rf $output_file" INT TERM EXIT
-      run_krun "$driver" "$test_file" "$@" > "$output_file"
-      pretty_diff "$expected_file" "$output_file"
-    )
+    run_krun "$driver" "$test_file" "$@" > "$output_file"
+    pretty_diff "$expected_file" "$output_file"
 }
 
 # Main
