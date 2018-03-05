@@ -19,6 +19,7 @@ run_env() {
     local build_dir="$(pwd)/.build"
     local release_dir="$build_dir/k/k-distribution/target/release/k"
     export PATH="$release_dir/lib/native/linux:$release_dir/lib/native/linux64:$release_dir/bin/:$PATH"
+    eval $(opam config env)
 }
 
 # Runners
