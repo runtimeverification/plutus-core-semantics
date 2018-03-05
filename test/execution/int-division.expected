@@ -1,1 +1,16 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . i3 ) |-> 11 ( Foo . i4 ) |-> 3 ( Foo . i1 ) |-> 10 ( Foo . i2 ) |-> 3 </genv> <mod> Foo </mod> </T>
+<T>
+  <k> . </k>
+  <lenv> .Map </lenv>
+  <genv> ( Foo . i3 ) |-> 11 ( Foo . i4 ) |-> 3 ( Foo . i1 ) |-> 10 ( Foo . i2 ) |-> 3 </genv>
+  <modules>
+    <module>
+      <curr> 0 </curr>
+      <name> Foo </name>
+      <data> .TyExpList </data>
+      <decl> .NameList </decl>
+      <import> .ModNmList </import>
+      <exportTy> .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+  </modules>
+</T>

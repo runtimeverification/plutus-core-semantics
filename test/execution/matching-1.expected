@@ -1,1 +1,16 @@
-<T> <k> . </k> <lenv> .Map </lenv> <genv> ( Foo . result ) |-> 11 </genv> <mod> Foo </mod> </T>
+<T>
+  <k> . </k>
+  <lenv> .Map </lenv>
+  <genv> ( Foo . result ) |-> 21 ( Foo . swapped ) |-> ( con Prelude . MkPair 2  ( 1  .ValList ) ) </genv>
+  <modules>
+    <module>
+      <curr> 0 </curr>
+      <name> Foo </name>
+      <data> .TyExpList </data>
+      <decl> .NameList </decl>
+      <import> .ModNmList </import>
+      <exportTy> .TyExpList </exportTy>
+      <exportTm> .NameList </exportTm>
+    </module>
+  </modules>
+</T>
