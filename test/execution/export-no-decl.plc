@@ -15,7 +15,7 @@
 )
 
 (module Bar (import Foo) (export () ())
-  (define r7 (builtin multiplyInteger Foo.r1 Foo.r5))
+  (define r7 (builtin multiplyInteger 4 Foo.r5))
 )
 
 )
