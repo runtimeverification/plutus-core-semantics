@@ -12,6 +12,9 @@ module PLUTUS-CORE-TRANSLATION
                     | "alloc" | "alloc_counter_ptr" | "alloced"
   syntax LocalName ::= "%size" | "%closure" | "%param" | "%ret"
 
+// For some reason <function multiplicity='*' type='*'> isn't being parsed correctly
+  syntax #CellName ::= "type" [token]
+
   configuration
     <T>
       <plutus> $PGM:DecList ~> #createAlloc:K ~> #createInit:K ~> #createDispatch:K </plutus>
