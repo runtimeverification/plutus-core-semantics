@@ -1,4 +1,5 @@
 module HEX-CONVERSION
+  imports DOMAINS
   imports INT
   imports STRING
 

@@ -1,4 +1,13 @@
 module PLUTUS-CORE-SYNTAX
+  imports PLUTUS-CORE-COMMON
+
+  syntax LowerName ::= r"[a-z][a-zA-Z0-9\\_']*"             [token, autoReject]
+                     | #LowerId                             [token, autoReject]
+  syntax UpperName ::= r"[A-Z][a-zA-Z0-9\\_']*"             [token, autoReject]
+                     | #UpperId                             [token, autoReject]
+endmodule
+
+module PLUTUS-CORE-COMMON
   imports DOMAINS-SYNTAX
   imports BUILTIN-ID-TOKENS
   imports INT
@@ -9,11 +18,8 @@ module PLUTUS-CORE-SYNTAX
   /***************************************************************************/
   /***********************    LEXICAL GRAMMAR   ******************************/
   /***************************************************************************/
-
-  syntax LowerName ::= r"[a-z][a-zA-Z0-9\\_']*"             [token, autoReject]
-                     | #LowerId                             [token, autoReject]
-  syntax UpperName ::= r"[A-Z][a-zA-Z0-9\\_']*"             [token, autoReject]
-                     | #UpperId                             [token, autoReject]
+  syntax LowerName
+  syntax UpperName
 
   syntax BuiltinName ::=  "addInteger" | "subtractInteger"
                        | "multiplyInteger" | "divideInteger" | "remainderInteger"
@@ -62,7 +68,7 @@ module PLUTUS-CORE-SYNTAX
   syntax Var     ::= LowerName
 
   // Type Variable.
-  syntax TyVar     ::= r"[a-z][a-zA-Z0-9\\_']*"                  [token, avoid]
+  syntax TyVar   ::= LowerName
 
   /***************************************************************************/
   /*****************************   GRAMMAR   *********************************/
