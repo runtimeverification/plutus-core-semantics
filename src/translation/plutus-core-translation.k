@@ -22,7 +22,7 @@ module PLUTUS-CORE-TRANSLATION
       <totalReadyForDispatch> 0 </totalReadyForDispatch>
       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
       <functions>
-        <function multiplicity="*" type="Bag">
+        <function multiplicity="*" type="Set">
           <name>   (@noname):GlobalName  </name>
           <params> .VarList              </params>
           <env>    .Map                  </env>
