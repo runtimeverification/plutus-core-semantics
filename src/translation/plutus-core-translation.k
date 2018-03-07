@@ -66,28 +66,28 @@ module PLUTUS-CORE-TRANSLATION
 // Helpers
 // -------
 
-  syntax GlobalName ::= #stringToGlobalName(String)                   [function]
-  rule #stringToGlobalName(S) => #parseToken("GlobalName@IELE-COMMON", "@" +String S)
+  syntax GlobalName ::= #stringToGlobalName(String) [function]
+  rule #stringToGlobalName(S) => #parseToken("GlobalName", "@" +String S)
   syntax GlobalName ::= #intToGlobalName(Int)       [function]
   rule #intToGlobalName(N:Int)
     => #stringToGlobalName("fresh" +String Int2String(N:Int))
 
   syntax String     ::= #nameToString(Name)       [function, hook(STRING.token2string)]
   syntax GlobalName ::= #nameToGlobalName(Name)                              [function]
-  rule #nameToGlobalName(N:Name) => #stringToGlobalName(#nameToString(N))
+  rule #nameToGlobalName(N:Name) => #stringToGlobalName(#nameToString(N:Name))
 
   syntax String       ::= #varToString(Var)       [function, hook(STRING.token2string)]
   syntax LocalName    ::= #varToLocalName(Var)    [function]
   rule #varToLocalName(V:Var) => #stringToLocalName(#varToString(V))
 
-  syntax LocalName ::= #stringToLocalName(String)                   [function]
-  rule #stringToLocalName(S) => #parseToken("LocalName@IELE-COMMON", "%" +String S)
+  syntax LocalName ::= #stringToLocalName(String) [function]
+  rule #stringToLocalName(S) => #parseToken("LocalName", "%" +String S)
 
   syntax LocalName ::= #intToLocalName(Int)       [function]
   rule #intToLocalName(N) => #stringToLocalName("fresh" +String Int2String(N))
 
-  syntax IeleName ::= #stringToIeleName(String)                   [function]
-  rule #stringToIeleName(S) => #parseToken("IeleName@IELE-COMMON", S)
+  syntax IeleName ::= #stringToIeleName(String)   [function]
+  rule #stringToIeleName(S) => #parseToken("IeleName", S)
 
 // Convert Lambdas
 // ---------------
