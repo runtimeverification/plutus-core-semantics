@@ -24,9 +24,9 @@ module PLUTUS-CORE-TRANSLATION
       <functions>
         <function multiplicity="*" type="Set">
           <name>   (@noname):GlobalName  </name>
-          <params> .VarList              </params>
+          <params> .VarList:VarList      </params>
           <env>    .Map                  </env>
-          <k>      .K                    </k>
+          <k>      .K:K                  </k>
           <jumpId> -1                    </jumpId>
           <hasDispatchEntry> false:Bool  </hasDispatchEntry>
           <readyForDispatch> false:Bool  </readyForDispatch>
@@ -35,7 +35,7 @@ module PLUTUS-CORE-TRANSLATION
     </T>
 
   syntax K ::= "#createAlloc" | "#createInit" | "#createDispatch"
-  rule <plutus> .DecList => .K ... </plutus>
+  rule <plutus> .DecList => .K:K ... </plutus>
 
 // We translate each declaration iteratively
   rule <plutus>(define N:Name T:Tm) DS:DecList => DS:DecList ... </plutus>
@@ -153,11 +153,8 @@ module PLUTUS-CORE-TRANSLATION
               => #allocBind(LN, !N, #addParamsToEnv(VS:VarList, M:Map))
               ... </k>
              <env> M </env>
-             <name> N:GlobalName </name>
              <params> VS:VarList </params>
-             <jumpId> J:Int </jumpId>
-             <readyForDispatch> _ </readyForDispatch>
-             <hasDispatchEntry> _ </hasDispatchEntry>
+             ...
            </function>
            (  .Bag
            => <function>
@@ -185,9 +182,10 @@ module PLUTUS-CORE-TRANSLATION
                         .Instructions
                       )
 
+   syntax Operand ::= #useOperand(Tm, LocalName)                     [function]
 
    rule #useOperand((builtin addInteger T1:Tm T2:Tm), LN)
-     => LN:LocalName
+     => LN
    rule #loadOperand((builtin addInteger T1:Tm T2:Tm), LN)
      => #concatInsList(
          #concatInsList(#loadOperand(T1, #intToLocalName(!N1)),
@@ -195,7 +193,6 @@ module PLUTUS-CORE-TRANSLATION
           LN = add #useOperand(T1, #intToLocalName(!N1))
                  , #useOperand(T2, #intToLocalName(!N2)) .Instructions)
 
-   syntax Operand ::= #useOperand(Tm, LocalName)                     [function]
    rule #useOperand(I:Int              , LN) => I:Int
    rule #useOperand(V:Var              , LN) => #varToLocalName(V:Var)
    rule #useOperand(#freeVar(V, OFFSET), LN) => LN:LocalName
@@ -205,7 +202,7 @@ module PLUTUS-CORE-TRANSLATION
 // Generate static functions
 // -------------------------
 
-   rule <plutus> #createAlloc:K => .K ... </plutus>
+   rule <plutus> #createAlloc:K => .K:K ... </plutus>
         <functions> ... ( .Bag
                        => <function>
                             <name>   (@alloc):GlobalName </name>
@@ -226,7 +223,7 @@ module PLUTUS-CORE-TRANSLATION
         </functions>
         <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
 
-   rule <plutus> #createInit:K => .K ... </plutus>
+   rule <plutus> #createInit:K => .K:K ... </plutus>
         <functions> ... ( .Bag
                        => <function>
                             <name>   (@init):GlobalName </name>
@@ -246,7 +243,7 @@ module PLUTUS-CORE-TRANSLATION
    syntax PreInstructions ::= "#dispatchJumpTable"
                             | #dispatchCheckCond(Int, GlobalName)
                             | #dispatchCall     (Int, GlobalName)
-   rule <plutus> #createDispatch:K => .K ... </plutus>
+   rule <plutus> #createDispatch:K => .K:K ... </plutus>
         <functions> ... ( .Bag
                        => <function>
                             <name>   (@dispatch):GlobalName </name>
@@ -265,36 +262,37 @@ module PLUTUS-CORE-TRANSLATION
         </functions>
         <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
 
-    rule <k> #dispatchJumpTable:PreInstructions
-                => #concatInsList( #dispatchCheckCond(JI, FN)
-                                 , #concatInsList( #dispatchJumpTable
-                                                 , #dispatchCall(JI, FN)))
-            ...
-         </k>
-         <dispatchedFunctionsLeft> DFL => DFL -Int 1 </dispatchedFunctionsLeft>
-         <function>
+    rule <function>
             <name>   FN     </name>
             <jumpId> JI     </jumpId>
-            <k>      _:Instructions    </k>
-            <env>    _:Map  </env>
-            <params> _:VarList  </params>
             <hasDispatchEntry> false:Bool => true:Bool </hasDispatchEntry>
             <readyForDispatch> true:Bool               </readyForDispatch>
+            ...
          </function>
+         <function>
+           <k> #dispatchJumpTable:PreInstructions
+                  => #concatInsList( #dispatchCheckCond(JI, FN)
+                                   , #concatInsList( #dispatchJumpTable
+                                                   , #dispatchCall(JI, FN)))
+              ...
+           </k>
+           ...
+         </function>
+         <dispatchedFunctionsLeft> DFL => DFL -Int 1 </dispatchedFunctionsLeft>
 
     rule <function>
-            <name>   _     </name>
-            <jumpId> _     </jumpId>
-            <k>      _:Instructions    </k>
-            <env>    _:Map  </env>
-            <params> _:VarList  </params>
-            <hasDispatchEntry> _:Bool </hasDispatchEntry>
-            <readyForDispatch> false:Bool => true:Bool               </readyForDispatch>
+            <k> _:Instructions </k>
+            <hasDispatchEntry> _:Bool                  </hasDispatchEntry>
+            <readyForDispatch> false:Bool => true:Bool </readyForDispatch>
+            ...
          </function>
          <totalReadyForDispatch> TR => TR +Int 1 </totalReadyForDispatch>
 
 // Once all functions execpt @dispatch have been processed, ther are no more entrys to be dispatched
-    rule <k> #dispatchJumpTable:PreInstructions => .Instructions ... </k>
+    rule <function>
+            <k> #dispatchJumpTable => .Instructions ... </k>
+            ...
+         </function>
          <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
          <totalReadyForDispatch> TRFD:Int </totalReadyForDispatch>
          <totalFunctions> TF:Int </totalFunctions>
