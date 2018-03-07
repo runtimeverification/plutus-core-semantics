@@ -2,12 +2,15 @@ require "../syntax.k"
 require "iele-syntax.k"
 
 module PLUTUS-CORE-TRANSLATION
-  imports PLUTUS-CORE-SYNTAX
-//  imports BAG-SIZE
-
-// Pull off some stunts to avoid ambiguities between `.K` and IELEName
+  imports PLUTUS-CORE-COMMON
   imports IELE-COMMON
-  syntax IeleName ::= r"(?<![A-Za-z0-9\\_\\-\\$])[a-zA-Z\\_\\-\\$][0-9a-zA-Z\\_\\-\\$]*" [token, notInRules, prec(3)]
+
+  syntax Var      ::= "closure"  | "param" | "size"
+  syntax IeleName ::= "addr"
+                    | "param" | "dispatch"
+                    | "cond" | "fptr" | "noname"
+                    | "alloc" | "alloc_counter_ptr" | "alloced"
+  syntax LocalName ::= "%size" | "%closure" | "%param" | "%ret"
 
   configuration
     <T>
@@ -137,7 +140,7 @@ module PLUTUS-CORE-TRANSLATION
    syntax PreInstructions ::= #loadOperand(Tm, LocalName)
    rule #loadOperand(I:Int              , LN) => .Instructions
    rule #loadOperand(V:Var              , LN) => .Instructions
-   rule #loadOperand(#freeVar(V, OFFSET), LN) => (%addr = add %env, (OFFSET +Int 1)
+   rule #loadOperand(#freeVar(V, OFFSET), LN) => (%addr = add %closure, (OFFSET +Int 1)
                                                   LN    = load %addr
                                                  ):Instructions
    rule <functions>
