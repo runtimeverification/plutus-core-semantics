@@ -2,7 +2,8 @@ require "../syntax.k"
 require "hex-conversion.k"
 
 module PLUTUS-CORE-EXECUTION
-  imports PLUTUS-CORE-SYNTAX
+  imports DOMAINS
+  imports PLUTUS-CORE-COMMON
   imports HEX-CONVERSION
 // --- TODO: Disabled KRYPO support to ease transition to K5
 //  imports KRYPTO
@@ -134,7 +135,7 @@ module PLUTUS-CORE-EXECUTION
     [structural]
 
   rule
-    <k> _:Val ~> (Rho => .K) ... </k>
+    <k> _:Val ~> (Rho:Map => .K) ... </k>
     <lenv> _ => Rho </lenv>
     [structural]
 
