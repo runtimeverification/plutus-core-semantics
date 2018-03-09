@@ -1,5 +1,6 @@
 module HEX-CONVERSION
   imports INT
+  imports STRING
 
   syntax String ::= #toHex(Int)                                      [function]
                   | #hex(Int)                                        [function]
