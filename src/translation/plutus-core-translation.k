@@ -1,4 +1,4 @@
-require "plutus-core-syntax.k"
+require "../syntax.k"
 
 module PLUTUS-CORE-TRANSLATION
   imports PLUTUS-CORE-SYNTAX

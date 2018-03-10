@@ -1,3 +1,5 @@
 <T>
-  <k> ( define foo ( lam x  .VarList ( builtin addInteger x 2 ) ) ) </k>
+  <k>
+    ( lam x  .VarList ( builtin addInteger x 2 ) ) ~> #freezer(define__)_PLUTUS-CORE-SYNTAX0_ ( foo )
+  </k>
 </T>

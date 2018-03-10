@@ -1,4 +1,4 @@
-require "plutus-core-syntax.k"
+require "../syntax.k"
 require "hex-conversion.k"
 
 module PLUTUS-CORE-EXECUTION
