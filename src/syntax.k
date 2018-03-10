@@ -8,10 +8,18 @@ module PLUTUS-CORE-SYNTAX
   /***********************    LEXICAL GRAMMAR   ******************************/
   /***************************************************************************/
 
+  syntax BuiltinName ::=  "addInteger" | "subtractInteger"
+                       | "multiplyInteger" | "divideInteger" | "remainderInteger"
+                       | "equalsInteger" | "lessThanInteger" | "greaterThanInteger"
+                       | "integerToByteString" | "takeByteString" | "dropByteString"
+                       | "concatenate" | "equalsByteString"
+                       | "sha3_256" | "sha2_256"
+
   // Name.
   syntax Name    ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
   syntax TyName  ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
+  // Builtin Name
   // CompBuiltin.
   syntax CBName  ::= r"[a-z][a-zA-Z0-9\\_']*"                    [token, avoid]
 
@@ -93,9 +101,9 @@ module PLUTUS-CORE-SYNTAX
                       | "(" "case" Tm ClList ")"                    [strict(1)]
                       | "(" "con" QualC TmList ")"
                         // Built-in function.
-                      | "(" "builtin" Name Tm ")"
+                      | "(" "builtin" BuiltinName Tm ")"
                                                             [strict(2), prefer]
-                      | "(" "builtin" Name Tm Tm ")"
+                      | "(" "builtin" BuiltinName Tm Tm ")"
                                                                  [strict(2, 3)]
                       | "(" "compbuiltin" CBName ")"
                       | "(" "success" Tm ")"                        [strict(1)]
