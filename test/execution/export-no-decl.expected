@@ -3,23 +3,23 @@
   <lenv> .Map </lenv>
   <genv> ( Foo . r5 ) |-> 7 ( Foo . r2 ) |-> 3 ( Foo . r3 ) |-> 5 ( Foo . r1 ) |-> 4 ( Foo . r6 ) |-> ( con Prelude . False .ValList ) </genv>
   <modules>
-    <module>
+    <Module>
       <curr> 1 </curr>
       <name> Bar </name>
-      <data> .TyExpList </data>
+      <dataCons> .TyExpList </dataCons>
       <decl> .NameList </decl>
-      <import> Foo  .ModNmList </import>
+      <importedModules> Foo  .ModNmList </importedModules>
       <exportTy> .TyExpList </exportTy>
       <exportTm> .NameList </exportTm>
-    </module>
-    <module>
+    </Module>
+    <Module>
       <curr> 0 </curr>
       <name> Foo </name>
-      <data> .TyExpList </data>
+      <dataCons> .TyExpList </dataCons>
       <decl> r3  ( r2  ( r1  .NameList ) ) </decl>
-      <import> .ModNmList </import>
+      <importedModules> .ModNmList </importedModules>
       <exportTy> .TyExpList </exportTy>
       <exportTm> r1  ( r2  ( r3  ( r5  .NameList ) ) ) </exportTm>
-    </module>
+    </Module>
   </modules>
 </T>

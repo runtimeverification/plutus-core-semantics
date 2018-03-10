@@ -12,15 +12,16 @@ module PLUTUS-CORE-EXECUTION
       <lenv> .Map </lenv>
       <genv> .Map </genv>
       <modules>
-        <module multiplicity="*">
+        // K5 Does not like cells named 'module'
+        <Module multiplicity="*">
           <curr> 0 </curr>
           <name> .ModName </name>
-          <data> .TyExpList </data>
+          <dataCons> .TyExpList </dataCons>
           <decl> .NameList </decl>
-          <import> .ModNmList </import>
+          <importedModules> .ModNmList </importedModules>
           <exportTy> .TyExpList </exportTy>
           <exportTm> .NameList </exportTm>
-        </module>
+        </Module>
       </modules>
     </T>
 
@@ -151,28 +152,28 @@ module PLUTUS-CORE-EXECUTION
   rule ( abs V:Var M:Tm ):Tm => M
   rule ( inst M:Tm T:Ty ) => .K
 
-  // Begin processing a module, add new <module> cell
+  // Begin processing a module, add new <Module> cell
   //rule ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) .DecList => DEFS
 
   rule
     <k>
-      ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) => DEFS ...
+      ( module MN:ModName (import MNL) (export (TXL) (NL:NameList)) DEFS ) => DEFS ...
     </k>
-    (.Bag => <module> ...
+    (.Bag => <Module> ...
                <curr> 1 </curr>
                <name> MN </name>
-               <data> .TyExpList </data>
+               <dataCons> .TyExpList </dataCons>
                <decl> .NameList </decl>
-               <import> MNL </import>
+               <importedModules> MNL </importedModules>
                <exportTy> TXL </exportTy>
                <exportTm> NL </exportTm>
-        ... </module>)
+        ... </Module>)
 
-  // Add data declaration to data subcell
+  // Add data declaration to dataCons subcell
   rule
     <k> ( data TC:TyCon ( KSL:KSigList ) AL:AltList ) => .K ... </k>
     <curr> 1 </curr>
-    <data> DL => ( TC ( #getConListAlt(AL) ) ) DL </data>
+    <dataCons> DL => ( TC ( #getConListAlt(AL) ) ) DL </dataCons>
 
   // Add declared name to decls
   rule
@@ -206,24 +207,24 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> (MN' . N):QualN => V ... </k>
     <genv> ... (MN' . N):QualN |-> V ... </genv>
-    <module>
+    <Module>
       <curr> 1 </curr>
       <name> MN </name>
-      <data> _ </data>
+      <dataCons> _ </dataCons>
       <decl> _ </decl>
-      <import> MNL </import>
+      <importedModules> MNL </importedModules>
       <exportTy> _ </exportTy>
       <exportTm> _ </exportTm>
-    </module>
-    <module>
+    </Module>
+    <Module>
       <curr> 0 </curr>
       <name> MN' </name>
-      <data> _ </data>
+      <dataCons> _ </dataCons>
       <decl> DL </decl>
-      <import> _ </import>
+      <importedModules> _ </importedModules>
       <exportTy> _ </exportTy>
       <exportTm> NL </exportTm>
-    </module>
+    </Module>
     when (MN' #in_mn MNL) andBool (N #in_n NL) andBool (N #in_n DL)
 
   /***************************************************************************/
@@ -247,7 +248,7 @@ module PLUTUS-CORE-EXECUTION
     <k> ( case M CLS ) => #valid ~> ( case M CLS ) ... </k>
     <curr> 1 </curr>
     <name> MN </name>
-    <data> TXL </data>
+    <dataCons> TXL </dataCons>
     when #getConListCl(CLS) #in_tx TXL
 
   // Case match is valid if the type was defined in another module, all
@@ -255,24 +256,24 @@ module PLUTUS-CORE-EXECUTION
   // module, and that module is importad from the current module
   rule
     <k> ( case M CLS ) => #valid ~> ( case M CLS ) ... </k>
-    <module>
+    <Module>
       <curr> 1 </curr>
       <name> MN </name>
-      <data> _ </data>
+      <dataCons> _ </dataCons>
       <decl> _ </decl>
-      <import> MNL </import>
+      <importedModules> MNL </importedModules>
       <exportTy> _ </exportTy>
       <exportTm> _ </exportTm>
-    </module>
-    <module>
+    </Module>
+    <Module>
       <curr> 0 </curr>
       <name> MN' </name>
-      <data> TXL </data>
+      <dataCons> TXL </dataCons>
       <decl> _ </decl>
-      <import> _ </import>
+      <importedModules> _ </importedModules>
       <exportTy> TXL' </exportTy>
       <exportTm> _ </exportTm>      
-    </module>
+    </Module>
     when #getConListCl(CLS) #in_tx TXL andBool #getConListCl(CLS) #in_tx TXL'
                                        andBool MN' #in_mn MNL
 

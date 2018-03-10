@@ -3,23 +3,23 @@
   <lenv> .Map </lenv>
   <genv> ( Bar . r1 ) |-> 21 </genv>
   <modules>
-    <module>
+    <Module>
       <curr> 1 </curr>
       <name> Baz </name>
-      <data> .TyExpList </data>
+      <dataCons> .TyExpList </dataCons>
       <decl> r2  .NameList </decl>
-      <import> Bar  .ModNmList </import>
+      <importedModules> Bar  .ModNmList </importedModules>
       <exportTy> .TyExpList </exportTy>
       <exportTm> .NameList </exportTm>
-    </module>
-    <module>
+    </Module>
+    <Module>
       <curr> 0 </curr>
       <name> Bar </name>
-      <data> .TyExpList </data>
+      <dataCons> .TyExpList </dataCons>
       <decl> r1  .NameList </decl>
-      <import> .ModNmList </import>
+      <importedModules> .ModNmList </importedModules>
       <exportTy> .TyExpList </exportTy>
       <exportTm> .NameList </exportTm>
-    </module>
+    </Module>
   </modules>
 </T>

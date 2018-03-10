@@ -3,14 +3,14 @@
   <lenv> .Map </lenv>
   <genv> ( Foo . b1 ) |-> #23456 ( Foo . b2 ) |-> #3456 ( Foo . b3 ) |-> #456 </genv>
   <modules>
-    <module>
+    <Module>
       <curr> 0 </curr>
       <name> Foo </name>
-      <data> .TyExpList </data>
+      <dataCons> .TyExpList </dataCons>
       <decl> .NameList </decl>
-      <import> .ModNmList </import>
+      <importedModules> .ModNmList </importedModules>
       <exportTy> .TyExpList </exportTy>
       <exportTm> .NameList </exportTm>
-    </module>
+    </Module>
   </modules>
 </T>
