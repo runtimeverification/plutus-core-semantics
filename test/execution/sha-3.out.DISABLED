@@ -1,0 +1,36 @@
+<T>
+  <k>
+    ( builtin sha3_256 #ABCD ) ~> #freezer(define__)_PLUTUS-CORE-SYNTAX0_ ( result ) ~> .DecList ~> ( program .ModList )
+  </k>
+  <lenv>
+    .Map
+  </lenv>
+  <genv>
+    .Map
+  </genv>
+  <modules>
+    ModuleCellSetItem ( <Module>
+      <curr>
+        1
+      </curr>
+      <name>
+        Foo
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        .QualCList
+      </decl>
+      <importedModules>
+        .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> )
+  </modules>
+</T>

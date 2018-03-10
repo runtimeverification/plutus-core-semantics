@@ -3,8 +3,9 @@ require "hex-conversion.k"
 
 module PLUTUS-CORE-EXECUTION
   imports PLUTUS-CORE-SYNTAX
-  imports KRYPTO
   imports HEX-CONVERSION
+// --- TODO: Disabled KRYPO support to ease transition to K5
+//  imports KRYPTO
 
   configuration
     <T>
@@ -87,8 +88,9 @@ module PLUTUS-CORE-EXECUTION
   rule ( builtin concatenate B1:ByStr B2:ByStr )
     => #toByStr(#toString(B1) +String #toString(B2))
 
-  rule ( builtin sha3_256 B:ByStr ) => #toByStr(Sha3256(#toString(B)))
-  rule ( builtin sha2_256 B:ByStr ) => #toByStr(Sha256(#toString(B)))
+// --- TODO: Disabled KRYPO support to ease transition to K5
+//  rule ( builtin sha3_256 B:ByStr ) => #toByStr(Sha3256(#toString(B)))
+//  rule ( builtin sha2_256 B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
   rule ( builtin equalsByteString B1:ByStr B2:ByStr )
     => #primTrue when #toString(B1) ==String #toString(B2)
