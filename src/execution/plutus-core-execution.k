@@ -29,12 +29,12 @@ module PLUTUS-CORE-EXECUTION
   /***********************  BUILT-IN REDUCTIONS   ****************************/
   /***************************************************************************/
 
-  rule ( builtin addInteger:Name       I1:Int I2:Int ) => I1 +Int I2
-  rule ( builtin subtractInteger:Name  I1:Int I2:Int ) => I1 -Int I2
-  rule ( builtin multiplyInteger:Name  I1:Int I2:Int ) => I1 *Int I2
-  rule ( builtin divideInteger:Name    I1:Int I2:Int ) => I1 /Int I2
+  rule ( builtin addInteger       I1:Int I2:Int ) => I1 +Int I2
+  rule ( builtin subtractInteger  I1:Int I2:Int ) => I1 -Int I2
+  rule ( builtin multiplyInteger  I1:Int I2:Int ) => I1 *Int I2
+  rule ( builtin divideInteger    I1:Int I2:Int ) => I1 /Int I2
     when I2 =/=Int 0
-  rule ( builtin remainderInteger:Name I1:Int I2:Int ) => I1 %Int I2
+  rule ( builtin remainderInteger I1:Int I2:Int ) => I1 %Int I2
     when I2 =/=Int 0
 
   // TODO: define semantics for compbuiltin.
@@ -53,22 +53,22 @@ module PLUTUS-CORE-EXECUTION
   rule #primFalse
     => #conHolder(#stringToModName("Prelude"), #stringToCon("False"))
 
-  rule ( builtin equalsInteger:Name I:Int I:Int        ) => #primTrue
+  rule ( builtin equalsInteger I:Int I:Int        ) => #primTrue
     [transition]
-  rule ( builtin equalsInteger:Name I1:Int I2:Int      ) => #primFalse
+  rule ( builtin equalsInteger I1:Int I2:Int      ) => #primFalse
     when I1 =/=Int I2
     [transition]
-  rule ( builtin lessThanInteger:Name I1:Int I2:Int    ) => #primTrue
+  rule ( builtin lessThanInteger I1:Int I2:Int    ) => #primTrue
     when I1 <Int I2
-  rule ( builtin lessThanInteger:Name I1:Int I2:Int    ) => #primFalse
+  rule ( builtin lessThanInteger I1:Int I2:Int    ) => #primFalse
     when notBool (I1 <Int I2)
-  rule ( builtin greaterThanInteger:Name I1:Int I2:Int ) => #primTrue
+  rule ( builtin greaterThanInteger I1:Int I2:Int ) => #primTrue
     when I1 >Int I2
-  rule ( builtin greaterThanInteger:Name I1:Int I2:Int ) => #primFalse
+  rule ( builtin greaterThanInteger I1:Int I2:Int ) => #primFalse
     when notBool (I1 >Int I2)
 
-  rule ( builtin integerToByteString:Name 0 )    => #toByStr("0")
-  rule ( builtin integerToByteString:Name I:Int) => #toByStr(#toHex(I))
+  rule ( builtin integerToByteString 0 )    => #toByStr("0")
+  rule ( builtin integerToByteString I:Int) => #toByStr(#toHex(I))
     when I =/=Int 0
 
   syntax ByStr ::= #toByStr ( String )                                [function]
@@ -78,22 +78,22 @@ module PLUTUS-CORE-EXECUTION
   rule #toString(B:ByStr):String
     => substrString(#toStringVerbatim(B), 1, lengthString(#toStringVerbatim(B)))
 
-  rule ( builtin takeByteString:Name N:Int B:ByStr )
+  rule ( builtin takeByteString N:Int B:ByStr )
     => #toByStr(substrString(#toString(B), 0, N))
 
-  rule ( builtin dropByteString:Name N:Int B:ByStr )
+  rule ( builtin dropByteString N:Int B:ByStr )
     => #toByStr(substrString(#toString(B), N, lengthString(#toString(B))))
 
-  rule ( builtin concatenate:Name B1:ByStr B2:ByStr )
+  rule ( builtin concatenate B1:ByStr B2:ByStr )
     => #toByStr(#toString(B1) +String #toString(B2))
 
-  rule ( builtin sha3_256:Name B:ByStr ) => #toByStr(Sha3256(#toString(B)))
-  rule ( builtin sha2_256:Name B:ByStr ) => #toByStr(Sha256(#toString(B)))
+  rule ( builtin sha3_256 B:ByStr ) => #toByStr(Sha3256(#toString(B)))
+  rule ( builtin sha2_256 B:ByStr ) => #toByStr(Sha256(#toString(B)))
 
-  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+  rule ( builtin equalsByteString B1:ByStr B2:ByStr )
     => #primTrue when #toString(B1) ==String #toString(B2)
 
-  rule ( builtin equalsByteString:Name B1:ByStr B2:ByStr )
+  rule ( builtin equalsByteString B1:ByStr B2:ByStr )
     => #primFalse when #toString(B1) =/=String #toString(B2)
 
   /***************************************************************************/
@@ -177,7 +177,7 @@ module PLUTUS-CORE-EXECUTION
 
   // Add declared name to decls
   rule
-    <k> ( declare N:Name T:Ty ) => .K ... </k>
+    <k> ( declare N T:Ty ) => .K ... </k>
     <curr> 1 </curr>
     <decl> DL => N DL </decl>
 
