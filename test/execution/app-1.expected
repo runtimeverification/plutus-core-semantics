@@ -3,14 +3,14 @@
   <lenv> .Map </lenv>
   <genv> ( Foo . r1 ) |-> 15 ( Foo . r2 ) |-> 17 </genv>
   <modules>
-    <module>
+    <Module>
       <curr> 0 </curr>
       <name> Foo </name>
-      <data> .TyExpList </data>
+      <dataCons> .TyExpList </dataCons>
       <decl> r2  ( r1  .NameList ) </decl>
-      <import> .ModNmList </import>
+      <importedModules> .ModNmList </importedModules>
       <exportTy> .TyExpList </exportTy>
       <exportTm> .NameList </exportTm>
-    </module>
+    </Module>
   </modules>
 </T>

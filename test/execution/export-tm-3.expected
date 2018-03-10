@@ -3,32 +3,32 @@
   <lenv> .Map </lenv>
   <genv> ( Baz . r8 ) |-> 84 ( Bar . r7 ) |-> 28 ( Foo . r2 ) |-> 3 ( Foo . r1 ) |-> 4 </genv>
   <modules>
-    <module>
+    <Module>
       <curr> 0 </curr>
       <name> Baz </name>
-      <data> .TyExpList </data>
+      <dataCons> .TyExpList </dataCons>
       <decl> r8  .NameList </decl>
-      <import> Bar  ( Foo  .ModNmList ) </import>
+      <importedModules> Bar  ( Foo  .ModNmList ) </importedModules>
       <exportTy> .TyExpList </exportTy>
       <exportTm> .NameList </exportTm>
-    </module>
-    <module>
+    </Module>
+    <Module>
       <curr> 0 </curr>
       <name> Bar </name>
-      <data> .TyExpList </data>
+      <dataCons> .TyExpList </dataCons>
       <decl> r7  .NameList </decl>
-      <import> Foo  .ModNmList </import>
+      <importedModules> Foo  .ModNmList </importedModules>
       <exportTy> .TyExpList </exportTy>
       <exportTm> r7  .NameList </exportTm>
-    </module>
-    <module>
+    </Module>
+    <Module>
       <curr> 0 </curr>
       <name> Foo </name>
-      <data> .TyExpList </data>
+      <dataCons> .TyExpList </dataCons>
       <decl> r2  ( r1  .NameList ) </decl>
-      <import> .ModNmList </import>
+      <importedModules> .ModNmList </importedModules>
       <exportTy> .TyExpList </exportTy>
       <exportTm> r1  ( r2  .NameList ) </exportTm>
-    </module>
+    </Module>
   </modules>
 </T>
