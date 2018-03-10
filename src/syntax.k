@@ -149,7 +149,7 @@ module PLUTUS-CORE-SYNTAX
                       | MDec
                       | DDec
 
-  syntax Def        ::= "(" "define" Name Tm ")"
+  syntax Def        ::= "(" "define" Name Tm ")"                    [strict(2)]
 
   syntax TDec       ::= "(" "type" Name Ty ")"
 
