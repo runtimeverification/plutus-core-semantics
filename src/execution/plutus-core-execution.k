@@ -7,6 +7,9 @@ module PLUTUS-CORE-EXECUTION
 // --- TODO: Disabled KRYPO support to ease transition to K5
 //  imports KRYPTO
 
+// K5 doesn't know how to parse <module multiplicity='*' type='...'> ?
+  syntax #CellName ::= "type" [token]
+
   configuration
     <T>
       <k> $PGM:Prg </k>
@@ -14,7 +17,7 @@ module PLUTUS-CORE-EXECUTION
       <genv> .Map </genv>
       <modules>
         // K5 Does not like cells named 'module'
-        <Module multiplicity="*">
+        <Module multiplicity="*" type="Set">
           <curr> 0 </curr>
           <name> .ModName </name>
           <dataCons> .TyExpList </dataCons>
