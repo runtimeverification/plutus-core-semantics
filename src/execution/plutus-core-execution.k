@@ -17,10 +17,10 @@ module PLUTUS-CORE-EXECUTION
           <curr> 0 </curr>
           <name> .ModName </name>
           <dataCons> .TyExpList </dataCons>
-          <decl> .NameList </decl>
+          <decl> .NameList:NameList </decl>
           <importedModules> .ModNmList </importedModules>
           <exportTy> .TyExpList </exportTy>
-          <exportTm> .NameList </exportTm>
+          <exportTm> .NameList:NameList </exportTm>
         </Module>
       </modules>
     </T>
@@ -163,7 +163,7 @@ module PLUTUS-CORE-EXECUTION
                <curr> 1 </curr>
                <name> MN </name>
                <dataCons> .TyExpList </dataCons>
-               <decl> .NameList </decl>
+               <decl> .NameList:NameList </decl>
                <importedModules> MNL </importedModules>
                <exportTy> TXL </exportTy>
                <exportTm> NL </exportTm>
@@ -199,7 +199,7 @@ module PLUTUS-CORE-EXECUTION
     <genv> ... (MN . N):QualN |-> V ... </genv>
     <curr> 1 </curr>
     <name> MN </name>
-    <decl> DL </decl>
+    <decl> DL:NameList </decl>
     when N #in_n DL
 
   // Qualified name reduces if the name is exported from a different module
@@ -220,10 +220,10 @@ module PLUTUS-CORE-EXECUTION
       <curr> 0 </curr>
       <name> MN' </name>
       <dataCons> _ </dataCons>
-      <decl> DL </decl>
+      <decl> DL:NameList </decl>
       <importedModules> _ </importedModules>
       <exportTy> _ </exportTy>
-      <exportTm> NL </exportTm>
+      <exportTm> NL:NameList </exportTm>
     </Module>
     when (MN' #in_mn MNL) andBool (N #in_n NL) andBool (N #in_n DL)
 
