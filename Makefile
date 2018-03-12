@@ -53,7 +53,9 @@ ocaml-deps:
 # them as PRECIOUS prevents this.
 .PRECIOUS: .build/%/plutus-core-kompiled/interpreter
 
-build: execution translation erc20 typing
+build: build-passing build-failing
+build-passing: execution translation
+build-failing: erc20 typing
 
 execution:   .build/execution/plutus-core-kompiled/interpreter
 translation: .build/translation/plutus-core-kompiled/interpreter
