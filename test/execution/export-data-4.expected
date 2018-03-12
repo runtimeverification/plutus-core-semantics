@@ -1,25 +1,58 @@
 <T>
-  <k> . </k>
-  <lenv> .Map </lenv>
-  <genv> ( Foo . result ) |-> 90 </genv>
+  <k>
+    .
+  </k>
+  <lenv>
+    .Map
+  </lenv>
+  <genv>
+    Foo . result |-> 90
+  </genv>
   <modules>
-    <Module>
-      <curr> 0 </curr>
-      <name> Foo </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> .NameList </decl>
-      <importedModules> Nat  .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
-    <Module>
-      <curr> 0 </curr>
-      <name> Nat </name>
-      <dataCons> ( MyType ( Foo  ( NotThisOne  ( NotThisTwo  ( NotThisThree  ( NotThisFour  ( NotThisFive  .ConList ) ) ) ) ) ) )  .TyExpList </dataCons>
-      <decl> .NameList </decl>
-      <importedModules> .ModNmList </importedModules>
-      <exportTy> ( MyType ( Foo  ( NotThisOne  ( NotThisTwo  ( NotThisThree  ( NotThisFour  ( Foo  ( NotThisFive  .ConList ) ) ) ) ) ) ) )  .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
+    ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Foo
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        .QualCList
+      </decl>
+      <importedModules>
+        Nat  .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> ) ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Nat
+      </name>
+      <dataCons>
+        ( MyType ( Foo  NotThisOne  NotThisTwo  NotThisThree  NotThisFour  NotThisFive  .ConList ) )  .TyExpList
+      </dataCons>
+      <decl>
+        .QualCList
+      </decl>
+      <importedModules>
+        .ModNmList
+      </importedModules>
+      <exportTy>
+        ( MyType ( Foo  NotThisOne  NotThisTwo  NotThisThree  NotThisFour  Foo  NotThisFive  .ConList ) )  .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> )
   </modules>
 </T>

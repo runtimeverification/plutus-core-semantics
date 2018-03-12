@@ -1,25 +1,59 @@
 <T>
-  <k> . </k>
-  <lenv> .Map </lenv>
-  <genv> ( Foo . result ) |-> 21 ( Foo . swapped ) |-> ( con Nat . Pair 2  ( 1  .ValList ) ) </genv>
+  <k>
+    .
+  </k>
+  <lenv>
+    .Map
+  </lenv>
+  <genv>
+    Foo . result |-> 21
+    Foo . swapped |-> ( con Nat . Pair 2  1  .ValList )
+  </genv>
   <modules>
-    <Module>
-      <curr> 0 </curr>
-      <name> Foo </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> .NameList </decl>
-      <importedModules> Nat  .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
-    <Module>
-      <curr> 0 </curr>
-      <name> Nat </name>
-      <dataCons> ( MyPair ( Pair  ( NotThis  .ConList ) ) )  .TyExpList </dataCons>
-      <decl> .NameList </decl>
-      <importedModules> .ModNmList </importedModules>
-      <exportTy> ( MyPair ( Pair  ( NotThis  .ConList ) ) )  .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
+    ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Foo
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        .QualCList
+      </decl>
+      <importedModules>
+        Nat  .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> ) ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Nat
+      </name>
+      <dataCons>
+        ( MyPair ( Pair  NotThis  .ConList ) )  .TyExpList
+      </dataCons>
+      <decl>
+        .QualCList
+      </decl>
+      <importedModules>
+        .ModNmList
+      </importedModules>
+      <exportTy>
+        ( MyPair ( Pair  NotThis  .ConList ) )  .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> )
   </modules>
 </T>

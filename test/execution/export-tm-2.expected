@@ -1,25 +1,63 @@
 <T>
-  <k> . </k>
-  <lenv> .Map </lenv>
-  <genv> ( Bar . r7 ) |-> 20 ( Foo . r5 ) |-> ( con Prelude . True .ValList ) ( Foo . r2 ) |-> 3 ( Foo . r3 ) |-> 5 ( Foo . r1 ) |-> 4 ( Foo . r6 ) |-> ( con Prelude . False .ValList ) </genv>
+  <k>
+    .
+  </k>
+  <lenv>
+    .Map
+  </lenv>
+  <genv>
+    Bar . r7 |-> 20
+    Foo . r1 |-> 4
+    Foo . r2 |-> 3
+    Foo . r3 |-> 5
+    Foo . r5 |-> ( con Prelude . True .ValList )
+    Foo . r6 |-> ( con Prelude . False .ValList )
+  </genv>
   <modules>
-    <Module>
-      <curr> 0 </curr>
-      <name> Bar </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> .NameList </decl>
-      <importedModules> Foo  .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
-    <Module>
-      <curr> 0 </curr>
-      <name> Foo </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> r3  ( r2  ( r1  .NameList ) ) </decl>
-      <importedModules> .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> r1  ( r2  ( r3  ( r5  .NameList ) ) ) </exportTm>
-    </Module>
+    ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Bar
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        .QualCList
+      </decl>
+      <importedModules>
+        Foo  .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> ) ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Foo
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        r3  r2  r1  .QualCList
+      </decl>
+      <importedModules>
+        .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        r1  r2  r3  r5  .QualCList
+      </exportTm>
+    </Module> )
   </modules>
 </T>
