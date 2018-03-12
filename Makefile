@@ -66,8 +66,8 @@ typing:      .build/typing/plutus-core-kompiled/interpreter
 TEST=./kplc test
 
 test: test-passing test-failing
-test-passing: test-translation test-execution test-erc20
-test-failing: test-verify test-verify-commented
+test-passing: test-translation test-execution
+test-failing: test-erc20 test-verify test-verify-commented
 
 translation_tests:=$(wildcard test/translation/*.plc)
 execution_tests:=$(wildcard test/execution/*.plc)
