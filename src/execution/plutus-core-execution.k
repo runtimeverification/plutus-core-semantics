@@ -49,7 +49,7 @@ module PLUTUS-CORE-EXECUTION
   rule #conHolder(MN, C) => ( con (MN . C):QualC .ValList )
 
   rule #stringToModName(S:String)
-    => #parseToken("ModName", S)
+    => #parseToken("UpperName", S)
   rule #stringToCon(S:String) => #parseToken("Con", S)
 
   syntax Prim ::= "#primTrue" | "#primFalse"
