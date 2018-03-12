@@ -77,9 +77,9 @@ module PLUTUS-CORE-EXECUTION
 
   syntax ByStr ::= #toByStr ( String )                                [function]
   rule #toByStr(S:String)
-    => #parseToken("ByStr@PLUTUS-CORE-SYNTAX", ("#" +String S))
+    => #parseToken("ByStr", ("#" +String S))
 
-  rule #toString(B:ByStr):String
+  rule #toString(B:ByStr)
     => substrString(#toStringVerbatim(B), 1, lengthString(#toStringVerbatim(B)))
 
   rule ( builtin takeByteString N:Int B:ByStr )
