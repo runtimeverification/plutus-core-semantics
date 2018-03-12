@@ -1,34 +1,83 @@
 <T>
-  <k> . </k>
-  <lenv> .Map </lenv>
-  <genv> ( Baz . r8 ) |-> 84 ( Bar . r7 ) |-> 28 ( Foo . r2 ) |-> 3 ( Foo . r1 ) |-> 4 </genv>
+  <k>
+    .
+  </k>
+  <lenv>
+    .Map
+  </lenv>
+  <genv>
+    Bar . r7 |-> 28
+    Baz . r8 |-> 84
+    Foo . r1 |-> 4
+    Foo . r2 |-> 3
+  </genv>
   <modules>
-    <Module>
-      <curr> 0 </curr>
-      <name> Baz </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> r8  .NameList </decl>
-      <importedModules> Bar  ( Foo  .ModNmList ) </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
-    <Module>
-      <curr> 0 </curr>
-      <name> Bar </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> r7  .NameList </decl>
-      <importedModules> Foo  .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> r7  .NameList </exportTm>
-    </Module>
-    <Module>
-      <curr> 0 </curr>
-      <name> Foo </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> r2  ( r1  .NameList ) </decl>
-      <importedModules> .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> r1  ( r2  .NameList ) </exportTm>
-    </Module>
+    ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Bar
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        r7  .QualCList
+      </decl>
+      <importedModules>
+        Foo  .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        r7  .QualCList
+      </exportTm>
+    </Module> ) ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Baz
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        r8  .QualCList
+      </decl>
+      <importedModules>
+        Bar  Foo  .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> ) ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Foo
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        r2  r1  .QualCList
+      </decl>
+      <importedModules>
+        .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        r1  r2  .QualCList
+      </exportTm>
+    </Module> )
   </modules>
 </T>

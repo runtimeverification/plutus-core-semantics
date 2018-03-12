@@ -1,25 +1,62 @@
 <T>
-  <k> ( Foo . r5 ) ~> #freezer(builtin___)0 ( multiplyInteger , 4 ) ~> #freezer(define__)0 ( r7 ) ~> .DecList ~> ( program .ModList ) </k>
-  <lenv> .Map </lenv>
-  <genv> ( Foo . r5 ) |-> 7 ( Foo . r2 ) |-> 3 ( Foo . r3 ) |-> 5 ( Foo . r1 ) |-> 4 ( Foo . r6 ) |-> ( con Prelude . False .ValList ) </genv>
+  <k>
+    Foo . r5 ~> #freezer(builtin___)_PLUTUS-CORE-COMMON0_ ( multiplyInteger , 4 ) ~> #freezer(define__)_PLUTUS-CORE-COMMON0_ ( r7 ) ~> .DecList ~> ( program .ModList )
+  </k>
+  <lenv>
+    .Map
+  </lenv>
+  <genv>
+    Foo . r1 |-> 4
+    Foo . r2 |-> 3
+    Foo . r3 |-> 5
+    Foo . r5 |-> 7
+    Foo . r6 |-> ( con Prelude . False .ValList )
+  </genv>
   <modules>
-    <Module>
-      <curr> 1 </curr>
-      <name> Bar </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> .NameList </decl>
-      <importedModules> Foo  .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
-    <Module>
-      <curr> 0 </curr>
-      <name> Foo </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> r3  ( r2  ( r1  .NameList ) ) </decl>
-      <importedModules> .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> r1  ( r2  ( r3  ( r5  .NameList ) ) ) </exportTm>
-    </Module>
+    ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Foo
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        r3  r2  r1  .QualCList
+      </decl>
+      <importedModules>
+        .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        r1  r2  r3  r5  .QualCList
+      </exportTm>
+    </Module> ) ModuleCellSetItem ( <Module>
+      <curr>
+        1
+      </curr>
+      <name>
+        Bar
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        .QualCList
+      </decl>
+      <importedModules>
+        Foo  .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> )
   </modules>
 </T>

@@ -1,5 +1,5 @@
 <T>
   <k>
-    ( lam x  .VarList ( lam y  .VarList ( builtin addInteger x y ) ) ) ~> #freezer(define__)_PLUTUS-CORE-SYNTAX0_ ( add )
+    ( lam x  .VarList ( lam y  .VarList ( builtin addInteger x y ) ) ) ~> #freezer(define__)_PLUTUS-CORE-COMMON0_ ( add )
   </k>
 </T>

@@ -1,25 +1,58 @@
 <T>
-  <k> ( Bar . r1 ) ~> #freezer(builtin___)0 ( multiplyInteger , 2 ) ~> #freezer(define__)0 ( r2 ) ~> .DecList ~> ( program .ModList ) </k>
-  <lenv> .Map </lenv>
-  <genv> ( Bar . r1 ) |-> 21 </genv>
+  <k>
+    Bar . r1 ~> #freezer(builtin___)_PLUTUS-CORE-COMMON0_ ( multiplyInteger , 2 ) ~> #freezer(define__)_PLUTUS-CORE-COMMON0_ ( r2 ) ~> .DecList ~> ( program .ModList )
+  </k>
+  <lenv>
+    .Map
+  </lenv>
+  <genv>
+    Bar . r1 |-> 21
+  </genv>
   <modules>
-    <Module>
-      <curr> 1 </curr>
-      <name> Baz </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> r2  .NameList </decl>
-      <importedModules> Bar  .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
-    <Module>
-      <curr> 0 </curr>
-      <name> Bar </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> r1  .NameList </decl>
-      <importedModules> .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
+    ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Bar
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        r1  .QualCList
+      </decl>
+      <importedModules>
+        .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> ) ModuleCellSetItem ( <Module>
+      <curr>
+        1
+      </curr>
+      <name>
+        Baz
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        r2  .QualCList
+      </decl>
+      <importedModules>
+        Bar  .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> )
   </modules>
 </T>

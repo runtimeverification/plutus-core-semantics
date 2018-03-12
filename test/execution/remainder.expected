@@ -1,16 +1,36 @@
 <T>
-  <k> . </k>
-  <lenv> .Map </lenv>
-  <genv> ( Foo . result ) |-> 0 </genv>
+  <k>
+    .
+  </k>
+  <lenv>
+    .Map
+  </lenv>
+  <genv>
+    Foo . result |-> 0
+  </genv>
   <modules>
-    <Module>
-      <curr> 0 </curr>
-      <name> Foo </name>
-      <dataCons> .TyExpList </dataCons>
-      <decl> .NameList </decl>
-      <importedModules> .ModNmList </importedModules>
-      <exportTy> .TyExpList </exportTy>
-      <exportTm> .NameList </exportTm>
-    </Module>
+    ModuleCellSetItem ( <Module>
+      <curr>
+        0
+      </curr>
+      <name>
+        Foo
+      </name>
+      <dataCons>
+        .TyExpList
+      </dataCons>
+      <decl>
+        .QualCList
+      </decl>
+      <importedModules>
+        .ModNmList
+      </importedModules>
+      <exportTy>
+        .TyExpList
+      </exportTy>
+      <exportTm>
+        .QualCList
+      </exportTm>
+    </Module> )
   </modules>
 </T>
