@@ -6,7 +6,7 @@ module PLUTUS-CORE-TRANSLATION
 
 // Pull off some stunts to avoid ambiguities between `.K` and IELEName
   imports IELE-COMMON
-  syntax IeleName ::=  r"(?<![A-Za-z0-9\\_\\-\\$])[a-zA-Z\\_\\-\\$][0-9a-zA-Z\\_\\-\\$]*" [token, notInRules, prec(3)]
+  syntax IeleName ::= r"(?<![A-Za-z0-9\\_\\-\\$])[a-zA-Z\\_\\-\\$][0-9a-zA-Z\\_\\-\\$]*" [token, notInRules, prec(3)]
 
   configuration
     <T>
@@ -37,7 +37,7 @@ module PLUTUS-CORE-TRANSLATION
 
 // Top-level lambdas uses the names that the user has given them...
   rule (define N:Name (lam X:Var T:Tm))
-   => #closure(#freshString, X, T, .Map)
+    => #closure(#freshString, X, T, .Map)
 
 // ... whereas nested lambdas are assigned a fresh name
   rule #closure(N, X:Var, #freeLambda(Y, T), M)
