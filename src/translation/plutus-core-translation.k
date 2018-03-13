@@ -21,6 +21,7 @@ module PLUTUS-CORE-TRANSLATION
   configuration
     <T>
       <plutus> $PGM:DecList ~> #createAlloc:K ~> #createInit:K ~> #createDispatch:K </plutus>
+      <iele> .TopLevelDefinitions </iele>
       <totalFunctions> 0 </totalFunctions>
       <totalReadyForDispatch> 0 </totalReadyForDispatch>
       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
@@ -315,6 +316,25 @@ module PLUTUS-CORE-TRANSLATION
     rule #dispatchCheckCond(JI:Int, GN:GlobalName)
       => #mkLN("cond") = cmp eq #mkLN("fptr"), JI:Int
          br #mkLN("cond"), #mkIN("label" +String Int2String(JI:Int))
+
+  // Finally, convert `<function>`s to IELE syntax
+
+  rule <functions>
+         <function>
+           <name>   GN:GlobalName         </name>
+           <params> VARS:VarList          </params>
+           <env>    ENV                   </env>
+           <k>      IS:Instructions       </k>
+           ...
+         </function> => .Bag
+         ...
+       </functions>
+       <iele> TLDS:TopLevelDefinitions
+           => (define GN (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
+       </iele>
+       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
+       <totalReadyForDispatch> TF </totalReadyForDispatch>
+       <totalFunctions> TF </totalFunctions>
   
   // Helpers for ...
   // ===============
@@ -342,31 +362,38 @@ module PLUTUS-CORE-TRANSLATION
   // Converting strings to {Iele,Local,Global}Name and Vars
   // ------------------------------------------------------
 
-  syntax GlobalName ::= #mkGN(String)                                [function]
-  syntax LocalName  ::= #mkLN(String)                                [function]
-  syntax IeleName   ::= #mkIN(String)                                [function]
-  syntax Var        ::= #mkVar(String)                               [function]
-  // --------------------------------------------------------------------------
+  syntax GlobalName ::= #mkGN(String)                                  [function]
+  syntax LocalName  ::= #mkLN(String)                                  [function]
+  syntax IeleName   ::= #mkIN(String)                                  [function]
+  syntax Var        ::= #mkVar(String)                                 [function]
+  // ----------------------------------------------------------------------------
   rule #mkGN(S)   => #parseToken("GlobalName", "@" +String S)
   rule #mkLN(S)   => #parseToken("LocalName",  "%" +String S)
   rule #mkIN(S)   => #parseToken("IeleName",               S)
   rule #mkVar(S)  => #parseToken("Var",                    S)
- 
-  syntax GlobalName ::= #nameToGlobalName(Name)                      [function]
+
+  // Converting Names, Vars to GlobalNames, LocalNames, Strings
+  // ----------------------------------------------------------
+
+  syntax GlobalName ::= #nameToGlobalName(Name)                        [function]
   rule #nameToGlobalName(N:Name) => #mkGN(#nameToString(N:Name))
  
-  syntax LocalName ::= #varToLocalName(Var)                          [function]
+  syntax LocalName ::= #varToLocalName(Var)                            [function]
   rule #varToLocalName(V:Var) => #mkLN(#varToString(V))
 
-  syntax String ::= #nameToString(Name)   [function, hook(STRING.token2string)]
-  syntax String ::= #varToString(Var)     [function, hook(STRING.token2string)]
+  syntax LocalNames ::= #varsToLocalNames(VarList)                     [function]
+  rule #varsToLocalNames(.VarList) => .LocalNames
+  rule #varsToLocalNames(X XS)     => #varToLocalName(X) , #varsToLocalNames(XS)
+
+  syntax String ::= #nameToString(Name)     [function, hook(STRING.token2string)]
+  syntax String ::= #varToString(Var)       [function, hook(STRING.token2string)]
 
   // Helpers for fresh variables
   // ---------------------------
 
-  syntax GlobalName ::= #intToGlobalName(Int)                        [function]
-  syntax LocalName  ::= #intToLocalName(Int)                         [function]
-  // --------------------------------------------------------------------------
+  syntax GlobalName ::= #intToGlobalName(Int)                          [function]
+  syntax LocalName  ::= #intToLocalName(Int)                           [function]
+  // ----------------------------------------------------------------------------
   rule #intToLocalName(N)      => #mkLN("fresh" +String Int2String(N))
   rule #intToGlobalName(N:Int) => #mkGN("fresh" +String Int2String(N:Int))
  
