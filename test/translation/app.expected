@@ -3,10 +3,10 @@
     .
   </plutus>
   <totalFunctions>
-    5
+    6
   </totalFunctions>
   <totalReadyForDispatch>
-    5
+    6
   </totalReadyForDispatch>
   <dispatchedFunctionsLeft>
     0
@@ -45,7 +45,7 @@
         .Map
       </env>
       <k>
-        % fptr = load %closure  % cond = cmp eq % fptr , 0  br % cond , label0  #block ( label0 )  %ret , .LValues = call @fresh0 ( %closure , %param , .Operands )  ret %ret , .Operands  .Instructions
+        % fptr = load %closure  % cond = cmp eq % fptr , 0  br % cond , label0  % cond = cmp eq % fptr , 1  br % cond , label1  #block ( label1 )  %ret , .LValues = call @fresh1 ( %closure , %param , .Operands )  ret %ret , .Operands  #block ( label0 )  %ret , .LValues = call @fresh0 ( %closure , %param , .Operands )  ret %ret , .Operands  .Instructions
       </k>
       <jumpId>
         -1
@@ -80,7 +80,7 @@
       </readyForDispatch>
     </function> ) FunctionCellSetItem ( <function>
       <name>
-        @foo
+        @app
       </name>
       <params>
         .VarList
@@ -105,16 +105,38 @@
         @fresh0
       </name>
       <params>
-        x  .VarList
+        f  .VarList
       </params>
       <env>
         .Map
       </env>
       <k>
-        %ret = add %x , 2  ret %ret , .Operands  .Instructions
+        %ret , .LValues = call @ alloc ( 2 , .Operands )  store 1 , %ret  %fresh3 = add %ret , 1  store %f , %fresh3  ret %ret , .Operands  .Instructions
       </k>
       <jumpId>
         0
+      </jumpId>
+      <hasDispatchEntry>
+        true
+      </hasDispatchEntry>
+      <readyForDispatch>
+        true
+      </readyForDispatch>
+    </function> ) FunctionCellSetItem ( <function>
+      <name>
+        @fresh1
+      </name>
+      <params>
+        x  .VarList
+      </params>
+      <env>
+        0 |-> f
+      </env>
+      <k>
+        % addr = add %closure , 1  %fresh5 = load % addr  %ret , .LValues = call @ dispatch ( %fresh5 , %x , .Operands )  ret %ret , .Operands  .Instructions
+      </k>
+      <jumpId>
+        1
       </jumpId>
       <hasDispatchEntry>
         true

@@ -364,10 +364,10 @@ module IELE-COMMON
 
 
 
-  rule call NAME ( ARGS ) => .LValues = call NAME ( ARGS ) [macro]
-  rule call NAME at CONTRACT ( ARGS ) send VALUE , gaslimit GLIMIT => .LValues = call NAME at CONTRACT ( ARGS ) send VALUE , gaslimit GLIMIT [macro]
-  rule staticcall NAME at CONTRACT ( ARGS ) gaslimit GLIMIT => .LValues = staticcall NAME at CONTRACT ( ARGS ) gaslimit GLIMIT [macro]
-  rule ret void => ret .NonEmptyOperands [macro]
+  // rule call NAME ( ARGS ) => .LValues = call NAME ( ARGS ) [macro]
+  // rule call NAME at CONTRACT ( ARGS ) send VALUE , gaslimit GLIMIT => .LValues = call NAME at CONTRACT ( ARGS ) send VALUE , gaslimit GLIMIT [macro]
+  // rule staticcall NAME at CONTRACT ( ARGS ) gaslimit GLIMIT => .LValues = staticcall NAME at CONTRACT ( ARGS ) gaslimit GLIMIT [macro]
+  // rule ret void => ret .NonEmptyOperands [macro]
 endmodule
 
 
