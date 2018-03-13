@@ -2,6 +2,68 @@
   <plutus>
     .
   </plutus>
+  <iele>
+    define @init ( .LocalNames ) {
+      %alloc_counter_ptr = 0
+      store 1 , %alloc_counter_ptr
+      .Instructions .LabeledBlocks
+    }
+    
+    define @fresh5 ( %y , .LocalNames ) {
+      %addr = add %closure , 1
+      %fresh8 = load %addr
+      %ret = add %fresh8 , %y
+      ret %ret , .Operands
+      .Instructions .LabeledBlocks
+    }
+    
+    define @fresh4 ( %x , .LocalNames ) {
+      %ret , .LValues = call @alloc ( 2 , .Operands )
+      store 5 , %ret
+      %fresh7 = add %ret , 1
+      store %x , %fresh7
+      ret %ret , .Operands
+      .Instructions .LabeledBlocks
+    }
+    
+    define @dispatch ( %closure , %param , .LocalNames ) {
+      %fptr = load %closure
+      %cond = cmp eq %fptr , 4
+      br %cond , label4
+      %cond = cmp eq %fptr , 5
+      br %cond , label5
+
+      label5:
+      %ret , .LValues = call @fresh5 ( %closure , %param , .Operands )
+      ret %ret , .Operands
+
+      label4:
+      %ret , .LValues = call @fresh4 ( %closure , %param , .Operands )
+      ret %ret , .Operands
+      .Instructions .LabeledBlocks
+    }
+    
+    define @alloc ( %size , .LocalNames ) {
+      %alloc_counter_ptr = 0
+      %alloced = load %alloc_counter_ptr
+      %ret = %alloced
+      %alloced = add %size , %alloced
+      store %alloced , %alloc_counter_ptr
+      ret %ret , .Operands
+      .Instructions .LabeledBlocks
+    }
+    
+    define @add1923 ( .LocalNames ) {
+      %fresh3 , .LValues = call @alloc ( 1 , .Operands )
+      store 4 , %fresh3
+      %fresh1 , .LValues = call @dispatch ( %fresh3 , 19 , .Operands )
+      %ret , .LValues = call @dispatch ( %fresh1 , 23 , .Operands )
+      ret %ret , .Operands
+      .Instructions .LabeledBlocks
+    }
+    
+    .TopLevelDefinitions
+  </iele>
   <totalFunctions>
     6
   </totalFunctions>
@@ -12,138 +74,6 @@
     0
   </dispatchedFunctionsLeft>
   <functions>
-    FunctionCellSetItem ( <function>
-      <name>
-        @ alloc
-      </name>
-      <params>
-        size  .VarList
-      </params>
-      <env>
-        .Map
-      </env>
-      <k>
-        % alloc_counter_ptr = 0  % alloced = load % alloc_counter_ptr  %ret = % alloced  % alloced = add %size , % alloced  store % alloced , % alloc_counter_ptr  ret %ret , .Operands  .Instructions
-      </k>
-      <jumpId>
-        -1
-      </jumpId>
-      <hasDispatchEntry>
-        true
-      </hasDispatchEntry>
-      <readyForDispatch>
-        true
-      </readyForDispatch>
-    </function> ) FunctionCellSetItem ( <function>
-      <name>
-        @ dispatch
-      </name>
-      <params>
-        closure  param  .VarList
-      </params>
-      <env>
-        .Map
-      </env>
-      <k>
-        % fptr = load %closure  % cond = cmp eq % fptr , 4  br % cond , label4  % cond = cmp eq % fptr , 5  br % cond , label5  #block ( label5 )  %ret , .LValues = call @fresh5 ( %closure , %param , .Operands )  ret %ret , .Operands  #block ( label4 )  %ret , .LValues = call @fresh4 ( %closure , %param , .Operands )  ret %ret , .Operands  .Instructions
-      </k>
-      <jumpId>
-        -1
-      </jumpId>
-      <hasDispatchEntry>
-        true
-      </hasDispatchEntry>
-      <readyForDispatch>
-        true
-      </readyForDispatch>
-    </function> ) FunctionCellSetItem ( <function>
-      <name>
-        @ init
-      </name>
-      <params>
-        .VarList
-      </params>
-      <env>
-        .Map
-      </env>
-      <k>
-        % alloc_counter_ptr = 0  store 1 , % alloc_counter_ptr  .Instructions
-      </k>
-      <jumpId>
-        -1
-      </jumpId>
-      <hasDispatchEntry>
-        true
-      </hasDispatchEntry>
-      <readyForDispatch>
-        true
-      </readyForDispatch>
-    </function> ) FunctionCellSetItem ( <function>
-      <name>
-        @add1923
-      </name>
-      <params>
-        .VarList
-      </params>
-      <env>
-        .Map
-      </env>
-      <k>
-        %fresh3 , .LValues = call @ alloc ( 1 , .Operands )  store 4 , %fresh3  %fresh1 , .LValues = call @ dispatch ( %fresh3 , 19 , .Operands )  %ret , .LValues = call @ dispatch ( %fresh1 , 23 , .Operands )  ret %ret , .Operands  .Instructions
-      </k>
-      <jumpId>
-        -1
-      </jumpId>
-      <hasDispatchEntry>
-        true
-      </hasDispatchEntry>
-      <readyForDispatch>
-        true
-      </readyForDispatch>
-    </function> ) FunctionCellSetItem ( <function>
-      <name>
-        @fresh4
-      </name>
-      <params>
-        x  .VarList
-      </params>
-      <env>
-        .Map
-      </env>
-      <k>
-        %ret , .LValues = call @ alloc ( 2 , .Operands )  store 5 , %ret  %fresh7 = add %ret , 1  store %x , %fresh7  ret %ret , .Operands  .Instructions
-      </k>
-      <jumpId>
-        4
-      </jumpId>
-      <hasDispatchEntry>
-        true
-      </hasDispatchEntry>
-      <readyForDispatch>
-        true
-      </readyForDispatch>
-    </function> ) FunctionCellSetItem ( <function>
-      <name>
-        @fresh5
-      </name>
-      <params>
-        y  .VarList
-      </params>
-      <env>
-        0 |-> x
-      </env>
-      <k>
-        % addr = add %closure , 1  %fresh8 = load % addr  %ret = add %fresh8 , %y  ret %ret , .Operands  .Instructions
-      </k>
-      <jumpId>
-        5
-      </jumpId>
-      <hasDispatchEntry>
-        true
-      </hasDispatchEntry>
-      <readyForDispatch>
-        true
-      </readyForDispatch>
-    </function> )
+    .FunctionCellSet
   </functions>
 </T>
