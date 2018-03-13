@@ -45,7 +45,7 @@
         .Map
       </env>
       <k>
-        % fptr = load %closure  % cond = cmp eq % fptr , 0  br % cond , label0  % cond = cmp eq % fptr , 1  br % cond , label1  #block ( label1 )  call @fresh1 ( %closure , %param , .Operands )  #block ( label0 )  call @fresh0 ( %closure , %param , .Operands )  .Instructions
+        % fptr = load %closure  % cond = cmp eq % fptr , 0  br % cond , label0  % cond = cmp eq % fptr , 1  br % cond , label1  #block ( label1 )  %ret , .LValues = call @fresh1 ( %closure , %param , .Operands )  ret %ret , .Operands  #block ( label0 )  %ret , .LValues = call @fresh0 ( %closure , %param , .Operands )  ret %ret , .Operands  .Instructions
       </k>
       <jumpId>
         -1

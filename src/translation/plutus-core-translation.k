@@ -302,7 +302,8 @@ module PLUTUS-CORE-TRANSLATION
 
     rule #dispatchCall(JI, GN)
       => #block(#stringToIeleName("label" +String Int2String(JI:Int)))
-         call GN(%closure, %param)
+         %ret = call GN(%closure, %param)
+         ret %ret
     rule #dispatchCheckCond(JI:Int, GN:GlobalName)
       => %cond = cmp eq %fptr, JI:Int
          br %cond, #stringToIeleName("label" +String Int2String(JI:Int))
