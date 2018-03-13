@@ -79,8 +79,10 @@ test-translation: $(translation_tests:=.test)
 test-execution: $(execution_tests:=.test)
 test-erc20: $(erc20_tests:=.test)
 
-test/%.plc.test: .build/$$(dir $$*)/plutus-core-kompiled/interpreter
+test/%.plc.test test/%.out: .build/$$(dir $$*)/plutus-core-kompiled/interpreter
 	$(TEST) test/$*.plc
+test/%.iele: test/%.out
+	bin/config-to-iele < $^ > $@
 
 test-verify: .build/execution/plutus-core-kompiled/interpreter
 	./kplc prove execution verification/int-addition_spec.k             verification/dummy.plcore

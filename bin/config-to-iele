@@ -1,0 +1,15 @@
+#!/usr/bin/env python2
+
+commaSeparated = ['Operands', 'LocalNames', 'LValues']
+others = ['Instructions', 'LabeledBlocks', 'TopLevelDefinitions']
+
+import sys
+import xml.dom.minidom
+
+config = xml.dom.minidom.parse(sys.stdin)
+iele   = config.getElementsByTagName('iele')[0].firstChild.data
+for listSort in commaSeparated:
+    iele = iele.replace(' , .' + listSort, '')
+for listSort in commaSeparated + others:
+    iele = iele.replace('.'   + listSort, '')
+print(iele)
