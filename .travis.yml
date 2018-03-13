@@ -27,12 +27,9 @@ cache:
 install:
   - make
 
-before_script:
-  - kserver &
-
 script:
   - cd test
-  - ./test_all.sh
+  - ktest config.xml
 
 notifications:
   email:
