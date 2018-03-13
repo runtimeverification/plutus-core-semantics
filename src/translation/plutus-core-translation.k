@@ -310,7 +310,7 @@ module PLUTUS-CORE-TRANSLATION
       when TF:Int ==K (TRFD:Int +Int 1)
   
     rule #dispatchCall(JI, GN)
-      => #block(#mkIN("label" +String Int2String(JI:Int)))
+      => #label(#mkIN("label" +String Int2String(JI:Int)))
          #mkLN("ret") = call GN(#mkLN("closure"), #mkLN("param"))
          ret #mkLN("ret")
     rule #dispatchCheckCond(JI:Int, GN:GlobalName)
@@ -357,7 +357,7 @@ module PLUTUS-CORE-TRANSLATION
   // TODO: We should be using `Block`s instead of `Instructions` in some places
   // TODO: Rename to `#label`
   
-  syntax Instruction ::= #block(IeleName)
+  syntax Instruction ::= #label(IeleName)                         [format(%n%3:)]
 
   // Converting strings to {Iele,Local,Global}Name and Vars
   // ------------------------------------------------------
