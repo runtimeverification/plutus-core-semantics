@@ -80,7 +80,7 @@
       </readyForDispatch>
     </function> ) FunctionCellSetItem ( <function>
       <name>
-        @add
+        @app
       </name>
       <params>
         .VarList
@@ -105,13 +105,13 @@
         @fresh0
       </name>
       <params>
-        x  .VarList
+        f  .VarList
       </params>
       <env>
         .Map
       </env>
       <k>
-        %ret , .LValues = call @ alloc ( 2 , .Operands )  store 1 , %ret  %fresh3 = add %ret , 1  store %x , %fresh3  ret %ret , .Operands  .Instructions
+        %ret , .LValues = call @ alloc ( 2 , .Operands )  store 1 , %ret  %fresh3 = add %ret , 1  store %f , %fresh3  ret %ret , .Operands  .Instructions
       </k>
       <jumpId>
         0
@@ -127,13 +127,13 @@
         @fresh1
       </name>
       <params>
-        y  .VarList
+        x  .VarList
       </params>
       <env>
-        0 |-> x
+        0 |-> f
       </env>
       <k>
-        % addr = add %closure , 1  %fresh4 = load % addr  %ret = add %fresh4 , %y  ret %ret , .Operands  .Instructions
+        % addr = add %closure , 1  %fresh5 = load % addr  %ret , .LValues = call @ dispatch ( %fresh5 , %x , .Operands )  ret %ret , .Operands  .Instructions
       </k>
       <jumpId>
         1
