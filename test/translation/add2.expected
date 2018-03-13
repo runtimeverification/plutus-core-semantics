@@ -1,5 +1,127 @@
 <T>
-  <k>
-    ( lam x  .VarList ( builtin addInteger x 2 ) ) ~> #freezer(define__)_PLUTUS-CORE-COMMON0_ ( foo )
-  </k>
+  <plutus>
+    .
+  </plutus>
+  <totalFunctions>
+    5
+  </totalFunctions>
+  <totalReadyForDispatch>
+    5
+  </totalReadyForDispatch>
+  <dispatchedFunctionsLeft>
+    0
+  </dispatchedFunctionsLeft>
+  <functions>
+    FunctionCellSetItem ( <function>
+      <name>
+        @ alloc
+      </name>
+      <params>
+        size  .VarList
+      </params>
+      <env>
+        .Map
+      </env>
+      <k>
+        % alloc_counter_ptr = 0  % alloced = load % alloc_counter_ptr  %ret = % alloced  % alloced = add %size , % alloced  store % alloced , % alloc_counter_ptr  ret %ret , .Operands  .Instructions
+      </k>
+      <jumpId>
+        -1
+      </jumpId>
+      <hasDispatchEntry>
+        true
+      </hasDispatchEntry>
+      <readyForDispatch>
+        true
+      </readyForDispatch>
+    </function> ) FunctionCellSetItem ( <function>
+      <name>
+        @ dispatch
+      </name>
+      <params>
+        closure  param  .VarList
+      </params>
+      <env>
+        .Map
+      </env>
+      <k>
+        % fptr = load %closure  % cond = cmp eq % fptr , 0  br % cond , label0  #block ( label0 )  call @fresh0 ( %closure , %param , .Operands )  .Instructions
+      </k>
+      <jumpId>
+        -1
+      </jumpId>
+      <hasDispatchEntry>
+        true
+      </hasDispatchEntry>
+      <readyForDispatch>
+        true
+      </readyForDispatch>
+    </function> ) FunctionCellSetItem ( <function>
+      <name>
+        @ init
+      </name>
+      <params>
+        .VarList
+      </params>
+      <env>
+        .Map
+      </env>
+      <k>
+        % alloc_counter_ptr = 0  store 1 , % alloc_counter_ptr  .Instructions
+      </k>
+      <jumpId>
+        -1
+      </jumpId>
+      <hasDispatchEntry>
+        true
+      </hasDispatchEntry>
+      <readyForDispatch>
+        true
+      </readyForDispatch>
+    </function> ) FunctionCellSetItem ( <function>
+      <name>
+        @foo
+      </name>
+      <params>
+        .VarList
+      </params>
+      <env>
+        .Map
+      </env>
+      <k>
+        %ret , .LValues = call @ alloc ( 1 , .Operands )  store 0 , %ret  ret %ret , .Operands  .Instructions
+      </k>
+      <jumpId>
+        -1
+      </jumpId>
+      <hasDispatchEntry>
+        true
+      </hasDispatchEntry>
+      <readyForDispatch>
+        true
+      </readyForDispatch>
+    </function> ) FunctionCellSetItem ( <function>
+      <name>
+        @fresh0
+      </name>
+      <params>
+        x  .VarList
+      </params>
+      <env>
+        .Map
+      </env>
+      <k>
+        %ret = add %x , 2  ret %ret , .Operands  .Instructions
+      </k>
+      <jumpId>
+        0
+      </jumpId>
+      <hasDispatchEntry>
+        true
+      </hasDispatchEntry>
+      <readyForDispatch>
+        true
+      </readyForDispatch>
+    </function> )
+  </functions>
 </T>

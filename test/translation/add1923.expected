@@ -45,7 +45,7 @@
         .Map
       </env>
       <k>
-        % fptr = load %closure  % cond = cmp eq % fptr , 0  br % cond , label0  % cond = cmp eq % fptr , 1  br % cond , label1  #block ( label1 )  call @fresh1 ( %closure , %param , .Operands )  #block ( label0 )  call @fresh0 ( %closure , %param , .Operands )  .Instructions
+        % fptr = load %closure  % cond = cmp eq % fptr , 4  br % cond , label4  % cond = cmp eq % fptr , 5  br % cond , label5  #block ( label5 )  call @fresh5 ( %closure , %param , .Operands )  #block ( label4 )  call @fresh4 ( %closure , %param , .Operands )  .Instructions
       </k>
       <jumpId>
         -1
@@ -80,7 +80,7 @@
       </readyForDispatch>
     </function> ) FunctionCellSetItem ( <function>
       <name>
-        @add
+        @add1923
       </name>
       <params>
         .VarList
@@ -89,7 +89,7 @@
         .Map
       </env>
       <k>
-        %ret , .LValues = call @ alloc ( 1 , .Operands )  store 0 , %ret  ret %ret , .Operands  .Instructions
+        %fresh3 , .LValues = call @ alloc ( 1 , .Operands )  store 4 , %fresh3  %fresh1 , .LValues = call @ dispatch ( %fresh3 , 19 , .Operands )  %ret , .LValues = call @ dispatch ( %fresh1 , 23 , .Operands )  ret %ret , .Operands  .Instructions
       </k>
       <jumpId>
         -1
@@ -102,7 +102,7 @@
       </readyForDispatch>
     </function> ) FunctionCellSetItem ( <function>
       <name>
-        @fresh0
+        @fresh4
       </name>
       <params>
         x  .VarList
@@ -111,10 +111,10 @@
         .Map
       </env>
       <k>
-        %ret , .LValues = call @ alloc ( 2 , .Operands )  store 1 , %ret  %fresh3 = add %ret , 1  store %x , %fresh3  ret %ret , .Operands  .Instructions
+        %ret , .LValues = call @ alloc ( 2 , .Operands )  store 5 , %ret  %fresh7 = add %ret , 1  store %x , %fresh7  ret %ret , .Operands  .Instructions
       </k>
       <jumpId>
-        0
+        4
       </jumpId>
       <hasDispatchEntry>
         true
@@ -124,7 +124,7 @@
       </readyForDispatch>
     </function> ) FunctionCellSetItem ( <function>
       <name>
-        @fresh1
+        @fresh5
       </name>
       <params>
         y  .VarList
@@ -133,10 +133,10 @@
         0 |-> x
       </env>
       <k>
-        % addr = add %closure , 1  %fresh4 = load % addr  %ret = add %fresh4 , %y  ret %ret , .Operands  .Instructions
+        % addr = add %closure , 1  %fresh8 = load % addr  %ret = add %fresh8 , %y  ret %ret , .Operands  .Instructions
       </k>
       <jumpId>
-        1
+        5
       </jumpId>
       <hasDispatchEntry>
         true
