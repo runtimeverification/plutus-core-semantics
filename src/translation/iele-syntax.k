@@ -273,8 +273,7 @@ module IELE-COMMON
   | CreateInst
   | SelfdestructInst
 
-  syntax Instructions ::= List{Instruction, ""} [klabel(instructionList)]
-
+  syntax Instructions ::= List{Instruction, ""} [klabel(instructionList), format(%1%2%n%3)]
 
 
 
@@ -296,7 +295,7 @@ module IELE-COMMON
   | GlobalDefinition
   | ContractDeclaration
 
-  syntax TopLevelDefinitions ::= List{TopLevelDefinition, ""} [klabel(topLevelDefinitionList)]
+  syntax TopLevelDefinitions ::= List{TopLevelDefinition, ""} [klabel(topLevelDefinitionList), format(%1%2%n%3)]
 
   syntax ContractDefinition ::= "contract" IeleName "{" TopLevelDefinitions "}"
 
@@ -329,7 +328,7 @@ module IELE-COMMON
   syntax FunctionParameters ::= LocalNames
 
   syntax FunctionDefinition ::= 
-    "define" FunctionSignature "{" Blocks "}"
+    "define" FunctionSignature "{" Blocks "}"                   [format(%1 %2 %3%i%n%4%d%n%5%n)]
   | "define" "public" FunctionSignature "{" Blocks "}"
 
 
