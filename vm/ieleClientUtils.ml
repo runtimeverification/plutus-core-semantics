@@ -2,25 +2,10 @@ open Yojson
 open Yojson.Basic.Util
 open Msg_types
 
-let file = Sys.argv.(1)
-
-let () = if Array.length Sys.argv <> 3 then
-  prerr_endline ("usage: " ^ Sys.argv.(0) ^ " <file.iele.json> <port>")
-
-let json = Yojson.Basic.from_channel (open_in file)
-
-let context = Secp256k1.Context.create [Secp256k1.Context.Sign; Secp256k1.Context.Verify]
 let hash () = Cryptokit.Hash.keccak 256
 
-let test =
-  match json with
-  `Assoc [(_, test)] -> test
-| _ -> failwith "Invalid json structure: expected an object at top level."
-
-let sort l =
+let sort_assoc_list l =
   List.sort (fun (a,_) (b,_) -> compare a b) l
-
-let failed = ref false
 
 let of_hex signed str =
   if str = "" then Bytes.empty else
@@ -50,8 +35,7 @@ let abs_path rel =
 let assemble file =
   let file_dir = Filename.dirname Sys.argv.(1) in
   let abs_file_dir = abs_path file_dir in
-  let build_vm = Filename.dirname Sys.executable_name in
-  let _in = Unix.open_process_in("cd " ^ (Filename.quote build_vm) ^ "/../../compiler/ && stack exec iele-assemble " ^ (Filename.quote (abs_file_dir ^ "/" ^ file))) in
+  let _in = Unix.open_process_in("iele-assemble " ^ (Filename.quote (abs_file_dir ^ "/" ^ file))) in
   let result = input_line _in in
   match Unix.close_process_in _in with
   | Unix.WEXITED 0 -> of_hex_unsigned result
@@ -113,7 +97,7 @@ let update_storage_entry (storage: (string * Basic.json) list) (update: storage_
   (key,`String value) :: without
 
 let update_storage (storage: (string * Basic.json) list) (updates: storage_update list) : (string * Basic.json) list =
-  sort (List.fold_left update_storage_entry storage updates)
+  sort_assoc_list (List.fold_left update_storage_entry storage updates)
 
 let mod_acct_to_json (pre: (string * Basic.json) list) (acct: modified_account) : string * Basic.json =
   let address = to_hex acct.address in
@@ -148,18 +132,13 @@ let send_request ctx =
   let addr = Unix.ADDR_INET(Unix.inet_addr_loopback,(int_of_string Sys.argv.(2))) in
   World.send addr ctx
 
-let test_transaction header (state: (string * Basic.json) list) (tx: Basic.json) (result: Basic.json) : (string * Basic.json) list =
+let exec_transaction header (state: (string * Basic.json) list) (tx: Basic.json) : (string * Basic.json) list * call_result =
   let gas_price = of_hex (tx |> member "gasPrice" |> to_string) in
   let gas_provided = of_hex (tx |> member "gasLimit" |> to_string) in
   let owner = tx |> member "to" |> to_string in
   let txcreate = owner = "" in
-  let secretkey = of_hex_unsigned (tx |> member "secretKey" |> to_string) in
-  let secretkey_buffer = Bigarray.Array1.of_array Bigarray.char Bigarray.c_layout (Array.init 32 (fun idx -> Bytes.get secretkey idx)) in
-  let pubkey = Secp256k1.Public.of_secret context (Secp256k1.Secret.read_exn context secretkey_buffer) in
-  let pubkey_string = String.init 64 (fun idx -> Bigarray.Array1.get (Secp256k1.Public.to_bytes ~compress:false context pubkey) (idx+1)) in
-  let pubkey_hash = Cryptokit.hash_string (hash()) pubkey_string in
-  let origin = String.sub pubkey_hash 12 20 in
-  let origin = Bytes.of_string origin in
+  let from = tx |> member "from" |> to_string in
+  let origin = of_hex_unsigned from in
   let checkpoint_state = checkpoint state gas_price gas_provided origin in
   init_state checkpoint_state;
   let data_str = tx |> member "data" |> to_string in
@@ -172,65 +151,5 @@ let test_transaction header (state: (string * Basic.json) list) (tx: Basic.json)
   let gas_provided = Z.sub (World.to_z_unsigned gas_provided) g0 in
   let ctx = {recipient_addr=of_hex_unsigned owner;caller_addr=origin;input_data=txdata;call_value=of_hex value;gas_price=gas_price;gas_provided=World.of_z gas_provided;block_header=Some header;config=Iele_config} in
   let call_result = send_request ctx in
-  let expected_return = List.map (fun json -> of_hex (json |> to_string)) (result |> member "out" |> to_list) in
-  let rets = unpack_output call_result.return_data in
-  let actual_return = List.map (fun arg -> `String (Bytes.to_string arg)) rets in
-  if expected_return <> rets then begin
-    prerr_endline ("failed " ^ file ^ ": out:\n" ^ Yojson.Basic.to_string (`List actual_return));
-    failed := true;
-  end;
-  let expected_returncode = of_hex (result |> member "status" |> to_string) in
-  if World.to_z expected_returncode <> World.to_z call_result.return_code then begin
-    prerr_endline ("failed " ^ file ^ ": status:\n" ^ (to_hex call_result.return_code));
-    failed := true;
-  end;
-  let expected_gas = of_hex (result |> member "gas" |> to_string) in
-  if World.to_z_unsigned expected_gas <> World.to_z_unsigned call_result.gas_remaining then begin
-    prerr_endline ("failed " ^ file ^ ": gas:\n" ^ (to_hex call_result.gas_remaining));
-    failed := true;
-  end;
-  let expected_refund = of_hex (result |> member "refund" |> to_string) in
-  if World.to_z_unsigned expected_refund <> World.to_z_unsigned call_result.gas_refund then begin
-    prerr_endline ("failed " ^ file ^ ": refund:\n" ^ (to_hex call_result.gas_refund));
-    failed := true;
-  end;
-  let expected_logs = of_hex_unsigned (result |> member "logs" |> to_string) in
-  let rlp_logs = Rlp.RlpList(List.map log_to_rlp call_result.logs) in
-  let actual_logs = Bytes.of_string (Cryptokit.hash_string (hash()) (Rope.to_string (Rlp.encode rlp_logs))) in
-  if expected_logs <> actual_logs then begin
-    prerr_endline ("failed " ^ file ^ ": logs:\nactual: " ^ (Rlp.display (rlp_to_hex rlp_logs)) ^ "\nhash: " ^ (to_hex actual_logs));
-    failed := true;
-  end;
-  update_state checkpoint_state call_result.modified_accounts call_result.deleted_accounts
-
-let rec canonicalize assoc =
-  List.map (fun (k,v) -> match (k,v) with
-  | "code", `String code -> "code",`String(if code = "" then "" else if String.sub code 0 2 = "0x" then code else to_hex (assemble code))
-  | _, `Assoc a -> (k,`Assoc(sort (canonicalize a)))
-  | _ -> k,v) assoc
-
-let test_block state block =
-  let bh = block |> member "blockHeader" in
-  let beneficiary = bh |> member "coinbase" |> to_string in
-  let difficulty = bh |> member "difficulty" |> to_string in
-  let number = bh |> member "number" |> to_string in
-  let gas_limit = bh |> member "gasLimit" |> to_string in
-  let timestamp = bh |> member "timestamp" |> to_string in
-  let block_header = {beneficiary=of_hex_unsigned beneficiary;difficulty=of_hex difficulty;number=of_hex number;gas_limit=of_hex gas_limit;unix_timestamp=Z.to_int64 (World.to_z (of_hex timestamp))} in
-  let transactions = block |> member "transactions" |> to_list in
-  let results = block |> member "results" |> to_list in
-  List.fold_left2 (test_transaction block_header) state transactions results
-
-let pre = test |> member "pre" |> to_assoc
-let blocks = test |> member "blocks" |> to_list
-let expected = sort (canonicalize (test |> member "postState" |> to_assoc))
-let json_blockhashes = test |> member "blockhashes" |> to_list
-let str_blockhashes = List.map to_string json_blockhashes
-let blockhashes = List.map of_hex_unsigned str_blockhashes;;
-List.iter World.InMemoryWorldState.add_blockhash (List.rev blockhashes);;
-let actual = sort (canonicalize (List.fold_left test_block pre blocks));;
-if expected <> actual then begin
-  prerr_endline ("failed " ^ file ^ ": postState:\nexpected:" ^ Yojson.Basic.to_string (`Assoc expected) ^ "\nactual: " ^ Yojson.Basic.to_string (`Assoc actual));
-  failed := true;
-end;;
-if !failed then failwith "assertions failed";;
+  let post_state = update_state checkpoint_state call_result.modified_accounts call_result.deleted_accounts in
+  post_state, call_result
