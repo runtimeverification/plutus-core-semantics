@@ -79,6 +79,7 @@ test-translation: $(translation_tests:=.test)
 test-execution: $(execution_tests:=.test)
 test-erc20: $(erc20_tests:=.test)
 
+.PRECIOUS: test/%.out
 test/%.plc.test test/%.out: .build/$$(dir $$*)/plutus-core-kompiled/interpreter
 	$(TEST) test/$*.plc
 test/%.iele: test/%.out
