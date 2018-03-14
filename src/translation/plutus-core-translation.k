@@ -44,26 +44,36 @@ module PLUTUS-CORE-TRANSLATION
   // Top-Level Functions
   // ===================
   
-  // For each `define` statement, we generate a top-level function that loads
-  // the Term `T` into an operand and returns that operand.
+  // We iterate over `define`s, creating a named top level function for each.
   
-  rule <plutus>(define N:Name T:Tm) DS:DecList => DS:DecList ... </plutus>
+  rule <plutus> (define N:Name T:Tm)                 DS:DecList
+             => #topLevelFunction(#nameToGlobalName(N), .VarList, T) ~> DS:DecList
+                ...
+       </plutus>
+  rule <plutus> .DecList => .K ... </plutus>
+
+  syntax K ::= #topLevelFunction(GlobalName, VarList, Tm)
+  rule <plutus> #topLevelFunction(GN, VARS:VarList, (lam X:Var T:Tm))
+             => #topLevelFunction(GN, X VARS, #replaceFreeVar(T:Tm, X, #lengthVarList(VARS)))
+                ...
+       </plutus>
+  rule <plutus> #topLevelFunction(GN, VARS:VarList, T:Tm) => .K ... </plutus>
        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
-       <functions>
-       ... ( .Bag
-          => <function>
-               <name>   #nameToGlobalName(N:Name) </name>
-               <jumpId> -1                        </jumpId>
-               <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
-                                       ret #useOperand(T:Tm, #mkLN("ret")) .Instructions)
-               </k>
-               <env>    .Map                      </env>
-               <params> .VarList                  </params>
-               <hasDispatchEntry> true:Bool        </hasDispatchEntry>
-               <readyForDispatch> false:Bool       </readyForDispatch>
-             </function>)
-       </functions>
-  rule <plutus> .DecList => .K:K ... </plutus>
+       <dispatchedFunctionsLeft> DFL => DFL +Int 1 </dispatchedFunctionsLeft>
+       <functions> ...
+         .Bag =>
+         <function>
+            <name> GN </name>
+            <params> #reverseVarList(VARS) </params>
+            <jumpId> !JI </jumpId>
+            <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
+                                    ret #useOperand(T:Tm, #mkLN("ret")) .Instructions)
+            </k>
+            <env> .Map </env>
+            <hasDispatchEntry> false:Bool </hasDispatchEntry>
+            <readyForDispatch> false:Bool </readyForDispatch>
+         </function>
+       </functions>                                                       [owise]
   
   // Converting Plutus Constructs to IELE
   // ====================================
@@ -121,23 +131,9 @@ module PLUTUS-CORE-TRANSLATION
             <params> VS:VarList </params>
             ...
           </function>
-          (  .Bag
-          => <function>
-               <name>   #intToGlobalName(!N)  </name>
-               <jumpId> !N                    </jumpId>
-               <k>      #concatInsList(#loadOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), #mkLN("ret")),
-                                       ret #useOperand(#replaceFreeVarsForParams(T, VS, size(#addParamsToEnv(VS:VarList, M:Map)) -Int 1), #mkLN("ret")) .Instructions)
-               </k>
-               <env>    #addParamsToEnv(VS:VarList, M:Map) </env>
-               <params> X </params>
-               <hasDispatchEntry> false:Bool </hasDispatchEntry>
-               <readyForDispatch> false:Bool </readyForDispatch>
-             </function>
-          )
        </functions>
-       <dispatchedFunctionsLeft> DFL => DFL +Int 1 </dispatchedFunctionsLeft>
-       <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
-  
+       <plutus> (.K => #topLevelFunction(#intToGlobalName(!N), X, T:Tm)) ... </plutus>
+
   rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
   
   // `#allocBind` generates instructions to allocate a closure and bind its
@@ -167,8 +163,8 @@ module PLUTUS-CORE-TRANSLATION
   // TODO: Can this be folded into `#replaceFreeVar`?
   
   syntax Tm ::= #replaceFreeVarsForParams(Tm, VarList, Int)            [function]
-  rule #replaceFreeVarsForParams(T:Tm, X:Var   , OFFSET) => #replaceFreeVar(T:Tm, X:Var, OFFSET)
-  rule #replaceFreeVarsForParams(T:Tm, .VarList, OFFSET) => T:Tm
+  rule #replaceFreeVarsForParams(T:Tm, X:Var   , PARAMINDEX) => #replaceFreeVar(T:Tm, X:Var, PARAMINDEX)
+  rule #replaceFreeVarsForParams(T:Tm, .VarList, PARAMINDEX) => T:Tm
   
   // `#replaceFreeVar` and `#replaceFreeVarsForParams` are used to mark parameters
   // as `#freeVar`s. A rule is required for each Plutus construct.
@@ -176,24 +172,22 @@ module PLUTUS-CORE-TRANSLATION
   syntax Tm ::= #freeVar(Var, Int)
   syntax Tm ::= #replaceFreeVar(Tm, Var, Int)                          [function]
   
-  rule #replaceFreeVar(X:Var, X    , OFFSET) => #freeVar(X, OFFSET)
-  rule #replaceFreeVar(X:Var, Y:Var, OFFSET) => X:Var               when (X:Var =/=K Y:Var)
-  rule #replaceFreeVar(I:Int, X    , OFFSET) => I:Int
-  rule #replaceFreeVar(#freeVar(Y, J), X    , OFFSET) => #freeVar(Y:Var, J:Int)
-  rule #replaceFreeVar((lam X:Var T), X:Var, OFFSET) => ((lam X:Var T)):Tm
-  rule #replaceFreeVar((lam X:Var T), Y:Var, OFFSET) => ((lam X:Var #replaceFreeVar(T, Y, OFFSET))):Tm
+  rule #replaceFreeVar(X:Var, X    , INDEX) => #freeVar(X, INDEX)
+  rule #replaceFreeVar(X:Var, Y:Var, INDEX) => X:Var               when (X:Var =/=K Y:Var)
+  rule #replaceFreeVar(I:Int, X    , INDEX) => I:Int
+  rule #replaceFreeVar(#freeVar(Y, J), X    , INDEX) => #freeVar(Y:Var, J:Int)
+  rule #replaceFreeVar((lam X:Var T), X:Var, INDEX) => ((lam X:Var T)):Tm
+  rule #replaceFreeVar((lam X:Var T), Y:Var, INDEX) => ((lam X:Var #replaceFreeVar(T, Y, INDEX))):Tm
     when (X:Var =/=K Y:Var)
-  rule #replaceFreeVar([T1 T2], X:Var, OFFSET)
-    => [#replaceFreeVar(T1, X, OFFSET) #replaceFreeVar(T2, X, OFFSET)]
-  rule #replaceFreeVar((builtin N T1 T2), Y:Var, OFFSET)
-    => (builtin N #replaceFreeVar(T1, Y, OFFSET) #replaceFreeVar(T2, Y, OFFSET))
+  rule #replaceFreeVar([T1 T2], X:Var, INDEX)
+    => [#replaceFreeVar(T1, X, INDEX) #replaceFreeVar(T2, X, INDEX)]
+  rule #replaceFreeVar((builtin N T1 T2), Y:Var, INDEX)
+    => (builtin N #replaceFreeVar(T1, Y, INDEX) #replaceFreeVar(T2, Y, INDEX))
   
-  // `#freeVar`'s `#loadOperand` gets its value from the `#mkLN("closure")` allocated via `#allocBind`:
-  
-   rule #loadOperand(#freeVar(V, OFFSET), LN) => (#mkLN("addr") = add #mkLN("closure"), (OFFSET +Int 1)
-                                                  LN    = load #mkLN("addr")
-                                                 ):Instructions
-   rule #useOperand(#freeVar(V, OFFSET), LN) => LN:LocalName
+  // For `#freeVar`s `#loadOperand` directly uses the function's parameter.
+  // TODO: Make use of INDEX to prevent collisions in case of non-unique argument names.
+  rule #loadOperand(#freeVar(V, INDEX), LN) => .Instructions
+  rule #useOperand(#freeVar(V, INDEX), LN) => #varToLocalName(V) 
   
   // Lambda Applications
   // -------------------
@@ -236,22 +230,28 @@ module PLUTUS-CORE-TRANSLATION
   // ------------------------------
 
   syntax K ::= "#createDispatch"
+
+  // Building the dispatch table
+  // ---------------------------
+  
   syntax PreInstructions ::= "#dispatchJumpTable"
-                           | #dispatchCheckCond(Int, GlobalName)
-                           | #dispatchCall     (Int, GlobalName)
+                                             /* JI , NAME      , NUMARGS */
+                           | #dispatchCheckCond(Int, GlobalName, Int)
+                           | #dispatchCall     (Int, GlobalName, Int)
   rule <plutus> #createDispatch:K => .K:K ... </plutus>
        <functions> ... ( .Bag
                       => <function>
                            <name>   (#mkGN("dispatch")):GlobalName </name>
                            <jumpId> -1                   </jumpId>
                            <k>
-                                #concatInsList( #mkLN("fptr") = load #mkLN("closure") .Instructions
+                                #concatInsList( #mkLN("fptr") = load #mkLN("closure")
+                                                .Instructions
                                               , #dispatchJumpTable )
   
                            </k>
                            <env>    .Map                   </env>
                            <params> #mkVar("closure") #mkVar("param") .VarList </params>
-                           <hasDispatchEntry> true:Bool        </hasDispatchEntry>
+                           <hasDispatchEntry> true:Bool         </hasDispatchEntry>
                            <readyForDispatch> false:Bool        </readyForDispatch>
                          </function>
                        )
@@ -263,13 +263,14 @@ module PLUTUS-CORE-TRANSLATION
           <jumpId> JI     </jumpId>
           <hasDispatchEntry> false:Bool => true:Bool </hasDispatchEntry>
           <readyForDispatch> true:Bool               </readyForDispatch>
+          <params> PARAMS                            </params>
           ...
        </function>
        <function>
          <k> #dispatchJumpTable:PreInstructions
-                => #concatInsList( #dispatchCheckCond(JI, FN)
+                => #concatInsList( #dispatchCheckCond(JI, FN, #lengthVarList(PARAMS))
                                  , #concatInsList( #dispatchJumpTable
-                                                 , #dispatchCall(JI, FN)))
+                                                 , #dispatchCall(JI, FN, #lengthVarList(PARAMS))))
             ...
          </k>
          ...
@@ -285,22 +286,48 @@ module PLUTUS-CORE-TRANSLATION
        <totalReadyForDispatch> TR => TR +Int 1 </totalReadyForDispatch>
   
   // Once all functions execpt #mkGN("dispatch") have been processed, ther are no more entrys to be dispatched
-    rule <function>
-            <k> #dispatchJumpTable => .Instructions ... </k>
-            ...
-         </function>
-         <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
-         <totalReadyForDispatch> TRFD:Int </totalReadyForDispatch>
-         <totalFunctions> TF:Int </totalFunctions>
-      when TF:Int ==K (TRFD:Int +Int 1)
-  
-    rule #dispatchCall(JI, GN)
-      => #label(#mkIN("label" +String Int2String(JI:Int)))
-         #mkLN("ret") = call GN(#mkLN("closure"), #mkLN("param"))
-         ret #mkLN("ret")
-    rule #dispatchCheckCond(JI:Int, GN:GlobalName)
-      => #mkLN("cond") = cmp eq #mkLN("fptr"), JI:Int
-         br #mkLN("cond"), #mkIN("label" +String Int2String(JI:Int))
+  rule <function>
+          <k> #dispatchJumpTable
+           => #comment("End of Jump Table")
+              #mkLN("ret") = call #mkGN("appendToClosureAndClone") (#mkLN("closure"), #mkLN("arg"))
+              ret #mkLN("ret")
+             .Instructions ...
+         </k>
+          ...
+       </function>
+       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
+       <totalReadyForDispatch> TRFD:Int </totalReadyForDispatch>
+       <totalFunctions> TF:Int </totalFunctions>
+    when TF:Int ==K (TRFD:Int +Int 1)
+
+  syntax Operand ::= #closureId(Int, Int)                              [function]
+  rule #closureId(JI, NUMARGS) => JI +Int (NUMARGS <<Int 8)
+
+  rule #dispatchCheckCond(JI, GN, NUMARGS)
+    => #mkLN("cond") = cmp eq #mkLN("fptr"), #closureId(JI, NUMARGS -Int 1)
+       br #mkLN("cond"), #mkIN("label" +String Int2String(JI:Int))
+
+  rule #dispatchCall(JI, GN, NUMARGS)
+    => #label(#mkIN("label" +String Int2String(JI:Int)))
+       #unfoldClosure(NUMARGS, 1, GN, ret #mkLN("ret"))
+
+  syntax Instructions ::= #unfoldClosure(Int, Int, GlobalName, Instructions)
+                                                                       [function]
+  rule #unfoldClosure(NUMARGS, I, GN, IS)
+    => #mkLN("ret") = call GN(#makeArgsList(NUMARGS -Int 1, #mkLN("args")))
+       IS
+    when I ==Int NUMARGS
+  rule #unfoldClosure(NUMARGS, I, GN, IS)
+    => #mkLN("closure") = add #mkLN("closure"), 1
+       #mkLN(Int2String(I)) = load #mkLN("closure")
+       #unfoldClosure(NUMARGS, I +Int 1, GN, IS)
+    when notBool (I ==Int NUMARGS)
+
+  syntax Operands ::= #makeArgsList(Int, Operands)                     [function]
+  rule #makeArgsList(0, OPS) => OPS
+  rule #makeArgsList(NUMARGS, OPS)
+    => #makeArgsList(NUMARGS -Int 1, #mkLN(Int2String(NUMARGS)), OPS)
+       
 
   // Finally, convert `<function>`s to IELE syntax
 
@@ -343,6 +370,7 @@ module PLUTUS-CORE-TRANSLATION
   // TODO: Rename to `#label`
   
   syntax Instruction ::= #label(IeleName)                         [format(%n%3:)]
+  syntax Instruction ::= #comment(String)                         [format(%n// %3)]
 
   // Converting strings to {Iele,Local,Global}Name and Vars
   // ------------------------------------------------------
@@ -381,6 +409,19 @@ module PLUTUS-CORE-TRANSLATION
   // ----------------------------------------------------------------------------
   rule #intToLocalName(N)      => #mkLN("fresh" +String Int2String(N))
   rule #intToGlobalName(N:Int) => #mkGN("fresh" +String Int2String(N:Int))
- 
 
+  // Other utilities
+  // ---------------
+
+  syntax VarList ::= #reverseVarList(VarList)                          [function]
+  syntax VarList ::= #reverseVarListAux(VarList, VarList)              [function]
+  // ----------------------------------------------------------------------------
+  rule #reverseVarList(VL) => #reverseVarListAux( .VarList , VL)
+  rule #reverseVarListAux(OUT, .VarList) => OUT
+  rule #reverseVarListAux(OUT, V REM) => #reverseVarListAux(V OUT, REM)
+
+  syntax Int ::= #lengthVarList(VarList)                               [function]
+  // ----------------------------------------------------------------------------
+  rule #lengthVarList(.VarList) => 0
+  rule #lengthVarList(V VL) => 1 +Int #lengthVarList(VL)
 endmodule
