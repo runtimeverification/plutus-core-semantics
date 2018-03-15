@@ -244,7 +244,7 @@ module PLUTUS-CORE-TRANSLATION
                            <name>   (#mkGN("dispatch")):GlobalName </name>
                            <jumpId> -1                   </jumpId>
                            <k>
-                                #concatInsList( #mkLN("fptr") = load #mkLN("closure")
+                                #concatInsList( #mkLN("closureId") = load #mkLN("closure")
                                                 .Instructions
                                               , #dispatchJumpTable )
   
@@ -289,9 +289,7 @@ module PLUTUS-CORE-TRANSLATION
   rule <function>
           <k> #dispatchJumpTable
            => #comment("End of Jump Table")
-              #mkLN("ret") = call #mkGN("appendToClosureAndClone") (#mkLN("closure"), #mkLN("arg"))
-              ret #mkLN("ret")
-             .Instructions ...
+              #appendToClosureAndClone ...
          </k>
           ...
        </function>
@@ -300,11 +298,46 @@ module PLUTUS-CORE-TRANSLATION
        <totalFunctions> TF:Int </totalFunctions>
     when TF:Int ==K (TRFD:Int +Int 1)
 
+  syntax Instructions ::= "#appendToClosureAndClone"                   [function]
+  rule #appendToClosureAndClone
+    => #comment("Allocate space to append new argument to closure")
+       #mkLN("numParams")   = load #mkLN("closure"),   1, 1
+       #mkLN("numParams")   = add  #mkLN("numParams"), 1
+       #mkLN("spaceNeeded") = add  #mkLN("numParams"), 1
+       #mkLN("ret")         = call #mkGN("alloc")(#mkLN("spaceNeeded"))
+
+       #comment("Location in returned closure to write to")
+       #mkLN("writeAddr") = #mkLN("ret")
+
+       #comment("Copy closure ID")
+       store #mkLN("writeAddr"), #mkLN("closureId")
+
+       #comment("Update number of parameters")
+       store #mkLN("numParam"), #mkLN("writeAddr"), 1, 1
+
+       #comment("Copy arguments one at a time")
+       #label(#mkIN("loop"))
+       #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
+       #mkLN("closure")   = add #mkLN("closure"),   1
+       #mkLN("v")         = load #mkLN("closure")
+       store #mkLN("writeAddr"), #mkLN("v")
+
+       #comment("Loop if we have not copied all arguments yet")
+       #mkLN("numParams") = sub #mkLN("numParams"), 1
+       #mkLN("cond")      = cmp eq #mkLN("numParams"), 1
+       br #mkLN("cond"), #mkIN("loop")
+
+       #comment("Add new parameter")
+       #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
+       store #mkLN("writeAddr"), #mkLN("param")
+
+       ret #mkLN("ret")
+
   syntax Operand ::= #closureId(Int, Int)                              [function]
   rule #closureId(JI, NUMARGS) => JI +Int (NUMARGS <<Int 8)
 
   rule #dispatchCheckCond(JI, GN, NUMARGS)
-    => #mkLN("cond") = cmp eq #mkLN("fptr"), #closureId(JI, NUMARGS -Int 1)
+    => #mkLN("cond") = cmp eq #mkLN("closureId"), #closureId(JI, NUMARGS -Int 1)
        br #mkLN("cond"), #mkIN("label" +String Int2String(JI:Int))
 
   rule #dispatchCall(JI, GN, NUMARGS)
@@ -314,14 +347,16 @@ module PLUTUS-CORE-TRANSLATION
   syntax Instructions ::= #unfoldClosure(Int, Int, GlobalName, Instructions)
                                                                        [function]
   rule #unfoldClosure(NUMARGS, I, GN, IS)
-    => #mkLN("ret") = call GN(#makeArgsList(NUMARGS -Int 1, #mkLN("args")))
+    => #mkLN("ret") = call GN(#makeArgsList(NUMARGS -Int 1, #mkLN("param")))
        IS
     when I ==Int NUMARGS
   rule #unfoldClosure(NUMARGS, I, GN, IS)
     => #mkLN("closure") = add #mkLN("closure"), 1
        #mkLN(Int2String(I)) = load #mkLN("closure")
        #unfoldClosure(NUMARGS, I +Int 1, GN, IS)
-    when notBool (I ==Int NUMARGS)
+    when NUMARGS >Int 0 andBool notBool (I ==Int NUMARGS)
+  rule #unfoldClosure(0, _, _, _)
+    => call #mkGN("iele.invalid")(.Operands) .Instructions
 
   syntax Operands ::= #makeArgsList(Int, Operands)                     [function]
   rule #makeArgsList(0, OPS) => OPS
