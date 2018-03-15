@@ -41,6 +41,9 @@ let assemble file =
   | Unix.WEXITED 0 -> of_hex_unsigned result
   | _ -> prerr_endline result; failwith ("failed to assemble " ^ file)
 
+let get_code code =
+  if code = "" then Bytes.empty else if String.sub code 0 2 = "0x" then of_hex_unsigned code else assemble code
+
 let checkpoint pre gas_provided gas_price origin : (string * Basic.json) list =
   List.map (fun (k,v) ->
     if of_hex_unsigned k = origin then match v with
@@ -58,7 +61,7 @@ let add_account (id,data) =
   let old_nonce = data |> member "nonce" |> to_string in
   let old_balance = data |> member "balance" |> to_string in
   let code = data |> member "code" |> to_string in
-  let asm_code = if code = "" then Bytes.empty else if String.sub code 0 2 = "0x" then of_hex code else assemble code in
+  let asm_code = get_code code in
   let storage = data |> member "storage" |> to_assoc in
   let nonce,balance = of_hex old_nonce,of_hex old_balance in
   let map = List.fold_left (fun map (k,v) -> World.StringMap.add (Bytes.to_string (of_hex k)) (of_hex (v |> to_string)) map) World.StringMap.empty storage in
@@ -132,17 +135,17 @@ let send_request ctx =
   let addr = Unix.ADDR_INET(Unix.inet_addr_loopback,(int_of_string Sys.argv.(2))) in
   World.send addr ctx
 
-let exec_transaction header (state: (string * Basic.json) list) (tx: Basic.json) : (string * Basic.json) list * call_result =
-  let gas_price = of_hex (tx |> member "gasPrice" |> to_string) in
-  let gas_provided = of_hex (tx |> member "gasLimit" |> to_string) in
+let exec_transaction gasPrice gasLimit header (state: (string * Basic.json) list) (tx: Basic.json) : (string * Basic.json) list * call_result =
+  let gas_price = of_hex (tx |> member gasPrice |> to_string) in
+  let gas_provided = of_hex (tx |> member gasLimit |> to_string) in
   let owner = tx |> member "to" |> to_string in
-  let txcreate = owner = "" in
+  let txcreate = owner = "" || owner = "0x" in
   let from = tx |> member "from" |> to_string in
   let origin = of_hex_unsigned from in
   let checkpoint_state = checkpoint state gas_price gas_provided origin in
   init_state checkpoint_state;
   let data_str = tx |> member "data" |> to_string in
-  let data = if data_str = "" then Bytes.empty else assemble data_str in
+  let data = get_code data_str in
   let args = List.map (fun json -> of_hex (json |> to_string)) (tx |> member "arguments" |> to_list) in
   let value = tx |> member "value" |> to_string in
   let function_ = tx |> member "function" |> to_string in

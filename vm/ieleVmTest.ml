@@ -18,7 +18,7 @@ let test =
 let failed = ref false
 
 let test_transaction header (state: (string * Basic.json) list) (tx: Basic.json) (result: Basic.json) : (string * Basic.json) list =
-  let post_state, call_result = exec_transaction header state tx in
+  let post_state, call_result = exec_transaction "gasPrice" "gasLimit" header state tx in
   let expected_return = List.map (fun json -> of_hex (json |> to_string)) (result |> member "out" |> to_list) in
   let rets = unpack_output call_result.return_data in
   let actual_return = List.map (fun arg -> `String (Bytes.to_string arg)) rets in
