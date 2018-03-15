@@ -20,8 +20,11 @@ module PLUTUS-CORE-TRANSLATION
   
   configuration
     <T>
-      <plutus> $PGM:DecList ~> #createAlloc:K ~> #createInit:K ~> #createDispatch:K </plutus>
-      <iele> .TopLevelDefinitions </iele>
+      <plutus> $PGM:DecList ~> #createDispatch:K </plutus>
+      <iele> #staticAllocInit
+             #staticAlloc
+             .TopLevelDefinitions
+      </iele>
       <totalFunctions> 0 </totalFunctions>
       <totalReadyForDispatch> 0 </totalReadyForDispatch>
       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
@@ -37,7 +40,7 @@ module PLUTUS-CORE-TRANSLATION
         </function>
       </functions>
     </T>
-  
+
   // Top-Level Functions
   // ===================
   
@@ -208,49 +211,31 @@ module PLUTUS-CORE-TRANSLATION
                       )
   rule #useOperand([T1 T2], LN:LocalName) => LN:LocalName
   
-  syntax K ::= "#createAlloc" | "#createInit" | "#createDispatch"
-  
   // Generate static functions
-  // -------------------------
+  // =========================
+
+  syntax FunctionDefinition ::= "#staticAllocInit"                     [function]
+  rule #staticAllocInit => define  #mkGN("allocInit") (.LocalNames) {
+                             #mkLN("alloc_counter_ptr") = 0
+                             store  1, #mkLN("alloc_counter_ptr")
+                             .Instructions .LabeledBlocks
+                           }
+
+  syntax FunctionDefinition ::= "#staticAlloc"                         [function]
+  rule #staticAlloc => define #mkGN("alloc") (#mkLN("size") , .LocalNames) {
+                         #mkLN("alloc_counter_ptr") = 0
+                         #mkLN("alloced") = load #mkLN("alloc_counter_ptr")
+                         #mkLN("ret") = #mkLN("alloced")
+                         #mkLN("alloced") = add #mkLN("size"), #mkLN("alloced")
+                         store #mkLN("alloced"), #mkLN("alloc_counter_ptr")
+                         ret #mkLN("ret")
+                         .Instructions .LabeledBlocks
+                       }
   
-  rule <plutus> #createAlloc:K => .K:K ... </plutus>
-       <functions> ... ( .Bag
-                      => <function>
-                           <name>   #mkGN("alloc")       </name>
-                           <jumpId> -1                   </jumpId>
-                           <k>      #mkLN("alloc_counter_ptr") = 0
-                                    #mkLN("alloced") = load #mkLN("alloc_counter_ptr")
-                                    #mkLN("ret") = #mkLN("alloced")
-                                    #mkLN("alloced") = add #mkLN("size"), #mkLN("alloced")
-                                    store #mkLN("alloced"), #mkLN("alloc_counter_ptr")
-                                    ret #mkLN("ret")
-                           </k>
-                           <env>    .Map                  </env>
-                           <params> #mkVar("size") .VarList </params>
-                           <hasDispatchEntry> true:Bool   </hasDispatchEntry>
-                           <readyForDispatch> false:Bool  </readyForDispatch>
-                         </function>
-                       )
-       </functions>
-       <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
-  
-  rule <plutus> #createInit:K => .K:K ... </plutus>
-       <functions> ... ( .Bag
-                      => <function>
-                           <name>   #mkGN("init")        </name>
-                           <jumpId> -1                   </jumpId>
-                           <k>      #mkLN("alloc_counter_ptr") = 0
-                                    store  1, #mkLN("alloc_counter_ptr")
-                           </k>
-                           <env>    .Map                  </env>
-                           <params> .VarList              </params>
-                           <hasDispatchEntry> true:Bool   </hasDispatchEntry>
-                           <readyForDispatch> false:Bool  </readyForDispatch>
-                         </function>
-                       )
-       </functions>
-       <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
-  
+  // Generate the dispatch function
+  // ------------------------------
+
+  syntax K ::= "#createDispatch"
   syntax PreInstructions ::= "#dispatchJumpTable"
                            | #dispatchCheckCond(Int, GlobalName)
                            | #dispatchCall     (Int, GlobalName)
