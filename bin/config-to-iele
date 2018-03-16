@@ -5,11 +5,20 @@ others = ['Instructions', 'LabeledBlocks', 'TopLevelDefinitions']
 
 import sys
 import xml.dom.minidom
+import string
+
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text
 
 config = xml.dom.minidom.parse(sys.stdin)
-iele   = config.getElementsByTagName('iele')[0].firstChild.data
+iele   = config.getElementsByTagName('ieleContract')[0].firstChild.data
 for listSort in commaSeparated:
     iele = iele.replace(' , .' + listSort, '')
 for listSort in commaSeparated + others:
     iele = iele.replace('.'   + listSort, '')
-print(iele)
+
+prefix = '    '
+for line in string.split(iele, "\n"):
+    print(remove_prefix(line, prefix))
