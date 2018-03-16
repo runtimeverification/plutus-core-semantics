@@ -329,7 +329,7 @@ module IELE-COMMON
 
   syntax FunctionDefinition ::= 
     "define" FunctionSignature "{" Blocks "}"                   [format(%1 %2 %3%i%n%4%d%n%5%n)]
-  | "define" "public" FunctionSignature "{" Blocks "}"
+  | "define" "public" FunctionSignature "{" Blocks "}"       [format(%1 %2 %3 %4%i%n%5%d%n%6%n)]
 
 
 
