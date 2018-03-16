@@ -20,11 +20,12 @@ module PLUTUS-CORE-TRANSLATION
   
   configuration
     <T>
-      <plutus> $PGM:DecList ~> #createDispatch:K </plutus>
+      <plutus> $PGM:DecList ~> #createDispatch:K ~> #moveToContractCell </plutus>
       <iele> #staticAllocInit
              #staticAlloc
              .TopLevelDefinitions
       </iele>
+      <ieleContract> contract #mkIN("Foo") { .TopLevelDefinitions } </ieleContract>
       <totalFunctions> 0 </totalFunctions>
       <totalReadyForDispatch> 0 </totalReadyForDispatch>
       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
@@ -382,7 +383,17 @@ module PLUTUS-CORE-TRANSLATION
        <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
        <totalReadyForDispatch> TF </totalReadyForDispatch>
        <totalFunctions> TF </totalFunctions>
-  
+
+  // When there are no functions left, return a top-level contract
+
+  syntax K ::= "#moveToContractCell"
+  rule <functions>
+         .Bag
+       </functions>
+       <plutus> #moveToContractCell => .K ... </plutus>
+       <iele> TLDS:TopLevelDefinitions => .TopLevelDefinitions </iele>
+       <ieleContract> _ => contract #mkIN("Foo") { TLDS } </ieleContract>
+
   // Helpers for ...
   // ===============
   

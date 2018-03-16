@@ -297,7 +297,7 @@ module IELE-COMMON
 
   syntax TopLevelDefinitions ::= List{TopLevelDefinition, ""} [klabel(topLevelDefinitionList), format(%1%2%n%3)]
 
-  syntax ContractDefinition ::= "contract" IeleName "{" TopLevelDefinitions "}"
+  syntax ContractDefinition ::= "contract" IeleName "{" TopLevelDefinitions "}" [format(%1 %2 %3%n%i%4%d%n%5)]
 
   syntax Contract ::= List{ContractDefinition, ""} [klabel(contractDefinitionList)]
 
