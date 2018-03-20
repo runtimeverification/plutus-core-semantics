@@ -1,5 +1,6 @@
 /.build/*
 !/.build/k
+!/.build/iele
 
 # Kompile generates these timestamped files, but does it clean them up?
 # Maybe we should chdir to .build/ so that it leaves its junk there?
