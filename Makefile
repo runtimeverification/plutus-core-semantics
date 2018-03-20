@@ -2,12 +2,14 @@
 # --------
 
 build_dir:=$(CURDIR)/.build
+iele_submodule:=$(build_dir)/iele
 k_submodule:=$(build_dir)/k
 k_bin:=$(k_submodule)/k-distribution/target/release/k/bin
 
 .PHONY: all clean build deps ocaml-deps \
         execution translation erc20 typing \
-        test test-passing test-failing test-verify test-verify-commented
+        test test-passing test-failing test-verify test-verify-commented \
+        iele
         # Somehow SECONDEXPANSION and PHONY are interacting poorly, meaning these can't be PHONY
         # test-execution test-erc20 test-typing test-translation
 
@@ -19,15 +21,16 @@ clean:
 # Dependencies
 # ------------
 
-dep_files:=$(k_submodule)/make.timestamp
+dep_files:=$(k_submodule)/.git
 
 deps: $(dep_files) ocaml-deps
 
-$(k_submodule)/make.timestamp:
-	git submodule update --init -- $(k_submodule)
+%/.git: .git/HEAD
+	git submodule update --recursive --init -- $(dir $*)
+
+$(k_bin)/krun:
 	cd $(k_submodule) \
 		&& mvn package -q -DskipTests
-	touch $(k_submodule)/make.timestamp
 
 ocaml-deps:
 	opam init --quiet --no-setup
@@ -37,6 +40,13 @@ ocaml-deps:
 	opam switch 4.03.0+k
 	eval $$(opam config env) \
 	opam install --yes mlgmp zarith uuidm
+
+iele: $(iele_submodule)/.git
+	(   cd $(iele_submodule)      && \
+	    make deps                 && \
+	    eval $$(opam config env)  && \
+	    make                         \
+	)
 
 # Build
 # -----

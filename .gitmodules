@@ -2,3 +2,6 @@
 	path = .build/k
 	url = https://github.com/kframework/k5
     ignore = untracked
+[submodule ".build/iele"]
+	path = .build/iele
+	url = https://github.com/runtimeverification/iele-semantics
