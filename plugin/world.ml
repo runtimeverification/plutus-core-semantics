@@ -139,7 +139,7 @@ module NetworkWorldState = struct
                Msg_pb.decode_blockhash).hash
 end
 
-let _VERSION = "1.1" (* TODO: get from file in submodule *)
+let _VERSION = String.trim ApiVersion._VERSION
 
 let serve addr (run_transaction : Msg_types.call_context -> Msg_types.call_result) =
   (* server side *)
