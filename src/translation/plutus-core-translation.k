@@ -334,17 +334,17 @@ module PLUTUS-CORE-TRANSLATION
            store #mkLN("numParams"), #mkLN("writeAddr"), 1, 1
 
            #comment("Copy arguments one at a time")
-           #label(#mkIN("loop"))
+           #label(#mkIN("while"))
+           #mkLN("numParams") = sub #mkLN("numParams"), 1
+           #mkLN("cond")      = cmp eq #mkLN("numParams"), 0
+           br #mkLN("cond"), #mkIN("done")
+
            #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
            #mkLN("closure")   = add #mkLN("closure"),   1
            #mkLN("v")         = load #mkLN("closure")
-           store #mkLN("writeAddr"), #mkLN("v")
+           store #mkLN("v"), #mkLN("writeAddr")
 
-           #comment("Loop if we have not copied all arguments yet")
-           #mkLN("numParams") = sub #mkLN("numParams"), 1
-           #mkLN("cond")      = cmp eq #mkLN("numParams"), 1
-           br #mkLN("cond"), #mkIN("loop")
-
+        #label(#mkIN("done"))
            #comment("Add new parameter")
            #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
            store #mkLN("writeAddr"), #mkLN("param")
