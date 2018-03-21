@@ -1,1 +1,3 @@
-(define mul (lam x (lam y (builtin multiplyInteger x y))))
+(module Foo (import) (export () ())
+  (define mul (lam x (lam y (builtin multiplyInteger x y))))
+)

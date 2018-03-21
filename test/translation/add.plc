@@ -1,1 +1,0 @@
-(define add (lam x (lam y (builtin addInteger x y))))

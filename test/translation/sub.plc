@@ -1,1 +1,3 @@
-(define sub (lam x (lam y (builtin subtractInteger x y))))
+(module Foo (import) (export () ())
+  (define sub (lam x (lam y (builtin subtractInteger x y))))
+)
