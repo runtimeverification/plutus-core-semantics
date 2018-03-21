@@ -20,7 +20,7 @@ module PLUTUS-CORE-TRANSLATION
   
   configuration
     <T>
-      <plutus> $PGM:DecList ~> #createDispatch:K ~> #moveToContractCell </plutus>
+      <plutus> $PGM:Mod ~> #createDispatch:K ~> #moveToContractCell </plutus>
       <iele> #staticAllocInit
              #staticAlloc
              .TopLevelDefinitions
@@ -29,6 +29,7 @@ module PLUTUS-CORE-TRANSLATION
       <totalFunctions> 0 </totalFunctions>
       <totalReadyForDispatch> 0 </totalReadyForDispatch>
       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
+      <exports> .NameList:NameList </exports>
       <functions>
         <function multiplicity="*" type="Set">
           <name>   #mkGN("noname")       </name>
@@ -46,7 +47,10 @@ module PLUTUS-CORE-TRANSLATION
   // ===================
   
   // We iterate over `define`s, creating a named top level function for each.
-  
+
+  rule <plutus> (module MN IS (export (TXS) (NS)) DS) => DS ... </plutus>
+       <exports> _ => NS </exports>
+
   rule <plutus> (define N:Name T:Tm)                 DS:DecList
              => #topLevelFunction(#nameToGlobalName(N), .VarList, T) ~> DS:DecList
                 ...
@@ -393,11 +397,32 @@ module PLUTUS-CORE-TRANSLATION
          ...
        </functions>
        <iele> TLDS:TopLevelDefinitions
-           => (define GN (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
+           => (define public GN (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
+       <exports> NL </exports>
        <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
        <totalReadyForDispatch> TF </totalReadyForDispatch>
        <totalFunctions> TF </totalFunctions>
+       when #in(GN, NL)
+
+  rule <functions>
+         <function>
+           <name>   GN:GlobalName         </name>
+           <params> VARS:VarList          </params>
+           <env>    ENV                   </env>
+           <k>      IS:Instructions       </k>
+           ...
+         </function> => .Bag
+         ...
+       </functions>
+       <iele> TLDS:TopLevelDefinitions
+           => (define GN (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
+       </iele>
+       <exports> NL </exports>
+       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
+       <totalReadyForDispatch> TF </totalReadyForDispatch>
+       <totalFunctions> TF </totalFunctions>
+       when notBool #in(GN, NL)
 
   // When there are no functions left, return a top-level contract
 
@@ -485,4 +510,13 @@ module PLUTUS-CORE-TRANSLATION
   // ----------------------------------------------------------------------------
   rule #lengthVarList(.VarList) => 0
   rule #lengthVarList(V VL) => 1 +Int #lengthVarList(VL)
+
+  syntax Bool ::= #in(GlobalName, NameList)                            [function]
+  // ----------------------------------------------------------------------------
+  rule #in(GN, .NameList) => false
+  rule #in(GN, N NL) => true
+    when GN ==K #nameToGlobalName(N)
+  rule #in(GN, N NL) => #in(GN, NL)
+    when GN =/=K #nameToGlobalName(N)
+
 endmodule

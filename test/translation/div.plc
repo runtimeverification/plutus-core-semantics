@@ -1,1 +1,3 @@
-(define div (lam x (lam y (builtin divideInteger x y))))
+(module Foo (import) (export () ())
+  (define div (lam x (lam y (builtin divideInteger x y))))
+)

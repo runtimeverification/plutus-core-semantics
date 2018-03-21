@@ -3,47 +3,47 @@
     .
   </plutus>
   <iele>
-    define @initAlloc ( .LocalNames ) {
+    define @init ( .LocalNames ) {
       %alloc_counter_ptr = 0
       store 1 , %alloc_counter_ptr
       .Instructions .LabeledBlocks
     }
     
-    define @fresh5 ( %y , .LocalNames ) {
+    define @fresh1 ( %y , .LocalNames ) {
       %addr = add %closure , 1
-      %fresh8 = load %addr
-      %ret = add %fresh8 , %y
+      %fresh4 = load %addr
+      %ret = add %fresh4 , %y
       ret %ret , .Operands
       .Instructions .LabeledBlocks
     }
     
-    define @fresh4 ( %x , .LocalNames ) {
+    define @fresh0 ( %x , .LocalNames ) {
       %ret , .LValues = call @alloc ( 2 , .Operands )
-      store 5 , %ret
-      %fresh7 = add %ret , 1
-      store %x , %fresh7
+      store 1 , %ret
+      %fresh3 = add %ret , 1
+      store %x , %fresh3
       ret %ret , .Operands
       .Instructions .LabeledBlocks
     }
     
     define @dispatch ( %closure , %param , .LocalNames ) {
       %fptr = load %closure
-      %cond = cmp eq %fptr , 4
-      br %cond , label4
-      %cond = cmp eq %fptr , 5
-      br %cond , label5
+      %cond = cmp eq %fptr , 0
+      br %cond , label0
+      %cond = cmp eq %fptr , 1
+      br %cond , label1
 
-      label5:
-      %ret , .LValues = call @fresh5 ( %closure , %param , .Operands )
+      label1:
+      %ret , .LValues = call @fresh1 ( %closure , %param , .Operands )
       ret %ret , .Operands
 
-      label4:
-      %ret , .LValues = call @fresh4 ( %closure , %param , .Operands )
+      label0:
+      %ret , .LValues = call @fresh0 ( %closure , %param , .Operands )
       ret %ret , .Operands
       .Instructions .LabeledBlocks
     }
     
-    define @initAlloc( %size , .LocalNames ) {
+    define @alloc ( %size , .LocalNames ) {
       %alloc_counter_ptr = 0
       %alloced = load %alloc_counter_ptr
       %ret = %alloced
@@ -53,12 +53,9 @@
       .Instructions .LabeledBlocks
     }
     
-    define @add1923 ( .LocalNames ) {
-      call @initAlloc() 
-      %fresh3 , .LValues = call @alloc ( 1 , .Operands )
-      store 4 , %fresh3
-      %fresh1 , .LValues = call @dispatch ( %fresh3 , 19 , .Operands )
-      %ret , .LValues = call @dispatch ( %fresh1 , 23 , .Operands )
+    define @add ( .LocalNames ) {
+      %ret , .LValues = call @alloc ( 1 , .Operands )
+      store 0 , %ret
       ret %ret , .Operands
       .Instructions .LabeledBlocks
     }

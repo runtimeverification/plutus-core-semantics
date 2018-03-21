@@ -1,1 +1,3 @@
-(define app (lam f (lam x [f x])))
+(module Foo (import) (export () ())
+  (define app (lam f (lam x [f x])))
+)
