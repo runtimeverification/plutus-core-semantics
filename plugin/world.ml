@@ -102,6 +102,9 @@ module InMemoryWorldState = struct
     try (StringMap.find id !accounts).code with Not_found -> Bytes.empty
 
   let get_blockhash i = List.nth !hashes i
+
+  let reset () = accounts := StringMap.empty; hashes := []
+  let reset_state () = accounts := StringMap.empty
 end
 
 let connections = ThreadLocal.create 10

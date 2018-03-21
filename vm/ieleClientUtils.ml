@@ -68,6 +68,7 @@ let add_account (id,data) =
   World.InMemoryWorldState.add_account acctID nonce balance asm_code map
 
 let init_state state =
+  World.InMemoryWorldState.reset_state ();
   List.iter add_account state
 
 let pack_input args function_ txcreate data =

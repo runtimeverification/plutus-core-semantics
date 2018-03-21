@@ -20,6 +20,8 @@ module InMemoryWorldState : sig
   include WorldState
   val add_account : id: bytes -> nonce: bytes -> balance: bytes -> code: bytes -> bytes StringMap.t -> unit
   val add_blockhash : bytes -> unit
+  val reset : unit -> unit
+  val reset_state : unit -> unit
 end
 module NetworkWorldState : WorldState
 
