@@ -382,7 +382,8 @@ module PLUTUS-CORE-TRANSLATION
   rule #makeArgsList(0, OPS) => OPS
   rule #makeArgsList(NUMARGS, OPS)
     => #makeArgsList(NUMARGS -Int 1, #mkLN(Int2String(NUMARGS)), OPS)
-       
+    when NUMARGS >Int 0
+
 
   // Finally, convert `<function>`s to IELE syntax
 
