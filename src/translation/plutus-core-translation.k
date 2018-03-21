@@ -374,7 +374,7 @@ module PLUTUS-CORE-TRANSLATION
     => #mkLN("closure") = add #mkLN("closure"), 1
        #mkLN(Int2String(I)) = load #mkLN("closure")
        #unfoldClosure(NUMARGS, I +Int 1, GN, IS)
-    when NUMARGS >Int 0 andBool notBool (I ==Int NUMARGS)
+    when NUMARGS >Int 0 andBool I =/=Int NUMARGS
   rule #unfoldClosure(0, _, _, _)
     => call #mkGN("iele.invalid")(.Operands) .Instructions
 
