@@ -21,8 +21,7 @@ module PLUTUS-CORE-TRANSLATION
   configuration
     <T>
       <plutus> $PGM:Mod ~> #createDispatch:K ~> #moveToContractCell </plutus>
-      <iele> #staticAllocInit
-             #staticAlloc
+      <iele> #staticAlloc
              #staticAppendArg
              .TopLevelDefinitions
       </iele>
@@ -229,17 +228,14 @@ module PLUTUS-CORE-TRANSLATION
   // Generate static functions
   // =========================
 
-  syntax FunctionDefinition ::= "#staticAllocInit"                     [function]
-  rule #staticAllocInit => define  #mkGN("allocInit") (.LocalNames) {
-                             #mkLN("alloc_counter_ptr") = 0
-                             store  1, #mkLN("alloc_counter_ptr")
-                             .Instructions .LabeledBlocks
-                           }
-
   syntax FunctionDefinition ::= "#staticAlloc"                         [function]
   rule #staticAlloc => define #mkGN("alloc") (#mkLN("size") , .LocalNames) {
                          #mkLN("alloc_counter_ptr") = 0
                          #mkLN("alloced") = load #mkLN("alloc_counter_ptr")
+                         #mkLN("isInitialized") = cmp gt 0, #mkLN("alloced")
+                         br #mkLN("isInitialized"), #mkIN("initialized")
+                         #mkLN("alloced") = 1
+                      #label(#mkIN("initialized"))
                          #mkLN("ret") = #mkLN("alloced")
                          #mkLN("alloced") = add #mkLN("size"), #mkLN("alloced")
                          store #mkLN("alloced"), #mkLN("alloc_counter_ptr")
