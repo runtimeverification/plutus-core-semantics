@@ -23,6 +23,7 @@ module PLUTUS-CORE-TRANSLATION
       <plutus> $PGM:Mod ~> #createDispatch:K ~> #moveToContractCell </plutus>
       <iele> #staticAllocInit
              #staticAlloc
+             #staticAppendArg
              .TopLevelDefinitions
       </iele>
       <ieleContract> contract #mkIN("Foo") { .TopLevelDefinitions } </ieleContract>
@@ -307,9 +308,10 @@ module PLUTUS-CORE-TRANSLATION
   
   // Once all functions execpt #mkGN("dispatch") have been processed, ther are no more entrys to be dispatched
   rule <function>
-          <k> #dispatchJumpTable
-           => #comment("End of Jump Table")
-              #appendToClosureAndClone ...
+          <k> #dispatchJumpTable =>
+              #mkLN("ret") = call #mkGN("appendArg")(#mkLN("closure"), #mkLN("closureId"), #mkLN("param"))
+              ret #mkLN("ret")
+              ...
          </k>
           ...
        </function>
@@ -318,40 +320,42 @@ module PLUTUS-CORE-TRANSLATION
        <totalFunctions> TF:Int </totalFunctions>
     when TF:Int ==K (TRFD:Int +Int 1)
 
-  syntax Instructions ::= "#appendToClosureAndClone"                   [function]
-  rule #appendToClosureAndClone
-    => #comment("Allocate space to append new argument to closure")
-       #mkLN("numParams")   = load #mkLN("closure"),   1, 1
-       #mkLN("numParams")   = add  #mkLN("numParams"), 1
-       #mkLN("spaceNeeded") = add  #mkLN("numParams"), 1
-       #mkLN("ret")         = call #mkGN("alloc")(#mkLN("spaceNeeded"))
+  syntax FunctionDefinition ::= "#staticAppendArg"                     [function]
+  rule #staticAppendArg
+    => define #mkGN("appendArg") (#mkLN("closure"), #mkLN("closureId"), #mkLN("param")) {
+           #mkLN("numParams")   = load #mkLN("closure"),   1, 1
+           #mkLN("numParams")   = add  #mkLN("numParams"), 1
+           #mkLN("spaceNeeded") = add  #mkLN("numParams"), 1
+           #mkLN("ret")         = call #mkGN("alloc")(#mkLN("spaceNeeded"))
 
-       #comment("Location in returned closure to write to")
-       #mkLN("writeAddr") = #mkLN("ret")
+           #comment("Location in returned closure to write to")
+           #mkLN("writeAddr") = #mkLN("ret")
 
-       #comment("Copy closure ID")
-       store #mkLN("writeAddr"), #mkLN("closureId")
+           #comment("Copy closure ID")
+           store #mkLN("writeAddr"), #mkLN("closureId")
 
-       #comment("Update number of parameters")
-       store #mkLN("numParam"), #mkLN("writeAddr"), 1, 1
+           #comment("Update number of parameters")
+           store #mkLN("numParam"), #mkLN("writeAddr"), 1, 1
 
-       #comment("Copy arguments one at a time")
-       #label(#mkIN("loop"))
-       #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
-       #mkLN("closure")   = add #mkLN("closure"),   1
-       #mkLN("v")         = load #mkLN("closure")
-       store #mkLN("writeAddr"), #mkLN("v")
+           #comment("Copy arguments one at a time")
+           #label(#mkIN("loop"))
+           #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
+           #mkLN("closure")   = add #mkLN("closure"),   1
+           #mkLN("v")         = load #mkLN("closure")
+           store #mkLN("writeAddr"), #mkLN("v")
 
-       #comment("Loop if we have not copied all arguments yet")
-       #mkLN("numParams") = sub #mkLN("numParams"), 1
-       #mkLN("cond")      = cmp eq #mkLN("numParams"), 1
-       br #mkLN("cond"), #mkIN("loop")
+           #comment("Loop if we have not copied all arguments yet")
+           #mkLN("numParams") = sub #mkLN("numParams"), 1
+           #mkLN("cond")      = cmp eq #mkLN("numParams"), 1
+           br #mkLN("cond"), #mkIN("loop")
 
-       #comment("Add new parameter")
-       #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
-       store #mkLN("writeAddr"), #mkLN("param")
+           #comment("Add new parameter")
+           #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
+           store #mkLN("writeAddr"), #mkLN("param")
 
-       ret #mkLN("ret")
+           ret #mkLN("ret")
+           .Instructions .LabeledBlocks
+        }
 
   syntax Operand ::= #closureId(Int, Int)                              [function]
   rule #closureId(JI, NUMARGS) => JI +Int (NUMARGS <<Int 8)
