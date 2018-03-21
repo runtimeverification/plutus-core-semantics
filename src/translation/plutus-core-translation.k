@@ -332,10 +332,10 @@ module PLUTUS-CORE-TRANSLATION
            #mkLN("writeAddr") = #mkLN("ret")
 
            #comment("Copy closure ID")
-           store #mkLN("writeAddr"), #mkLN("closureId")
+           store #mkLN("closureId"), #mkLN("writeAddr")
 
            #comment("Update number of parameters")
-           store #mkLN("numParam"), #mkLN("writeAddr"), 1, 1
+           store #mkLN("numParams"), #mkLN("writeAddr"), 1, 1
 
            #comment("Copy arguments one at a time")
            #label(#mkIN("loop"))
