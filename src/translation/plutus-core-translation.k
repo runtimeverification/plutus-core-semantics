@@ -353,9 +353,14 @@ module PLUTUS-CORE-TRANSLATION
            .Instructions .LabeledBlocks
         }
 
+  // The closureId is the first entry in a closure. It is two bytes long, with
+  // the MSB the Jump ID, and the other the number of arguments stored in the
+  // closure.
   syntax Operand ::= #closureId(Int, Int)                              [function]
-  rule #closureId(JI, NUMARGS) => JI +Int (NUMARGS <<Int 8)
+  rule #closureId(JI, NUMARGS) => NUMARGS +Int (JI <<Int 8)
 
+  // If the closure contains one less than the number of arguments that the
+  // function accepts, we call the function
   rule #dispatchCheckCond(JI, GN, NUMARGS)
     => #mkLN("cond") = cmp eq #mkLN("closureId"), #closureId(JI, NUMARGS -Int 1)
        br #mkLN("cond"), #mkIN("label" +String Int2String(JI:Int))
