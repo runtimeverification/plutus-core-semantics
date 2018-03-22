@@ -1,0 +1,7 @@
+(module Foo (import) (export () (sixArg))
+ (define sixArg
+   [[[[[[(lam x (lam y (lam z (lam a (lam b  (lam c 
+     (builtin addInteger c (builtin multiplyInteger z a))
+   )))))) 2] 3] 5] 7] 11] 13]
+ )
+)
