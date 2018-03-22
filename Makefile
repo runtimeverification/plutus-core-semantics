@@ -65,8 +65,6 @@ typing:      .build/typing/plutus-core-kompiled/interpreter
 # Testing
 # -------
 
-TEST=./kplc test
-
 test: test-passing test-failing
 test-passing: test-translation test-execution
 test-failing: test-erc20 test-verify test-verify-commented
@@ -79,11 +77,18 @@ test-translation: $(translation_tests:=.test)
 test-execution: $(execution_tests:=.test)
 test-erc20: $(erc20_tests:=.test)
 
-.PRECIOUS: test/%.out
+test/execution/%   : driver = execution
+test/translation/% : driver = translation
+test/typing/%      : driver = typing
+test/erc20/%       : driver = erc20
+
 test/%.plc.test test/%.out: .build/$$(dir $$*)/plutus-core-kompiled/interpreter
-	$(TEST) test/$*.plc
+	./kplc run $(driver) test/$*.plc > test/$*.out
 test/%.iele: test/%.out
 	bin/config-to-iele < $^ > $@
+
+test/%.iele.test: test/%.iele
+	(cd .build/iele/ && ./blockchaintest ../../test/$*.iele.json)
 
 test-verify: .build/execution/plutus-core-kompiled/interpreter
 	./kplc prove execution verification/int-addition_spec.k             verification/dummy.plcore
