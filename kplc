@@ -50,18 +50,6 @@ run_kdebug() {
     ( run_krun "$driver" "$debug_file" --debugger "$@" )
 }
 
-run_test() {
-    local test_file="$1" ; shift
-    local without_test="${test_file#test/}"
-    local driver="${without_test%/*}"
-    local expected_file="test/${without_test%.plc}.expected"
-    local output_file="test/${without_test%.plc}.out"
-    [[ -f "$test_file" ]] && [[ -f "$expected_file" ]] && [[ -d "src/$driver" ]] \
-        || die "Do not know how to run '$test_file' as a test."
-    run_krun "$driver" "$test_file" "$@" > "$output_file"
-    pretty_diff "$expected_file" "$output_file"
-}
-
 # Main
 # ----
 
@@ -76,12 +64,8 @@ case "$run_command" in
     debug) run_kdebug "$@" ;;
     prove) run_kprove "$@" ;;
 
-    # Testing
-    test)  run_test   "$@" ;;
-
     *) echo "
     usage: $0 [run|debug|prove] <driver> <file> <K args>*
-           $0 test                       <file> <K args>*
 
        # Running
        # -------
@@ -92,10 +76,6 @@ case "$run_command" in
        Note: <pgm> is a path to a file containing a PLC program.
              <spec> is a K reachability claim file.
              <driver> is one of [erc20|execution|translation|typing]
-
-       # Testing
-       # -------
-       $0 test <pgm>    Run a single PLC program like it's a test
 
        Note: This command is more for devs and CI servers.
 " ; exit ;;
