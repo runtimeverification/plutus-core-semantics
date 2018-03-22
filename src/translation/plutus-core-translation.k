@@ -347,7 +347,7 @@ module PLUTUS-CORE-TRANSLATION
         #label(#mkIN("done"))
            #comment("Add new parameter")
            #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
-           store #mkLN("writeAddr"), #mkLN("param")
+           store #mkLN("param"), #mkLN("writeAddr")
 
            ret #mkLN("ret")
            .Instructions .LabeledBlocks
@@ -363,10 +363,10 @@ module PLUTUS-CORE-TRANSLATION
   // function accepts, we call the function
   rule #dispatchCheckCond(JI, GN, NUMARGS)
     => #mkLN("cond") = cmp eq #mkLN("closureId"), #closureId(JI, NUMARGS -Int 1)
-       br #mkLN("cond"), #mkIN("label" +String Int2String(JI:Int))
+       br #mkLN("cond"), #mkIN("call" +String Int2String(JI:Int))
 
   rule #dispatchCall(JI, GN, NUMARGS)
-    => #label(#mkIN("label" +String Int2String(JI:Int)))
+    => #label(#mkIN("call" +String Int2String(JI:Int)))
        #unfoldClosure(NUMARGS, 1, GN, ret #mkLN("ret"))
 
   syntax Instructions ::= #unfoldClosure(Int, Int, GlobalName, Instructions)
@@ -375,13 +375,13 @@ module PLUTUS-CORE-TRANSLATION
     => #mkLN("ret") = call GN(#makeArgsList(NUMARGS -Int 1, #mkLN("param")))
        IS
     when I ==Int NUMARGS
+  rule #unfoldClosure(0, _, _, _)
+    => call #mkGN("iele.invalid")(.Operands) .Instructions
   rule #unfoldClosure(NUMARGS, I, GN, IS)
     => #mkLN("closure") = add #mkLN("closure"), 1
        #mkLN(Int2String(I)) = load #mkLN("closure")
        #unfoldClosure(NUMARGS, I +Int 1, GN, IS)
     when NUMARGS >Int 0 andBool I =/=Int NUMARGS
-  rule #unfoldClosure(0, _, _, _)
-    => call #mkGN("iele.invalid")(.Operands) .Instructions
 
   syntax Operands ::= #makeArgsList(Int, Operands)                     [function]
   rule #makeArgsList(0, OPS) => OPS
@@ -389,9 +389,7 @@ module PLUTUS-CORE-TRANSLATION
     => #makeArgsList(NUMARGS -Int 1, #mkLN(Int2String(NUMARGS)), OPS)
     when NUMARGS >Int 0
 
-
   // Finally, convert `<function>`s to IELE syntax
-
   rule <functions>
          <function>
            <name>   GN:GlobalName         </name>
