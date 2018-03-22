@@ -52,17 +52,17 @@ module PLUTUS-CORE-TRANSLATION
        <exports> _ => NS </exports>
 
   rule <plutus> (define N:Name T:Tm)                 DS:DecList
-             => #topLevelFunction(#nameToGlobalName(N), .VarList, T) ~> DS:DecList
+             => #topLevelFunction(#nameToGlobalName(N), !JI, .VarList, T) ~> DS:DecList
                 ...
        </plutus>
   rule <plutus> .DecList => .K ... </plutus>
 
-  syntax K ::= #topLevelFunction(GlobalName, VarList, Tm)
-  rule <plutus> #topLevelFunction(GN, VARS:VarList, (lam X:Var T:Tm))
-             => #topLevelFunction(GN, X VARS, #replaceFreeVar(T:Tm, X, #lengthVarList(VARS)))
+  syntax K ::= #topLevelFunction(GlobalName, Int, VarList, Tm)
+  rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, (lam X:Var T:Tm))
+             => #topLevelFunction(GN, JI, X VARS, #replaceFreeVar(T:Tm, X, #lengthVarList(VARS)))
                 ...
        </plutus>
-  rule <plutus> #topLevelFunction(GN, VARS:VarList, T:Tm) => .K ... </plutus>
+  rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, T:Tm) => .K ... </plutus>
        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
        <dispatchedFunctionsLeft> DFL => DFL +Int 1 </dispatchedFunctionsLeft>
        <functions> ...
@@ -70,7 +70,7 @@ module PLUTUS-CORE-TRANSLATION
          <function>
             <name> GN </name>
             <params> #reverseVarList(VARS) </params>
-            <jumpId> !JI </jumpId>
+            <jumpId> JI </jumpId>
             <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
                                     ret #useOperand(T:Tm, #mkLN("ret")) .Instructions)
             </k>
@@ -152,7 +152,7 @@ module PLUTUS-CORE-TRANSLATION
             ...
           </function>
        </functions>
-       <plutus> (.K => #topLevelFunction(#intToGlobalName(!N), X, T:Tm)) ... </plutus>
+       <plutus> (.K => #topLevelFunction(#intToGlobalName(!N), !N, X, T:Tm)) ... </plutus>
 
   rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
   
