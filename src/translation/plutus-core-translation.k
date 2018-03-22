@@ -344,6 +344,8 @@ module PLUTUS-CORE-TRANSLATION
            #mkLN("v")         = load #mkLN("closure")
            store #mkLN("v"), #mkLN("writeAddr")
 
+           br #mkIN("while")
+
         #label(#mkIN("done"))
            #comment("Add new parameter")
            #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
