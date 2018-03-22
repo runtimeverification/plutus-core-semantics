@@ -379,14 +379,14 @@ module PLUTUS-CORE-TRANSLATION
     => call #mkGN("iele.invalid")(.Operands) .Instructions
   rule #unfoldClosure(NUMARGS, I, GN, IS)
     => #mkLN("closure") = add #mkLN("closure"), 1
-       #mkLN(Int2String(I)) = load #mkLN("closure")
+       #mkLN("param" +String Int2String(I)) = load #mkLN("closure")
        #unfoldClosure(NUMARGS, I +Int 1, GN, IS)
     when NUMARGS >Int 0 andBool I =/=Int NUMARGS
 
   syntax Operands ::= #makeArgsList(Int, Operands)                     [function]
   rule #makeArgsList(0, OPS) => OPS
   rule #makeArgsList(NUMARGS, OPS)
-    => #makeArgsList(NUMARGS -Int 1, #mkLN(Int2String(NUMARGS)), OPS)
+    => #makeArgsList(NUMARGS -Int 1, #mkLN("param" +String Int2String(NUMARGS)), OPS)
     when NUMARGS >Int 0
 
   // Finally, convert `<function>`s to IELE syntax
