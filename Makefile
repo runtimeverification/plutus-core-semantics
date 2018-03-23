@@ -93,7 +93,7 @@ test/typing/%      : driver = typing
 test/erc20/%       : driver = erc20
 
 test/%.plc.test test/%.out: .build/$$(dir $$*)/plutus-core-kompiled/interpreter
-	./kplc run $(driver) test/$*.plc > test/$*.out
+	./bin/kplc run $(driver) test/$*.plc > test/$*.out
 test/%.iele: test/%.out
 	bin/config-to-iele < $^ > $@
 
@@ -101,37 +101,37 @@ test/%.iele.test: test/%.iele
 	(cd .build/iele/ && ./blockchaintest ../../test/$*.iele.json)
 
 test-verify: .build/execution/plutus-core-kompiled/interpreter
-	./kplc prove execution verification/int-addition_spec.k             verification/dummy.plcore
-	./kplc prove execution verification/int-addition-with-import_spec.k verification/int-addition-lib.plcore
-	./kplc prove execution verification/equality_spec.k                 verification/dummy.plcore
-	./kplc prove execution verification/inequality_spec.k               verification/dummy.plcore
-	./kplc prove execution verification/sum_spec.k                      verification/sum.plcore
-	./kplc prove execution verification/const_spec.k                    verification/prelude.plc
-	./kplc prove execution verification/flip_spec.k                     verification/prelude.plc
-	./kplc prove execution verification/flip-no-prelude_spec.k          verification/dummy.plcore
-	./kplc prove execution verification/applyTo_spec.k                  verification/prelude.plc
-	./kplc prove execution verification/applyTo-no-prelude_spec.k       verification/dummy.plcore
-	./kplc prove execution verification/compose-no-prelude_spec.k       verification/dummy.plcore
-	./kplc prove execution verification/compose2-no-prelude_spec.k      verification/dummy.plcore
-	./kplc prove execution verification/curry_spec.k                    verification/prelude.plc
-	./kplc prove execution verification/curry-no-prelude_spec.k         verification/dummy.plcore
-	./kplc prove execution verification/uncurry_spec.k                  verification/prelude.plc
-	./kplc prove execution verification/swap_spec.k                     verification/prelude.plc
-	./kplc prove execution verification/maybe-nothing_spec.k            verification/prelude.plc
-	./kplc prove execution verification/maybe-just_spec.k               verification/prelude.plc
+	./bin/kplc prove execution verification/int-addition_spec.k             verification/dummy.plcore
+	./bin/kplc prove execution verification/int-addition-with-import_spec.k verification/int-addition-lib.plcore
+	./bin/kplc prove execution verification/equality_spec.k                 verification/dummy.plcore
+	./bin/kplc prove execution verification/inequality_spec.k               verification/dummy.plcore
+	./bin/kplc prove execution verification/sum_spec.k                      verification/sum.plcore
+	./bin/kplc prove execution verification/const_spec.k                    verification/prelude.plc
+	./bin/kplc prove execution verification/flip_spec.k                     verification/prelude.plc
+	./bin/kplc prove execution verification/flip-no-prelude_spec.k          verification/dummy.plcore
+	./bin/kplc prove execution verification/applyTo_spec.k                  verification/prelude.plc
+	./bin/kplc prove execution verification/applyTo-no-prelude_spec.k       verification/dummy.plcore
+	./bin/kplc prove execution verification/compose-no-prelude_spec.k       verification/dummy.plcore
+	./bin/kplc prove execution verification/compose2-no-prelude_spec.k      verification/dummy.plcore
+	./bin/kplc prove execution verification/curry_spec.k                    verification/prelude.plc
+	./bin/kplc prove execution verification/curry-no-prelude_spec.k         verification/dummy.plcore
+	./bin/kplc prove execution verification/uncurry_spec.k                  verification/prelude.plc
+	./bin/kplc prove execution verification/swap_spec.k                     verification/prelude.plc
+	./bin/kplc prove execution verification/maybe-nothing_spec.k            verification/prelude.plc
+	./bin/kplc prove execution verification/maybe-just_spec.k               verification/prelude.plc
 
 test-verify-commented: .build/execution/plutus-core-kompiled/timestamp
-	./kplc prove execution verification/id_spec.k                       verification/prelude.plc
-	./kplc prove execution verification/fst_spec.k                      verification/prelude.plc
-	./kplc prove execution verification/snd_spec.k                      verification/prelude.plc
-	./kplc prove execution verification/fromJust_spec.k                 verification/prelude.plc
-	./kplc prove execution verification/fromMaybe-nothing_spec.k        verification/prelude.plc
-	./kplc prove execution verification/fromMaybe-just_spec.k           verification/prelude.plc
-	./kplc prove execution verification/mapMaybe-nothing_spec.k         verification/prelude.plc
-	./kplc prove execution verification/mapMaybe-just_spec.k            verification/prelude.plc
-	./kplc prove execution verification/either-left_spec.k              verification/prelude.plc
-	./kplc prove execution verification/either-right_spec.k             verification/prelude.plc
-	./kplc prove execution verification/eitherToMaybe-left_spec.k       verification/prelude.plc
-	./kplc prove execution verification/eitherToMaybe-right_spec.k      verification/prelude.plc
-	./kplc prove execution verification/maybeToEither-nothing_spec.k    verification/prelude.plc
-	./kplc prove execution verification/maybeToEither-just_spec.k       verification/prelude.plc
+	./bin/kplc prove execution verification/id_spec.k                       verification/prelude.plc
+	./bin/kplc prove execution verification/fst_spec.k                      verification/prelude.plc
+	./bin/kplc prove execution verification/snd_spec.k                      verification/prelude.plc
+	./bin/kplc prove execution verification/fromJust_spec.k                 verification/prelude.plc
+	./bin/kplc prove execution verification/fromMaybe-nothing_spec.k        verification/prelude.plc
+	./bin/kplc prove execution verification/fromMaybe-just_spec.k           verification/prelude.plc
+	./bin/kplc prove execution verification/mapMaybe-nothing_spec.k         verification/prelude.plc
+	./bin/kplc prove execution verification/mapMaybe-just_spec.k            verification/prelude.plc
+	./bin/kplc prove execution verification/either-left_spec.k              verification/prelude.plc
+	./bin/kplc prove execution verification/either-right_spec.k             verification/prelude.plc
+	./bin/kplc prove execution verification/eitherToMaybe-left_spec.k       verification/prelude.plc
+	./bin/kplc prove execution verification/eitherToMaybe-right_spec.k      verification/prelude.plc
+	./bin/kplc prove execution verification/maybeToEither-nothing_spec.k    verification/prelude.plc
+	./bin/kplc prove execution verification/maybeToEither-just_spec.k       verification/prelude.plc
