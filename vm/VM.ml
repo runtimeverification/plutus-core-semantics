@@ -6,7 +6,7 @@ open Msg_types
 let storage_key_is_modified acctID k v =
   match k,v with
   [Int key],[Int value] ->
-  MANTIS.Cache.get_storage_data acctID key <> value
+  BLOCKCHAIN.Cache.get_storage_data acctID key <> value
 | _ -> failwith "Invalid values found where ints were expected"
 
 let storage_is_modified acctID storage =
@@ -17,16 +17,16 @@ let code_is_modified acctID code =
   let is_code_empty = match Def.eval (KApply(LblaccountEmpty, [code;[Int Z.zero];[Int Z.zero]])) [Bottom] with
   [Bool isempty] -> isempty
   | _ -> failwith "Invalid value where boolean was expected" in
-  (not (MANTIS.Cache.account_exists acctID) || MANTIS.Cache.is_code_empty acctID) &&
+  (not (BLOCKCHAIN.Cache.account_exists acctID) || BLOCKCHAIN.Cache.is_code_empty acctID) &&
   not is_code_empty
 
 let account_is_modified selfdestruct _ acct =
 match acct with
   [KApply5(Lbl'_LT_'account'_GT_',[KApply1(Lbl'_LT_'acctID'_GT_',[Int acctID])],[KApply1(Lbl'_LT_'balance'_GT_',[Int balance])],[KApply1(Lbl'_LT_'code'_GT_',code)],[KApply1(Lbl'_LT_'storage'_GT_',[Map(SortMap,Lbl_Map_,storage)])],[KApply1(Lbl'_LT_'nonce'_GT_',[Int nonce])])] ->
   not (List.mem acctID selfdestruct) && (
-    not (MANTIS.Cache.account_exists acctID) ||
-    MANTIS.Cache.get_balance acctID <> balance ||
-    MANTIS.Cache.get_nonce acctID <> nonce ||
+    not (BLOCKCHAIN.Cache.account_exists acctID) ||
+    BLOCKCHAIN.Cache.get_balance acctID <> balance ||
+    BLOCKCHAIN.Cache.get_nonce acctID <> nonce ||
     code_is_modified acctID code ||
     storage_is_modified acctID storage
   )
@@ -148,7 +148,7 @@ let run_transaction (ctx: call_context) : call_result =
   let block_header = (match ctx.block_header with
   | Some hdr -> hdr
   | _ -> invalid_arg "Must pass a BlockHeader message as block_header") in
-  MANTIS.Cache.clear ();
+  BLOCKCHAIN.Cache.clear ();
   let iscreate = Bytes.length ctx.recipient_addr = 0 in
   let z_to = World.to_z_unsigned ctx.recipient_addr in
   let z_from = World.to_z_unsigned ctx.caller_addr in
