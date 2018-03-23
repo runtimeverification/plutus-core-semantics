@@ -51,8 +51,8 @@ module PLUTUS-CORE-TRANSLATION
   rule <plutus> (module MN IS (export (TXS) (NS)) DS) => DS ... </plutus>
        <exports> _ => NS </exports>
 
-  rule <plutus> (define N:Name T:Tm)                 DS:DecList
-             => #topLevelFunction(#nameToGlobalName(N), !JI, .VarList, T) ~> DS:DecList
+  rule <plutus> (define N:Name V:Val) DS:DecList
+             => #topLevelFunction(#nameToGlobalName(N), !JI, .VarList, V) ~> DS:DecList
                 ...
        </plutus>
   rule <plutus> .DecList => .K ... </plutus>

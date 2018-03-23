@@ -122,7 +122,6 @@ module PLUTUS-CORE-COMMON
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
                       | Val
-                      | "(" "lam" VarList Tm ")"                       [binder]
 
   syntax Ki         ::= "(" "type" ")"
                       | "(" "fun" Ki Ki ")"
@@ -170,7 +169,7 @@ module PLUTUS-CORE-COMMON
                       | MDec
                       | DDec
 
-  syntax Def        ::= "(" "define" Name Tm ")"                    [strict(2)]
+  syntax Def        ::= "(" "define" Name Val ")"                   [strict(2)]
 
   syntax TDec       ::= "(" "type" Name Ty ")"
 
@@ -183,6 +182,7 @@ module PLUTUS-CORE-COMMON
                       | "(" "failure" ")"
                       | "(" "success" Val ")"         [prefer, klabel(succVal)]
                       | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
+                      | "(" "lam" VarList Tm ")"                       [binder]
                       | Int
                       | ByStr
 
