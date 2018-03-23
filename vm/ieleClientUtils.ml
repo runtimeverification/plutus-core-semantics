@@ -147,7 +147,7 @@ let exec_transaction gasPrice gasLimit header (state: (string * Basic.json) list
   let args = List.map (fun json -> of_hex (json |> to_string)) (tx |> member "arguments" |> to_list) in
   let value = tx |> member "value" |> to_string in
   let data = if txcreate then
-    let data_str = tx |> member "data" |> to_string in
+    let data_str = tx |> member "contractCode" |> to_string in
     Bytes.to_string (get_code data_str)
   else
     tx |> member "function" |> to_string
