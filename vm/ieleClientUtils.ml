@@ -71,8 +71,7 @@ let init_state state =
   World.InMemoryWorldState.reset_state ();
   List.iter add_account state
 
-let pack_input args function_ txcreate data =
-  let str = if txcreate then Bytes.to_string data else function_ in
+let pack_input args str =
   let l = List.map (fun arg -> Rlp.RlpData (Rope.of_string (Bytes.to_string arg))) args in
   let rlp = Rlp.RlpList[Rlp.RlpData (Rope.of_string str);Rlp.RlpList l] in
   Bytes.of_string (Rope.to_string (Rlp.encode rlp))
@@ -145,12 +144,15 @@ let exec_transaction gasPrice gasLimit header (state: (string * Basic.json) list
   let origin = of_hex_unsigned from in
   let checkpoint_state = checkpoint state gas_price gas_provided origin in
   init_state checkpoint_state;
-  let data_str = tx |> member "data" |> to_string in
-  let data = get_code data_str in
   let args = List.map (fun json -> of_hex (json |> to_string)) (tx |> member "arguments" |> to_list) in
   let value = tx |> member "value" |> to_string in
-  let function_ = tx |> member "function" |> to_string in
-  let txdata = pack_input args function_ txcreate data in
+  let data = if txcreate then
+    let data_str = tx |> member "data" |> to_string in
+    Bytes.to_string (get_code data_str)
+  else
+    tx |> member "function" |> to_string
+  in
+  let txdata = pack_input args data in
   let g0 = VM.g0 txdata txcreate in
   let gas_provided = Z.sub (World.to_z_unsigned gas_provided) g0 in
   let ctx = {recipient_addr=of_hex_unsigned owner;caller_addr=origin;input_data=txdata;call_value=of_hex value;gas_price=gas_price;gas_provided=World.of_z gas_provided;block_header=Some header;config=Iele_config} in
