@@ -16,8 +16,9 @@ pretty_diff() {
 # -----------------
 
 run_env() {
-    local build_dir="$(pwd)/.build"
-    local release_dir="$build_dir/k/k-distribution/target/release/k"
+    base_dir="$(cd $(dirname $0)/.. && pwd -P)"
+    build_dir="$base_dir/.build"
+    release_dir="$build_dir/k/k-distribution/target/release/k"
     export PATH="$release_dir/lib/native/linux:$release_dir/lib/native/linux64:$release_dir/bin/:$PATH"
     eval $(opam config env)
 }
@@ -28,9 +29,8 @@ run_env() {
 run_krun() {
     local driver=$1   ; shift
     local run_file=$1 ; shift
-    run_env
     export K_OPTS=-Xss500m
-    krun --directory .build/$driver/ "$run_file" "$@"
+    krun --directory "$build_dir/$driver/" "$run_file" "$@"
 }
 
 run_kprove() {
@@ -39,9 +39,8 @@ run_kprove() {
     local init_file="$1"  ; shift
     [[ -f "$proof_file" ]] || die "$proof_file does not exist"
     [[ -f "$init_file"  ]] || die "$init_file does not exist"
-    run_env
     export K_OPTS=-Xmx2G
-    ( krun --directory .build/$driver --z3-executable "$init_file" --prove "$proof_file" "$@" )
+    ( krun --directory $(build_dir)/$driver --z3-executable "$init_file" --prove "$proof_file" "$@" )
 }
 
 run_kdebug() {
@@ -53,7 +52,7 @@ run_kdebug() {
 # Main
 # ----
 
-cd "$(dirname $0)"
+run_env
 
 # main functionality
 run_command="$1" ; shift
