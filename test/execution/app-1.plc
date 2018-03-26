@@ -1,12 +1,9 @@
 (program
 
-(module Foo (import) (export () ())
-  (declare r1 integer)
-  (define r1
-    (let (lam x (builtin addInteger x 5)) addFive [addFive 10]))
-  (declare r2 integer)
-  (define r2
-    [(lam x (lam y (lam z (builtin addInteger x (builtin multiplyInteger y z))))) 2 3 5])
+(module Foo (import) (export () (addFive))
+  (declare addFive (fun (integer) (integer)))
+  (define addFive
+    (lam x (builtin addInteger x 5)))
 )
 
 )

@@ -32,6 +32,7 @@ module PLUTUS-CORE-COMMON
 
   // Name.
   syntax Name    ::= LowerName
+                   | #stringToName(String)                           [function]
   syntax TyName  ::= LowerName
 
   // Builtin Name
@@ -42,6 +43,7 @@ module PLUTUS-CORE-COMMON
   syntax ModName ::= UpperName
                    | #stringToModName(String)                        [function]
                    | ".ModName"
+                   | "#MainModule"
 
   // Constructor name.
   syntax Con     ::= UpperName
