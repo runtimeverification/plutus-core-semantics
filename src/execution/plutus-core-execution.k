@@ -5,15 +5,20 @@ module PLUTUS-CORE-EXECUTION
   imports DOMAINS
   imports PLUTUS-CORE-COMMON
   imports HEX-CONVERSION
+
 // --- TODO: Disabled KRYPO support to ease transition to K5
 //  imports KRYPTO
 
 // K5 doesn't know how to parse <module multiplicity='*' type='...'> ?
   syntax #CellName ::= "type" [token]
 
+  syntax K ::= #main(UpperName, LowerName, Int)
+
   configuration
     <T>
-      <k> $PGM:Prg </k>
+      <k> $PGM:Prg
+       ~> #main($MAINMOD:UpperName, $MAINFCT:LowerName, $MAINARG:Int)
+      </k>
       <lenv> .Map </lenv>
       <genv> .Map </genv>
       <modules>
@@ -48,9 +53,9 @@ module PLUTUS-CORE-EXECUTION
               | #qualCHolder(K, K)
   rule #conHolder(MN, C) => ( con (MN . C):QualC .ValList )
 
-  rule #stringToModName(S:String)
-    => #parseToken("UpperName", S)
-  rule #stringToCon(S:String) => #parseToken("Con", S)
+  rule #stringToName(S:String)    => #parseToken("LowerName", S)
+  rule #stringToModName(S:String) => #parseToken("UpperName", S)
+  rule #stringToCon(S:String)     => #parseToken("Con", S)
 
   syntax Prim ::= "#primTrue" | "#primFalse"
   rule #primTrue
@@ -165,15 +170,18 @@ module PLUTUS-CORE-EXECUTION
     <k>
       ( module MN:ModName (import MNL) (export (TXL) (NL:NameList)) DEFS ) => DEFS ...
     </k>
-    (.Bag => <Module> ...
-               <curr> 1 </curr>
-               <name> MN </name>
-               <dataCons> .TyExpList </dataCons>
-               <decl> .NameList:NameList </decl>
-               <importedModules> MNL </importedModules>
-               <exportTy> TXL </exportTy>
-               <exportTm> NL </exportTm>
-        ... </Module>)
+    <modules> ...
+      .Bag =>
+      <Module>
+        <curr> 1 </curr>
+        <name> MN </name>
+        <dataCons> .TyExpList </dataCons>
+        <decl> .NameList:NameList </decl>
+        <importedModules> MNL </importedModules>
+        <exportTy> TXL </exportTy>
+        <exportTm> NL </exportTm>
+      </Module>
+    </modules>
 
   // Add data declaration to dataCons subcell
   rule
@@ -311,6 +319,24 @@ module PLUTUS-CORE-EXECUTION
   rule (M:Tm MS:TmList => M ~> MS) ~> #freezeCon(QC:QualC, VL:ValList)
   rule V:Val ~> MS:TmList ~> #freezeCon(QC:QualC, VL:ValList)
     => MS ~> #freezeCon(QC, V VL)
+
+  /***************************************************************************/
+  /****************************   EVALUATION  ********************************/
+  /***************************************************************************/
+
+  rule <k> #main(MN, N, ARG) => [ (MN . N):QualN ARG ] </k>
+       <modules> ...
+         .Bag =>
+         <Module>
+           <curr> 1 </curr>
+           <name> #MainModule </name>
+           <dataCons> .TyExpList </dataCons>
+           <decl> .NameList:NameList </decl>
+           <importedModules> MN </importedModules>
+           <exportTy> .TyExpList </exportTy>
+           <exportTm> .NameList:NameList </exportTm>
+         </Module>
+       </modules>
 
   /***************************************************************************/
   /***********************   AUXILIARY FUNCTIONS  ****************************/
