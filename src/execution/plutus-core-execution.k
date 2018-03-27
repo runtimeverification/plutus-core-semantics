@@ -12,12 +12,12 @@ module PLUTUS-CORE-EXECUTION
 // K5 doesn't know how to parse <module multiplicity='*' type='...'> ?
   syntax #CellName ::= "type" [token]
 
-  syntax K ::= #main(UpperName, LowerName, Int)
+  syntax K ::= #main(UpperName, LowerName, TmList)
 
   configuration
     <T>
       <k> $PGM:Prg
-       ~> #main($MAINMOD:UpperName, $MAINFCT:LowerName, $MAINARG:Int)
+       ~> #main($MAINMOD:UpperName, $MAINFCT:LowerName, $MAINARGS:TmList)
       </k>
       <lenv> .Map </lenv>
       <genv> .Map </genv>
@@ -332,7 +332,7 @@ module PLUTUS-CORE-EXECUTION
   /****************************   EVALUATION  ********************************/
   /***************************************************************************/
 
-  rule <k> #main(MN, N, ARG) => [ (MN . N):QualN ARG ] </k>
+  rule <k> #main(MN, N, ARGS) => [ (MN . N):QualN ARGS ] </k>
        <modules> ...
          .Bag =>
          <Module>
