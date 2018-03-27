@@ -94,14 +94,14 @@ module PLUTUS-CORE-COMMON
   syntax ValList    ::= List{Val, ""}                         [klabel(valList)]
   syntax VarList    ::= List{Var, ""}                         [klabel(varList)]
   syntax TyVarList  ::= List{TyVar, ""}                     [klabel(tyvarList)]
-  syntax QualCList  ::= List{QualC  ,  ""}
+  syntax QualCList  ::= List{QualC, ""}
 
   // syntax DefList    ::= List{Def    ,  ""}                    [klabel(defList)]
   syntax DecList    ::= List{Dec, ""}                         [klabel(declist)]
 
   syntax ModList    ::= List{Mod, ""}                         [klabel(modList)]
   syntax ModNmList  ::= List{ModName, ""}                 [klabel(modNameList)]
-  syntax ClList     ::= List{Cl ,  ""}                         [klabel(clList)]
+  syntax ClList     ::= List{Cl, ""}                           [klabel(clList)]
 
   syntax ConList    ::= List{Con, ""}                         [klabel(conList)]
 
