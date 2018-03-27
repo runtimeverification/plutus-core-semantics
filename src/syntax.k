@@ -80,10 +80,10 @@ module PLUTUS-CORE-COMMON
   /***************************************************************************/
 
   // Qualified name and constructor.
-  syntax QualN      ::= ModName "." Name
-  syntax QualTyN    ::= ModName "." TyName
-  syntax QualC      ::= ModName "." Con
-  syntax QualTyC    ::= ModName "." TyCon
+  syntax QualN      ::= ModName "." Name                       [format(%1%2%3)]
+  syntax QualTyN    ::= ModName "." TyName                     [format(%1%2%3)]
+  syntax QualC      ::= ModName "." Con                        [format(%1%2%3)]
+  syntax QualTyC    ::= ModName "." TyCon                      [format(%1%2%3)]
 
   syntax NameList   ::= List{Name, ""}
   syntax TmList     ::= List{Tm, ""}                           [klabel(tmList)]
@@ -117,7 +117,7 @@ module PLUTUS-CORE-COMMON
                         // Application.
                       | "[" Tm TmList "]"                           [strict(1)]
                       | "(" "case" Tm ClList ")"                    [strict(1)]
-                      | "(" "con" QualC TmList ")"
+                      | "(" "con" QualC TmList ")"       [format(%1%2 %3 %4%5)]
                         // Built-in function.
                       | "(" "builtin" BuiltinName Tm ")"    [strict(2), prefer]
                       | "(" "builtin" BuiltinName Tm Tm ")"      [strict(2, 3)]
@@ -181,7 +181,8 @@ module PLUTUS-CORE-COMMON
   // Type annotations for terms. Missing from prelude?
   syntax MDec       ::= "(" "declare" Name Ty ")"
 
-  syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal)]
+  syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal),
+                                                          format(%1%2 %3 %4%5)]
                       | "(" "failure" ")"
                       | "(" "success" Val ")"         [prefer, klabel(succVal)]
                       | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
