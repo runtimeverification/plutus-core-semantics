@@ -1,6 +1,6 @@
 (program
 
-  (module Foo (import) (export () (add addFive sub subSix mult multThree div divFour mod modTwo complex))
+  (module Foo (import) (export () (add addFive sub subSix mult multThree div divFour mod modTwo complex one))
 
     (declare add (fun (integer) (fun (integer) (integer))))
     (declare addFive (fun (integer) (integer)))
@@ -16,6 +16,8 @@
 
     (declare mod (fun (integer) (fun (integer) (integer))))
     (declare modTwo (fun (integer) (integer)))
+
+    (declare one (integer))
 
     (define add (lam x (lam y (builtin addInteger x y))))
     (define addFive (lam x (builtin addInteger x 5)))
@@ -48,6 +50,8 @@
               (lam e
                 (lam f
                   [mod [div [mult [sub [add a b] c] d] e] f])))))))
+
+    (define one 1)
 
   )
 
