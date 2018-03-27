@@ -26,6 +26,7 @@ module PLUTUS-CORE-COMMON
   syntax BinaryBuiltin ::= "addInteger" | "subtractInteger"
                          | "multiplyInteger" | "divideInteger" | "remainderInteger"
                          | "equalsInteger" | "lessThanInteger" | "greaterThanInteger"
+                         | "lessThanEqualsInteger" | "greaterThanEqualsInteger"
                          | "concatenate" | "equalsByteString"
                          | "takeByteString" | "dropByteString"
   syntax BuiltinName ::= UnaryBuiltin | BinaryBuiltin
