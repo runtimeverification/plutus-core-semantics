@@ -29,6 +29,10 @@ let to_hex bytes =
   in
   "0x" ^ (match Hex.of_string str with (`Hex str) -> str)
 
+let to_hex_unsigned bytes =
+  let str = Bytes.to_string bytes in
+  "0x" ^ (match Hex.of_string str with (`Hex str) -> str)
+
 let abs_path rel =
   if Filename.is_relative rel then (Sys.getcwd ()) ^ "/" ^ rel else rel
 

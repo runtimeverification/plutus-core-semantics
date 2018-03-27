@@ -27,7 +27,7 @@ let get_block blocknumber =
 
 let personal_newAccount () =
   let acct = Cryptokit.Random.string random 20 in
- `String (to_hex (Bytes.of_string acct))
+ `String (to_hex_unsigned (Bytes.of_string acct))
 
 (* assumes that the specified account in the latest block has the empty state *)
 let setBalance (address, account) =
@@ -63,13 +63,15 @@ let test_setChainParams params =
   List.iter setBalance accounts;
  `Bool true
 
-let get_account_field address blocknumber field convert =
+let get_account_field address blocknumber field convert default =
   let block = get_block blocknumber in
-  let acct = List.assoc ("0x" ^ address) block.state in
-  acct |> member field |> convert
+  try
+    let acct = List.assoc ("0x" ^ address) block.state in
+    acct |> member field |> convert
+  with Not_found -> default
 
 let eth_getCode address blocknumber = 
-  let code = get_account_field address blocknumber "code" to_string in
+  let code = get_account_field address blocknumber "code" to_string "0x" in
   let code_raw = of_hex_unsigned code in
   `String (Bytes.to_string code_raw)
 
@@ -78,11 +80,11 @@ let eth_getBlockByNumber blocknumber =
   `Assoc [("timestamp", `String block.timestamp)]
 
 let eth_getBalance address blocknumber =
-  let balance = get_account_field address blocknumber "balance" to_string in
+  let balance = get_account_field address blocknumber "balance" to_string "0x00" in
   `String balance
 
 let eth_isStorageEmpty address blocknumber =
-  let storage = get_account_field address blocknumber "storage" to_assoc in
+  let storage = get_account_field address blocknumber "storage" to_assoc [] in
   (storage = [])
 
 let test_modifyTimestamp timestamp = 
@@ -97,7 +99,7 @@ let iele_sendTransaction tx =
   let tx_str = Yojson.Basic.to_string tx in
   pendingTx := tx_str :: !pendingTx;
   let hash = Cryptokit.hash_string (hash ()) tx_str in
-  let hash_hex = to_hex (Bytes.of_string hash) in
+  let hash_hex = to_hex_unsigned (Bytes.of_string hash) in
   `String hash_hex
 
 let eth_getTransactionReceipt hash =
@@ -130,28 +132,28 @@ let mine_block () =
     let new_block = {state=post_state; timestamp=timestamp} in
     blocks := new_block :: !blocks;
     let hash = Cryptokit.hash_string (hash ()) tx_str in
-    let hash_hex = to_hex (Bytes.of_string hash) in
+    let hash_hex = to_hex_unsigned (Bytes.of_string hash) in
     let tx_gas = tx |> member "gas" |> to_string in
     let z_tx_gas = World.to_z (of_hex_unsigned tx_gas) in
     let z_gas_remaining = World.to_z (call_result.gas_remaining) in
     let z_gas_used = Z.sub z_tx_gas z_gas_remaining in
-    let gasUsed = to_hex (World.of_z z_gas_used) in
-    let status = to_hex call_result.return_code in
-    let blockNumber = to_hex number in
+    let gasUsed = to_hex_unsigned (World.of_z z_gas_used) in
+    let status = to_hex_unsigned call_result.return_code in
+    let blockNumber = to_hex_unsigned number in
     let output_bytes = unpack_output call_result.return_data in
-    let output = List.map to_hex output_bytes in
+    let output = List.map to_hex_unsigned output_bytes in
     let output_json = List.map (fun t -> `String t) output in
     let log_entry_to_json entry =
-      let address = to_hex entry.address in
-      let topics = List.map to_hex entry.topics in
+      let address = to_hex_unsigned entry.address in
+      let topics = List.map to_hex_unsigned entry.topics in
       let json_topics = List.map (fun t -> `String t) topics in
-      let data = to_hex entry.data in
+      let data = to_hex_unsigned entry.data in
       `Assoc [("address", `String address); ("topics", `List json_topics); ("data", `String data)]
     in
     let logs = List.map log_entry_to_json call_result.logs in
     let owner = tx |> member "to" |> to_string in
     let txcreate = owner = "" || owner = "0x" in
-    let receipt = `Assoc [("gasUsed", `String gasUsed); ("status", `String status); ("contractAddress", if txcreate && List.length output > 0 then `String (List.hd output) else `Null); ("output", `List output_json); ("blockNumber", `String blockNumber); ("logs", `List logs)] in
+    let receipt = `Assoc [("gasUsed", `String gasUsed); ("status", `String status); ("contractAddress", if txcreate && List.length output > 0 then `String (to_hex (List.hd output_bytes)) else `Null); ("output", `List output_json); ("blockNumber", `String blockNumber); ("logs", `List logs)] in
     receipts := StringMap.add hash_hex receipt !receipts
   end
 
