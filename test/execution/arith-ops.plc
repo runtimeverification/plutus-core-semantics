@@ -49,7 +49,7 @@
             (lam d
               (lam e
                 (lam f
-                  [mod [div [mult [sub [add a b] c] d] e] f])))))))
+                  [Foo.mod [Foo.div [Foo.mult [Foo.sub [Foo.add a b] c] d] e] f])))))))
 
     (define one 1)
 
