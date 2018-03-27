@@ -1,0 +1,27 @@
+(program
+
+  (module Foo (import) (export () (concat take takeOne drop dropOne equals))
+
+    (declare concat (fun (bytestring) (fun (bytestring) (bytestring))))
+
+    (declare take (fun (integer) (fun (bytestring) (bytestring))))
+    (declare takeOne (fun (bytestring) (bytestring)))
+
+    (declare drop (fun (integer) (fun (bytestring) (bytestring))))
+    (declare dropOne (fun (bytestring) (bytestring)))
+
+    (declare equals (fun (bytestring) (fun (bytestring) (bytestring))))
+
+    (define concat (lam x (lam y (builtin concatenate x y))))
+
+    (define take (lam x (lam y (builtin takeByteString x y))))
+    (define takeOne (lam x (builtin takeByteString 1 x)))
+
+    (define drop (lam x (lam y (builtin dropByteString x y))))
+    (define dropOne (lam x (builtin dropByteString 1 x)))
+
+    (define equals (lam x (lam y (builtin equalsByteString x y))))
+
+  )
+
+)

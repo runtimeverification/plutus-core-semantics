@@ -1,9 +1,54 @@
 (program
 
-(module Foo (import) (export () (addFive))
-  (declare addFive (fun (integer) (integer)))
-  (define addFive
-    (lam x (builtin addInteger x 5)))
-)
+  (module Foo (import) (export () (add addFive sub subSix mult multThree div divFour mod modTwo complex))
+
+    (declare add (fun (integer) (fun (integer) (integer))))
+    (declare addFive (fun (integer) (integer)))
+
+    (declare sub (fun (integer) (fun (integer) (integer))))
+    (declare subSix (fun (integer) (integer)))
+
+    (declare mult (fun (integer) (fun (integer) (integer))))
+    (declare multThree (fun (integer) (integer)))
+
+    (declare div (fun (integer) (fun (integer) (integer))))
+    (declare divFour (fun (integer) (integer)))
+
+    (declare mod (fun (integer) (fun (integer) (integer))))
+    (declare modTwo (fun (integer) (integer)))
+
+    (define add (lam x (lam y (builtin addInteger x y))))
+    (define addFive (lam x (builtin addInteger x 5)))
+
+    (define sub (lam x (lam y (builtin subtractInteger x y))))
+    (define subSix (lam x (builtin subtractInteger x 6)))
+
+    (define mult (lam x (lam y (builtin multiplyInteger x y))))
+    (define multThree (lam x (builtin multiplyInteger x 3)))
+
+    (define div (lam x (lam y (builtin divideInteger x y))))
+    (define divFour (lam x (builtin divideInteger x 4)))
+
+    (define mod (lam x (lam y (builtin remainderInteger x y))))
+    (define modTwo (lam x (builtin remainderInteger x 2)))
+
+    (declare complex
+      (fun (integer)
+           (fun (integer)
+                (fun (integer)
+                     (fun (integer)
+                          (fun (integer)
+                               (fun (integer) (integer))))))))
+
+    (define complex
+      (lam a
+        (lam b
+          (lam c
+            (lam d
+              (lam e
+                (lam f
+                  [mod [div [mult [sub [add a b] c] d] e] f])))))))
+
+  )
 
 )

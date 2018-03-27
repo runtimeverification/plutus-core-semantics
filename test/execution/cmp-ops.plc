@@ -1,0 +1,37 @@
+(program
+
+  (module Foo (import) (export () (lessThan lessThanFive lessThanEq lessThanEqSix greaterThan greaterThanThree greaterThanEq greaterThanEqFour equals equalsTwo))
+
+    (declare lessThan (fun (integer) (fun (integer) (con Prelude.Boolean))))
+    (declare lessThanFive (fun (integer) (con Prelude.Boolean)))
+
+    (declare lessThanEq (fun (integer) (fun (integer) (con Prelude.Boolean))))
+    (declare lessThanEqSix (fun (integer) (con Prelude.Boolean)))
+
+    (declare greaterThan (fun (integer) (fun (integer) (con Prelude.Boolean))))
+    (declare greaterThanThree (fun (integer) (con Prelude.Boolean)))
+
+    (declare greaterThanEq (fun (integer) (fun (integer) (con Prelude.Boolean))))
+    (declare greaterThanEqFour (fun (integer) (con Prelude.Boolean)))
+
+    (declare equals (fun (integer) (fun (integer) (con Prelude.Boolean))))
+    (declare equalsTwo (fun (integer) (con Prelude.Boolean)))
+
+    (define lessThan (lam x (lam y (builtin lessThanInteger x y))))
+    (define lessThanFive (lam x (builtin lessThanInteger x 5)))
+
+    (define lessThanEq (lam x (lam y (builtin lessThanEqualsInteger x y))))
+    (define lessThanEqSix (lam x (builtin lessThanEqualsInteger x 6)))
+
+    (define greaterThan (lam x (lam y (builtin greaterThanInteger x y))))
+    (define greaterThanThree (lam x (builtin greaterThanInteger x 3)))
+
+    (define greaterThanEq (lam x (lam y (builtin greaterThanEqualsInteger x y))))
+    (define greaterThanEqFour (lam x (builtin greaterThanEqualsInteger x 4)))
+
+    (define equals (lam x (lam y (builtin equalsInteger x y))))
+    (define equalsTwo (lam x (builtin equalsInteger x 2)))
+
+  )
+
+)
