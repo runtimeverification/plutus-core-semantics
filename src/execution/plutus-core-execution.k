@@ -63,19 +63,27 @@ module PLUTUS-CORE-EXECUTION
   rule #primFalse
     => #conHolder(#stringToModName("Prelude"), #stringToCon("False"))
 
-  rule ( builtin equalsInteger I:Int I:Int        ) => #primTrue
+  rule ( builtin equalsInteger I:Int I:Int              ) => #primTrue
     [transition]
-  rule ( builtin equalsInteger I1:Int I2:Int      ) => #primFalse
+  rule ( builtin equalsInteger I1:Int I2:Int            ) => #primFalse
     when I1 =/=Int I2
     [transition]
-  rule ( builtin lessThanInteger I1:Int I2:Int    ) => #primTrue
+  rule ( builtin lessThanInteger I1:Int I2:Int          ) => #primTrue
     when I1 <Int I2
-  rule ( builtin lessThanInteger I1:Int I2:Int    ) => #primFalse
+  rule ( builtin lessThanInteger I1:Int I2:Int          ) => #primFalse
     when notBool (I1 <Int I2)
-  rule ( builtin greaterThanInteger I1:Int I2:Int ) => #primTrue
+  rule ( builtin lessThanEqualsInteger I1:Int I2:Int    ) => #primTrue
+    when I1 <=Int I2
+  rule ( builtin lessThanEqualsInteger I1:Int I2:Int    ) => #primFalse
+    when notBool (I1 <=Int I2)
+  rule ( builtin greaterThanInteger I1:Int I2:Int       ) => #primTrue
     when I1 >Int I2
-  rule ( builtin greaterThanInteger I1:Int I2:Int ) => #primFalse
+  rule ( builtin greaterThanInteger I1:Int I2:Int       ) => #primFalse
     when notBool (I1 >Int I2)
+  rule ( builtin greaterThanEqualsInteger I1:Int I2:Int ) => #primTrue
+    when I1 >=Int I2
+  rule ( builtin greaterThanEqualsInteger I1:Int I2:Int ) => #primFalse
+    when notBool (I1 >=Int I2)
 
   rule ( builtin integerToByteString 0 )    => #toByStr("0")
   rule ( builtin integerToByteString I:Int) => #toByStr(#toHex(I))
