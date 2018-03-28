@@ -21,12 +21,14 @@ module PLUTUS-CORE-COMMON
   syntax LowerName
   syntax UpperName
 
-  syntax BuiltinName ::=  "addInteger" | "subtractInteger"
-                       | "multiplyInteger" | "divideInteger" | "remainderInteger"
-                       | "equalsInteger" | "lessThanInteger" | "greaterThanInteger"
-                       | "integerToByteString" | "takeByteString" | "dropByteString"
-                       | "concatenate" | "equalsByteString"
-                       | "sha3_256" | "sha2_256"
+  syntax UnaryBuiltin ::= "integerToByteString"
+                        | "sha3_256" | "sha2_256"
+  syntax BinaryBuiltin ::= "addInteger" | "subtractInteger"
+                         | "multiplyInteger" | "divideInteger" | "remainderInteger"
+                         | "equalsInteger" | "lessThanInteger" | "greaterThanInteger"
+                         | "concatenate" | "equalsByteString"
+                         | "takeByteString" | "dropByteString"
+  syntax BuiltinName ::= UnaryBuiltin | BinaryBuiltin
 
   // Name.
   syntax Name    ::= LowerName
@@ -114,10 +116,8 @@ module PLUTUS-CORE-COMMON
                       | "(" "case" Tm ClList ")"                    [strict(1)]
                       | "(" "con" QualC TmList ")"
                         // Built-in function.
-                      | "(" "builtin" BuiltinName Tm ")"
-                                                            [strict(2), prefer]
-                      | "(" "builtin" BuiltinName Tm Tm ")"
-                                                                 [strict(2, 3)]
+                      | "(" "builtin" BuiltinName Tm ")"    [strict(2), prefer]
+                      | "(" "builtin" BuiltinName Tm Tm ")"      [strict(2, 3)]
                       | "(" "compbuiltin" CBName ")"
                       | "(" "success" Tm ")"                        [strict(1)]
                       | "(" "bind" Tm Var Tm ")"                    [strict(1)]
