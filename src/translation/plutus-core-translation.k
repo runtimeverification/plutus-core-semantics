@@ -99,17 +99,32 @@ module PLUTUS-CORE-TRANSLATION
   
   rule #useOperand(I:Int, LN) => I:Int
   rule #useOperand(V:Var, LN) => #varToLocalName(V:Var)
-  
-  // The builtin `addInteger` corresponds to the IELE `add` instruction:
-  
-  rule #loadOperand((builtin addInteger T1:Tm T2:Tm), LN)
+
+  // Builtins
+  // --------
+
+  // Binary builtins share code for `#loadOperand` and `#useOperand`.
+
+  rule #useOperand((builtin B:BinaryBuiltin  T1:Tm T2:Tm), LN) => LN
+  rule #loadOperand((builtin B:BinaryBuiltin T1:Tm T2:Tm), LN)
     => #concatInsList(
-        #concatInsList(#loadOperand(T1, #intToLocalName(!N1)),
-                       #loadOperand(T2, #intToLocalName(!N2))),
-         LN = add #useOperand(T1, #intToLocalName(!N1))
-                , #useOperand(T2, #intToLocalName(!N2)) .Instructions)
-  rule #useOperand((builtin addInteger T1:Tm T2:Tm), LN) => LN
-  
+       #concatInsList(#loadOperand(T1, #intToLocalName(!N1)),
+                      #loadOperand(T2, #intToLocalName(!N2))),
+                      #translateBinBuiltin(B:BinaryBuiltin, LN
+                            , #useOperand(T1, #intToLocalName(!N1))
+                            , #useOperand(T2, #intToLocalName(!N2))))
+  rule #useOperand((builtin B:BinaryBuiltin T1:Tm T2:Tm), LN) => LN
+
+  // Each needs to generate instructions for executing in IELE.
+
+  syntax Instructions ::= #translateBinBuiltin(BinaryBuiltin, LocalName, Operand, Operand) [function]
+  // ------------------------------------------------------------------------------------------------
+  rule #translateBinBuiltin(addInteger,       LN, O1, O2) => (LN = add O1 , O2) .Instructions
+  rule #translateBinBuiltin(subtractInteger,  LN, O1, O2) => (LN = sub O1 , O2) .Instructions
+  rule #translateBinBuiltin(multiplyInteger,  LN, O1, O2) => (LN = mul O1 , O2) .Instructions
+  rule #translateBinBuiltin(divideInteger,    LN, O1, O2) => (LN = div O1 , O2) .Instructions
+  rule #translateBinBuiltin(remainderInteger, LN, O1, O2) => (LN = mod O1 , O2) .Instructions
+
   // Converting a Lambda to a Closure
   // --------------------------------
   

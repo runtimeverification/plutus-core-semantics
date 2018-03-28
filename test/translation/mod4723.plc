@@ -1,0 +1,1 @@
+(define mod4723 [[(lam x (lam y (builtin remainderInteger x y))) 47] 23])
