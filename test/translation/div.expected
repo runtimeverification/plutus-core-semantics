@@ -7,21 +7,23 @@
   </iele>
   <ieleContract>
     contract Foo {
-      define public @foo ( %x , .LocalNames ) {
-        %ret = add %x , 2
+      define @div ( %x , %y , .LocalNames ) {
+        %ret = div %x , %y
         ret %ret , .Operands
         .Instructions .LabeledBlocks
       }
       
       define @dispatch ( %closure , %param , .LocalNames ) {
         %closureId = load %closure
-        %cond = cmp eq %closureId , 0
+        %cond = cmp eq %closureId , 1
         br %cond , call0
         %ret , .LValues = call @appendArg ( %closure , %closureId , %param , .Operands )
         ret %ret , .Operands
 
         call0:
-        %ret , .LValues = call @foo ( %param , .Operands )
+        %closure = add %closure , 1
+        %param1 = load %closure
+        %ret , .LValues = call @div ( %param1 , %param , .Operands )
         ret %ret , .Operands
         .Instructions .LabeledBlocks
       }
@@ -90,7 +92,7 @@
     0
   </dispatchedFunctionsLeft>
   <exports>
-    foo  .QualCList
+    .QualCList
   </exports>
   <functions>
     .FunctionCellSet

@@ -7,21 +7,37 @@
   </iele>
   <ieleContract>
     contract Foo {
-      define public @foo ( %x , .LocalNames ) {
-        %ret = add %x , 2
+      define @mul1923 ( .LocalNames ) {
+        %fresh4 , .LValues = call @alloc ( 1 , .Operands )
+        store 5 , %fresh4
+        %fresh2 , .LValues = call @dispatch ( %fresh4 , 19 , .Operands )
+        %ret , .LValues = call @dispatch ( %fresh2 , 23 , .Operands )
+        ret %ret , .Operands
+        .Instructions .LabeledBlocks
+      }
+      
+      define @fresh5 ( %x , %y , .LocalNames ) {
+        %ret = mul %x , %y
         ret %ret , .Operands
         .Instructions .LabeledBlocks
       }
       
       define @dispatch ( %closure , %param , .LocalNames ) {
         %closureId = load %closure
-        %cond = cmp eq %closureId , 0
+        %cond = cmp eq %closureId , 1281
+        br %cond , call5
+        %cond = cmp eq %closureId , -1
         br %cond , call0
         %ret , .LValues = call @appendArg ( %closure , %closureId , %param , .Operands )
         ret %ret , .Operands
 
         call0:
-        %ret , .LValues = call @foo ( %param , .Operands )
+        call @iele.invalid ( .Operands )
+
+        call5:
+        %closure = add %closure , 1
+        %param1 = load %closure
+        %ret , .LValues = call @fresh5 ( %param1 , %param , .Operands )
         ret %ret , .Operands
         .Instructions .LabeledBlocks
       }
@@ -81,16 +97,16 @@
     }
   </ieleContract>
   <totalFunctions>
-    2
+    3
   </totalFunctions>
   <totalReadyForDispatch>
-    2
+    3
   </totalReadyForDispatch>
   <dispatchedFunctionsLeft>
     0
   </dispatchedFunctionsLeft>
   <exports>
-    foo  .QualCList
+    .QualCList
   </exports>
   <functions>
     .FunctionCellSet
