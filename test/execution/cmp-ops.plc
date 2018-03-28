@@ -1,36 +1,27 @@
 (program
 
-  (module Foo (import) (export () (lessThan lessThanFive lessThanEq lessThanEqSix greaterThan greaterThanThree greaterThanEq greaterThanEqFour equals equalsTwo))
+  (module Foo (import) (export () (lessThan lessThanFive lessThanEq greaterThan greaterThanEq equals myTrue))
 
     (declare lessThan (fun (integer) (fun (integer) (con Prelude.Boolean))))
-    (declare lessThanFive (fun (integer) (con Prelude.Boolean)))
-
-    (declare lessThanEq (fun (integer) (fun (integer) (con Prelude.Boolean))))
-    (declare lessThanEqSix (fun (integer) (con Prelude.Boolean)))
-
-    (declare greaterThan (fun (integer) (fun (integer) (con Prelude.Boolean))))
-    (declare greaterThanThree (fun (integer) (con Prelude.Boolean)))
-
-    (declare greaterThanEq (fun (integer) (fun (integer) (con Prelude.Boolean))))
-    (declare greaterThanEqFour (fun (integer) (con Prelude.Boolean)))
-
-    (declare equals (fun (integer) (fun (integer) (con Prelude.Boolean))))
-    (declare equalsTwo (fun (integer) (con Prelude.Boolean)))
-
     (define lessThan (lam x (lam y (builtin lessThanInteger x y))))
+
+    (declare lessThanFive (fun (integer) (con Prelude.Boolean)))
     (define lessThanFive (lam x (builtin lessThanInteger x 5)))
 
+    (declare lessThanEq (fun (integer) (fun (integer) (con Prelude.Boolean))))
     (define lessThanEq (lam x (lam y (builtin lessThanEqualsInteger x y))))
-    (define lessThanEqSix (lam x (builtin lessThanEqualsInteger x 6)))
 
+    (declare greaterThan (fun (integer) (fun (integer) (con Prelude.Boolean))))
     (define greaterThan (lam x (lam y (builtin greaterThanInteger x y))))
-    (define greaterThanThree (lam x (builtin greaterThanInteger x 3)))
 
+    (declare greaterThanEq (fun (integer) (fun (integer) (con Prelude.Boolean))))
     (define greaterThanEq (lam x (lam y (builtin greaterThanEqualsInteger x y))))
-    (define greaterThanEqFour (lam x (builtin greaterThanEqualsInteger x 4)))
 
+    (declare equals (fun (integer) (fun (integer) (con Prelude.Boolean))))
     (define equals (lam x (lam y (builtin equalsInteger x y))))
-    (define equalsTwo (lam x (builtin equalsInteger x 2)))
+
+    (declare myTrue (con Prelude.Boolean))
+    (define myTrue (con Prelude.True))
 
   )
 
