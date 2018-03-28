@@ -107,7 +107,7 @@ let update_storage (storage: (string * Basic.json) list) (updates: storage_updat
   sort_assoc_list (List.fold_left update_storage_entry storage updates)
 
 let mod_acct_to_json (pre: (string * Basic.json) list) (acct: modified_account) : string * Basic.json =
-  let address = to_hex acct.address in
+  let address = to_hex_unsigned acct.address in
   let storage,old_code = try
     let account = List.assoc address pre in
     let storage = account |> member "storage" |> to_assoc in
@@ -117,7 +117,7 @@ let mod_acct_to_json (pre: (string * Basic.json) list) (acct: modified_account) 
   let new_code = if Bytes.length acct.code = 0 then
     old_code
   else
-    to_hex acct.code
+    to_hex_unsigned acct.code
   in
   (address,`Assoc(
     [("nonce",`String(to_hex acct.nonce));
@@ -126,8 +126,8 @@ let mod_acct_to_json (pre: (string * Basic.json) list) (acct: modified_account) 
      ("storage",`Assoc(update_storage storage acct.storage_updates))]))
 
 let update_state (pre: (string * Basic.json) list) (mod_accts: modified_account list) del_accts =
-  let del_accts_set = StringSet.of_list (List.map to_hex del_accts) in
-  let mod_accts_set = StringSet.of_list (List.map (fun (acct: modified_account) -> to_hex acct.address) mod_accts) in
+  let del_accts_set = StringSet.of_list (List.map to_hex_unsigned del_accts) in
+  let mod_accts_set = StringSet.of_list (List.map (fun (acct: modified_account) -> to_hex_unsigned acct.address) mod_accts) in
   let deleted = List.filter (fun (acct,data) -> not (StringSet.mem acct del_accts_set || StringSet.mem acct mod_accts_set)) pre in
   deleted @ (List.map (mod_acct_to_json pre) mod_accts)
 
