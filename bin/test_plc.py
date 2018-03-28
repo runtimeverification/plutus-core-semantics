@@ -22,6 +22,23 @@ import string
     ("test/execution/arith-ops.plc", "Foo", "one",     [],                  "1"   ),
     ("test/execution/arith-ops.plc", "Foo", "complex", [5, 4, 7, 11, 2, 3], "7"   ),
 
+    ("test/execution/cmp-ops.plc", "Foo", "lessThan",      [12, 12], "(con Prelude.False .ValList)"),
+    ("test/execution/cmp-ops.plc", "Foo", "lessThan",      [12, 17], "(con Prelude.True .ValList)" ),
+    ("test/execution/cmp-ops.plc", "Foo", "lessThan",      [17, 12], "(con Prelude.False .ValList)"),
+    ("test/execution/cmp-ops.plc", "Foo", "lessThanFive",  [17],     "(con Prelude.False .ValList)"),
+    ("test/execution/cmp-ops.plc", "Foo", "lessThanEq",    [12, 12], "(con Prelude.True .ValList)" ),
+    ("test/execution/cmp-ops.plc", "Foo", "lessThanEq",    [12, 17], "(con Prelude.True .ValList)" ),
+    ("test/execution/cmp-ops.plc", "Foo", "lessThanEq",    [17, 12], "(con Prelude.False .ValList)"),
+    ("test/execution/cmp-ops.plc", "Foo", "greaterThan",   [12, 12], "(con Prelude.False .ValList)"),
+    ("test/execution/cmp-ops.plc", "Foo", "greaterThan",   [12, 17], "(con Prelude.False .ValList)"),
+    ("test/execution/cmp-ops.plc", "Foo", "greaterThan",   [17, 12], "(con Prelude.True .ValList)" ),
+    ("test/execution/cmp-ops.plc", "Foo", "greaterThanEq", [12, 12], "(con Prelude.True .ValList)" ),
+    ("test/execution/cmp-ops.plc", "Foo", "greaterThanEq", [12, 17], "(con Prelude.False .ValList)"),
+    ("test/execution/cmp-ops.plc", "Foo", "greaterThanEq", [17, 12], "(con Prelude.True .ValList)" ),
+    ("test/execution/cmp-ops.plc", "Foo", "equals",        [12, 12], "(con Prelude.True .ValList)" ),
+    ("test/execution/cmp-ops.plc", "Foo", "equals",        [12, 17], "(con Prelude.False .ValList)"),
+    ("test/execution/cmp-ops.plc", "Foo", "myTrue",        [],       "(con Prelude.True .ValList)" ),
+
     pytest.mark.xfail(reason="exit code unimplemented")
       (("test/execution/arith-ops.plc", "Foo", "div", [19, 0], None)),
     pytest.mark.xfail(reason="exit code unimplemented")
