@@ -5,3 +5,4 @@
 [submodule ".build/iele"]
 	path = .build/iele
 	url = https://github.com/runtimeverification/iele-semantics
+	ignore = untracked
