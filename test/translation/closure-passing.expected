@@ -7,21 +7,50 @@
   </iele>
   <ieleContract>
     contract Foo {
-      define public @foo ( %x , .LocalNames ) {
-        %ret = add %x , 2
+      define public @sixArg ( .LocalNames ) {
+        %fresh12 , .LValues = call @alloc ( 1 , .Operands )
+        store 13 , %fresh12
+        %fresh10 , .LValues = call @dispatch ( %fresh12 , 2 , .Operands )
+        %fresh8 , .LValues = call @dispatch ( %fresh10 , 3 , .Operands )
+        %fresh6 , .LValues = call @dispatch ( %fresh8 , 5 , .Operands )
+        %fresh4 , .LValues = call @dispatch ( %fresh6 , 7 , .Operands )
+        %fresh2 , .LValues = call @dispatch ( %fresh4 , 11 , .Operands )
+        %ret , .LValues = call @dispatch ( %fresh2 , 13 , .Operands )
+        ret %ret , .Operands
+        .Instructions .LabeledBlocks
+      }
+      
+      define @fresh13 ( %x , %y , %z , %a , %b , %c , .LocalNames ) {
+        %fresh15 = mul %z , %a
+        %ret = add %c , %fresh15
         ret %ret , .Operands
         .Instructions .LabeledBlocks
       }
       
       define @dispatch ( %closure , %param , .LocalNames ) {
         %closureId = load %closure
-        %cond = cmp eq %closureId , 0
+        %cond = cmp eq %closureId , 3333
+        br %cond , call13
+        %cond = cmp eq %closureId , -1
         br %cond , call0
         %ret , .LValues = call @appendArg ( %closure , %closureId , %param , .Operands )
         ret %ret , .Operands
 
         call0:
-        %ret , .LValues = call @foo ( %param , .Operands )
+        call @iele.invalid ( .Operands )
+
+        call13:
+        %closure = add %closure , 1
+        %param1 = load %closure
+        %closure = add %closure , 1
+        %param2 = load %closure
+        %closure = add %closure , 1
+        %param3 = load %closure
+        %closure = add %closure , 1
+        %param4 = load %closure
+        %closure = add %closure , 1
+        %param5 = load %closure
+        %ret , .LValues = call @fresh13 ( %param1 , %param2 , %param3 , %param4 , %param5 , %param , .Operands )
         ret %ret , .Operands
         .Instructions .LabeledBlocks
       }
@@ -81,16 +110,16 @@
     }
   </ieleContract>
   <totalFunctions>
-    2
+    3
   </totalFunctions>
   <totalReadyForDispatch>
-    2
+    3
   </totalReadyForDispatch>
   <dispatchedFunctionsLeft>
     0
   </dispatchedFunctionsLeft>
   <exports>
-    foo  .QualCList
+    sixArg  .QualCList
   </exports>
   <functions>
     .FunctionCellSet
