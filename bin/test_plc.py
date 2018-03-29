@@ -6,49 +6,52 @@ import pytest
 import sys
 import xml.dom.minidom
 import string
+import json
+import tempfile
+import os
 
 def generate_tests():
-    return [("test/execution/arith-ops.plc", "Foo", "add",     [19, 23],            "42"  ),
-            ("test/execution/arith-ops.plc", "Foo", "addFive", [12],                "17"  ),
-            ("test/execution/arith-ops.plc", "Foo", "sub",     [19, 23],            "-4"  ),
-            ("test/execution/arith-ops.plc", "Foo", "mult",    [19, 23],            "437" ),
-            ("test/execution/arith-ops.plc", "Foo", "mult",    [19, -23],           "-437"),
-            ("test/execution/arith-ops.plc", "Foo", "div",     [437, 19],           "23"  ),
-            ("test/execution/arith-ops.plc", "Foo", "div",     [440, 19],           "23"  ),
-            ("test/execution/arith-ops.plc", "Foo", "div",     [0, 19],             "0"   ),
-            ("test/execution/arith-ops.plc", "Foo", "mod",     [440, 19],           "3"   ),
-            ("test/execution/arith-ops.plc", "Foo", "mod",     [-440, 19],          "-3"  ),
-            ("test/execution/arith-ops.plc", "Foo", "mod",     [0, 19],             "0"   ),
-            ("test/execution/arith-ops.plc", "Foo", "one",     [],                  "1"   ),
-            ("test/execution/arith-ops.plc", "Foo", "complex", [5, 4, 7, 11, 2, 3], "7"   ),
+    return [("arith-ops", "Foo", "add",     [19, 23],            42  ),
+            ("arith-ops", "Foo", "addFive", [12],                17  ),
+            ("arith-ops", "Foo", "sub",     [19, 23],            -4  ),
+            ("arith-ops", "Foo", "mult",    [19, 23],            437 ),
+            ("arith-ops", "Foo", "mult",    [19, -23],           -437),
+            ("arith-ops", "Foo", "div",     [437, 19],           23  ),
+            ("arith-ops", "Foo", "div",     [440, 19],           23  ),
+            ("arith-ops", "Foo", "div",     [0, 19],             0   ),
+            ("arith-ops", "Foo", "mod",     [440, 19],           3   ),
+            ("arith-ops", "Foo", "mod",     [-440, 19],          -3  ),
+            ("arith-ops", "Foo", "mod",     [0, 19],             0   ),
+            ("arith-ops", "Foo", "one",     [],                  1   ),
+            ("arith-ops", "Foo", "complex", [5, 4, 7, 11, 2, 3], 7   ),
 
-            ("test/execution/cmp-ops.plc", "Foo", "lessThan",      [12, 12], "(con Prelude.False .ValList)"),
-            ("test/execution/cmp-ops.plc", "Foo", "lessThan",      [12, 17], "(con Prelude.True .ValList)" ),
-            ("test/execution/cmp-ops.plc", "Foo", "lessThan",      [17, 12], "(con Prelude.False .ValList)"),
-            ("test/execution/cmp-ops.plc", "Foo", "lessThanFive",  [17],     "(con Prelude.False .ValList)"),
-            ("test/execution/cmp-ops.plc", "Foo", "lessThanEq",    [12, 12], "(con Prelude.True .ValList)" ),
-            ("test/execution/cmp-ops.plc", "Foo", "lessThanEq",    [12, 17], "(con Prelude.True .ValList)" ),
-            ("test/execution/cmp-ops.plc", "Foo", "lessThanEq",    [17, 12], "(con Prelude.False .ValList)"),
-            ("test/execution/cmp-ops.plc", "Foo", "greaterThan",   [12, 12], "(con Prelude.False .ValList)"),
-            ("test/execution/cmp-ops.plc", "Foo", "greaterThan",   [12, 17], "(con Prelude.False .ValList)"),
-            ("test/execution/cmp-ops.plc", "Foo", "greaterThan",   [17, 12], "(con Prelude.True .ValList)" ),
-            ("test/execution/cmp-ops.plc", "Foo", "greaterThanEq", [12, 12], "(con Prelude.True .ValList)" ),
-            ("test/execution/cmp-ops.plc", "Foo", "greaterThanEq", [12, 17], "(con Prelude.False .ValList)"),
-            ("test/execution/cmp-ops.plc", "Foo", "greaterThanEq", [17, 12], "(con Prelude.True .ValList)" ),
-            ("test/execution/cmp-ops.plc", "Foo", "equals",        [12, 12], "(con Prelude.True .ValList)" ),
-            ("test/execution/cmp-ops.plc", "Foo", "equals",        [12, 17], "(con Prelude.False .ValList)"),
-            ("test/execution/cmp-ops.plc", "Foo", "myTrue",        [],       "(con Prelude.True .ValList)" ),
+            ("cmp-ops", "Foo", "lessThan",      [12, 12], "(con Prelude.False .ValList)"),
+            ("cmp-ops", "Foo", "lessThan",      [12, 17], "(con Prelude.True .ValList)" ),
+            ("cmp-ops", "Foo", "lessThan",      [17, 12], "(con Prelude.False .ValList)"),
+            ("cmp-ops", "Foo", "lessThanFive",  [17],     "(con Prelude.False .ValList)"),
+            ("cmp-ops", "Foo", "lessThanEq",    [12, 12], "(con Prelude.True .ValList)" ),
+            ("cmp-ops", "Foo", "lessThanEq",    [12, 17], "(con Prelude.True .ValList)" ),
+            ("cmp-ops", "Foo", "lessThanEq",    [17, 12], "(con Prelude.False .ValList)"),
+            ("cmp-ops", "Foo", "greaterThan",   [12, 12], "(con Prelude.False .ValList)"),
+            ("cmp-ops", "Foo", "greaterThan",   [12, 17], "(con Prelude.False .ValList)"),
+            ("cmp-ops", "Foo", "greaterThan",   [17, 12], "(con Prelude.True .ValList)" ),
+            ("cmp-ops", "Foo", "greaterThanEq", [12, 12], "(con Prelude.True .ValList)" ),
+            ("cmp-ops", "Foo", "greaterThanEq", [12, 17], "(con Prelude.False .ValList)"),
+            ("cmp-ops", "Foo", "greaterThanEq", [17, 12], "(con Prelude.True .ValList)" ),
+            ("cmp-ops", "Foo", "equals",        [12, 12], "(con Prelude.True .ValList)" ),
+            ("cmp-ops", "Foo", "equals",        [12, 17], "(con Prelude.False .ValList)"),
+            ("cmp-ops", "Foo", "myTrue",        [],       "(con Prelude.True .ValList)" ),
 
             pytest.mark.xfail(reason="exit code unimplemented")
-              (("test/execution/arith-ops.plc", "Foo", "div", [19, 0], None)),
+              (("arith-ops", "Foo", "div", [19, 0], None)),
             pytest.mark.xfail(reason="exit code unimplemented")
-              (("test/execution/arith-ops.plc", "Foo", "mod", [19, 0], None))]
+              (("arith-ops", "Foo", "mod", [19, 0], None))]
 
 @pytest.mark.parametrize("file, mod, fct, args, expected",
     generate_tests()
 )
 def test_plc(file, mod, fct, args, expected):
-    krun_args = ["./kplc", "run", "execution", "../" + file,
+    krun_args = ["./kplc", "run", "execution", "../test/execution/" + file + ".plc",
                  "-cMAINMOD=#token(\"" + mod + "\", \"UpperName\")",
                  "-pMAINMOD=printf %s",
                  "-cMAINFCT=#token(\"" + fct + "\", \"LowerName\")",
@@ -63,10 +66,39 @@ def test_plc(file, mod, fct, args, expected):
     if expected == None:
         # TODO: add exit code to semantics
         assert exit_code == 1
-        pass
     else:
         assert exit_code == 0
-        assert extract_exec_output(output) == expected
+        assert extract_exec_output(output) == str(expected)
+
+@pytest.mark.parametrize("file, mod, fct, args, expected",
+    generate_tests()
+)
+def test_iele(file, mod, fct, args, expected):
+    template = json.load(open("../test/translation/template.iele.json"))
+    account = "0x1000000000000000000000000000000000000000"
+    template["pre"][account]["code"] = template["postState"][account]["code"] = os.path.abspath("../test/translation/" + file + ".iele")
+    template["blocks"][0]["results"][0]["out"] = [hex(expected)]
+    template["blocks"][0]["transactions"][0]["function"] = fct
+    template["blocks"][0]["transactions"][0]["arguments"] = map(hex, args)
+    iele_test = { mod : template }
+
+    temp_json = tempfile.NamedTemporaryFile()
+    json.dump(iele_test, temp_json)
+    temp_json.write("\n")
+    temp_json.flush()
+    blockchain_args = ["../.build/iele/blockchaintest", temp_json.name]
+
+    blockchaintest = Popen(blockchain_args, stdout=PIPE)
+    (output, err) = blockchaintest.communicate()
+    exit_code = blockchaintest.wait()
+
+    if expected == None:
+        assert exit_code == 1
+    else:
+        assert exit_code == 0
+
+    print iele_test
+    assert False
 
 def kast_args(args):
     if args == []:
