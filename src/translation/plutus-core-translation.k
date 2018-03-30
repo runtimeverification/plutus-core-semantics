@@ -203,6 +203,7 @@ module PLUTUS-CORE-TRANSLATION
   rule #replaceFreeVar(X:Var, X    , INDEX) => #freeVar(X, INDEX)
   rule #replaceFreeVar(X:Var, Y:Var, INDEX) => X:Var               when (X:Var =/=K Y:Var)
   rule #replaceFreeVar(I:Int, X    , INDEX) => I:Int
+  rule #replaceFreeVar(QN:QualN, X:Var, INDEX) => QN
   rule #replaceFreeVar(#freeVar(Y, J), X    , INDEX) => #freeVar(Y:Var, J:Int)
   rule #replaceFreeVar((lam X:Var T), X:Var, INDEX) => ((lam X:Var T)):Tm
   rule #replaceFreeVar((lam X:Var T), Y:Var, INDEX) => ((lam X:Var #replaceFreeVar(T, Y, INDEX))):Tm
