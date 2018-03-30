@@ -117,6 +117,7 @@ module PLUTUS-CORE-TRANSLATION
   // ---------------
 
   rule #useOperand(QN:QualN, LN) => LN
+  // TODO: test this using IELE semantics
   rule <functions>
          ...
           <function>
