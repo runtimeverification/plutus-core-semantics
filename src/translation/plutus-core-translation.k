@@ -59,6 +59,13 @@ module PLUTUS-CORE-TRANSLATION
        </plutus>
   rule <plutus> .DecList => .K ... </plutus>
 
+  // Ignore `Dec`s related to typing
+
+  rule <plutus> _:TDec => .K ... </plutus>
+  rule <plutus> _:MDec => .K ... </plutus>
+
+  // TODO: DDec
+
   syntax K ::= #topLevelFunction(GlobalName, Int, VarList, Tm)
   rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, (lam X:Var T:Tm))
              => #topLevelFunction(GN, JI, X VARS, #replaceFreeVar(T:Tm, X, #lengthVarList(VARS)))
