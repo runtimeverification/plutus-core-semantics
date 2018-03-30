@@ -39,6 +39,6 @@
             (lam d
               (lam e
                 (lam f
-                  [Foo.addFive [Foo.mod [Foo.div [Foo.mult [Foo.sub [Foo.add a b] c] d] e] f]])))))))
+                  [Foo. addFive [[Foo.mod [[Foo.div [[Foo.mult [[Foo.sub [[Foo.add a] b]] c]] d]] e]] f]])))))))
 
   )
