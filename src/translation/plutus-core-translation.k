@@ -185,7 +185,7 @@ module PLUTUS-CORE-TRANSLATION
   // TODO: Should this really be called an environment?
   
   syntax Map ::= #addParamsToEnv(VarList, Map)                         [function]
-  rule #addParamsToEnv(X:Var   , MAP:Map) => (size(MAP) |-> X:Var):Map MAP:Map
+  rule #addParamsToEnv(X:Var XS, MAP:Map) => #addParamsToEnv(XS, (size(MAP) |-> X:Var):Map MAP:Map)
   rule #addParamsToEnv(.VarList, MAP:Map) => MAP:Map
   
   // TODO: Can this be folded into `#replaceFreeVar`?
