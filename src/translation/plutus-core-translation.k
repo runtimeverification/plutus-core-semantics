@@ -113,6 +113,26 @@ module PLUTUS-CORE-TRANSLATION
   rule #useOperand(I:Int, LN) => I:Int
   rule #useOperand(V:Var, LN) => #varToLocalName(V:Var)
 
+  // Qualified Names
+  // ---------------
+
+  rule #useOperand(QN:QualN, LN) => LN
+  rule <functions>
+         ...
+          <function>
+            <name> GN </name>
+            <jumpId> JI </jumpId>
+            ...
+          </function>
+          <function>
+            <k> #loadOperand(MN:ModName . N:Name, LN:LocalName)
+             => #allocBind(LN, JI, .Map)
+             ... </k>
+            ...
+          </function>
+       </functions>
+       when #nameToGlobalName(N) ==K GN
+
   // Builtins
   // --------
 
