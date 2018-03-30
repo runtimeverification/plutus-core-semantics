@@ -105,8 +105,8 @@ module PLUTUS-CORE-TRANSLATION
   // `Int`s and parameters are particularly simple, since they correspond directly
   // to `Operand`s. We do nothing to load them:
   
-  rule #loadOperand(I:Int , LN) => .Instructions
-  rule #loadOperand(V:Var , LN) => .Instructions
+  rule #loadOperand(I:Int, LN) => .Instructions
+  rule #loadOperand(V:Var, LN) => .Instructions
   
   // and use them directly:
   
@@ -126,7 +126,6 @@ module PLUTUS-CORE-TRANSLATION
                       #translateBinBuiltin(B:BinaryBuiltin, LN
                             , #useOperand(T1, #intToLocalName(!N1))
                             , #useOperand(T2, #intToLocalName(!N2))))
-  rule #useOperand((builtin B:BinaryBuiltin T1:Tm T2:Tm), LN) => LN
 
   // Each needs to generate instructions for executing in IELE.
 
@@ -500,7 +499,7 @@ module PLUTUS-CORE-TRANSLATION
   rule #varsToLocalNames(X XS)     => #varToLocalName(X) , #varsToLocalNames(XS)
 
   syntax String ::= #nameToString(Name)     [function, hook(STRING.token2string)]
-  syntax String ::= #varToString(Var)       [function, hook(STRING.token2string)]
+                  | #varToString(Var)       [function, hook(STRING.token2string)]
 
   // Helpers for fresh variables
   // ---------------------------
