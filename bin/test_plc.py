@@ -47,9 +47,7 @@ def generate_tests():
             pytest.mark.xfail(reason="exit code unimplemented")
               (("arith-ops", "Foo", "mod", [19, 0], None))]
 
-@pytest.mark.parametrize("file, mod, fct, args, expected",
-    generate_tests()
-)
+@pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests())
 def test_plc(file, mod, fct, args, expected):
     krun_args = ["./kplc", "run", "execution", "../test/execution/" + file + ".plc",
                  "-cMAINMOD=#token(\"" + mod + "\", \"UpperName\")",
@@ -58,7 +56,6 @@ def test_plc(file, mod, fct, args, expected):
                  "-pMAINFCT=printf %s",
                  "-cMAINARGS=" + kast_args(args),
                  "-pMAINARGS=printf %s"]
-
     krun = Popen(krun_args, stdout=PIPE)
     (output, err) = krun.communicate()
     exit_code = krun.wait()
@@ -70,9 +67,7 @@ def test_plc(file, mod, fct, args, expected):
         assert exit_code == 0
         assert extract_exec_output(output) == str(expected)
 
-@pytest.mark.parametrize("file, mod, fct, args, expected",
-    generate_tests()
-)
+@pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests())
 def test_iele(file, mod, fct, args, expected):
     template = json.load(open("../test/translation/template.iele.json"))
     account = "0x1000000000000000000000000000000000000000"
