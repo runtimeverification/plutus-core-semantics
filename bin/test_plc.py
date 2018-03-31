@@ -10,6 +10,12 @@ import json
 import tempfile
 import os
 
+_base = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+def base(*args):
+    return os.path.join(_base, *args)
+def bin(*args):
+    return base('bin', *args)
+
 def generate_tests():
     return [("arith-ops", "Foo", "add",     [19, 23],            42  ),
             ("arith-ops", "Foo", "addFive", [12],                17  ),
@@ -49,7 +55,7 @@ def generate_tests():
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests())
 def test_plc(file, mod, fct, args, expected):
-    krun_args = ["./kplc", "run", "execution", "../test/execution/" + file + ".plc",
+    krun_args = [bin("kplc"), "run", "execution", base("test/execution/", file +".plc"),
                  "-cMAINMOD=#token(\"" + mod + "\", \"UpperName\")",
                  "-pMAINMOD=printf %s",
                  "-cMAINFCT=#token(\"" + fct + "\", \"LowerName\")",
@@ -69,9 +75,9 @@ def test_plc(file, mod, fct, args, expected):
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests())
 def test_iele(file, mod, fct, args, expected):
-    template = json.load(open("../test/translation/template.iele.json"))
+    template = json.load(open(base("test/translation/template.iele.json")))
     account = "0x1000000000000000000000000000000000000000"
-    template["pre"][account]["code"] = template["postState"][account]["code"] = os.path.abspath("../test/translation/" + file + ".iele")
+    template["pre"][account]["code"] = template["postState"][account]["code"] = base("test/translation/", file + ".iele")
     template["blocks"][0]["results"][0]["out"] = [hex(expected)]
     template["blocks"][0]["transactions"][0]["function"] = fct
     template["blocks"][0]["transactions"][0]["arguments"] = map(hex, args)
