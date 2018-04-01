@@ -16,21 +16,29 @@ def base(*args):
 def bin(*args):
     return base('bin', *args)
 
-def generate_tests():
-    return [("arith-ops", "Foo", "add",     [19, 23],            42  ),
+def generate_tests(type):
+    passing = [
+            ("arith-ops", "Foo", "add",     [19, 23],            42  ),
             ("arith-ops", "Foo", "addFive", [12],                17  ),
-            ("arith-ops", "Foo", "sub",     [19, 23],            -4  ),
+            ("arith-ops", "Foo", "sub",     [19, 23],           -4   ),
             ("arith-ops", "Foo", "mult",    [19, 23],            437 ),
-            ("arith-ops", "Foo", "mult",    [19, -23],           -437),
+            ("arith-ops", "Foo", "mult",    [19, -23],          -437 ),
             ("arith-ops", "Foo", "div",     [437, 19],           23  ),
             ("arith-ops", "Foo", "div",     [440, 19],           23  ),
-            ("arith-ops", "Foo", "div",     [0, 19],             0   ),
+            ("arith-ops", "Foo", "div",     [0,   19],           0   ),
             ("arith-ops", "Foo", "mod",     [440, 19],           3   ),
             ("arith-ops", "Foo", "mod",     [-440, 19],          -3  ),
             ("arith-ops", "Foo", "mod",     [0, 19],             0   ),
             ("arith-ops", "Foo", "one",     [],                  1   ),
+           ]
+    exec_no_error_code = [
+            ("arith-ops", "Foo", "div",     [19, 0],             None),
+            ("arith-ops", "Foo", "mod",     [19, 0],             None),
+           ]
+    tr_app_broken = [
             ("arith-ops", "Foo", "complex", [5, 4, 7, 11, 2, 3], 7   ),
-
+           ]
+    tr_no_alg_data_types  = [
             ("cmp-ops", "Foo", "lessThan",      [12, 12], "(con Prelude.False .ValList)"),
             ("cmp-ops", "Foo", "lessThan",      [12, 17], "(con Prelude.True .ValList)" ),
             ("cmp-ops", "Foo", "lessThan",      [17, 12], "(con Prelude.False .ValList)"),
@@ -47,14 +55,23 @@ def generate_tests():
             ("cmp-ops", "Foo", "equals",        [12, 12], "(con Prelude.True .ValList)" ),
             ("cmp-ops", "Foo", "equals",        [12, 17], "(con Prelude.False .ValList)"),
             ("cmp-ops", "Foo", "myTrue",        [],       "(con Prelude.True .ValList)" ),
+           ]
 
-            pytest.mark.xfail(reason="exit code unimplemented")
-              (("arith-ops", "Foo", "div", [19, 0], None)),
-            pytest.mark.xfail(reason="exit code unimplemented")
-              (("arith-ops", "Foo", "mod", [19, 0], None))]
+    if type == 'translation':
+        return (passing                                                                    +
+                exec_no_error_code                                                         +
+                map(pytest.mark.xfail(reason="application broken"), tr_app_broken)         +
+                map(pytest.mark.xfail(reason="no alg data types" ), tr_no_alg_data_types)
+               )
+    if type == 'execution':
+        return (passing                                                                    +
+                map(pytest.mark.xfail(reason="exit code not impl"), exec_no_error_code)    +
+                tr_app_broken                                                              +
+                tr_no_alg_data_types
+               )
 
-@pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests())
-def test_plc(file, mod, fct, args, expected):
+@pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('execution'))
+def test_execution(file, mod, fct, args, expected):
     krun_args = [bin("kplc"), "run", "execution", base("test/execution/", file +".plc"),
                  "-cMAINMOD=#token(\"" + mod + "\", \"UpperName\")",
                  "-pMAINMOD=printf %s",
@@ -73,8 +90,8 @@ def test_plc(file, mod, fct, args, expected):
         assert exit_code == 0
         assert extract_exec_output(output) == str(expected)
 
-@pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests())
-def test_iele(file, mod, fct, args, expected):
+@pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('translation'))
+def test_translation(file, mod, fct, args, expected):
     template = json.load(open(base("test/translation/template.iele.json")))
     account = "0x1000000000000000000000000000000000000000"
     template["pre"][account]["code"] = template["postState"][account]["code"] = base("test/translation/", file + ".iele")
