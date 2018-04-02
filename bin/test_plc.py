@@ -95,7 +95,12 @@ def test_translation(file, mod, fct, args, expected):
     template = json.load(open(base("test/translation/template.iele.json")))
     account = "0x1000000000000000000000000000000000000000"
     template["pre"][account]["code"] = template["postState"][account]["code"] = base("test/translation/", file + ".iele")
-    template["blocks"][0]["results"][0]["out"] = [hex(expected)]
+    if None is expected:
+        template["blocks"][0]["results"][0]["out"] = []
+        template["blocks"][0]["results"][0]["status"] = "0x04"
+    else:
+        template["blocks"][0]["results"][0]["out"] = [hex(expected)]
+        template["blocks"][0]["results"][0]["status"] = ""
     template["blocks"][0]["transactions"][0]["function"] = fct
     template["blocks"][0]["transactions"][0]["arguments"] = map(hex, args)
     iele_test = { mod : template }
@@ -104,19 +109,13 @@ def test_translation(file, mod, fct, args, expected):
     json.dump(iele_test, temp_json)
     temp_json.write("\n")
     temp_json.flush()
-    blockchain_args = ["../.build/iele/blockchaintest", temp_json.name]
 
-    blockchaintest = Popen(blockchain_args, stdout=PIPE)
+    blockchain_args = ["./blockchaintest", temp_json.name]
+    blockchaintest = Popen(blockchain_args, stdout=PIPE, cwd=base(".build/iele/"))
     (output, err) = blockchaintest.communicate()
     exit_code = blockchaintest.wait()
 
-    if expected == None:
-        assert exit_code == 1
-    else:
-        assert exit_code == 0
-
-    print iele_test
-    assert False
+    assert exit_code == 0
 
 def kast_args(args):
     if args == []:
