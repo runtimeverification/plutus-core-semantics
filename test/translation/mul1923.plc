@@ -1,3 +1,0 @@
-(module Foo (import) (export () ())
-  (define mul1923 (lam dummy [[(lam x (lam y (builtin multiplyInteger x y))) 19] 23]))
-)

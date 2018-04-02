@@ -1,3 +1,0 @@
-(module Foo (import) (export () (add1923))
-  (define add1923 (lam dummy [[(lam x (lam y (builtin addInteger x y))) 19] 23]))
-)
