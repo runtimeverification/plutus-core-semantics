@@ -2,13 +2,13 @@
 
 from subprocess import Popen, PIPE
 
-import pytest
-import sys
-import xml.dom.minidom
-import string
 import json
-import tempfile
 import os
+import pytest
+import string
+import sys
+import tempfile
+import xml.dom.minidom
 
 _base = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 def base(*args):
@@ -105,15 +105,19 @@ def test_translation(file, mod, fct, args, expected):
     template["blocks"][0]["transactions"][0]["arguments"] = map(hex, args)
     iele_test = { mod : template }
 
-    temp_json = tempfile.NamedTemporaryFile()
+    temp_json = tempfile.NamedTemporaryFile(delete=False)
     json.dump(iele_test, temp_json)
     temp_json.write("\n")
     temp_json.flush()
+
+    # Print JSON spec for debugging.
+    json.dump(iele_test, sys.stdout, indent=2)
 
     blockchain_args = ["./blockchaintest", temp_json.name]
     blockchaintest = Popen(blockchain_args, stdout=PIPE, cwd=base(".build/iele/"))
     (output, err) = blockchaintest.communicate()
     exit_code = blockchaintest.wait()
+    print output.replace('`<', "\n`<")
 
     assert exit_code == 0
 
