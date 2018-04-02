@@ -190,11 +190,12 @@ module PLUTUS-CORE-TRANSLATION
   
   syntax Instructions ::= #allocBind(LocalName, Int, Map)              [function]
   syntax Instructions ::= #bindEnv(Map, LocalName)                     [function]
-  rule #allocBind(N, I, E) => (N = call #mkGN("alloc")(1 +Int size(E))
-                               store I, N:LocalName
-                               #bindEnv(E, N)
-                              ):Instructions
-  
+
+  rule #allocBind(N, JI, E) => (N = call #mkGN("alloc")(1 +Int size(E))
+                                store JI, N:LocalName, 0, 1
+                                store 0, N:LocalName,  1, 1
+                                #bindEnv(E, N)
+                               ):Instructions
   rule #bindEnv(.Map, _) => .Instructions
   rule #bindEnv((OFF:Int |-> V:Var) M:Map, LN) => (
                                           #intToLocalName(!N) = add LN, (OFF +Int 1)
