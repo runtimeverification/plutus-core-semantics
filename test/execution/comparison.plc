@@ -1,8 +1,0 @@
-(program
-
-(module Foo (import) (export () ())
-  (define c1 (builtin lessThanInteger 1 2))
-  (define c2 (builtin lessThanInteger 2 2))
-)
-
-)
