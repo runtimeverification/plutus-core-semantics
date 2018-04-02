@@ -39,9 +39,6 @@ def generate_tests(type):
             ("arith-ops", "Foo", "div",     [19, 0],             None),
             ("arith-ops", "Foo", "mod",     [19, 0],             None),
            ]
-    tr_app_broken = [
-            ("arith-ops", "Foo", "complex", [5, 4, 7, 11, 2, 3], 7   ),
-           ]
     tr_no_alg_data_types  = [
             ("cmp-ops", "Foo", "lessThan",      [12, 12], "(con Prelude.False .ValList)"),
             ("cmp-ops", "Foo", "lessThan",      [12, 17], "(con Prelude.True .ValList)" ),
@@ -64,13 +61,11 @@ def generate_tests(type):
     if type == 'translation':
         return (passing                                                                    +
                 exec_no_error_code                                                         +
-                map(pytest.mark.xfail(reason="application broken"), tr_app_broken)         +
                 map(pytest.mark.xfail(reason="no alg data types" ), tr_no_alg_data_types)
                )
     if type == 'execution':
         return (passing                                                                    +
                 map(pytest.mark.xfail(reason="exit code not impl"), exec_no_error_code)    +
-                tr_app_broken                                                              +
                 tr_no_alg_data_types
                )
 
