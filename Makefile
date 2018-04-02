@@ -6,7 +6,7 @@ iele_submodule:=$(build_dir)/iele
 k_submodule:=$(build_dir)/k
 k_bin:=$(k_submodule)/k-distribution/target/release/k/bin
 
-.PHONY: all clean build deps ocaml-deps \
+.PHONY: all clean build deps ocaml-deps iele \
         execution translation erc20 typing \
         test test-passing test-failing test-verify test-verify-commented \
         iele
@@ -23,7 +23,7 @@ clean:
 
 dep_files:=$(k_submodule)/.git
 
-deps: $(dep_files) ocaml-deps $(k_bin)/krun
+deps: $(dep_files) ocaml-deps $(k_bin)/krun iele
 
 %/.git: .git/HEAD
 	git submodule update --recursive --init -- $(dir $*)
@@ -42,11 +42,12 @@ ocaml-deps:
 	opam install --yes mlgmp zarith uuidm
 
 iele: $(iele_submodule)/.git
-	(   cd $(iele_submodule)      && \
-	    make deps                 && \
-	    eval $$(opam config env)  && \
-	    make                         \
-	)
+	bash -c '   eval $(opam config env)  \
+            && . bin/activate            \
+            && cd $(iele_submodule)      \
+            && make deps                 \
+            && eval $$(opam config env)  \
+            && make'
 
 # Build
 # -----
@@ -76,7 +77,8 @@ typing:      .build/typing/plutus-core-kompiled/interpreter
 # -------
 
 test: test-passing test-failing
-test-passing: test-translation test-execution
+test-passing: translate-to-iele
+	bash -c 'eval $(opam config env) && . bin/activate && pytest -n 4'
 test-failing: test-erc20 test-verify test-verify-commented
 
 execution_tests:=$(wildcard test/execution/*.plc)
