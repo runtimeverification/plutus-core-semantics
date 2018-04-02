@@ -3,8 +3,10 @@
 (
     cd "$(dirname "$BASH_SOURCE")"
     [ -d ../.build/virtualenv ] || {
-        virtualenv ../.build/virtualenv --python=python2
-        . ../.build/virtualenv/bin/activate
+        virtualenv ../.build/virtualenv --python=python2    &&
+        . ../.build/virtualenv/bin/activate                 &&
+        pip install -r ../requirements.txt
     }
 )
+
 . "$(dirname "$BASH_SOURCE")/../.build/virtualenv/bin/activate"
