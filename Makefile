@@ -23,7 +23,7 @@ clean:
 
 dep_files:=$(k_submodule)/.git
 
-deps: $(dep_files) ocaml-deps
+deps: $(dep_files) ocaml-deps $(k_bin)/krun
 
 %/.git: .git/HEAD
 	git submodule update --recursive --init -- $(dir $*)
