@@ -1,3 +1,4 @@
+(program
   (module Foo (import) (export () (add addFive addFiveApp add1923App
                                    sub mult div mod nested one complex))
 
@@ -49,3 +50,4 @@
                   [Foo.addFive [[Foo.mod [[Foo.div [[Foo.mult [[Foo.sub [[Foo.add a] b]] c]] d]] e]] f]])))))))
 
   )
+)
