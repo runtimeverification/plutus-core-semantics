@@ -20,7 +20,7 @@ module PLUTUS-CORE-TRANSLATION
   
   configuration
     <T>
-      <plutus> $PGM:Mod ~> #createDispatch:K ~> #moveToContractCell </plutus>
+      <plutus> $PGM:Prg ~> #createDispatch:K ~> #moveToContractCell </plutus>
       <iele> #staticAlloc
              #staticAppendArg
              .TopLevelDefinitions
@@ -45,11 +45,12 @@ module PLUTUS-CORE-TRANSLATION
 
   // Top-Level Functions
   // ===================
-  
-  // We iterate over `define`s, creating a named top level function for each.
 
-  rule <plutus> (module MN IS (export (TXS) (NS)) DS) => DS ... </plutus>
+
+  rule <plutus> (program (module MN IS (export (TXS) (NS)) DS) ) => DS ... </plutus>
        <exports> _ => NS </exports>
+
+  // We iterate over `Dec`s, creating a named top level function for each.
 
   rule <plutus> D:Dec DS:DecList => D ~> DS ... </plutus>
 
