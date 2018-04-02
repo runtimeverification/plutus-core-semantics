@@ -1,10 +1,17 @@
-  (module Foo (import) (export () (add addFive sub mult div mod nested one complex))
+  (module Foo (import) (export () (add addFive addFiveApp add1923App
+                                   sub mult div mod nested one complex))
 
     (declare add (fun (integer) (fun (integer) (integer))))
     (define add (lam x (lam y (builtin addInteger x y))))
 
     (declare addFive (fun (integer) (integer)))
     (define addFive (lam x (builtin addInteger x 5)))
+
+    (declare addFiveApp (fun (integer) (integer)))
+    (define addFiveApp (lam x [Foo.addFive x]))
+
+    (declare add1923App (fun (integer) (integer)))
+    (define add1923App (lam x [[Foo.add 19] 23]))
 
     (declare sub (fun (integer) (fun (integer) (integer))))
     (define sub (lam x (lam y (builtin subtractInteger x y))))
@@ -39,6 +46,6 @@
             (lam d
               (lam e
                 (lam f
-                  [Foo. addFive [[Foo.mod [[Foo.div [[Foo.mult [[Foo.sub [[Foo.add a] b]] c]] d]] e]] f]])))))))
+                  [Foo.addFive [[Foo.mod [[Foo.div [[Foo.mult [[Foo.sub [[Foo.add a] b]] c]] d]] e]] f]])))))))
 
   )
