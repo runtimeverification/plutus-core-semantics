@@ -2,6 +2,9 @@
   (module Foo (import) (export () (add addFive addFiveApp add1923App
                                    sub mult div mod nested one complex))
 
+    (declare notPublic (fun (integer) (fun (integer) (integer))))
+    (define notPublic (lam x (lam y (builtin addInteger x y))))
+
     (declare add (fun (integer) (fun (integer) (integer))))
     (define add (lam x (lam y (builtin addInteger x y))))
 
