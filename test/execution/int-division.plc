@@ -1,9 +1,0 @@
-(program
-
-(module Foo (import) (export () ())
-  (define i1 (builtin divideInteger 30 3))
-  (define i2 (builtin divideInteger 21 7))
-  (define i3 (builtin divideInteger 35 3))
-  (define i4 (builtin divideInteger 20 6)))
-
-)

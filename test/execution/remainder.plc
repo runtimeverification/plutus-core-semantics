@@ -1,7 +1,0 @@
-(program
-
-(module Foo (import) (export () ())
-(define result (builtin remainderInteger 27 3))
-)
-
-)
