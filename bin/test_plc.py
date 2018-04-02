@@ -71,7 +71,7 @@ def generate_tests(type):
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('execution'))
 def test_execution(file, mod, fct, args, expected):
-    krun_args = [bin("kplc"), "run", "execution", base("test/execution/", file +".plc"),
+    krun_args = [bin("kplc"), "run", "execution", base("test/", file +".plc"),
                  "-cMAINMOD=#token(\"" + mod + "\", \"UpperName\")",
                  "-pMAINMOD=printf %s",
                  "-cMAINFCT=#token(\"" + fct + "\", \"LowerName\")",
@@ -91,9 +91,9 @@ def test_execution(file, mod, fct, args, expected):
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('translation'))
 def test_translation(file, mod, fct, args, expected):
-    template = json.load(open(base("test/translation/template.iele.json")))
+    template = json.load(open(base("test/template.iele.json")))
     account = "0x1000000000000000000000000000000000000000"
-    template["pre"][account]["code"] = template["postState"][account]["code"] = base("test/translation/", file + ".iele")
+    template["pre"][account]["code"] = template["postState"][account]["code"] = base("test/", file + ".iele")
     if None is expected:
         template["blocks"][0]["results"][0]["out"] = []
         template["blocks"][0]["results"][0]["status"] = "0x04"

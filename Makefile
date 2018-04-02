@@ -79,26 +79,15 @@ test: test-passing test-failing
 test-passing: test-translation test-execution
 test-failing: test-erc20 test-verify test-verify-commented
 
-translation_tests:=$(wildcard test/translation/*.plc)
 execution_tests:=$(wildcard test/execution/*.plc)
 erc20_tests:=$(wildcard test/erc20/*.plc)
 
-test-translation: $(translation_tests:=.test)
-test-execution: $(execution_tests:=.test)
+translate_plc:=test/arith-ops.plc
+translate-to-iele: $(translate_plc:.plc=.iele)
 test-erc20: $(erc20_tests:=.test)
 
-test/execution/%   : driver = execution
-test/translation/% : driver = translation
-test/typing/%      : driver = typing
-test/erc20/%       : driver = erc20
-
-test/%.plc.test test/%.out: .build/$$(dir $$*)/plutus-core-kompiled/interpreter
-	./bin/kplc run $(driver) test/$*.plc > test/$*.out
-test/%.iele: test/%.out
-	bin/config-to-iele < $^ > $@
-
-test/%.iele.test: test/%.iele
-	(cd .build/iele/ && ./blockchaintest ../../test/$*.iele.json)
+test/%.iele: test/%.plc .build/translation/plutus-core-kompiled/interpreter
+	./bin/kplc run translation $< | bin/config-to-iele > $@
 
 test-verify: .build/execution/plutus-core-kompiled/interpreter
 	./bin/kplc prove execution verification/int-addition_spec.k             verification/dummy.plcore
