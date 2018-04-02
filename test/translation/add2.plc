@@ -1,3 +1,0 @@
-(module Add2 (import) (export () (foo))
-    (define foo (lam x (builtin addInteger x 2)))
-)
