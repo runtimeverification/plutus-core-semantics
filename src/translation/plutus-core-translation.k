@@ -263,7 +263,7 @@ module PLUTUS-CORE-TRANSLATION
   rule #staticAlloc => define #mkGN("alloc") (#mkLN("size") , .LocalNames) {
                          #mkLN("alloc_counter_ptr") = 0
                          #mkLN("alloced") = load #mkLN("alloc_counter_ptr")
-                         #mkLN("isInitialized") = cmp gt 0, #mkLN("alloced")
+                         #mkLN("isInitialized") = cmp ne 0, #mkLN("alloced")
                          br #mkLN("isInitialized"), #mkIN("initialized")
                          #mkLN("alloced") = 1
                       #label(#mkIN("initialized"))
