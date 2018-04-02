@@ -16,6 +16,19 @@ def base(*args):
 def bin(*args):
     return base('bin', *args)
 
+class ExitCode_NotPublic: pass
+class ExitCode_DivByZero: pass
+
+def toIeleExitStatus(expected):
+    if   expected == ExitCode_NotPublic: return "0x01"
+    elif expected == ExitCode_DivByZero: return "0x04"
+    else                               : return ""
+
+def toPlutusExitCode(expected):
+    if   expected == ExitCode_NotPublic: return 1
+    elif expected == ExitCode_DivByZero: return 1
+    else                               : return 0
+
 def generate_tests(type):
     passing = [
             ("arith-ops", "Foo", "add",         [19, 23],            42  ),
@@ -34,10 +47,12 @@ def generate_tests(type):
             ("arith-ops", "Foo", "one",         [],                  1   ),
             ("arith-ops", "Foo", "complex",     [5, 4, 7, 11, 2, 3], 7   ),
             ("arith-ops", "Foo", "complex",     [7, 4, 7, 11, 2, 3], 6   ),
+
            ]
     exec_no_error_code = [
-            ("arith-ops", "Foo", "div",     [19, 0],             None),
-            ("arith-ops", "Foo", "mod",     [19, 0],             None),
+            ("arith-ops", "Foo", "notPublic",   [19, 23],            ExitCode_NotPublic),
+            ("arith-ops", "Foo", "div",         [19, 0],             ExitCode_DivByZero),
+            ("arith-ops", "Foo", "mod",         [19, 0],             ExitCode_DivByZero),
            ]
     tr_no_alg_data_types  = [
             ("cmp-ops", "Foo", "lessThan",      [12, 12], "(con Prelude.False .ValList)"),
@@ -82,11 +97,8 @@ def test_execution(file, mod, fct, args, expected):
     (output, err) = krun.communicate()
     exit_code = krun.wait()
 
-    if expected == None:
-        # TODO: add exit code to semantics
-        assert exit_code == 1
-    else:
-        assert exit_code == 0
+    assert exit_code == toPlutusExitCode(expected)
+    if 0 == toPlutusExitCode(expected):
         assert extract_exec_output(output) == str(expected)
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('translation'))
@@ -94,14 +106,14 @@ def test_translation(file, mod, fct, args, expected):
     template = json.load(open(base("test/template.iele.json")))
     account = "0x1000000000000000000000000000000000000000"
     template["pre"][account]["code"] = template["postState"][account]["code"] = base("test/", file + ".iele")
-    if None is expected:
-        template["blocks"][0]["results"][0]["out"] = []
-        template["blocks"][0]["results"][0]["status"] = "0x04"
-    else:
-        template["blocks"][0]["results"][0]["out"] = [hex(expected)]
-        template["blocks"][0]["results"][0]["status"] = ""
     template["blocks"][0]["transactions"][0]["function"] = fct
     template["blocks"][0]["transactions"][0]["arguments"] = map(hex, args)
+    template["blocks"][0]["results"][0]["status"] = toIeleExitStatus(expected)
+    if toIeleExitStatus(expected) == "":
+        template["blocks"][0]["results"][0]["out"] = [hex(expected)]
+    else:
+        template["blocks"][0]["results"][0]["out"] = []
+
     iele_test = { mod : template }
 
     temp_json = tempfile.NamedTemporaryFile(delete=False)
