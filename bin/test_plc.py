@@ -87,16 +87,20 @@ def generate_tests(type):
             ("module-call-private-indirect", "Foo",       "bar", [0],   19),
             ("module-call-private-indirect", "Foo",       "baz", [0],   23),
            ]
+    translation_unimplemented = [
+            ("ctor-case", "Foo", "bar", [0], 19),
+            ("ctor-case", "Foo", "baz", [0], 23),
+           ]
 
     if type == 'translation':
         return (passing                                                                    +
                 map(pytest.mark.xfail(reason="unimplemented"), unimplemented)              +
-                map(pytest.mark.xfail(reason="no alg data types" ), tr_no_alg_data_types)
+                map(pytest.mark.xfail(reason="translation unimplemented"), translation_unimplemented)
                )
     if type == 'execution':
         return (passing                                                                    +
-                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)              +
-                tr_no_alg_data_types
+                translation_unimplemented                                                  +
+                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)
                )
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('execution'))
