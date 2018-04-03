@@ -41,6 +41,10 @@ module PLUTUS-CORE-TRANSLATION
           <readyForDispatch> false:Bool  </readyForDispatch>
         </function>
       </functions>
+      <dataType>
+        #mkQualC("Prelude", "True")  |-> 1
+        #mkQualC("Prelude", "False") |-> 0
+      </dataType>
     </T>
 
   // Top-Level Functions
@@ -511,18 +515,26 @@ module PLUTUS-CORE-TRANSLATION
   syntax Instruction ::= #label(IeleName)                         [format(%n%3:)]
   syntax Instruction ::= #comment(String)                       [format(%n// %3)]
 
-  // Converting strings to {Iele,Local,Global}Name and Vars
-  // ------------------------------------------------------
+  // Converting strings to {Iele,Local,Global}Name, QualCs, and Vars
+  // ---------------------------------------------------------------
 
   syntax GlobalName ::= #mkGN(String)                                  [function]
   syntax LocalName  ::= #mkLN(String)                                  [function]
   syntax IeleName   ::= #mkIN(String)                                  [function]
   syntax Var        ::= #mkVar(String)                                 [function]
+  syntax QualC      ::= #mkQualC(String, String)                       [function]
   // ----------------------------------------------------------------------------
   rule #mkGN(S)   => #parseToken("GlobalName", "@" +String S)
   rule #mkLN(S)   => #parseToken("LocalName",  "%" +String S)
   rule #mkIN(S)   => #parseToken("IeleName",               S)
   rule #mkVar(S)  => #parseToken("Var",                    S)
+
+  // K does not let us make a qualC in one fail swoop using #parseToken(..) . #parseToken(..).
+  // Instead, we need to use #parseToken and hold the information needed to make a QualC
+  // and pass it to an external #qualCHolder function which puts it together.
+  syntax QualC ::= #qualCHolder(K, K)                                  [function]
+  rule #mkQualC(MN, C) => #qualCHolder(#parseToken("UpperName", MN), #parseToken("UpperName", C))
+  rule #qualCHolder(MN, C) => MN . C
 
   // Converting Names, Vars to GlobalNames, LocalNames, Strings
   // ----------------------------------------------------------
