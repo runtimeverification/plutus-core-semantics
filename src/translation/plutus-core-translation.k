@@ -159,6 +159,12 @@ module PLUTUS-CORE-TRANSLATION
   rule #translateBinBuiltin(divideInteger,    LN, O1, O2) => (LN = div O1 , O2) .Instructions
   rule #translateBinBuiltin(remainderInteger, LN, O1, O2) => (LN = mod O1 , O2) .Instructions
 
+  rule #translateBinBuiltin(lessThanInteger,          LN, O1, O2) => (LN = cmp lt O1, O2) .Instructions
+  rule #translateBinBuiltin(lessThanEqualsInteger,    LN, O1, O2) => (LN = cmp le O1, O2) .Instructions
+  rule #translateBinBuiltin(greaterThanInteger,       LN, O1, O2) => (LN = cmp gt O1, O2) .Instructions
+  rule #translateBinBuiltin(greaterThanEqualsInteger, LN, O1, O2) => (LN = cmp ge O1, O2) .Instructions
+  rule #translateBinBuiltin(equalsInteger,            LN, O1, O2) => (LN = cmp eq O1, O2) .Instructions
+
   // Converting a Lambda to a Closure
   // --------------------------------
   
