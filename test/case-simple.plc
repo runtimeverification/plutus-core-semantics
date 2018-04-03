@@ -1,0 +1,14 @@
+(program
+
+  (module SimpleCase (import) (export () (simpleCase))
+
+    (declare simpleCase (fun (integer) (integer)))
+    (define simpleCase
+      (lam x
+        (case (builtin equalsInteger x 13)
+          (Prelude.True  () 19)
+          (Prelude.False () 23))))
+
+  )
+
+)
