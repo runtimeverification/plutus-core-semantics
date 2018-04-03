@@ -1,0 +1,13 @@
+(program
+
+  (module Duplicate (import) (export () (one))
+
+    (data Foo () (MyTrue))
+    (data Foo () (MyFalse))
+
+    (declare one (integer))
+    (define one 1)
+
+  )
+
+)
