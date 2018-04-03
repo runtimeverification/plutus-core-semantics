@@ -34,6 +34,14 @@ See tests marked `xfail` for more To-dos.
 Issues
 ------
 
+
+### New issues
+
+1. Is Prelude assumed to be imported always? If not, how do comparison operators work with returning something of type `(con Prelude.Bool)`
+  - On the same note, should we be able to write `(define myTrue (Prelude.True))` without importing Prelude?
+
+### Old Issues
+
 1. Typo in the `abs` rule for `checks`, lower case `k` should be capital `K`.
 2. In `con` rule for `checks`, the condition with `forall` is not syntactically valid (does not parse as a `Type`). The application should be wrapped in `con`?
    > Answer: no, this judgment is not supposed to parse as a `Type`, it is just supposed to look like a `Type`

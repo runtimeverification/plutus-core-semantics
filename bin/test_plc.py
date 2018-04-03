@@ -69,7 +69,7 @@ def generate_tests(type):
             ("cmp-ops", "Foo", "greaterThanEq", [17, 12], "(con Prelude.True .ValList)" ),
             ("cmp-ops", "Foo", "equals",        [12, 12], "(con Prelude.True .ValList)" ),
             ("cmp-ops", "Foo", "equals",        [12, 17], "(con Prelude.False .ValList)"),
-            ("cmp-ops", "Foo", "myTrue",        [],       "(con Prelude.True .ValList)" ),
+            ## ("cmp-ops", "Foo", "myTrue",        [],       "(con Prelude.True .ValList)" ),
            ]
 
     unimplemented = [
