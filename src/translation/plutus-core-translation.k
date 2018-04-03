@@ -226,8 +226,9 @@ module PLUTUS-CORE-TRANSLATION
   // `#replaceFreeVar` and `#replaceFreeVarsForParams` are used to mark parameters
   // as `#freeVar`s. A rule is required for each Plutus construct.
   
-  syntax Tm ::= #freeVar(Var, Int)
-  syntax Tm ::= #replaceFreeVar(Tm, Var, Int)                          [function]
+  syntax Tm     ::= #freeVar(Var, Int)
+  syntax Tm     ::= #replaceFreeVar(Tm, Var, Int)                      [function]
+  syntax ClList ::= #replaceFreeVarClL(ClList, Var, Int)               [function]
   
   rule #replaceFreeVar(X:Var, X    , INDEX) => #freeVar(X, INDEX)
   rule #replaceFreeVar(X:Var, Y:Var, INDEX) => X:Var               when (X:Var =/=K Y:Var)
@@ -241,6 +242,12 @@ module PLUTUS-CORE-TRANSLATION
     => [#replaceFreeVar(T1, X, INDEX) #replaceFreeVar(T2, X, INDEX)]
   rule #replaceFreeVar((builtin N T1 T2), Y:Var, INDEX)
     => (builtin N #replaceFreeVar(T1, Y, INDEX) #replaceFreeVar(T2, Y, INDEX))
+  rule #replaceFreeVar((case T CLS), Y:Var, INDEX)
+    => (case #replaceFreeVar(T, Y, INDEX) #replaceFreeVarClL(CLS, Y, INDEX))
+
+  rule #replaceFreeVarClL(.ClList, X, INDEX) => .ClList
+  rule #replaceFreeVarClL((QC (VS) T) CLS, X, INDEX)
+    => (QC (VS) #replaceFreeVar(T, X, INDEX)) #replaceFreeVarClL(CLS, X, INDEX)
   
   // For `#freeVar`s `#loadOperand` directly uses the function's parameter.
   // TODO: Make use of INDEX to prevent collisions in case of non-unique argument names.
