@@ -29,6 +29,18 @@ def toPlutusExitCode(expected):
     elif expected == ExitCode_DivByZero: return 1
     else                               : return 0
 
+def toIeleReturn(expected):
+    if type(expected) is int: return [hex(expected)]
+    elif expected == False  : return ["0x0"]
+    elif expected == True   : return ["0x1"]
+    else                    : return []
+
+def toPlutusReturn(expected):
+    if type(expected) is int: return str(expected)
+    elif expected == False  : return "(con Prelude.False .ValList)"
+    elif expected == True   : return "(con Prelude.True .ValList)"
+    else                    : return []
+
 def generate_tests(type):
     passing = [
             ("arith-ops", "Foo", "notPublic",   [19, 23],            ExitCode_NotPublic),
@@ -52,24 +64,22 @@ def generate_tests(type):
             ("arith-ops", "Foo", "complex",     [5, 4, 7, 11, 2, 3], 7   ),
             ("arith-ops", "Foo", "complex",     [7, 4, 7, 11, 2, 3], 6   ),
 
-           ]
-    tr_no_alg_data_types  = [
-            ("cmp-ops", "Foo", "lessThan",      [12, 12], "(con Prelude.False .ValList)"),
-            ("cmp-ops", "Foo", "lessThan",      [12, 17], "(con Prelude.True .ValList)" ),
-            ("cmp-ops", "Foo", "lessThan",      [17, 12], "(con Prelude.False .ValList)"),
-            ("cmp-ops", "Foo", "lessThanFive",  [17],     "(con Prelude.False .ValList)"),
-            ("cmp-ops", "Foo", "lessThanEq",    [12, 12], "(con Prelude.True .ValList)" ),
-            ("cmp-ops", "Foo", "lessThanEq",    [12, 17], "(con Prelude.True .ValList)" ),
-            ("cmp-ops", "Foo", "lessThanEq",    [17, 12], "(con Prelude.False .ValList)"),
-            ("cmp-ops", "Foo", "greaterThan",   [12, 12], "(con Prelude.False .ValList)"),
-            ("cmp-ops", "Foo", "greaterThan",   [12, 17], "(con Prelude.False .ValList)"),
-            ("cmp-ops", "Foo", "greaterThan",   [17, 12], "(con Prelude.True .ValList)" ),
-            ("cmp-ops", "Foo", "greaterThanEq", [12, 12], "(con Prelude.True .ValList)" ),
-            ("cmp-ops", "Foo", "greaterThanEq", [12, 17], "(con Prelude.False .ValList)"),
-            ("cmp-ops", "Foo", "greaterThanEq", [17, 12], "(con Prelude.True .ValList)" ),
-            ("cmp-ops", "Foo", "equals",        [12, 12], "(con Prelude.True .ValList)" ),
-            ("cmp-ops", "Foo", "equals",        [12, 17], "(con Prelude.False .ValList)"),
-            ## ("cmp-ops", "Foo", "myTrue",        [],       "(con Prelude.True .ValList)" ),
+            ("cmp-ops", "Foo", "lessThan",      [12, 12], False),
+            ("cmp-ops", "Foo", "lessThan",      [12, 17], True ),
+            ("cmp-ops", "Foo", "lessThan",      [17, 12], False),
+            ("cmp-ops", "Foo", "lessThanFive",  [17],     False),
+            ("cmp-ops", "Foo", "lessThanEq",    [12, 12], True ),
+            ("cmp-ops", "Foo", "lessThanEq",    [12, 17], True ),
+            ("cmp-ops", "Foo", "lessThanEq",    [17, 12], False),
+            ("cmp-ops", "Foo", "greaterThan",   [12, 12], False),
+            ("cmp-ops", "Foo", "greaterThan",   [12, 17], False),
+            ("cmp-ops", "Foo", "greaterThan",   [17, 12], True ),
+            ("cmp-ops", "Foo", "greaterThanEq", [12, 12], True ),
+            ("cmp-ops", "Foo", "greaterThanEq", [12, 17], False),
+            ("cmp-ops", "Foo", "greaterThanEq", [17, 12], True ),
+            ("cmp-ops", "Foo", "equals",        [12, 12], True ),
+            ("cmp-ops", "Foo", "equals",        [12, 17], False),
+            ## ("cmp-ops", "Foo", "myTrue",        [],       True ),
            ]
 
     unimplemented = [
@@ -102,7 +112,7 @@ def test_execution(file, mod, fct, args, expected):
 
     assert exit_code == toPlutusExitCode(expected)
     if 0 == toPlutusExitCode(expected):
-        assert extract_exec_output(output) == str(expected)
+        assert extract_exec_output(output) == toPlutusReturn(expected)
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('translation'))
 def test_translation(file, mod, fct, args, expected):
@@ -112,10 +122,7 @@ def test_translation(file, mod, fct, args, expected):
     template["blocks"][0]["transactions"][0]["function"] = fct
     template["blocks"][0]["transactions"][0]["arguments"] = map(hex, args)
     template["blocks"][0]["results"][0]["status"] = toIeleExitStatus(expected)
-    if toIeleExitStatus(expected) == "":
-        template["blocks"][0]["results"][0]["out"] = [hex(expected)]
-    else:
-        template["blocks"][0]["results"][0]["out"] = []
+    template["blocks"][0]["results"][0]["out"] = toIeleReturn(expected)
 
     iele_test = { mod : template }
 

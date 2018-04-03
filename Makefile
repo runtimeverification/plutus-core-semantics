@@ -91,7 +91,7 @@ test-failing: test-erc20 test-verify test-verify-commented
 execution_tests:=$(wildcard test/execution/*.plc)
 erc20_tests:=$(wildcard test/erc20/*.plc)
 
-translate_plc:=test/arith-ops.plc
+translate_plc:=test/arith-ops.plc test/cmp-ops.plc
 translate-to-iele: $(translate_plc:.plc=.iele)
 test-erc20: $(erc20_tests:=.test)
 
