@@ -83,7 +83,9 @@ def generate_tests(type):
            ]
 
     unimplemented = [
-            ("ctor-duplicate", "Duplicate", "one", [], None ),
+            ("ctor-duplicate",               "Duplicate", "one",  [], None),
+            ("module-call-private-indirect", "Foo",       "bar", [0],   19),
+            ("module-call-private-indirect", "Foo",       "baz", [0],   23),
            ]
 
     if type == 'translation':

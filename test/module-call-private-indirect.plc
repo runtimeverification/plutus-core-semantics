@@ -1,0 +1,22 @@
+(program
+
+  (module Foo (import) (export () (bar baz))
+
+    (data MyFoo () (Bar) (Baz))
+
+    (declare fooToInt (fun (con Foo.MyFoo) (integer)))
+    (define fooToInt
+      (lam x
+        (case x
+          (MyFoo.Bar () 19)
+          (MyFoo.Baz () 23))))
+
+    (declare bar (fun (integer) (integer)))
+    (define bar (lam dummy [Foo.fooToInt (con MyFoo.Bar)]))
+
+    (declare baz (fun (integer) (integer)))
+    (define baz (lam dummy [Foo.fooToInt (con MyFoo.Baz)]))
+
+  )
+
+)
