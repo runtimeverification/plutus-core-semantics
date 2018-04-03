@@ -56,7 +56,7 @@ module PLUTUS-CORE-EXECUTION
 
   rule #stringToName(S:String)    => #parseToken("LowerName", S)
   rule #stringToModName(S:String) => #parseToken("UpperName", S)
-  rule #stringToCon(S:String)     => #parseToken("Con", S)
+  rule #stringToCon(S:String)     => #parseToken("UpperName", S)
 
   syntax Prim ::= "#primTrue" | "#primFalse"
   rule #primTrue
