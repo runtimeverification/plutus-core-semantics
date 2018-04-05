@@ -78,7 +78,7 @@ typing:      .build/typing/plutus-core-kompiled/interpreter
 
 test: test-passing test-failing
 test-passing: translate-to-iele
-	bash -c 'eval $(opam config env) && . bin/activate && pytest -n 4'
+	bash -c 'eval $(opam config env) && . bin/activate && pytest --failed-first -n 4'
 test-failing: test-erc20 test-verify test-verify-commented
 
 execution_tests:=$(wildcard test/execution/*.plc)
