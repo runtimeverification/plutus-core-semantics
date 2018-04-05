@@ -1,0 +1,16 @@
+(program
+
+  (module Recursion (import) (export () (sumToN))
+
+    (declare sumToN (fun (integer) (fun (integer) (integer))))
+    (define sumToN
+      (lam n (lam s
+        (case (builtin equalsInteger n 0)
+          (Prelude.True  () s)
+          (Prelude.False ()
+            [[Recursion.sumToN (builtin subtractInteger n 1)]
+                               (builtin addInteger n s)])))))
+
+  )
+
+)
