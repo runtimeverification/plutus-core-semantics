@@ -9,4 +9,11 @@
     }
 )
 
+base_dir="$(cd $(dirname $BASH_SOURCE)/.. && pwd -P)"
+build_dir="$base_dir/.build"
+release_dir="$build_dir/k/k-distribution/target/release/k"
+export PATH="$release_dir/lib/native/linux:$release_dir/lib/native/linux64:$release_dir/bin/:$PATH"
+
+eval $(opam config env)
+
 . "$(dirname "$BASH_SOURCE")/../.build/virtualenv/bin/activate"

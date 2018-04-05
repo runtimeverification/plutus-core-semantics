@@ -78,7 +78,7 @@ typing:      .build/typing/plutus-core-kompiled/interpreter
 
 test: test-passing test-failing
 test-passing: translate-to-iele
-	bash -c 'eval $(opam config env) && . bin/activate && pytest --failed-first -n 4'
+	bash -c '. bin/activate && pytest --failed-first -n 4'
 test-failing: test-erc20 test-verify test-verify-commented
 
 execution_tests:=$(wildcard test/execution/*.plc)
@@ -89,7 +89,8 @@ translate-to-iele: $(translate_plc:.plc=.iele)
 test-erc20: $(erc20_tests:=.test)
 
 test/%.iele: test/%.plc .build/translation/plutus-core-kompiled/interpreter
-	./bin/kplc run translation $< | bin/config-to-iele > $@
+	bash -c 'source bin/activate                                          && \
+	         ./bin/kplc run translation $< | bin/config-to-iele > $@'
 
 test-verify: .build/execution/plutus-core-kompiled/interpreter
 	./bin/kplc prove execution verification/int-addition_spec.k             verification/dummy.plcore
