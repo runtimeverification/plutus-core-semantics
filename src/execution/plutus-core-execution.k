@@ -132,7 +132,7 @@ module PLUTUS-CORE-EXECUTION
   rule ( lam X1:Var X2:Var XS:VarList M:Tm )
     => ( lam X1 .VarList ( lam X2 XS M ) )
 
-  syntax Val ::= closure(Map, Var, Tm)
+  syntax ValResult ::= closure(Map, Var, Tm)
 
   // Wrapper around function application in order to make application strict
   syntax Tm ::= app(Tm, Tm)                                            [strict]
@@ -144,9 +144,9 @@ module PLUTUS-CORE-EXECUTION
     [structural]
 
   rule
-    <k> _:Val ~> (Rho:Map => .K) ... </k>
+    <k> _:ValResult ~> (Rho:Map => .K) ... </k>
     <lenv> _ => Rho </lenv>
-    [structural, owise]
+    [structural]
 
   rule
     <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
