@@ -81,8 +81,9 @@ def generate_tests(type):
             ("cmp-ops", "Foo", "equals",        [12, 17], False),
             ## ("cmp-ops", "Foo", "myTrue",        [],       True ),
 
-            ("case-simple", "SimpleCase", "simpleCase",  [13], 19),
-            ("case-simple", "SimpleCase", "simpleCase", [-13], 23),
+            ("case-simple", "SimpleCase", "simpleCase", [13],    19),
+            ("case-simple", "SimpleCase", "simpleCase", [-13],   23),
+            ("recursion",   "Recursion",  "sumToN",     [10, 0], 55),
            ]
 
     unimplemented = [
