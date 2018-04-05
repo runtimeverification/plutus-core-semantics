@@ -141,17 +141,14 @@ module PLUTUS-CORE-EXECUTION
   rule
     <k> ( lam X:Var M:Tm ):Tm => closure(Rho, X, M) ... </k>
     <lenv> Rho </lenv>
-    [structural]
 
   rule
     <k> _:ValResult ~> (Rho:Map => .K) ... </k>
     <lenv> _ => Rho </lenv>
-    [structural]
 
   rule
     <k> app(closure(Rho, X, M), V:Val) => M ~> Rho' ... </k>
     <lenv> Rho' => Rho[X <- V] </lenv>
-    [structural]
 
   rule
     <k> X:Var => V ... </k>
