@@ -139,6 +139,20 @@ module PLUTUS-CORE-TRANSLATION
        </functions>
        when #nameToGlobalName(N) ==K GN
 
+  // For recursion, function name is the same as Name we are loading
+  rule <functions>
+         ...
+          <function>
+            <name> GN </name>
+            <jumpId> JI </jumpId>
+            <k> #loadOperand(MN:ModName . N:Name, LN:LocalName)
+             => #allocBind(LN, JI, .Map)
+             ... </k>
+            ...
+          </function>
+       </functions>
+       when #nameToGlobalName(N) ==K GN
+
   // Case Statements
   // ---------------
 
