@@ -1,7 +1,0 @@
-Execution
-=========
-
-- Remove let, tests that involve let
-- `define` can only take in a `Val` not a `Tm`. Some tests probably will fail
-  but first we need to rewrite all tests to be syntactically valid now.
-- Check if [test/execution/import-nonexistent.expected] should get stuck?
