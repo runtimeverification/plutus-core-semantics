@@ -181,16 +181,18 @@ module PLUTUS-CORE-COMMON
   // Type annotations for terms. Missing from prelude?
   syntax MDec       ::= "(" "declare" Name Ty ")"
 
-  syntax Val        ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal),
+  syntax ValResult  ::= "(" "con" QualC ValList ")"    [prefer, klabel(conVal),
                                                           format(%1%2 %3 %4%5)]
                       | "(" "failure" ")"
                       | "(" "success" Val ")"         [prefer, klabel(succVal)]
                       | "(" "bind" Val Var Tm ")"     [prefer, klabel(bindVal)]
-                      | "(" "lam" VarList Tm ")"                       [binder]
                       | Int
                       | ByStr
 
-  syntax KResult    ::= Val
+  syntax Val        ::= ValResult
+                      | "(" "lam" VarList Tm ")"                       [binder]
+
+  syntax KResult    ::= ValResult
   syntax KVariable  ::= Var | TyVar
 
   syntax String     ::= #toStringVerbatim(ByStr)   [ function
