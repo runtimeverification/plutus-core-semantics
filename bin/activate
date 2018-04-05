@@ -14,6 +14,9 @@ build_dir="$base_dir/.build"
 release_dir="$build_dir/k/k-distribution/target/release/k"
 export PATH="$release_dir/lib/native/linux:$release_dir/lib/native/linux64:$release_dir/bin/:$PATH"
 
+export PLUTUS_PREFIX="$build_dir/local"
+export LD_LIBRARY_PATH="$build_dir/local/lib/:$LDPATH"
+
 eval $(opam config env)
 
 . "$(dirname "$BASH_SOURCE")/../.build/virtualenv/bin/activate"

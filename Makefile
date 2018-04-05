@@ -41,12 +41,17 @@ ocaml-deps:
 	eval $$(opam config env) \
 	opam install --yes mlgmp zarith uuidm
 
-iele: $(iele_submodule)/.git
-	bash -c '   eval $(opam config env)  \
-            && . bin/activate            \
-            && cd $(iele_submodule)      \
-            && make deps                 \
-            && eval $$(opam config env)  \
+iele: $(iele_submodule)/.git ocaml-deps
+	bash -c '  . bin/activate                                                \
+            && cd $(iele_submodule)                                          \
+            && (   cd .build/secp256k1                                       \
+                && ./autogen.sh                                              \
+                && ./configure --prefix "$$PLUTUS_PREFIX"                    \
+                               --enable-module-recovery --enable-module-ecdh \
+                               --enable-experimental                         \
+                && make                                                      \
+                && make install)                                             \
+            && make deps                                                     \
             && make'
 
 # Build
