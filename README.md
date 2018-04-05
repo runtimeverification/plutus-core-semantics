@@ -22,14 +22,14 @@ Issues
 
 1. Typo in the `abs` rule for `checks`, lower case `k` should be capital `K`.
 2. In `con` rule for `checks`, the condition with `forall` is not syntactically valid (does not parse as a `Type`). The application should be wrapped in `con`?
- - Answer: no, this judgment is not supposed to parse as a `Type`, it is just supposed to look like a `Type`
+   > Answer: no, this judgment is not supposed to parse as a `Type`, it is just supposed to look like a `Type`
 3. What do the Oxford (semantic) brackets mean?
- - Answer: `[[_]]` is shorthand for that unique `U` such that `T => U` (ie `T` evaluates to `U`)
+   > Answer: `[[_]]` is shorthand for that unique `U` such that `T => U` (ie `T` evaluates to `U`)
 4. In the CK machine, the ~5th to last rule has syntax of the form `case on ... of ...` which doesn't seem to be defined anywhere
 5. 2nd sentence of Section IV: "... executes and leads true ..." should either be "leaves" or "leads to"
 
 6. Just to confirm, a program like `(define r [f 3])` is not valid?
- - Answer: No this is not valid. Execution is done with validator/redeemer and bind. Is there an example of this?
+   > Answer: No this is not valid. Execution is done with validator/redeemer and bind. Is there an example of this?
 
 7. The `S'` is confusing in `case` rule for checks. Can you elaborate what this refers to?
 8. \bar{alt} checks c \bar{T} used in a few place (`con-valid-local` for example) but not defined anywhere as far as I can tell
