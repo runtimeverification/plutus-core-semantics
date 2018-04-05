@@ -569,7 +569,7 @@ module PLUTUS-CORE-TRANSLATION
   // and pass it to an external #qualCHolder function which puts it together.
   syntax QualC ::= #qualCHolder(K, K)                                  [function]
   rule #mkQualC(MN, C) => #qualCHolder(#parseToken("UpperName", MN), #parseToken("UpperName", C))
-  rule #qualCHolder(MN, C) => MN . C
+  rule #qualCHolder(MN, C) => (MN . C):QualC
 
   // Converting Names, Vars to GlobalNames, LocalNames, Strings
   // ----------------------------------------------------------
