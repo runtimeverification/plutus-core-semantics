@@ -492,9 +492,11 @@ module PLUTUS-CORE-TRANSLATION
   
   // TODO: We should be using `Block`s instead of `Instructions` in some places
   // TODO: Rename to `#label`
-  
+
+  // "Cheats" for making generating some tokens easier
+  // -------------------------------------------------
   syntax Instruction ::= #label(IeleName)                         [format(%n%3:)]
-  syntax Instruction ::= #comment(String)                         [format(%n// %3)]
+  syntax Instruction ::= #comment(String)                       [format(%n// %3)]
 
   // Converting strings to {Iele,Local,Global}Name and Vars
   // ------------------------------------------------------
