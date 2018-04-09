@@ -20,7 +20,9 @@ module PLUTUS-CORE-TRANSLATION
   
   configuration
     <T>
-      <plutus> $PGM:Prg ~> #createDispatch:K ~> #moveToContractCell </plutus>
+      <plutus> $PGM:Prg ~> #createDispatch:K ~> #translated? ~> #functionsToIele
+                        ~> #dataTypesToIele ~> #moveToContractCell
+      </plutus>
       <iele> #staticAlloc
              #staticAppendArg
              .TopLevelDefinitions
@@ -126,7 +128,6 @@ module PLUTUS-CORE-TRANSLATION
   // ---------------
 
   rule #useOperand(QN:QualN, LN) => LN
-  // TODO: test this using IELE semantics
   rule <functions>
          ...
           <function>
@@ -161,27 +162,30 @@ module PLUTUS-CORE-TRANSLATION
   // -----------------
 
   // For each constructor, we allocate a "constructor ID"
+  // We ignore the KSigList since we don't need typing information
 
-  rule <plutus> ( data TYCON ( .KSigList ) ( CON .TyList ) ALTS )
-             => ( data TYCON ( .KSigList )                 ALTS )
+  rule <plutus> ( data TYCON ( KSL ) ( CON TL ) ALTS )
+             => ( data TYCON ( KSL )            ALTS )
                 ...
        </plutus>
        <modName> MN:ModName </modName>
-       <dataType> _:Map ( .Map => MN . CON |-> !ID:Int )
-       </dataType>
+       <dataType> ... .Map => MN . CON |-> !ID:Int ... </dataType>
 
-  rule <plutus> ( data TYCON ( .KSigList ) .AltList ) => .K
-                ...
-       </plutus>
+  rule <plutus> ( data TYCON ( KSL ) .AltList ) => .K ... </plutus>
 
   // TODO: Since `#useOperand` is a function, we cannot just use the
   // construct id from `<dataType>`
 
-  rule #useOperand((con MN:ModName . TYCON .ValList), LN)
-    => LN
+  // Unfortunately, ValList are not subsorts of TmLists so we need two separate rules
+  rule #useOperand((con MN:ModName . TYCON TL:TmList),  LN) => LN
+  rule #useOperand((con MN:ModName . TYCON VL:ValList), LN) => LN
 
-  rule <k> #loadOperand((con MN:ModName . TYCON .ValList), LN) => LN = CID .Instructions  ... </k>
-       <dataType> MN.TYCON |-> CID ...  </dataType>
+  rule #loadOperand((con QC .ValList), LN) => LN = call #qualCToGlobalName(QC)(.Operands) .Instructions
+  rule #loadOperand((con QC V:Val), LN)
+    => #concatInsList( #loadOperand(V, #intToLocalName(!N))
+                     , LN = call #qualCToGlobalName(QC)(#useOperand(V, #intToLocalName(!N)))
+                       .Instructions
+                     )
 
   // Case Statements
   // ---------------
@@ -310,6 +314,7 @@ module PLUTUS-CORE-TRANSLATION
   syntax Tm     ::= #freeVar(Var, Int)
   syntax Tm     ::= #replaceFreeVar(Tm, Var, Int)                      [function]
   syntax ClList ::= #replaceFreeVarClL(ClList, Var, Int)               [function]
+  syntax TmList ::= #replaceFreeVarTL(TmList, Var, Int)                [function]
   
   rule #replaceFreeVar(X:Var, X    , INDEX) => #freeVar(X, INDEX)
   rule #replaceFreeVar(X:Var, Y:Var, INDEX) => X:Var               when (X:Var =/=K Y:Var)
@@ -323,15 +328,23 @@ module PLUTUS-CORE-TRANSLATION
     => [#replaceFreeVar(T1, X, INDEX) #replaceFreeVar(T2, X, INDEX)]
   rule #replaceFreeVar((builtin N T1 T2), Y:Var, INDEX)
     => (builtin N #replaceFreeVar(T1, Y, INDEX) #replaceFreeVar(T2, Y, INDEX))
+
   rule #replaceFreeVar((case T CLS), Y:Var, INDEX)
     => (case #replaceFreeVar(T, Y, INDEX) #replaceFreeVarClL(CLS, Y, INDEX))
-  rule #replaceFreeVar((con MN:ModName . TYCON .ValList), Y, INDEX)
-    => (con MN . TYCON .ValList)
-
   rule #replaceFreeVarClL(.ClList, X, INDEX) => .ClList
   rule #replaceFreeVarClL((QC (VS) T) CLS, X, INDEX)
     => (QC (VS) #replaceFreeVar(T, X, INDEX)) #replaceFreeVarClL(CLS, X, INDEX)
 
+  // When replacing free vars in a TermList, we replace the free var for all terms in that list.
+  // If the list contains only Vals, then there will be no free vars, so we just return the ValList
+
+  rule #replaceFreeVar((con MN:ModName . TYCON TL:TmList), Y, INDEX)
+    => (con MN . TYCON #replaceFreeVarTL(TL, Y, INDEX))
+  rule #replaceFreeVar((con MN:ModName . TYCON VL:ValList), Y, INDEX)
+    => (con MN . TYCON VL)
+  rule #replaceFreeVarTL(.TmList, X, INDEX) => .TmList
+  rule #replaceFreeVarTL(T TL, X, INDEX)
+    => #replaceFreeVar(T, X, INDEX) #replaceFreeVarTL(TL, X, INDEX)
   
   // For `#freeVar`s `#loadOperand` directly uses the function's parameter.
   // TODO: Make use of INDEX to prevent collisions in case of non-unique argument names.
@@ -521,8 +534,22 @@ module PLUTUS-CORE-TRANSLATION
     => #makeArgsList(NUMARGS -Int 1, #mkLN("param" +String Int2String(NUMARGS)), OPS)
     when NUMARGS >Int 0
 
-  // Finally, convert `<function>`s to IELE syntax
-  rule <functions>
+  // Checks that all functions have been converted
+
+  syntax K ::= "#translated?"
+  rule <plutus> #translated? => .K ... </plutus>
+       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
+       <totalReadyForDispatch> TF </totalReadyForDispatch>
+       <totalFunctions> TF </totalFunctions>
+
+  // Convert functions to IELE
+
+  syntax K ::= "#functionsToIele"
+
+  // TODO: streamline converting public and private functions to IELE
+  // Convert public `<function>`s to IELE syntax
+  rule <plutus> #functionsToIele ... </plutus>
+       <functions>
          <function>
            <name>   GN:GlobalName         </name>
            <params> VARS:VarList          </params>
@@ -541,7 +568,9 @@ module PLUTUS-CORE-TRANSLATION
        <totalFunctions> TF </totalFunctions>
        when #in(GN, NL)
 
-  rule <functions>
+  // Convert private `<function>`s to IELE syntax
+  rule <plutus> #functionsToIele ... </plutus>
+       <functions>
          <function>
            <name>   GN:GlobalName         </name>
            <params> VARS:VarList          </params>
@@ -555,17 +584,32 @@ module PLUTUS-CORE-TRANSLATION
            => (define GN (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
        <exports> NL </exports>
-       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
-       <totalReadyForDispatch> TF </totalReadyForDispatch>
-       <totalFunctions> TF </totalFunctions>
        when notBool #in(GN, NL)
 
-  // When there are no functions left, return a top-level contract
+  rule <plutus> #functionsToIele => .K ... </plutus>
+       <functions> .Bag </functions>
+
+  // When there are no functions left, add IELE functions for each constructor
+
+  syntax K ::= "#dataTypesToIele"
+  rule <plutus> #dataTypesToIele ... </plutus>
+       <dataType> ... QC |-> CID:Int => .Map ... </dataType>
+       <iele> TLDS:TopLevelDefinitions
+           => define #qualCToGlobalName(QC) ( .LocalNames ) {
+                ret CID
+                .Instructions .LabeledBlocks
+              }
+              TLDS
+       </iele>
+
+  rule <plutus> #dataTypesToIele => .K ... </plutus>
+       <dataType> .Map </dataType>
+
+  // When there are no functions or dataTypes left, return a top-level contract
 
   syntax K ::= "#moveToContractCell"
-  rule <functions>
-         .Bag
-       </functions>
+  rule <functions> .Bag </functions>
+       <dataType> .Map </dataType>
        <plutus> #moveToContractCell => .K ... </plutus>
        <iele> TLDS:TopLevelDefinitions => .TopLevelDefinitions </iele>
        <ieleContract> _ => contract #mkIN("Foo") { TLDS } </ieleContract>
@@ -623,7 +667,10 @@ module PLUTUS-CORE-TRANSLATION
   // ----------------------------------------------------------
 
   syntax GlobalName ::= #nameToGlobalName(Name)                        [function]
-  rule #nameToGlobalName(N:Name) => #mkGN(#nameToString(N:Name))
+                      | #qualCToGlobalName(QualC)                      [function]
+  rule #nameToGlobalName(N:Name) => #mkGN(#nameToString(N))
+  rule #qualCToGlobalName(MN . C)
+    => #mkGN(#modNameToString(MN) +String "." +String #conToString(C))
  
   syntax LocalName ::= #varToLocalName(Var)                            [function]
   rule #varToLocalName(V:Var) => #mkLN(#varToString(V))
@@ -634,6 +681,9 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax String ::= #nameToString(Name)     [function, hook(STRING.token2string)]
                   | #varToString(Var)       [function, hook(STRING.token2string)]
+                  | #conToString(Con)       [function, hook(STRING.token2string)]
+                  | #modNameToString(ModName)
+                                            [function, hook(STRING.token2string)]
 
   // Helpers for fresh variables
   // ---------------------------
