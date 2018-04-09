@@ -93,12 +93,15 @@ def generate_tests(type):
             ("cmp-ops", "Foo", "greaterThanEq", [17, 12], True ),
             ("cmp-ops", "Foo", "equals",        [12, 12], True ),
             ("cmp-ops", "Foo", "equals",        [12, 17], False),
-            ## ("cmp-ops", "Foo", "myTrue",        [],       True ),
+            # ("cmp-ops", "Foo", "myTrue",        [],       True ),
 
             ("case-simple", "SimpleCase", "boolean",        [13],  19),
             ("case-simple", "SimpleCase", "boolean",        [-13], 23),
             ("case-simple", "SimpleCase", "nonExhaustive",  [13],  19),
             ("case-simple", "SimpleCase", "nonExhaustive",  [-13], ExitCode_NonExhaustive),
+
+            # ("case-simple", "SimpleCase", "testMyNat", [7],    53),
+            # ("case-simple", "SimpleCase", "testMyNat", [-4],   12),
 
             ("recursion",   "Recursion",  "sumToN",     [10, 0], 55),
            ]
