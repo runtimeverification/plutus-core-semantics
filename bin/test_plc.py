@@ -16,18 +16,32 @@ def base(*args):
 def bin(*args):
     return base('bin', *args)
 
-class ExitCode_NotPublic: pass
-class ExitCode_DivByZero: pass
+class ExitCode_NotPublic    : pass
+class ExitCode_DivByZero    : pass
+class ExitCode_NonExhaustive: pass
 
 def toIeleExitStatus(expected):
-    if   expected == ExitCode_NotPublic: return "0x01"
-    elif expected == ExitCode_DivByZero: return "0x04"
-    else                               : return ""
+    # Exceptions from iele.md
+    FUNC_NOT_FOUND      = hex(1)
+    FUNC_WRONG_SIG      = hex(2)
+    CONTRACT_NOT_FOUND  = hex(3)
+    USER_ERROR          = hex(4)
+    OUT_OF_GAS          = hex(5)
+    ACCT_COLLISION      = hex(6)
+    OUT_OF_FUNDS        = hex(7)
+    CALL_STACK_OVERFLOW = hex(8)
+    CONTRACT_INVALID    = hex(9)
+
+    if   expected == ExitCode_NotPublic     : return FUNC_NOT_FOUND
+    elif expected == ExitCode_DivByZero     : return USER_ERROR
+    elif expected == ExitCode_NonExhaustive : return USER_ERROR
+    else                                    : return ""
 
 def toPlutusExitCode(expected):
-    if   expected == ExitCode_NotPublic: return 1
-    elif expected == ExitCode_DivByZero: return 1
-    else                               : return 0
+    if   expected == ExitCode_NotPublic     : return 1
+    elif expected == ExitCode_DivByZero     : return 1
+    elif expected == ExitCode_NonExhaustive : return 1
+    else                                    : return 0
 
 def toIeleReturn(expected):
     if type(expected) is int: return [hex(expected)]
@@ -81,8 +95,10 @@ def generate_tests(type):
             ("cmp-ops", "Foo", "equals",        [12, 17], False),
             ## ("cmp-ops", "Foo", "myTrue",        [],       True ),
 
-            ("case-simple", "SimpleCase", "simpleCase", [13],    19),
-            ("case-simple", "SimpleCase", "simpleCase", [-13],   23),
+            ("case-simple", "SimpleCase", "simpleCase",    [13],    19),
+            ("case-simple", "SimpleCase", "simpleCase",    [-13],   23),
+            ("case-simple", "SimpleCase", "nonExhaustive", [13],    19),
+            ("case-simple", "SimpleCase", "nonExhaustive", [-13],   ExitCode_NonExhaustive),
             ("recursion",   "Recursion",  "sumToN",     [10, 0], 55),
            ]
 
