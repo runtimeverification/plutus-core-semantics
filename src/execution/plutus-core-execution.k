@@ -19,6 +19,7 @@ module PLUTUS-CORE-EXECUTION
       <k> $PGM:Prg
        ~> #main($MAINMOD:UpperName, $MAINFCT:LowerName, $MAINARGS:TmList)
       </k>
+      <exit-code exit=""> 1 </exit-code>
       <lenv> .Map </lenv>
       <genv> .Map </genv>
       <modules>
@@ -345,6 +346,9 @@ module PLUTUS-CORE-EXECUTION
            <exportTm> .NameList:NameList </exportTm>
          </Module>
        </modules>
+
+  rule <k> V:Val </k>
+       <exit-code> 1 => 0 </exit-code>
 
   /***************************************************************************/
   /***********************   AUXILIARY FUNCTIONS  ****************************/
