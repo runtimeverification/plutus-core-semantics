@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Arguement parsing
+# =================
+
+clean=false
+deps=false
+while [[  $# -ne 0 ]]; do case "$1" in
+    clean) clean=true ;;
+     deps) deps=true  ;;
+        *) break      ;;
+esac; shift; done
+
+            targets=( )
+! $deps  || targets+=( deps )
+            targets+=( execution translation translate-to-iele )
+
+# Main
+# ====
+
+! $clean || rm -rf .build/
+source bin/activate
+make -j4 "${targets[@]}"
+exec pytest -n 4 "$@"
