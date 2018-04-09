@@ -1,6 +1,6 @@
 (program
 
-  (module SimpleCase (import) (export () (simpleCase nonExhaustive))
+  (module SimpleCase (import) (export () (simpleCase nonExhaustive fooBarOrKungFu))
 
     (declare simpleCase (fun (integer) (integer)))
     (define simpleCase
@@ -14,6 +14,26 @@
       (lam x
         (case (builtin equalsInteger x 13)
           (Prelude.True  () 19))))
+
+    (data Foo () (Kung) (Bar))
+
+    (declare fooToInt (fun (con SimpleCase.Foo) (integer)))
+    (define fooToInt
+      (lam x
+        (case x
+          (SimpleCase.Bar  () 7)
+          (SimpleCase.Kung () 11))))
+
+    (declare intToFoo (fun (integer) (con SimpleCase.Foo)))
+    (define intToFoo
+      (lam x
+        (case (builtin equalsInteger 3 x)
+          (Prelude.True  () (con SimpleCase.Bar))
+          (Prelude.False () (con SimpleCase.Kung)))))
+
+    (declare fooBarOrKungFu (fun (integer) (integer)))
+    (define fooBarOrKungFu
+      (lam x [ SimpleCase.fooToInt [ SimpleCase.intToFoo x]])) 
 
   )
 
