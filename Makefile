@@ -21,14 +21,12 @@ clean:
 # Dependencies
 # ------------
 
-dep_files:=$(k_submodule)/.git
-
-deps: $(dep_files) ocaml-deps $(k_bin)/krun iele
+deps: $(k_bin)/krun ocaml-deps iele
 
 %/.git: .git/HEAD
 	git submodule update --recursive --init -- $(dir $*)
 
-$(k_bin)/krun:
+$(k_bin)/krun: $(k_submodule)/.git
 	cd $(k_submodule) \
 		&& mvn package -q -DskipTests
 
@@ -60,7 +58,7 @@ iele: $(iele_submodule)/.git ocaml-deps
 # Allow expansion of $* in wildcard; See https://stackoverflow.com/questions/15948822/directory-wildcard-in-makefile-pattern-rule
 .SECONDEXPANSION:
 
-.build/%/plutus-core-kompiled/interpreter: src/%/plutus-core.k $(wildcard src/*.k) $$(wildcard src/$$*/*.k) $(dep_files)
+.build/%/plutus-core-kompiled/interpreter: src/%/plutus-core.k $(wildcard src/*.k) $$(wildcard src/$$*/*.k) $(k_bin)/krun
 	eval $$(opam config env) \
 	$(k_bin)/kompile --debug --verbose --directory .build/$*/ \
 					 --syntax-module PLUTUS-CORE-SYNTAX src/$*/plutus-core.k
