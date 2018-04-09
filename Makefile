@@ -39,6 +39,10 @@ ocaml-deps:
 	eval $$(opam config env) \
 	opam install --yes mlgmp zarith uuidm
 
+# Setting BYTE=true tells IELE to build staticly, avoiding incorrect setting
+# of rpath in IELE's build scripts.
+# We set `make deps`'s input to `/dev/null` to prevent IELE's opam
+# invocation from asking us to modify our bashrc
 iele: $(iele_submodule)/.git ocaml-deps
 	bash -c '  . bin/activate                                                \
             && cd $(iele_submodule)                                          \
@@ -49,8 +53,8 @@ iele: $(iele_submodule)/.git ocaml-deps
                                --enable-experimental                         \
                 && make                                                      \
                 && make install)                                             \
-            && make deps                                                     \
-            && make'
+            && make BYTE=yes deps </dev/null                                 \
+            && make BYTE=yes '
 
 # Build
 # -----

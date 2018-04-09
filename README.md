@@ -5,17 +5,15 @@ This repository will contains the K Framework implementation of the core
 language of the Plutus language ([a prototype of Plutus can be viewed
 here](https://github.com/input-output-hk/plutus-prototype)).
 
-Installing
-----------
+Usage
+-----
 
-To build Plutus, run: `make build-deps && make build-passing`.
+The `build` script is responsible for building and running tests.
+For the first build, run `./build deps [options for pytest]`.
+This will build all dependencies, including K, IELE and its dependencies,
+and a `virtualenv` with `pytest` installed.
 
-To run all tests, run: `make test-passing`.
-
-To run test with `pytest` directly, we require that some environment setup
-is done. If your shell is `bash`, `source .bin/activate`.
-`.bin/activate` does not currently support other shells. You can work around this
-for example, in `zsh` by running: `exec bash -c 'source .bin/activate ; exec zsh`
+For subsequent builds run `./build [options for pytest]`.
 
 To Do
 -----

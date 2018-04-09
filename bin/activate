@@ -19,8 +19,8 @@ PATH="$release_dir/bin/:$PATH"
 export PATH
 
 export PLUTUS_PREFIX="$build_dir/local"
-export LD_LIBRARY_PATH="$build_dir/local/lib/:$LDPATH"
+export LD_LIBRARY_PATH="$PLUTUS_PREFIX/lib/:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="$PLUTUS_PREFIX/lib/pkgconfig/:$PKG_CONFIG_PATH"
 
 eval $(opam config env)
-
 . "$build_dir/virtualenv/bin/activate"
