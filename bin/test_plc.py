@@ -31,6 +31,8 @@ def toPlutusExitCode(expected):
 
 def generate_tests(type):
     passing = [
+            ("arith-ops", "Foo", "notPublic",   [19, 23],            ExitCode_NotPublic),
+
             ("arith-ops", "Foo", "add",         [19, 23],            42  ),
             ("arith-ops", "Foo", "addFive",     [12],                17  ),
             ("arith-ops", "Foo", "addFiveApp",  [6],                 11  ),
@@ -41,18 +43,15 @@ def generate_tests(type):
             ("arith-ops", "Foo", "div",         [437, 19],           23  ),
             ("arith-ops", "Foo", "div",         [440, 19],           23  ),
             ("arith-ops", "Foo", "div",         [0,   19],           0   ),
+            ("arith-ops", "Foo", "div",         [19, 0],             ExitCode_DivByZero),
             ("arith-ops", "Foo", "mod",         [440, 19],           3   ),
             ("arith-ops", "Foo", "mod",         [-440, 19],          -3  ),
             ("arith-ops", "Foo", "mod",         [0, 19],             0   ),
+            ("arith-ops", "Foo", "mod",         [19, 0],             ExitCode_DivByZero),
             ("arith-ops", "Foo", "one",         [],                  1   ),
             ("arith-ops", "Foo", "complex",     [5, 4, 7, 11, 2, 3], 7   ),
             ("arith-ops", "Foo", "complex",     [7, 4, 7, 11, 2, 3], 6   ),
 
-           ]
-    exec_no_error_code = [
-            ("arith-ops", "Foo", "notPublic",   [19, 23],            ExitCode_NotPublic),
-            ("arith-ops", "Foo", "div",         [19, 0],             ExitCode_DivByZero),
-            ("arith-ops", "Foo", "mod",         [19, 0],             ExitCode_DivByZero),
            ]
     tr_no_alg_data_types  = [
             ("cmp-ops", "Foo", "lessThan",      [12, 12], "(con Prelude.False .ValList)"),
@@ -75,12 +74,10 @@ def generate_tests(type):
 
     if type == 'translation':
         return (passing                                                                    +
-                exec_no_error_code                                                         +
                 map(pytest.mark.xfail(reason="no alg data types" ), tr_no_alg_data_types)
                )
     if type == 'execution':
         return (passing                                                                    +
-                map(pytest.mark.xfail(reason="exit code not impl"), exec_no_error_code)    +
                 tr_no_alg_data_types
                )
 
