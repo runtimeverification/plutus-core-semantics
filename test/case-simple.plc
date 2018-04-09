@@ -1,9 +1,9 @@
 (program
 
-  (module SimpleCase (import) (export () (simpleCase nonExhaustive fooBarOrKungFu))
+  (module SimpleCase (import) (export () (boolean nonExhaustive fooBarOrKungFu))
 
-    (declare simpleCase (fun (integer) (integer)))
-    (define simpleCase
+    (declare boolean (fun (integer) (integer)))
+    (define boolean
       (lam x
         (case (builtin equalsInteger x 13)
           (Prelude.True  () 19)
