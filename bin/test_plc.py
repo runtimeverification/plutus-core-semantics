@@ -99,8 +99,6 @@ def generate_tests(type):
             ("case-simple", "SimpleCase", "boolean",        [-13], 23),
             ("case-simple", "SimpleCase", "nonExhaustive",  [13],  19),
             ("case-simple", "SimpleCase", "nonExhaustive",  [-13], ExitCode_NonExhaustive),
-            ("case-simple", "SimpleCase", "fooBarOrKungFu", [3],    7),
-            ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],   11),
 
             ("recursion",   "Recursion",  "sumToN",     [10, 0], 55),
            ]
@@ -114,16 +112,22 @@ def generate_tests(type):
             ("ctor-case", "Foo", "bar", [0], 19),
             ("ctor-case", "Foo", "baz", [0], 23),
            ]
+    execution_unimplemented = [
+            ("case-simple", "SimpleCase", "fooBarOrKungFu", [3],    7),
+            ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],   11),
+           ]
 
     if type == 'translation':
         return (passing                                                                    +
+                execution_unimplemented                                                    +
                 map(pytest.mark.xfail(reason="unimplemented"), unimplemented)              +
                 map(pytest.mark.xfail(reason="translation unimplemented"), translation_unimplemented)
                )
     if type == 'execution':
         return (passing                                                                    +
                 translation_unimplemented                                                  +
-                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)
+                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)              +
+                map(pytest.mark.xfail(reason="execution unimplemented"), execution_unimplemented)
                )
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('execution'))
