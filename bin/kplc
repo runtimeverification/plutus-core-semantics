@@ -1,78 +1,52 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python
 
-set -e      # Exit immediately if any command fails
-set -u      # Using undefined variables is an error. Exit immediately
+from __future__ import print_function
+from argparse import ArgumentParser, REMAINDER
+import os
+import subprocess
+import sys
 
-# Utilities
-# ---------
-
-die()      { echo -e "FATAL:" "$@" >&2 ; exit 1 ; }
-
-pretty_diff() {
-    git --no-pager diff --no-index "$@"
-}
-
-# Environment Setup
-# -----------------
-
-run_env() {
-    base_dir="$(cd $(dirname $0)/.. && pwd -P)"
-    build_dir="$base_dir/.build"
-}
+_base = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+def base(*args)     : return os.path.join(_base, *args)
+def bin(*args)      : return base('bin', *args)
+def build(*args)    : return base('.build', *args)
 
 # Runners
 # -------
 
-run_krun() {
-    local driver=$1   ; shift
-    local run_file=$1 ; shift
-    export K_OPTS=-Xss500m
-    krun --directory "$build_dir/$driver/" "$run_file" "$@"
-}
+def run_krun(driver, file, *args): 
+    os.environ['K_OPTS'] = '-Xss500m'
+    print('krun',  '--directory', build(driver), file, *args, file=sys.stderr)
+    os.execlp('krun',  'krun', '--directory', build(driver), file, *args)
 
-run_kprove() {
-    local driver="$1"     ; shift
-    local proof_file="$1" ; shift
-    local init_file="$1"  ; shift
-    [[ -f "$proof_file" ]] || die "$proof_file does not exist"
-    [[ -f "$init_file"  ]] || die "$init_file does not exist"
-    export K_OPTS=-Xmx2G
-    ( krun --directory $(build_dir)/$driver --z3-executable "$init_file" --prove "$proof_file" "$@" )
-}
-
-run_kdebug() {
-    local driver="$1"     ; shift
-    local debug_file="$1" ; shift
-    ( run_krun "$driver" "$debug_file" --debugger "$@" )
-}
+def run_kprove(driver, spec, init, *args):
+    os.stat(spec)
+    os.stat(init)
+    os.environ['K_OPTS'] = '-Xmx2G'
+    os.execlp('krun',  'krun', '--directory', build(driver), '--z3-executable', init, '--prove', spec, *args)
 
 # Main
 # ----
 
-run_env
+def main():
+    argparser = ArgumentParser(description='krun a Plutus Core program')
+    subparsers = argparser.add_subparsers(dest='subparser')
+    run = subparsers.add_parser('run', help='Run a Plutus Program using a particular kompiled definition')
+    run.add_argument('driver',  help='kompiled definition to use in `.build`')
+    run.add_argument('program', help='Plutus Core program')
+    run.add_argument('args',    nargs=REMAINDER, help='additional arguments to pass to `krun`')
 
-# main functionality
-run_command="$1" ; shift
-case "$run_command" in
+    prove = subparsers.add_parser('prove', help='Check a Plutus Program against a reachability specification')
+    prove.add_argument('driver' , help='kompiled definition to use in `.build`')
+    prove.add_argument('spec'   , help='reachability spec')
+    prove.add_argument('program', help='Plutus Core program')
+    prove.add_argument('args',    nargs=REMAINDER, help='additional arguments to pass to `krun`')
 
-    # Running
-    run)   run_krun   "$@" ;;
-    debug) run_kdebug "$@" ;;
-    prove) run_kprove "$@" ;;
+    args = argparser.parse_args()
+    if args.subparser == 'run':
+        run_krun(args.driver,            args.program, *args.args)
+    elif args.subparser == 'prove':
+        run_krun(args.driver, args.spec, args.program, *args.args)
 
-    *) echo "
-    usage: $0 [run|debug|prove] <driver> <file> <K args>*
-
-       # Running
-       # -------
-       $0 run   <driver> <pgm>          Run a single PLC program
-       $0 debug <driver> <pgm>          Run a single PLC program in the debugger
-       $0 prove <driver> <spec> <pgm>   Attempt to prove claim over PLC program
-
-       Note: <pgm> is a path to a file containing a PLC program.
-             <spec> is a K reachability claim file.
-             <driver> is one of [erc20|execution|translation|typing]
-
-       Note: This command is more for devs and CI servers.
-" ; exit ;;
-esac
+if __name__ == '__main__':
+    main()
