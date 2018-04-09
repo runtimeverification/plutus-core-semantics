@@ -139,9 +139,9 @@ def test_execution(file, mod, fct, args, expected):
     (output, err) = krun.communicate()
     exit_code = krun.wait()
 
-    assert exit_code == toPlutusExitCode(expected)
     if 0 == toPlutusExitCode(expected):
         assert extract_exec_output(output) == toPlutusReturn(expected)
+    assert exit_code == toPlutusExitCode(expected)
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('translation'))
 def test_translation(file, mod, fct, args, expected):
