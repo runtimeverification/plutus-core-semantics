@@ -7,10 +7,12 @@ set -e
 
 clean=false
 deps=false
+runner=(pytest -n 4)
 while [[  $# -ne 0 ]]; do case "$1" in
-    clean) clean=true ;;
-     deps) deps=true  ;;
-        *) break      ;;
+    clean) clean=true          ;;
+     deps) deps=true           ;;
+     kplc) runner=( bin/kplc ) ;;
+        *) break               ;;
 esac; shift; done
 
             targets=( )
@@ -23,4 +25,4 @@ esac; shift; done
 ! $clean || rm -rf .build/
 source bin/activate
 make -j4 "${targets[@]}"
-exec pytest -n 4 "$@"
+exec "${runner[@]}" "$@"
