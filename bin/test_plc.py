@@ -95,10 +95,13 @@ def generate_tests(type):
             ("cmp-ops", "Foo", "equals",        [12, 17], False),
             ## ("cmp-ops", "Foo", "myTrue",        [],       True ),
 
-            ("case-simple", "SimpleCase", "simpleCase",    [13],    19),
-            ("case-simple", "SimpleCase", "simpleCase",    [-13],   23),
-            ("case-simple", "SimpleCase", "nonExhaustive", [13],    19),
-            ("case-simple", "SimpleCase", "nonExhaustive", [-13],   ExitCode_NonExhaustive),
+            ("case-simple", "SimpleCase", "boolean",        [13],  19),
+            ("case-simple", "SimpleCase", "boolean",        [-13], 23),
+            ("case-simple", "SimpleCase", "nonExhaustive",  [13],  19),
+            ("case-simple", "SimpleCase", "nonExhaustive",  [-13], ExitCode_NonExhaustive),
+            ("case-simple", "SimpleCase", "fooBarOrKungFu", [3],    7),
+            ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],   11),
+
             ("recursion",   "Recursion",  "sumToN",     [10, 0], 55),
            ]
 

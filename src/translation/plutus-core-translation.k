@@ -25,6 +25,7 @@ module PLUTUS-CORE-TRANSLATION
              #staticAppendArg
              .TopLevelDefinitions
       </iele>
+      <modName> .K </modName>
       <ieleContract> contract #mkIN("Foo") { .TopLevelDefinitions } </ieleContract>
       <totalFunctions> 0 </totalFunctions>
       <totalReadyForDispatch> 0 </totalReadyForDispatch>
@@ -50,8 +51,11 @@ module PLUTUS-CORE-TRANSLATION
   // Top-Level Functions
   // ===================
 
+  // Unwrap the outer `program`declaration. TODO: Currenty we only support
+  // a single module.
 
   rule <plutus> (program (module MN IS (export (TXS) (NS)) DS) ) => DS ... </plutus>
+       <modName> _ => MN </modName>
        <exports> _ => NS </exports>
 
   // We iterate over `Dec`s, creating a named top level function for each.
@@ -152,6 +156,32 @@ module PLUTUS-CORE-TRANSLATION
           </function>
        </functions>
        when #nameToGlobalName(N) ==K GN
+
+  // Data Constructors
+  // -----------------
+
+  // For each constructor, we allocate a "constructor ID"
+
+  rule <plutus> ( data TYCON ( .KSigList ) ( CON .TyList ) ALTS )
+             => ( data TYCON ( .KSigList )                 ALTS )
+                ...
+       </plutus>
+       <modName> MN:ModName </modName>
+       <dataType> _:Map ( .Map => MN . CON |-> !ID:Int )
+       </dataType>
+
+  rule <plutus> ( data TYCON ( .KSigList ) .AltList ) => .K
+                ...
+       </plutus>
+
+  // TODO: Since `#useOperand` is a function, we cannot just use the
+  // construct id from `<dataType>`
+
+  rule #useOperand((con MN:ModName . TYCON .ValList), LN)
+    => LN
+
+  rule <k> #loadOperand((con MN:ModName . TYCON .ValList), LN) => LN = CID .Instructions  ... </k>
+       <dataType> MN.TYCON |-> CID ...  </dataType>
 
   // Case Statements
   // ---------------
@@ -295,13 +325,17 @@ module PLUTUS-CORE-TRANSLATION
     => (builtin N #replaceFreeVar(T1, Y, INDEX) #replaceFreeVar(T2, Y, INDEX))
   rule #replaceFreeVar((case T CLS), Y:Var, INDEX)
     => (case #replaceFreeVar(T, Y, INDEX) #replaceFreeVarClL(CLS, Y, INDEX))
+  rule #replaceFreeVar((con MN:ModName . TYCON .ValList), Y, INDEX)
+    => (con MN . TYCON .ValList)
 
   rule #replaceFreeVarClL(.ClList, X, INDEX) => .ClList
   rule #replaceFreeVarClL((QC (VS) T) CLS, X, INDEX)
     => (QC (VS) #replaceFreeVar(T, X, INDEX)) #replaceFreeVarClL(CLS, X, INDEX)
+
   
   // For `#freeVar`s `#loadOperand` directly uses the function's parameter.
   // TODO: Make use of INDEX to prevent collisions in case of non-unique argument names.
+
   rule #loadOperand(#freeVar(V, INDEX), LN) => .Instructions
   rule #useOperand(#freeVar(V, INDEX), LN) => #varToLocalName(V) 
   
