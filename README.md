@@ -15,6 +15,10 @@ and a `virtualenv` with `pytest` installed.
 
 For subsequent builds run `./build [options for pytest]`.
 
+To execute a Plutus program, run: `./build kplc run execution <pgm.plc> [arguments to bin/kplc]`.
+
+To translate to IELE, run: `./build kplc run translate <pgm.plc> [arguments to bin/kplc]`.
+
 To Do
 -----
 
