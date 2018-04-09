@@ -1,6 +1,6 @@
 (program
 
-  (module SimpleCase (import) (export () (simpleCase))
+  (module SimpleCase (import) (export () (simpleCase nonExhaustive))
 
     (declare simpleCase (fun (integer) (integer)))
     (define simpleCase
@@ -8,6 +8,12 @@
         (case (builtin equalsInteger x 13)
           (Prelude.True  () 19)
           (Prelude.False () 23))))
+
+    (declare nonExhaustive (fun (integer) (integer)))
+    (define nonExhaustive
+      (lam x
+        (case (builtin equalsInteger x 13)
+          (Prelude.True  () 19))))
 
   )
 
