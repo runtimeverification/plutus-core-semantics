@@ -691,6 +691,7 @@ module PLUTUS-CORE-TRANSLATION
   syntax LocalNames ::= #createArgs(Int)                              [function]
   rule #createArgs(0) => .LocalNames
   rule #createArgs(I) => #mkLN("param" +String Int2String(I)), #createArgs(I -Int 1)
+    when I >Int 0
 
   rule <plutus> #constructorsToIele => .K ... </plutus>
        <constructors> .Bag </constructors>
