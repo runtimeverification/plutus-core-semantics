@@ -193,8 +193,8 @@ module PLUTUS-CORE-TRANSLATION
   rule #useOperand((case T CLS), LN) => LN
   rule #loadOperand((case T CLS), LN)
     => #concatInsList( #loadOperand(T, #intToLocalName(!N))
-                     , #translateCases(CLS, #useOperand(T, #intToLocalName(!N)), LN, #mkINSI("end", !M))
-                     , #label(#mkINSI("end", !M)) .Instructions)
+                     , #translateCases(CLS, #useOperand(T, #intToLocalName(!N)), LN, #mkIN("end", !M))
+                     , #label(#mkIN("end", !M)) .Instructions)
 
   syntax PreInstructions ::= #translateCases(ClList, Operand, LocalName, IeleName)
                            | #compareAndJump(Cl, Operand, IeleName)
@@ -202,9 +202,9 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #translateCases(.ClList, OP, RET, END) => call #mkGN("iele.invalid")(.Operands) .Instructions
   rule #translateCases(CL CLS, OP, RET, END)
-    => #concatInsList( #compareAndJump(CL, OP, #mkINSI("match", !N))
+    => #concatInsList( #compareAndJump(CL, OP, #mkIN("match", !N))
                      , #translateCases(CLS, OP, RET, END)
-                     , #labelAndLoad(CL, OP, RET, #mkINSI("match", !N), END))
+                     , #labelAndLoad(CL, OP, RET, #mkIN("match", !N), END))
 
   // TODO: correctly handle VarList VS
   rule <k> #compareAndJump((QC (VS) RHS), OP, MATCH)
@@ -649,15 +649,15 @@ module PLUTUS-CORE-TRANSLATION
   syntax GlobalName ::= #mkGN(String)                                  [function]
   syntax LocalName  ::= #mkLN(String)                                  [function]
   syntax IeleName   ::= #mkIN(String)                                  [function]
-                      | #mkINSI(String, Int)                           [function]
+                      | #mkIN(String, Int)            [function, klabel(mkIN_SI)]
   syntax Var        ::= #mkVar(String)                                 [function]
   syntax QualC      ::= #mkQualC(String, String)                       [function]
   // ----------------------------------------------------------------------------
-  rule #mkGN(S)      => #parseToken("GlobalName", "@" +String S)
-  rule #mkLN(S)      => #parseToken("LocalName",  "%" +String S)
-  rule #mkIN(S)      => #parseToken("IeleName",               S)
-  rule #mkINSI(S, I) => #parseToken("IeleName", S +String Int2String(I))
-  rule #mkVar(S)     => #parseToken("Var",                    S)
+  rule #mkGN(S)    => #parseToken("GlobalName", "@" +String S)
+  rule #mkLN(S)    => #parseToken("LocalName",  "%" +String S)
+  rule #mkIN(S)    => #parseToken("IeleName",               S)
+  rule #mkIN(S, I) => #parseToken("IeleName", S +String Int2String(I))
+  rule #mkVar(S)   => #parseToken("Var",                    S)
 
   // K does not let us make a qualC in one fail swoop using #parseToken(..) . #parseToken(..).
   // Instead, we need to use #parseToken and hold the information needed to make a QualC
