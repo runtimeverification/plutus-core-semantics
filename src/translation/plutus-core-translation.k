@@ -37,13 +37,13 @@ module PLUTUS-CORE-TRANSLATION
       <exports> .NameList:NameList </exports>
       <functions>
         <function multiplicity="*" type="Set">
-          <name>   #mkGN("noname")       </name>
-          <params> .VarList:VarList      </params>
-          <env>    .Map                  </env>
-          <k>      .K:K                  </k>
-          <jumpId> -1                    </jumpId>
-          <hasDispatchEntry> false:Bool  </hasDispatchEntry>
-          <readyForDispatch> false:Bool  </readyForDispatch>
+          <fName>   #mkGN("noname")     </fName>
+          <params> .VarList:VarList     </params>
+          <env>    .Map                 </env>
+          <k>      .K:K                 </k>
+          <jumpId> -1                   </jumpId>
+          <hasDispatchEntry> false:Bool </hasDispatchEntry>
+          <readyForDispatch> false:Bool </readyForDispatch>
         </function>
       </functions>
       <constructors>
@@ -115,7 +115,7 @@ module PLUTUS-CORE-TRANSLATION
        <functions> ...
          .Bag =>
          <function>
-            <name> GN </name>
+            <fName> GN </fName>
             <params> #reverseVarList(VARS) </params>
             <jumpId> JI </jumpId>
             <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
@@ -158,7 +158,7 @@ module PLUTUS-CORE-TRANSLATION
   rule <functions>
          ...
           <function>
-            <name> GN </name>
+            <fName> GN </fName>
             <jumpId> JI </jumpId>
             ...
           </function>
@@ -175,7 +175,7 @@ module PLUTUS-CORE-TRANSLATION
   rule <functions>
          ...
           <function>
-            <name> GN </name>
+            <fName> GN </fName>
             <jumpId> JI </jumpId>
             <k> #loadOperand(MN:ModName . N:Name, LN:LocalName)
              => #allocBind(LN, JI, .Map)
@@ -435,7 +435,7 @@ module PLUTUS-CORE-TRANSLATION
   rule <plutus> #createDispatch:K => .K:K ... </plutus>
        <functions> ... ( .Bag
                       => <function>
-                           <name>   (#mkGN("dispatch")):GlobalName </name>
+                           <fName>   (#mkGN("dispatch")):GlobalName </fName>
                            <jumpId> -1                   </jumpId>
                            <k>
                                 #concatInsList( #mkLN("closureId") = load #mkLN("closure")
@@ -453,8 +453,8 @@ module PLUTUS-CORE-TRANSLATION
        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
   
   rule <function>
-          <name>   FN     </name>
-          <jumpId> JI     </jumpId>
+          <fName>  FN </fName>
+          <jumpId> JI </jumpId>
           <hasDispatchEntry> false:Bool => true:Bool </hasDispatchEntry>
           <readyForDispatch> true:Bool               </readyForDispatch>
           <params> PARAMS                            </params>
@@ -585,10 +585,10 @@ module PLUTUS-CORE-TRANSLATION
   rule <plutus> #functionsToIele ... </plutus>
        <functions>
          <function>
-           <name>   GN:GlobalName         </name>
-           <params> VARS:VarList          </params>
-           <env>    ENV                   </env>
-           <k>      IS:Instructions       </k>
+           <fName>  GN:GlobalName   </fName>
+           <params> VARS:VarList    </params>
+           <env>    ENV             </env>
+           <k>      IS:Instructions </k>
            ...
          </function> => .Bag
          ...
@@ -606,10 +606,10 @@ module PLUTUS-CORE-TRANSLATION
   rule <plutus> #functionsToIele ... </plutus>
        <functions>
          <function>
-           <name>   GN:GlobalName         </name>
-           <params> VARS:VarList          </params>
-           <env>    ENV                   </env>
-           <k>      IS:Instructions       </k>
+           <fName>  GN:GlobalName   </fName>
+           <params> VARS:VarList    </params>
+           <env>    ENV             </env>
+           <k>      IS:Instructions </k>
            ...
          </function> => .Bag
          ...
