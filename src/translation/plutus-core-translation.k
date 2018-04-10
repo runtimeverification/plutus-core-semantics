@@ -49,6 +49,7 @@ module PLUTUS-CORE-TRANSLATION
       <constructors>
         <constructor multiplicity="*" type="Set">
           <cName> #mkQualC("Dummy", "NoName") </cName>
+          <cK> .K:K </cK>
           <cId> -1 </cId>
           <arity> -1 </arity>
         </constructor>
@@ -72,11 +73,13 @@ module PLUTUS-CORE-TRANSLATION
            <cName> #mkQualC("Prelude", "True") </cName>
            <cId> 1 </cId>
            <arity> 0 </arity>
+           <cK> #translateIeleCtor </cK>
          </constructor>
          <constructor>
            <cName> #mkQualC("Prelude", "False") </cName>
            <cId> 0 </cId>
            <arity> 0 </arity>
+           <cK> #translateIeleCtor </cK>
          </constructor>
        </constructors>
 
@@ -202,11 +205,43 @@ module PLUTUS-CORE-TRANSLATION
        <constructors> ...
          .Bag =>
          <constructor>
-            <cName> MN . CON </cName>
-            <cId> !ID:Int </cId>
-            <arity> #length(TL) </arity>
+           <cName> MN . CON </cName>
+           <cK> #translateIeleCtor </cK>
+           <cId> !ID:Int </cId>
+           <arity> #length(TL) </arity>
          </constructor>
        </constructors>
+
+  syntax K ::= "#translateIeleCtor"
+  rule <constructor>
+         <cK> #translateIeleCtor
+           => #mkLN("ret") = call #mkGN("alloc")(ARITY)
+              #concatInsListFct( #bindToTerm(ARITY)
+                               , #returnTerm(ARITY, CID)
+                               )
+         </cK>
+         <cId> CID </cId>
+         <arity> ARITY </arity>
+         ...
+       </constructor>
+
+  syntax Instructions ::= #bindToTerm(Int)                             [function]
+                        | #returnTerm(Int, Int)                        [function]
+
+  rule #bindToTerm(0) => .Instructions
+  rule #bindToTerm(ARITY)
+    => #concatInsListFct( #bindToTerm(ARITY -Int 1)
+                        , #mkLN("subtermPtr") = add #mkLN("ret"), ARITY -Int 1
+                          store #mkLN("subtermPtr"), #mkLN("param" +String Int2String(ARITY))
+                         .Instructions
+                        )
+    when ARITY >Int 0
+
+  rule #returnTerm(ARITY, CID)
+    => #mkLN("ret") = shift #mkLN("ret"), 8
+       #mkLN("ret") = or #mkLN("ret"), CID
+       ret #mkLN("ret")
+    when CID <Int 2 ^Int 8
 
   rule <plutus> ( data TYCON ( KSL ) .AltList ) => .K ... </plutus>
 
@@ -412,6 +447,8 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax FunctionDefinition ::= "#staticAlloc"                         [function]
   rule #staticAlloc => define #mkGN("alloc") (#mkLN("size") , .LocalNames) {
+                         #mkLN("isZero") = cmp eq #mkLN("size"), 0
+                         br #mkLN("isZero"), #mkIN("allocZero")
                          #mkLN("alloc_counter_ptr") = 0
                          #mkLN("alloced") = load #mkLN("alloc_counter_ptr")
                          #mkLN("isInitialized") = cmp ne 0, #mkLN("alloced")
@@ -422,6 +459,8 @@ module PLUTUS-CORE-TRANSLATION
                          #mkLN("alloced") = add #mkLN("size"), #mkLN("alloced")
                          store #mkLN("alloced"), #mkLN("alloc_counter_ptr")
                          ret #mkLN("ret")
+                      #label(#mkIN("allocZero"))
+                         ret 0
                          .Instructions .LabeledBlocks
                        }
   
@@ -635,18 +674,23 @@ module PLUTUS-CORE-TRANSLATION
        <constructors>
          <constructor>
            <cName> QC </cName>
+           <cK> IS:Instructions </cK>
            <cId> CID </cId>
-           ...
+           <arity> ARITY </arity>
          </constructor> => .Bag
          ...
        </constructors>
        <iele> TLDS:TopLevelDefinitions
-           => define #qualCToGlobalName(QC) ( .LocalNames ) {
-                ret CID
-                .Instructions .LabeledBlocks
+           => define #qualCToGlobalName(QC) ( #createArgs(ARITY) ) {
+                IS
+                .LabeledBlocks
               }
               TLDS
        </iele>
+
+  syntax LocalNames ::= #createArgs(Int)                              [function]
+  rule #createArgs(0) => .LocalNames
+  rule #createArgs(I) => #mkLN("param" +String Int2String(I)), #createArgs(I -Int 1)
 
   rule <plutus> #constructorsToIele => .K ... </plutus>
        <constructors> .Bag </constructors>
@@ -673,11 +717,16 @@ module PLUTUS-CORE-TRANSLATION
       ::= #concatInsList(PreInstructions, PreInstructions)               [strict]
         | #concatInsList(PreInstructions, PreInstructions, PreInstructions) [klabel(concatInsList3)]
 
+  syntax Instructions ::= #concatInsListFct(Instructions, Instructions)  [function]
+
   rule #concatInsList(IS:Instructions, .Instructions) => IS:Instructions
   rule #concatInsList(IS:Instructions, I IS')
     => #concatInsList(#addInsToBack(IS:Instructions, I:Instruction .Instructions), IS')
   rule #concatInsList(IS1, IS2, IS3)
     => #concatInsList(IS1, #concatInsList(IS2, IS3))
+
+  rule #concatInsListFct(.Instructions, IS) => IS
+  rule #concatInsListFct(I IS, IS') => I #concatInsListFct(IS, IS')
 
   syntax Instructions ::= #addInsToBack(Instructions, Instructions)    [function]
   rule #addInsToBack(.Instructions, IS) => IS:Instructions
