@@ -193,8 +193,8 @@ module PLUTUS-CORE-TRANSLATION
   rule #useOperand((case T CLS), LN) => LN
   rule #loadOperand((case T CLS), LN)
     => #concatInsList( #loadOperand(T, #intToLocalName(!N))
-                     , #concatInsList( #translateCases(CLS, #useOperand(T, #intToLocalName(!N)), LN, #mkINSI("end", !M))
-                                     , #label(#mkINSI("end", !M)) .Instructions))
+                     , #translateCases(CLS, #useOperand(T, #intToLocalName(!N)), LN, #mkINSI("end", !M))
+                     , #label(#mkINSI("end", !M)) .Instructions)
 
   syntax PreInstructions ::= #translateCases(ClList, Operand, LocalName, IeleName)
                            | #compareAndJump(Cl, Operand, IeleName)
@@ -203,8 +203,8 @@ module PLUTUS-CORE-TRANSLATION
   rule #translateCases(.ClList, OP, RET, END) => call #mkGN("iele.invalid")(.Operands) .Instructions
   rule #translateCases(CL CLS, OP, RET, END)
     => #concatInsList( #compareAndJump(CL, OP, #mkINSI("match", !N))
-                     , #concatInsList( #translateCases(CLS, OP, RET, END)
-                                     , #labelAndLoad(CL, OP, RET, #mkINSI("match", !N), END)))
+                     , #translateCases(CLS, OP, RET, END)
+                     , #labelAndLoad(CL, OP, RET, #mkINSI("match", !N), END))
 
   // TODO: correctly handle VarList VS
   rule <k> #compareAndJump((QC (VS) RHS), OP, MATCH)
@@ -216,9 +216,9 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #labelAndLoad((QC (VS) RHS), OP, RET, MATCH, END)
     => #concatInsList( #label(MATCH) .Instructions
-                     , #concatInsList( #loadOperand(RHS, RET)
-                                     , RET = #useOperand(RHS, RET)
-                                       br END))
+                     , #loadOperand(RHS, RET)
+                     , RET = #useOperand(RHS, RET)
+                       br END)
 
   // Builtins
   // --------
@@ -227,12 +227,11 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #useOperand((builtin B:BinaryBuiltin  T1:Tm T2:Tm), LN) => LN
   rule #loadOperand((builtin B:BinaryBuiltin T1:Tm T2:Tm), LN)
-    => #concatInsList(
-       #concatInsList(#loadOperand(T1, #intToLocalName(!N1)),
-                      #loadOperand(T2, #intToLocalName(!N2))),
-                      #translateBinBuiltin(B:BinaryBuiltin, LN
-                            , #useOperand(T1, #intToLocalName(!N1))
-                            , #useOperand(T2, #intToLocalName(!N2))))
+    => #concatInsList(#loadOperand(T1, #intToLocalName(!N1)),
+                      #loadOperand(T2, #intToLocalName(!N2)),
+                      #translateBinBuiltin( B:BinaryBuiltin, LN
+                                          , #useOperand(T1, #intToLocalName(!N1))
+                                          , #useOperand(T2, #intToLocalName(!N2))))
 
   // Each needs to generate instructions for executing in IELE.
 
@@ -359,11 +358,10 @@ module PLUTUS-CORE-TRANSLATION
   // `#mkGN("dispatch")`.
   
    rule #loadOperand([T1:Tm T2:Tm], LN)
-     => #concatInsList(
-          #concatInsList( #loadOperand(T1, #intToLocalName(!N))
-                        , #loadOperand(T2, #intToLocalName(!M)))
-           , LN = call #mkGN("dispatch")( #useOperand(T1, #intToLocalName(!N))
-                                , #useOperand(T2, #intToLocalName(!M)))
+     => #concatInsList( #loadOperand(T1, #intToLocalName(!N))
+                      , #loadOperand(T2, #intToLocalName(!M))
+                      , LN = call #mkGN("dispatch")( #useOperand(T1, #intToLocalName(!N))
+                                                   , #useOperand(T2, #intToLocalName(!M)))
                         .Instructions
                       )
   rule #useOperand([T1 T2], LN:LocalName) => LN:LocalName
@@ -429,8 +427,8 @@ module PLUTUS-CORE-TRANSLATION
        <function>
          <k> #dispatchJumpTable:PreInstructions
                 => #concatInsList( #dispatchCheckCond(JI, FN, #lengthVarList(PARAMS))
-                                 , #concatInsList( #dispatchJumpTable
-                                                 , #dispatchCall(JI, FN, #lengthVarList(PARAMS))))
+                                 , #dispatchJumpTable
+                                 , #dispatchCall(JI, FN, #lengthVarList(PARAMS)))
             ...
          </k>
          ...
@@ -623,11 +621,16 @@ module PLUTUS-CORE-TRANSLATION
    syntax PreInstructions ::= Instructions
    syntax KResult         ::= Instructions
   
-  syntax PreInstructions ::= #concatInsList(PreInstructions, PreInstructions)
-                                                                         [strict]
+  syntax PreInstructions
+      ::= #concatInsList(PreInstructions, PreInstructions)               [strict]
+        | #concatInsList(PreInstructions, PreInstructions, PreInstructions) [klabel(concatInsList3)]
+
   rule #concatInsList(IS:Instructions, .Instructions) => IS:Instructions
-  rule #concatInsList(IS:Instructions, I IS')         => #concatInsList(#addInsToBack(IS:Instructions, I:Instruction .Instructions), IS')
-  
+  rule #concatInsList(IS:Instructions, I IS')
+    => #concatInsList(#addInsToBack(IS:Instructions, I:Instruction .Instructions), IS')
+  rule #concatInsList(IS1, IS2, IS3)
+    => #concatInsList(IS1, #concatInsList(IS2, IS3))
+
   syntax Instructions ::= #addInsToBack(Instructions, Instructions)    [function]
   rule #addInsToBack(.Instructions, IS) => IS:Instructions
   rule #addInsToBack(I IS, IS') => I #addInsToBack(IS, IS')
