@@ -50,6 +50,7 @@ module PLUTUS-CORE-TRANSLATION
         <constructor multiplicity="*" type="Set">
           <cName> #mkQualC("Dummy", "NoName") </cName>
           <cId> -1 </cId>
+          <arity> -1 </arity>
         </constructor>
       </constructors>
     </T>
@@ -70,10 +71,12 @@ module PLUTUS-CORE-TRANSLATION
          <constructor>
            <cName> #mkQualC("Prelude", "True") </cName>
            <cId> 1 </cId>
+           <arity> 0 </arity>
          </constructor>
          <constructor>
            <cName> #mkQualC("Prelude", "False") </cName>
            <cId> 0 </cId>
+           <arity> 0 </arity>
          </constructor>
        </constructors>
 
@@ -201,6 +204,7 @@ module PLUTUS-CORE-TRANSLATION
          <constructor>
             <cName> MN . CON </cName>
             <cId> !ID:Int </cId>
+            <arity> #length(TL) </arity>
          </constructor>
        </constructors>
 
@@ -248,6 +252,7 @@ module PLUTUS-CORE-TRANSLATION
        <constructor>
          <cName> QC </cName>
          <cId> I </cId>
+         ...
        </constructor>
 
   rule #labelAndLoad((QC (VS) RHS), OP, RET, MATCH, END)
@@ -631,6 +636,7 @@ module PLUTUS-CORE-TRANSLATION
          <constructor>
            <cName> QC </cName>
            <cId> CID </cId>
+           ...
          </constructor> => .Bag
          ...
        </constructors>
@@ -751,9 +757,13 @@ module PLUTUS-CORE-TRANSLATION
   rule #reverseAux(OUT, V REM) => #reverseAux(V OUT, REM)
 
   syntax Int ::= #length(VarList)               [function, klabel(lengthVarList)]
+               | #length(TyList)                 [function, klabel(lengthTyList)]
   // ----------------------------------------------------------------------------
   rule #length(.VarList) => 0
-  rule #length(V VL) => 1 +Int #length(VL)
+  rule #length(V VL:VarList) => 1 +Int #length(VL)
+
+  rule #length(.TyList) => 0
+  rule #length(T TL:TyList) => 1 +Int #length(TL)
 
   syntax Bool ::= #in(GlobalName, NameList)                            [function]
   // ----------------------------------------------------------------------------
