@@ -106,7 +106,7 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax K ::= #topLevelFunction(GlobalName, Int, VarList, Tm)
   rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, (lam X:Var T:Tm))
-             => #topLevelFunction(GN, JI, X VARS, #replaceFreeVar(T:Tm, X, #lengthVarList(VARS)))
+             => #topLevelFunction(GN, JI, X VARS, #replaceFreeVar(T:Tm, X, #length(VARS)))
                 ...
        </plutus>
   rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, T:Tm) => .K ... </plutus>
@@ -116,7 +116,7 @@ module PLUTUS-CORE-TRANSLATION
          .Bag =>
          <function>
             <fName> GN </fName>
-            <params> #reverseVarList(VARS) </params>
+            <params> #reverse(VARS) </params>
             <jumpId> JI </jumpId>
             <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
                                     ret #useOperand(T:Tm, #mkLN("ret")) .Instructions)
@@ -462,9 +462,9 @@ module PLUTUS-CORE-TRANSLATION
        </function>
        <function>
          <k> #dispatchJumpTable:PreInstructions
-                => #concatInsList( #dispatchCheckCond(JI, FN, #lengthVarList(PARAMS))
+                => #concatInsList( #dispatchCheckCond(JI, FN, #length(PARAMS))
                                  , #dispatchJumpTable
-                                 , #dispatchCall(JI, FN, #lengthVarList(PARAMS)))
+                                 , #dispatchCall(JI, FN, #length(PARAMS)))
             ...
          </k>
          ...
@@ -742,17 +742,18 @@ module PLUTUS-CORE-TRANSLATION
   // Other utilities
   // ---------------
 
-  syntax VarList ::= #reverseVarList(VarList)                          [function]
-  syntax VarList ::= #reverseVarListAux(VarList, VarList)              [function]
+  syntax VarList ::= #reverse(VarList)         [function, klabel(reverseVarList)]
+  syntax VarList ::= #reverseAux(VarList, VarList)
+                                            [function, klabel(reverseVarListAux)]
   // ----------------------------------------------------------------------------
-  rule #reverseVarList(VL) => #reverseVarListAux( .VarList , VL)
-  rule #reverseVarListAux(OUT, .VarList) => OUT
-  rule #reverseVarListAux(OUT, V REM) => #reverseVarListAux(V OUT, REM)
+  rule #reverse(VL) => #reverseAux(.VarList, VL)
+  rule #reverseAux(OUT, .VarList) => OUT
+  rule #reverseAux(OUT, V REM) => #reverseAux(V OUT, REM)
 
-  syntax Int ::= #lengthVarList(VarList)                               [function]
+  syntax Int ::= #length(VarList)               [function, klabel(lengthVarList)]
   // ----------------------------------------------------------------------------
-  rule #lengthVarList(.VarList) => 0
-  rule #lengthVarList(V VL) => 1 +Int #lengthVarList(VL)
+  rule #length(.VarList) => 0
+  rule #length(V VL) => 1 +Int #length(VL)
 
   syntax Bool ::= #in(GlobalName, NameList)                            [function]
   // ----------------------------------------------------------------------------
