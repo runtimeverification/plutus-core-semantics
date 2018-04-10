@@ -20,8 +20,10 @@ module PLUTUS-CORE-TRANSLATION
   
   configuration
     <T>
-      <plutus> $PGM:Prg ~> #createDispatch:K ~> #translated? ~> #functionsToIele
-                        ~> #dataTypesToIele ~> #moveToContractCell
+      <plutus> #createImplicitCtors
+            ~> $PGM:Prg ~> #createDispatch:K
+            ~> #translated? ~> #functionsToIele ~> #constructorsToIele
+            ~> #moveToContractCell
       </plutus>
       <iele> #staticAlloc
              #staticAppendArg
@@ -44,11 +46,36 @@ module PLUTUS-CORE-TRANSLATION
           <readyForDispatch> false:Bool  </readyForDispatch>
         </function>
       </functions>
-      <dataType>
-        #mkQualC("Prelude", "True")  |-> 1
-        #mkQualC("Prelude", "False") |-> 0
-      </dataType>
+      <constructors>
+        <constructor multiplicity="*" type="Set">
+          <cName> #mkQualC("Dummy", "NoName") </cName>
+          <cId> -1 </cId>
+        </constructor>
+      </constructors>
     </T>
+
+  // Create Implicit Constructors
+  // ============================
+
+  // Since comparison operators in Plutus use constructors True and False,
+  // we need to implicitly define these even if the Prelude is not imported.
+
+  // The constructor ids 1 and 0 correspond to the result of the cmp instruction
+  // in IELE so that case matching on booleans work as intended.
+
+  syntax K ::= "#createImplicitCtors"
+  rule <plutus> #createImplicitCtors => .K ... </plutus>
+       <constructors> ...
+         .Bag =>
+         <constructor>
+           <cName> #mkQualC("Prelude", "True") </cName>
+           <cId> 1 </cId>
+         </constructor>
+         <constructor>
+           <cName> #mkQualC("Prelude", "False") </cName>
+           <cId> 0 </cId>
+         </constructor>
+       </constructors>
 
   // Top-Level Functions
   // ===================
@@ -169,12 +196,18 @@ module PLUTUS-CORE-TRANSLATION
                 ...
        </plutus>
        <modName> MN:ModName </modName>
-       <dataType> ... .Map => MN . CON |-> !ID:Int ... </dataType>
+       <constructors> ...
+         .Bag =>
+         <constructor>
+            <cName> MN . CON </cName>
+            <cId> !ID:Int </cId>
+         </constructor>
+       </constructors>
 
   rule <plutus> ( data TYCON ( KSL ) .AltList ) => .K ... </plutus>
 
   // TODO: Since `#useOperand` is a function, we cannot just use the
-  // construct id from `<dataType>`
+  // construct id from `<constructors>`
 
   // Unfortunately, ValList are not subsorts of TmLists so we need two separate rules
   rule #useOperand((con MN:ModName . TYCON TL:TmList),  LN) => LN
@@ -212,7 +245,10 @@ module PLUTUS-CORE-TRANSLATION
            br #intToLocalName(!COND), MATCH
           .Instructions ...
        </k>
-       <dataType> ... QC |-> I ... </dataType>
+       <constructor>
+         <cName> QC </cName>
+         <cId> I </cId>
+       </constructor>
 
   rule #labelAndLoad((QC (VS) RHS), OP, RET, MATCH, END)
     => #concatInsList( #label(MATCH) .Instructions
@@ -589,9 +625,15 @@ module PLUTUS-CORE-TRANSLATION
 
   // When there are no functions left, add IELE functions for each constructor
 
-  syntax K ::= "#dataTypesToIele"
-  rule <plutus> #dataTypesToIele ... </plutus>
-       <dataType> ... QC |-> CID:Int => .Map ... </dataType>
+  syntax K ::= "#constructorsToIele"
+  rule <plutus> #constructorsToIele ... </plutus>
+       <constructors>
+         <constructor>
+           <cName> QC </cName>
+           <cId> CID </cId>
+         </constructor> => .Bag
+         ...
+       </constructors>
        <iele> TLDS:TopLevelDefinitions
            => define #qualCToGlobalName(QC) ( .LocalNames ) {
                 ret CID
@@ -600,14 +642,14 @@ module PLUTUS-CORE-TRANSLATION
               TLDS
        </iele>
 
-  rule <plutus> #dataTypesToIele => .K ... </plutus>
-       <dataType> .Map </dataType>
+  rule <plutus> #constructorsToIele => .K ... </plutus>
+       <constructors> .Bag </constructors>
 
-  // When there are no functions or dataTypes left, return a top-level contract
+  // When there are no functions or constructors left, return a top-level contract
 
   syntax K ::= "#moveToContractCell"
   rule <functions> .Bag </functions>
-       <dataType> .Map </dataType>
+       <constructors> .Bag </constructors>
        <plutus> #moveToContractCell => .K ... </plutus>
        <iele> TLDS:TopLevelDefinitions => .TopLevelDefinitions </iele>
        <ieleContract> _ => contract #mkIN("Foo") { TLDS } </ieleContract>
