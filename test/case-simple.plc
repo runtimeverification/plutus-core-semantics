@@ -39,23 +39,23 @@
 
     (data MyNat () (Zero) (Succ (con CaseSimple.MyNat)))
 
-    // (declare myNatToInt (fun (con SimpleCase.MyNat) (integer)))
-    // (define myNatToInt
-    //   (lam x
-    //     (case x
-    //       (SimpleCase.Zero ()  53)
-    //       (SimpleCase.Succ (y) 12))))
+    (declare myNatToInt (fun (con SimpleCase.MyNat) (integer)))
+    (define myNatToInt
+      (lam x
+        (case x
+          (SimpleCase.Zero ()  53)
+          (SimpleCase.Succ (y) 12))))
 
-    // (declare intToMyNat (fun (integer) (con SimpleCase.Foo)))
-    // (define intToMyNat
-    //   (lam x
-    //     (case (builtin equalsInteger 7 x)
-    //       (Prelude.True  () (con SimpleCase.Zero))
-    //       (Prelude.False () (con SimpleCase.Succ (con SimpleCase.Zero))))))
+    (declare intToMyNat (fun (integer) (con SimpleCase.Foo)))
+    (define intToMyNat
+      (lam x
+        (case (builtin equalsInteger 7 x)
+          (Prelude.True  () (con SimpleCase.Zero))
+          (Prelude.False () (con SimpleCase.Succ (con SimpleCase.Zero))))))
 
-    // (declare testMyNat (fun (integer) (integer)))
-    // (define testMyNat
-    //   (lam x [ SimpleCase.myNatToInt [ SimpleCase.intToMyNat x]]))
+    (declare testMyNat (fun (integer) (integer)))
+    (define testMyNat
+      (lam x [ SimpleCase.myNatToInt [ SimpleCase.intToMyNat x]]))
 
   )
 
