@@ -280,13 +280,14 @@ module PLUTUS-CORE-TRANSLATION
 
   // TODO: correctly handle VarList VS
   rule <k> #compareAndJump((QC (VS) RHS), OP, MATCH)
-        => #intToLocalName(!COND) = cmp eq I, OP
+        => #mkLN("ctor", !COND) = and OP, (2 ^Int 8 -Int 1)
+           #intToLocalName(!COND) = cmp eq CID, #mkLN("ctor", !COND)
            br #intToLocalName(!COND), MATCH
           .Instructions ...
        </k>
        <constructor>
          <cName> QC </cName>
-         <cId> I </cId>
+         <cId> CID </cId>
          ...
        </constructor>
 
@@ -746,6 +747,7 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax GlobalName ::= #mkGN(String)                                  [function]
   syntax LocalName  ::= #mkLN(String)                                  [function]
+                      | #mkLN(String, Int)            [function, klabel(mkLN_SI)]
   syntax IeleName   ::= #mkIN(String)                                  [function]
                       | #mkIN(String, Int)            [function, klabel(mkIN_SI)]
   syntax Var        ::= #mkVar(String)                                 [function]
@@ -753,6 +755,7 @@ module PLUTUS-CORE-TRANSLATION
   // ----------------------------------------------------------------------------
   rule #mkGN(S)    => #parseToken("GlobalName", "@" +String S)
   rule #mkLN(S)    => #parseToken("LocalName",  "%" +String S)
+  rule #mkLN(S, I) => #parseToken("LocalName", "%" +String S +String Int2String(I))
   rule #mkIN(S)    => #parseToken("IeleName",               S)
   rule #mkIN(S, I) => #parseToken("IeleName", S +String Int2String(I))
   rule #mkVar(S)   => #parseToken("Var",                    S)
