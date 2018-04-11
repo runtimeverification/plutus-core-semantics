@@ -378,15 +378,6 @@ module PLUTUS-CORE-TRANSLATION
   rule #addParamsToEnv(X:Var XS, MAP:Map) => #addParamsToEnv(XS, (size(MAP) |-> X:Var):Map MAP:Map)
   rule #addParamsToEnv(.VarList, MAP:Map) => MAP:Map
   
-  // TODO: Can this be folded into `#replaceFreeVar`?
-  
-  syntax Tm ::= #replaceFreeVarsForParams(Tm, VarList, Int)            [function]
-  rule #replaceFreeVarsForParams(T:Tm, X:Var   , PARAMINDEX) => #replaceFreeVar(T:Tm, X:Var, PARAMINDEX)
-  rule #replaceFreeVarsForParams(T:Tm, .VarList, PARAMINDEX) => T:Tm
-  
-  // `#replaceFreeVar` and `#replaceFreeVarsForParams` are used to mark parameters
-  // as `#freeVar`s. A rule is required for each Plutus construct.
-  
   syntax Tm     ::= #freeVar(Var, Int)
   syntax Tm     ::= #replaceFreeVar(Tm, Var, Int)                      [function]
   syntax ClList ::= #replaceFreeVarClL(ClList, Var, Int)               [function]
