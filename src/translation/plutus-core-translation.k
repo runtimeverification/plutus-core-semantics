@@ -349,7 +349,7 @@ module PLUTUS-CORE-TRANSLATION
             ...
           </function>
        </functions>
-       <plutus> (.K => #topLevelFunction(#intToGlobalName(!N), !N, X, T:Tm)) ... </plutus>
+       <plutus> (.K => #topLevelFunction(#mkGN("innerLambda", !N), !N, X, T:Tm)) ... </plutus>
 
   rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
   
@@ -746,6 +746,7 @@ module PLUTUS-CORE-TRANSLATION
   // ---------------------------------------------------------------
 
   syntax GlobalName ::= #mkGN(String)                                  [function]
+                      | #mkGN(String, Int)            [function, klabel(mkGN_SI)]
   syntax LocalName  ::= #mkLN(String)                                  [function]
                       | #mkLN(String, Int)            [function, klabel(mkLN_SI)]
   syntax IeleName   ::= #mkIN(String)                                  [function]
@@ -758,6 +759,7 @@ module PLUTUS-CORE-TRANSLATION
   rule #mkIN(S)    => #parseToken("IeleName",               S)
   rule #mkVar(S)   => #parseToken("Var",                    S)
 
+  rule #mkGN(S, I) => #mkGN(S +String Int2String(I))
   rule #mkLN(S, I) => #mkLN(S +String Int2String(I))
   rule #mkIN(S, I) => #mkIN(S +String Int2String(I))
 
@@ -792,10 +794,6 @@ module PLUTUS-CORE-TRANSLATION
 
   // Helpers for fresh variables
   // ---------------------------
-
-  syntax GlobalName ::= #intToGlobalName(Int)                          [function]
-  // ----------------------------------------------------------------------------
-  rule #intToGlobalName(N:Int) => #mkGN("fresh" +String Int2String(N:Int))
 
   // Other utilities
   // ---------------
