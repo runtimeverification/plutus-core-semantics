@@ -254,8 +254,8 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #loadOperand((con QC .ValList), LN) => LN = call #qualCToGlobalName(QC)(.Operands) .Instructions
   rule #loadOperand((con QC V:Val), LN)
-    => #concatInsList( #loadOperand(V, #intToLocalName(!N))
-                     , LN = call #qualCToGlobalName(QC)(#useOperand(V, #intToLocalName(!N)))
+    => #concatInsList( #loadOperand(V, #mkLN("op", !N))
+                     , LN = call #qualCToGlobalName(QC)(#useOperand(V, #mkLN("op", !N)))
                        .Instructions
                      )
 
@@ -264,8 +264,8 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #useOperand((case T CLS), LN) => LN
   rule #loadOperand((case T CLS), LN)
-    => #concatInsList( #loadOperand(T, #intToLocalName(!N))
-                     , #translateCases(CLS, #useOperand(T, #intToLocalName(!N)), LN, #mkIN("end", !M))
+    => #concatInsList( #loadOperand(T, #mkLN("case", !N))
+                     , #translateCases(CLS, #useOperand(T, #mkLN("case", !N)), LN, #mkIN("end", !M))
                      , #label(#mkIN("end", !M)) .Instructions)
 
   syntax PreInstructions ::= #translateCases(ClList, Operand, LocalName, IeleName)
@@ -281,8 +281,8 @@ module PLUTUS-CORE-TRANSLATION
   // TODO: correctly handle VarList VS
   rule <k> #compareAndJump((QC (VS) RHS), OP, MATCH)
         => #mkLN("ctor", !COND) = and OP, (2 ^Int 8 -Int 1)
-           #intToLocalName(!COND) = cmp eq CID, #mkLN("ctor", !COND)
-           br #intToLocalName(!COND), MATCH
+           #mkLN("cond", !COND) = cmp eq CID, #mkLN("ctor", !COND)
+           br #mkLN("cond", !COND), MATCH
           .Instructions ...
        </k>
        <constructor>
@@ -304,11 +304,11 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #useOperand((builtin B:BinaryBuiltin  T1:Tm T2:Tm), LN) => LN
   rule #loadOperand((builtin B:BinaryBuiltin T1:Tm T2:Tm), LN)
-    => #concatInsList(#loadOperand(T1, #intToLocalName(!N1)),
-                      #loadOperand(T2, #intToLocalName(!N2)),
+    => #concatInsList(#loadOperand(T1, #mkLN("bltinN1", !N1)),
+                      #loadOperand(T2, #mkLN("bltinN1", !N2)),
                       #translateBinBuiltin( B:BinaryBuiltin, LN
-                                          , #useOperand(T1, #intToLocalName(!N1))
-                                          , #useOperand(T2, #intToLocalName(!N2))))
+                                          , #useOperand(T1, #mkLN("bltinN1", !N1))
+                                          , #useOperand(T2, #mkLN("bltinN2", !N2))))
 
   // Each needs to generate instructions for executing in IELE.
 
@@ -366,8 +366,8 @@ module PLUTUS-CORE-TRANSLATION
                                ):Instructions
   rule #bindEnv(.Map, _) => .Instructions
   rule #bindEnv((OFF:Int |-> V:Var) M:Map, LN) => (
-                                          #intToLocalName(!N) = add LN, (OFF +Int 1)
-                                          store #varToLocalName(V), #intToLocalName(!N)
+                                          #mkLN("bindPtr", !N) = add LN, (OFF +Int 1)
+                                          store #varToLocalName(V), #mkLN("bindPtr", !N)
                                           #bindEnv(M, LN)
                                          ):Instructions
   
@@ -435,10 +435,10 @@ module PLUTUS-CORE-TRANSLATION
   // `#mkGN("dispatch")`.
   
    rule #loadOperand([T1:Tm T2:Tm], LN)
-     => #concatInsList( #loadOperand(T1, #intToLocalName(!N))
-                      , #loadOperand(T2, #intToLocalName(!M))
-                      , LN = call #mkGN("dispatch")( #useOperand(T1, #intToLocalName(!N))
-                                                   , #useOperand(T2, #intToLocalName(!M)))
+     => #concatInsList( #loadOperand(T1, #mkLN("appT1", !N))
+                      , #loadOperand(T2, #mkLN("appT2", !M))
+                      , LN = call #mkGN("dispatch")( #useOperand(T1, #mkLN("appT1", !N))
+                                                   , #useOperand(T2, #mkLN("appT2", !M)))
                         .Instructions
                       )
   rule #useOperand([T1 T2], LN:LocalName) => LN:LocalName
@@ -755,10 +755,11 @@ module PLUTUS-CORE-TRANSLATION
   // ----------------------------------------------------------------------------
   rule #mkGN(S)    => #parseToken("GlobalName", "@" +String S)
   rule #mkLN(S)    => #parseToken("LocalName",  "%" +String S)
-  rule #mkLN(S, I) => #parseToken("LocalName", "%" +String S +String Int2String(I))
   rule #mkIN(S)    => #parseToken("IeleName",               S)
-  rule #mkIN(S, I) => #parseToken("IeleName", S +String Int2String(I))
   rule #mkVar(S)   => #parseToken("Var",                    S)
+
+  rule #mkLN(S, I) => #mkLN(S +String Int2String(I))
+  rule #mkIN(S, I) => #mkIN(S +String Int2String(I))
 
   // K does not let us make a qualC in one fail swoop using #parseToken(..) . #parseToken(..).
   // Instead, we need to use #parseToken and hold the information needed to make a QualC
@@ -793,9 +794,7 @@ module PLUTUS-CORE-TRANSLATION
   // ---------------------------
 
   syntax GlobalName ::= #intToGlobalName(Int)                          [function]
-  syntax LocalName  ::= #intToLocalName(Int)                           [function]
   // ----------------------------------------------------------------------------
-  rule #intToLocalName(N)      => #mkLN("fresh" +String Int2String(N))
   rule #intToGlobalName(N:Int) => #mkGN("fresh" +String Int2String(N:Int))
 
   // Other utilities
