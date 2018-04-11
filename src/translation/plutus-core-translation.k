@@ -111,8 +111,9 @@ module PLUTUS-CORE-TRANSLATION
   // TODO: DDec
 
   syntax K ::= #topLevelFunction(GlobalName, Int, VarList, Tm)
+  // TODO: Avoid name collisions when `#bind`inv variables
   rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, (lam X:Var T:Tm))
-             => #topLevelFunction(GN, JI, X VARS, #bindVar(T:Tm, X, #length(VARS)))
+             => #topLevelFunction(GN, JI, X VARS, #bindVar(T:Tm, X, #varToLocalName(X)))
                 ...
        </plutus>
   rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, T:Tm) => .K ... </plutus>
@@ -160,12 +161,12 @@ module PLUTUS-CORE-TRANSLATION
 
   // Integers are not affected by substituion.
 
-  rule #bindVar(I:Int, X    , INDEX) => I:Int
+  rule #bindVar(I:Int, X    , BLN) => I:Int
 
   // A variable is bound if it matches the variable we are interested in.
 
-  rule #bindVar(X:Var, X    , INDEX) => #boundVar(X, INDEX)
-  rule #bindVar(X:Var, Y:Var, INDEX) => X:Var               when (X:Var =/=K Y:Var)
+  rule #bindVar(X:Var, X    , BLN) => #boundVar(BLN)
+  rule #bindVar(X:Var, Y:Var, BLN) => X:Var          when (X:Var =/=K Y:Var)
 
   // Qualified Names
   // ---------------
@@ -212,7 +213,7 @@ module PLUTUS-CORE-TRANSLATION
 
   // We do not need bind free variables.
 
-  rule #bindVar(QN:QualN, X:Var, INDEX) => QN
+  rule #bindVar(QN:QualN, X:Var, BLN) => QN
 
   // Data Declarations
   // -----------------
@@ -292,13 +293,13 @@ module PLUTUS-CORE-TRANSLATION
   // If the list contains only Vals, then there will be no free vars, so we
   // just return the ValList
 
-  rule #bindVar((con QC VL:ValList), Y, INDEX)
+  rule #bindVar((con QC VL:ValList), Y, BLN)
     => (con QC VL)
 
   // Otherwise, we recurse into the list.
 
-  rule #bindVar((con QC TL:TmList), Y, INDEX)
-    => (con QC #bindVarTL(TL, Y, INDEX))
+  rule #bindVar((con QC TL:TmList), Y, BLN)
+    => (con QC #bindVarTL(TL, Y, BLN))
 
   // Case Statements
   // ---------------
@@ -348,14 +349,14 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #useOperand((case T CLS), LN) => LN
 
-  rule #bindVar((case T CLS), Y:Var, INDEX)
-    => (case #bindVar(T, Y, INDEX) #bindVarClL(CLS, Y, INDEX))
-  rule #bindVarClL(.ClList, X, INDEX) => .ClList
+  rule #bindVar((case T CLS), Y:Var, BLN)
+    => (case #bindVar(T, Y, BLN) #bindVarClL(CLS, Y, BLN))
+  rule #bindVarClL(.ClList, X, BLN) => .ClList
 
   // TODO: we should not recurse if `X` is in `VS`
 
-  rule #bindVarClL((QC (VS) T) CLS, X, INDEX)
-    => (QC (VS) #bindVar(T, X, INDEX)) #bindVarClL(CLS, X, INDEX)
+  rule #bindVarClL((QC (VS) T) CLS, X, BLN)
+    => (QC (VS) #bindVar(T, X, BLN)) #bindVarClL(CLS, X, BLN)
 
   // Builtins
   // --------
@@ -371,8 +372,8 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #useOperand((builtin B:BinaryBuiltin  T1:Tm T2:Tm), LN) => LN
 
-  rule #bindVar((builtin N T1 T2), Y:Var, INDEX)
-    => (builtin N #bindVar(T1, Y, INDEX) #bindVar(T2, Y, INDEX))
+  rule #bindVar((builtin N T1 T2), Y:Var, BLN)
+    => (builtin N #bindVar(T1, Y, BLN) #bindVar(T2, Y, BLN))
 
   // Each needs to generate instructions for executing in IELE.
 
@@ -445,30 +446,30 @@ module PLUTUS-CORE-TRANSLATION
   // If an inner lambda wants to use the same variable name, we should not
   // recurse into that lambda.
 
-  rule #bindVar((lam X:Var T), X:Var, INDEX) => ((lam X:Var T)):Tm
-  rule #bindVar((lam X:Var T), Y:Var, INDEX) => ((lam X:Var #bindVar(T, Y, INDEX))):Tm
+  rule #bindVar((lam X:Var T), X:Var, BLN) => ((lam X:Var T)):Tm
+  rule #bindVar((lam X:Var T), Y:Var, BLN) => ((lam X:Var #bindVar(T, Y, BLN))):Tm
     when (X:Var =/=K Y:Var)
 
   // Binding free variables
   // ----------------------
 
-  syntax Tm     ::= #boundVar(Var, Int)
-  syntax Tm     ::= #bindVar(Tm, Var, Int)                      [function]
-  syntax ClList ::= #bindVarClL(ClList, Var, Int)               [function]
-  syntax TmList ::= #bindVarTL(TmList, Var, Int)                [function]
+  syntax Tm     ::= #boundVar(LocalName)
+  syntax Tm     ::= #bindVar(Tm, Var, LocalName)                       [function]
+  syntax ClList ::= #bindVarClL(ClList, Var, LocalName)                [function]
+  syntax TmList ::= #bindVarTL(TmList, Var, LocalName)                 [function]
   
-  rule #bindVar(#boundVar(Y, J), X    , INDEX) => #boundVar(Y:Var, J:Int)
+  rule #bindVar(#boundVar(J), X, BLN) => #boundVar(J)
+
   // When replacing free vars in a TermList, we replace the free var for all terms in that list.
 
-  rule #bindVarTL(.TmList, X, INDEX) => .TmList
-  rule #bindVarTL(T TL, X, INDEX)
-    => #bindVar(T, X, INDEX) #bindVarTL(TL, X, INDEX)
+  rule #bindVarTL(.TmList, X, BLN) => .TmList
+  rule #bindVarTL(T TL, X, BLN)
+    => #bindVar(T, X, BLN) #bindVarTL(TL, X, BLN)
   
   // For `#boundVar`s `#loadOperand` directly uses the function's parameter.
-  // TODO: Make use of INDEX to prevent collisions in case of non-unique argument names.
 
-  rule #loadOperand(#boundVar(V, INDEX), LN) => .Instructions
-  rule #useOperand(#boundVar(V, INDEX), LN) => #varToLocalName(V) 
+  rule #loadOperand(#boundVar(BLN), LN) => .Instructions
+  rule #useOperand(#boundVar(BLN), LN) => BLN 
   
   // Lambda Applications
   // -------------------
@@ -485,8 +486,8 @@ module PLUTUS-CORE-TRANSLATION
                       )
   rule #useOperand([T1 T2], LN:LocalName) => LN:LocalName
 
-  rule #bindVar([T1 T2], X:Var, INDEX)
-    => [#bindVar(T1, X, INDEX) #bindVar(T2, X, INDEX)]
+  rule #bindVar([T1 T2], X:Var, BLN)
+    => [#bindVar(T1, X, BLN) #bindVar(T2, X, BLN)]
   
   // Generate static functions
   // =========================
