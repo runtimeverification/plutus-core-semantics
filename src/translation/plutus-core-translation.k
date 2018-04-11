@@ -138,8 +138,9 @@ module PLUTUS-CORE-TRANSLATION
   
   // For each Plutus construct, the translation process needs to know how to convert
   // to convert it to the corresponding IELE construct and load that into an `Operand`.
-  // This is done via `#loadOperand` and `#useOperand`S.
-  
+  // This is done via `#loadOperand` and `#useOperand`. The process must also be able
+  // to recurse into each term to bind free variables.
+
   syntax PreInstructions ::= #loadOperand(Tm, LocalName)
   syntax Operand ::= #useOperand(Tm, LocalName)                        [function]
   
@@ -157,10 +158,26 @@ module PLUTUS-CORE-TRANSLATION
   rule #useOperand(I:Int, LN) => I:Int
   rule #useOperand(V:Var, LN) => #varToLocalName(V:Var)
 
+  // Integers are not affected by substituion.
+
+  rule #replaceFreeVar(I:Int, X    , INDEX) => I:Int
+
+  // A variable is bound if it matches the variable we are interested in.
+
+  rule #replaceFreeVar(X:Var, X    , INDEX) => #freeVar(X, INDEX)
+  rule #replaceFreeVar(X:Var, Y:Var, INDEX) => X:Var               when (X:Var =/=K Y:Var)
+
   // Qualified Names
   // ---------------
 
+  // Since using a qualified name involves binding a closure, we assign it
+  // to the `LocalName` provided.
+
   rule #useOperand(QN:QualN, LN) => LN
+
+  // To generate the closure to call the function, we grab its `jumpId`
+  // and create the closure.
+
   rule <functions>
          ...
           <function>
@@ -177,7 +194,9 @@ module PLUTUS-CORE-TRANSLATION
        </functions>
        when #nameToGlobalName(N) ==K GN
 
-  // For recursion, function name is the same as Name we are loading
+  // Unfortunately, K's matching syntax means that we need to duplicate the
+  // rule for the recursive case.
+
   rule <functions>
          ...
           <function>
@@ -191,7 +210,11 @@ module PLUTUS-CORE-TRANSLATION
        </functions>
        when #nameToGlobalName(N) ==K GN
 
-  // Data Constructors
+  // We do not need bind free variables.
+
+  rule #replaceFreeVar(QN:QualN, X:Var, INDEX) => QN
+
+  // Data Declarations
   // -----------------
 
   // For each constructor, we allocate a "constructor ID"
@@ -245,12 +268,18 @@ module PLUTUS-CORE-TRANSLATION
 
   rule <plutus> ( data TYCON ( KSL ) .AltList ) => .K ... </plutus>
 
-  // TODO: Since `#useOperand` is a function, we cannot just use the
-  // construct id from `<constructors>`
+  // Data Constructors
+  // -----------------
 
   // Unfortunately, ValList are not subsorts of TmLists so we need two separate rules
-  rule #useOperand((con MN:ModName . TYCON TL:TmList),  LN) => LN
-  rule #useOperand((con MN:ModName . TYCON VL:ValList), LN) => LN
+  // Since `#useOperand` is a function, we cannot just use the
+  // constructor id as on `Operand`.
+
+  rule #useOperand((con QC TL:TmList),  LN) => LN
+  rule #useOperand((con QC VL:ValList), LN) => LN
+
+  // Since each Data declaration generated a function generated from its
+  // qualified name, we simply call that function.
 
   rule #loadOperand((con QC .ValList), LN) => LN = call #qualCToGlobalName(QC)(.Operands) .Instructions
   rule #loadOperand((con QC V:Val), LN)
@@ -259,10 +288,24 @@ module PLUTUS-CORE-TRANSLATION
                        .Instructions
                      )
 
+  // K's parsing means that ValLists and TermLists are distinct unrelated sorts.
+  // If the list contains only Vals, then there will be no free vars, so we
+  // just return the ValList
+
+  rule #replaceFreeVar((con QC VL:ValList), Y, INDEX)
+    => (con QC VL)
+
+  // Otherwise, we recurse into the list.
+
+  rule #replaceFreeVar((con QC TL:TmList), Y, INDEX)
+    => (con QC #replaceFreeVarTL(TL, Y, INDEX))
+
   // Case Statements
   // ---------------
 
-  rule #useOperand((case T CLS), LN) => LN
+  // Case statements generate a switch statement like structure.
+  // We check if the operand we are matching on matches each case.
+
   rule #loadOperand((case T CLS), LN)
     => #concatInsList( #loadOperand(T, #mkLN("case", !N))
                      , #translateCases(CLS, #useOperand(T, #mkLN("case", !N)), LN, #mkIN("end", !M))
@@ -279,6 +322,10 @@ module PLUTUS-CORE-TRANSLATION
                      , #labelAndLoad(CL, OP, RET, #mkIN("match", !N), END))
 
   // TODO: correctly handle VarList VS
+  // TODO: Calculating the constuctor id of the operand needs to be done just
+  // once.
+  // If the operands ctor matches the constructor's id, we jump to that case...
+
   rule <k> #compareAndJump((QC (VS) RHS), OP, MATCH)
         => #mkLN("ctor", !COND) = and OP, (2 ^Int 8 -Int 1)
            #mkLN("cond", !COND) = cmp eq CID, #mkLN("ctor", !COND)
@@ -291,24 +338,41 @@ module PLUTUS-CORE-TRANSLATION
          ...
        </constructor>
 
+  // ... where we translate the body of the case statement
+
   rule #labelAndLoad((QC (VS) RHS), OP, RET, MATCH, END)
     => #concatInsList( #label(MATCH) .Instructions
                      , #loadOperand(RHS, RET)
                      , RET = #useOperand(RHS, RET)
                        br END)
 
+  rule #useOperand((case T CLS), LN) => LN
+
+  rule #replaceFreeVar((case T CLS), Y:Var, INDEX)
+    => (case #replaceFreeVar(T, Y, INDEX) #replaceFreeVarClL(CLS, Y, INDEX))
+  rule #replaceFreeVarClL(.ClList, X, INDEX) => .ClList
+
+  // TODO: we should not recurse if `X` is in `VS`
+
+  rule #replaceFreeVarClL((QC (VS) T) CLS, X, INDEX)
+    => (QC (VS) #replaceFreeVar(T, X, INDEX)) #replaceFreeVarClL(CLS, X, INDEX)
+
   // Builtins
   // --------
 
   // Binary builtins share code for `#loadOperand` and `#useOperand`.
 
-  rule #useOperand((builtin B:BinaryBuiltin  T1:Tm T2:Tm), LN) => LN
   rule #loadOperand((builtin B:BinaryBuiltin T1:Tm T2:Tm), LN)
     => #concatInsList(#loadOperand(T1, #mkLN("bltinN1", !N1)),
                       #loadOperand(T2, #mkLN("bltinN1", !N2)),
                       #translateBinBuiltin( B:BinaryBuiltin, LN
                                           , #useOperand(T1, #mkLN("bltinN1", !N1))
                                           , #useOperand(T2, #mkLN("bltinN2", !N2))))
+
+  rule #useOperand((builtin B:BinaryBuiltin  T1:Tm T2:Tm), LN) => LN
+
+  rule #replaceFreeVar((builtin N T1 T2), Y:Var, INDEX)
+    => (builtin N #replaceFreeVar(T1, Y, INDEX) #replaceFreeVar(T2, Y, INDEX))
 
   // Each needs to generate instructions for executing in IELE.
 
@@ -351,8 +415,6 @@ module PLUTUS-CORE-TRANSLATION
        </functions>
        <plutus> (.K => #topLevelFunction(#mkGN("innerLambda", !N), !N, X, T:Tm)) ... </plutus>
 
-  rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
-  
   // `#allocBind` generates instructions to allocate a closure and bind its
   // environment.
   
@@ -377,38 +439,27 @@ module PLUTUS-CORE-TRANSLATION
   syntax Map ::= #addParamsToEnv(VarList, Map)                         [function]
   rule #addParamsToEnv(X:Var XS, MAP:Map) => #addParamsToEnv(XS, (size(MAP) |-> X:Var):Map MAP:Map)
   rule #addParamsToEnv(.VarList, MAP:Map) => MAP:Map
-  
+
+  rule #useOperand((lam X:Var T:Tm), LN:LocalName) => LN:LocalName
+
+  // If an inner lambda wants to use the same variable name, we should not
+  // recurse into that lambda.
+
+  rule #replaceFreeVar((lam X:Var T), X:Var, INDEX) => ((lam X:Var T)):Tm
+  rule #replaceFreeVar((lam X:Var T), Y:Var, INDEX) => ((lam X:Var #replaceFreeVar(T, Y, INDEX))):Tm
+    when (X:Var =/=K Y:Var)
+
+  // Binding free variables
+  // ----------------------
+
   syntax Tm     ::= #freeVar(Var, Int)
   syntax Tm     ::= #replaceFreeVar(Tm, Var, Int)                      [function]
   syntax ClList ::= #replaceFreeVarClL(ClList, Var, Int)               [function]
   syntax TmList ::= #replaceFreeVarTL(TmList, Var, Int)                [function]
   
-  rule #replaceFreeVar(X:Var, X    , INDEX) => #freeVar(X, INDEX)
-  rule #replaceFreeVar(X:Var, Y:Var, INDEX) => X:Var               when (X:Var =/=K Y:Var)
-  rule #replaceFreeVar(I:Int, X    , INDEX) => I:Int
-  rule #replaceFreeVar(QN:QualN, X:Var, INDEX) => QN
   rule #replaceFreeVar(#freeVar(Y, J), X    , INDEX) => #freeVar(Y:Var, J:Int)
-  rule #replaceFreeVar((lam X:Var T), X:Var, INDEX) => ((lam X:Var T)):Tm
-  rule #replaceFreeVar((lam X:Var T), Y:Var, INDEX) => ((lam X:Var #replaceFreeVar(T, Y, INDEX))):Tm
-    when (X:Var =/=K Y:Var)
-  rule #replaceFreeVar([T1 T2], X:Var, INDEX)
-    => [#replaceFreeVar(T1, X, INDEX) #replaceFreeVar(T2, X, INDEX)]
-  rule #replaceFreeVar((builtin N T1 T2), Y:Var, INDEX)
-    => (builtin N #replaceFreeVar(T1, Y, INDEX) #replaceFreeVar(T2, Y, INDEX))
-
-  rule #replaceFreeVar((case T CLS), Y:Var, INDEX)
-    => (case #replaceFreeVar(T, Y, INDEX) #replaceFreeVarClL(CLS, Y, INDEX))
-  rule #replaceFreeVarClL(.ClList, X, INDEX) => .ClList
-  rule #replaceFreeVarClL((QC (VS) T) CLS, X, INDEX)
-    => (QC (VS) #replaceFreeVar(T, X, INDEX)) #replaceFreeVarClL(CLS, X, INDEX)
-
   // When replacing free vars in a TermList, we replace the free var for all terms in that list.
-  // If the list contains only Vals, then there will be no free vars, so we just return the ValList
 
-  rule #replaceFreeVar((con MN:ModName . TYCON TL:TmList), Y, INDEX)
-    => (con MN . TYCON #replaceFreeVarTL(TL, Y, INDEX))
-  rule #replaceFreeVar((con MN:ModName . TYCON VL:ValList), Y, INDEX)
-    => (con MN . TYCON VL)
   rule #replaceFreeVarTL(.TmList, X, INDEX) => .TmList
   rule #replaceFreeVarTL(T TL, X, INDEX)
     => #replaceFreeVar(T, X, INDEX) #replaceFreeVarTL(TL, X, INDEX)
@@ -433,6 +484,9 @@ module PLUTUS-CORE-TRANSLATION
                         .Instructions
                       )
   rule #useOperand([T1 T2], LN:LocalName) => LN:LocalName
+
+  rule #replaceFreeVar([T1 T2], X:Var, INDEX)
+    => [#replaceFreeVar(T1, X, INDEX) #replaceFreeVar(T2, X, INDEX)]
   
   // Generate static functions
   // =========================
