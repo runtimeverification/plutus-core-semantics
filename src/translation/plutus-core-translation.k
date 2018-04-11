@@ -112,7 +112,7 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax K ::= #topLevelFunction(GlobalName, Int, VarList, Tm)
   rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, (lam X:Var T:Tm))
-             => #topLevelFunction(GN, JI, X VARS, #replaceFreeVar(T:Tm, X, #length(VARS)))
+             => #topLevelFunction(GN, JI, X VARS, #bindVar(T:Tm, X, #length(VARS)))
                 ...
        </plutus>
   rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, T:Tm) => .K ... </plutus>
@@ -160,12 +160,12 @@ module PLUTUS-CORE-TRANSLATION
 
   // Integers are not affected by substituion.
 
-  rule #replaceFreeVar(I:Int, X    , INDEX) => I:Int
+  rule #bindVar(I:Int, X    , INDEX) => I:Int
 
   // A variable is bound if it matches the variable we are interested in.
 
-  rule #replaceFreeVar(X:Var, X    , INDEX) => #freeVar(X, INDEX)
-  rule #replaceFreeVar(X:Var, Y:Var, INDEX) => X:Var               when (X:Var =/=K Y:Var)
+  rule #bindVar(X:Var, X    , INDEX) => #boundVar(X, INDEX)
+  rule #bindVar(X:Var, Y:Var, INDEX) => X:Var               when (X:Var =/=K Y:Var)
 
   // Qualified Names
   // ---------------
@@ -212,7 +212,7 @@ module PLUTUS-CORE-TRANSLATION
 
   // We do not need bind free variables.
 
-  rule #replaceFreeVar(QN:QualN, X:Var, INDEX) => QN
+  rule #bindVar(QN:QualN, X:Var, INDEX) => QN
 
   // Data Declarations
   // -----------------
@@ -292,13 +292,13 @@ module PLUTUS-CORE-TRANSLATION
   // If the list contains only Vals, then there will be no free vars, so we
   // just return the ValList
 
-  rule #replaceFreeVar((con QC VL:ValList), Y, INDEX)
+  rule #bindVar((con QC VL:ValList), Y, INDEX)
     => (con QC VL)
 
   // Otherwise, we recurse into the list.
 
-  rule #replaceFreeVar((con QC TL:TmList), Y, INDEX)
-    => (con QC #replaceFreeVarTL(TL, Y, INDEX))
+  rule #bindVar((con QC TL:TmList), Y, INDEX)
+    => (con QC #bindVarTL(TL, Y, INDEX))
 
   // Case Statements
   // ---------------
@@ -348,14 +348,14 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #useOperand((case T CLS), LN) => LN
 
-  rule #replaceFreeVar((case T CLS), Y:Var, INDEX)
-    => (case #replaceFreeVar(T, Y, INDEX) #replaceFreeVarClL(CLS, Y, INDEX))
-  rule #replaceFreeVarClL(.ClList, X, INDEX) => .ClList
+  rule #bindVar((case T CLS), Y:Var, INDEX)
+    => (case #bindVar(T, Y, INDEX) #bindVarClL(CLS, Y, INDEX))
+  rule #bindVarClL(.ClList, X, INDEX) => .ClList
 
   // TODO: we should not recurse if `X` is in `VS`
 
-  rule #replaceFreeVarClL((QC (VS) T) CLS, X, INDEX)
-    => (QC (VS) #replaceFreeVar(T, X, INDEX)) #replaceFreeVarClL(CLS, X, INDEX)
+  rule #bindVarClL((QC (VS) T) CLS, X, INDEX)
+    => (QC (VS) #bindVar(T, X, INDEX)) #bindVarClL(CLS, X, INDEX)
 
   // Builtins
   // --------
@@ -371,8 +371,8 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #useOperand((builtin B:BinaryBuiltin  T1:Tm T2:Tm), LN) => LN
 
-  rule #replaceFreeVar((builtin N T1 T2), Y:Var, INDEX)
-    => (builtin N #replaceFreeVar(T1, Y, INDEX) #replaceFreeVar(T2, Y, INDEX))
+  rule #bindVar((builtin N T1 T2), Y:Var, INDEX)
+    => (builtin N #bindVar(T1, Y, INDEX) #bindVar(T2, Y, INDEX))
 
   // Each needs to generate instructions for executing in IELE.
 
@@ -398,7 +398,7 @@ module PLUTUS-CORE-TRANSLATION
   //  - Generate a new function for the inner part of the lambda,
   //    Its `<jumpId>` is to be used as a pseudo function pointer.
   //  - Mark variables in the body of the lambda that take their values from
-  //    the parameters as `#freeVar`s, so they can correctly access their value
+  //    the parameters as `#boundVar`s, so they can correctly access their value
   //    from the closure passed.
   //  - Allocate a closure and bind its environment.
   
@@ -445,30 +445,30 @@ module PLUTUS-CORE-TRANSLATION
   // If an inner lambda wants to use the same variable name, we should not
   // recurse into that lambda.
 
-  rule #replaceFreeVar((lam X:Var T), X:Var, INDEX) => ((lam X:Var T)):Tm
-  rule #replaceFreeVar((lam X:Var T), Y:Var, INDEX) => ((lam X:Var #replaceFreeVar(T, Y, INDEX))):Tm
+  rule #bindVar((lam X:Var T), X:Var, INDEX) => ((lam X:Var T)):Tm
+  rule #bindVar((lam X:Var T), Y:Var, INDEX) => ((lam X:Var #bindVar(T, Y, INDEX))):Tm
     when (X:Var =/=K Y:Var)
 
   // Binding free variables
   // ----------------------
 
-  syntax Tm     ::= #freeVar(Var, Int)
-  syntax Tm     ::= #replaceFreeVar(Tm, Var, Int)                      [function]
-  syntax ClList ::= #replaceFreeVarClL(ClList, Var, Int)               [function]
-  syntax TmList ::= #replaceFreeVarTL(TmList, Var, Int)                [function]
+  syntax Tm     ::= #boundVar(Var, Int)
+  syntax Tm     ::= #bindVar(Tm, Var, Int)                      [function]
+  syntax ClList ::= #bindVarClL(ClList, Var, Int)               [function]
+  syntax TmList ::= #bindVarTL(TmList, Var, Int)                [function]
   
-  rule #replaceFreeVar(#freeVar(Y, J), X    , INDEX) => #freeVar(Y:Var, J:Int)
+  rule #bindVar(#boundVar(Y, J), X    , INDEX) => #boundVar(Y:Var, J:Int)
   // When replacing free vars in a TermList, we replace the free var for all terms in that list.
 
-  rule #replaceFreeVarTL(.TmList, X, INDEX) => .TmList
-  rule #replaceFreeVarTL(T TL, X, INDEX)
-    => #replaceFreeVar(T, X, INDEX) #replaceFreeVarTL(TL, X, INDEX)
+  rule #bindVarTL(.TmList, X, INDEX) => .TmList
+  rule #bindVarTL(T TL, X, INDEX)
+    => #bindVar(T, X, INDEX) #bindVarTL(TL, X, INDEX)
   
-  // For `#freeVar`s `#loadOperand` directly uses the function's parameter.
+  // For `#boundVar`s `#loadOperand` directly uses the function's parameter.
   // TODO: Make use of INDEX to prevent collisions in case of non-unique argument names.
 
-  rule #loadOperand(#freeVar(V, INDEX), LN) => .Instructions
-  rule #useOperand(#freeVar(V, INDEX), LN) => #varToLocalName(V) 
+  rule #loadOperand(#boundVar(V, INDEX), LN) => .Instructions
+  rule #useOperand(#boundVar(V, INDEX), LN) => #varToLocalName(V) 
   
   // Lambda Applications
   // -------------------
@@ -485,8 +485,8 @@ module PLUTUS-CORE-TRANSLATION
                       )
   rule #useOperand([T1 T2], LN:LocalName) => LN:LocalName
 
-  rule #replaceFreeVar([T1 T2], X:Var, INDEX)
-    => [#replaceFreeVar(T1, X, INDEX) #replaceFreeVar(T2, X, INDEX)]
+  rule #bindVar([T1 T2], X:Var, INDEX)
+    => [#bindVar(T1, X, INDEX) #bindVar(T2, X, INDEX)]
   
   // Generate static functions
   // =========================
