@@ -9,10 +9,12 @@ clean=false
 deps=false
 runner=(pytest -n 4)
 while [[  $# -ne 0 ]]; do case "$1" in
-    clean) clean=true          ;;
-     deps) deps=true           ;;
-     kplc) runner=( bin/kplc ) ;;
-        *) break               ;;
+    clean) clean=true                          ;;
+     deps) deps=true                           ;;
+    trans) runner=( bin/kplc run translation ) ;;
+     exec) runner=( bin/kplc run execution   ) ;;
+     kplc) runner=( bin/kplc                 ) ;;
+        *) break                               ;;
 esac; shift; done
 
             targets=( )
