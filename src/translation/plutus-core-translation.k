@@ -108,10 +108,8 @@ module PLUTUS-CORE-TRANSLATION
   rule <plutus> _:TDec => .K ... </plutus>
   rule <plutus> _:MDec => .K ... </plutus>
 
-  // TODO: DDec
-
   syntax K ::= #topLevelFunction(GlobalName, Int, VarList, Tm)
-  // TODO: Avoid name collisions when `#bind`inv variables
+  // TODO: Avoid name collisions when `#bind`ing
   rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, (lam X:Var T:Tm))
              => #topLevelFunction(GN, JI, X VARS, #bindVar(T:Tm, X, #varToLocalName(X)))
                 ...
@@ -221,6 +219,7 @@ module PLUTUS-CORE-TRANSLATION
   // For each constructor, we allocate a "constructor ID"
   // We ignore the KSigList since we don't need typing information
 
+  rule <plutus> ( data TYCON ( KSL ) .AltList ) => .K ... </plutus>
   rule <plutus> ( data TYCON ( KSL ) ( CON TL ) ALTS )
              => ( data TYCON ( KSL )            ALTS )
                 ...
@@ -266,8 +265,6 @@ module PLUTUS-CORE-TRANSLATION
        #mkLN("ret") = or #mkLN("ret"), CID
        ret #mkLN("ret")
     when CID <Int 2 ^Int 8
-
-  rule <plutus> ( data TYCON ( KSL ) .AltList ) => .K ... </plutus>
 
   // Data Constructors
   // -----------------
