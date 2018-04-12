@@ -807,6 +807,7 @@ module PLUTUS-CORE-TRANSLATION
                       | #mkGN(String, Int)            [function, klabel(mkGN_SI)]
   syntax LocalName  ::= #mkLN(String)                                  [function]
                       | #mkLN(String, Int)            [function, klabel(mkLN_SI)]
+  syntax LocalNames ::= #mkLNs(Int, String)                            [function]
   syntax IeleName   ::= #mkIN(String)                                  [function]
                       | #mkIN(String, Int)            [function, klabel(mkIN_SI)]
   syntax Var        ::= #mkVar(String)                                 [function]
@@ -820,6 +821,10 @@ module PLUTUS-CORE-TRANSLATION
   rule #mkGN(S, I) => #mkGN(S +String Int2String(I))
   rule #mkLN(S, I) => #mkLN(S +String Int2String(I))
   rule #mkIN(S, I) => #mkIN(S +String Int2String(I))
+
+  rule #mkLNs(0,   PREFIX) => .LocalNames
+  rule #mkLNs(NUM, PREFIX) => #mkLN(PREFIX, !I), #mkLNs(NUM -Int 1, PREFIX)
+    when NUM =/=K 0
 
   // K does not let us make a qualC in one fail swoop using #parseToken(..) . #parseToken(..).
   // Instead, we need to use #parseToken and hold the information needed to make a QualC
