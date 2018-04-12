@@ -833,8 +833,8 @@ module PLUTUS-CORE-TRANSLATION
   rule #mkQualC(MN, C) => #qualCHolder(#parseToken("UpperName", MN), #parseToken("UpperName", C))
   rule #qualCHolder(MN, C) => (MN . C):QualC
 
-  // Converting Names, Vars to GlobalNames, LocalNames, Strings
-  // ----------------------------------------------------------
+  // Converting between sorts
+  // ------------------------
 
   syntax GlobalName ::= #nameToGlobalName(Name)                        [function]
                       | #qualCToGlobalName(QualC)                      [function]
@@ -855,8 +855,12 @@ module PLUTUS-CORE-TRANSLATION
                   | #modNameToString(ModName)
                                             [function, hook(STRING.token2string)]
 
-  // Other utilities
-  // ---------------
+  syntax TmList ::= #valListToTmList(ValList)                          [function]
+  rule #valListToTmList(V VL)     => V #valListToTmList(VL)
+  rule #valListToTmList(.ValList) => .TmList
+
+  // List Utilities
+  // --------------
 
   syntax VarList ::= #reverse(VarList)         [function, klabel(reverseVarList)]
   syntax VarList ::= #reverseAux(VarList, VarList)
@@ -868,12 +872,11 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax Int ::= #length(VarList)               [function, klabel(lengthVarList)]
                | #length(TyList)                 [function, klabel(lengthTyList)]
+               | #length(TmList)                 [function, klabel(lengthTmList)]
   // ----------------------------------------------------------------------------
-  rule #length(.VarList) => 0
-  rule #length(V VL:VarList) => 1 +Int #length(VL)
-
-  rule #length(.TyList) => 0
-  rule #length(T TL:TyList) => 1 +Int #length(TL)
+  rule #length(V VL:VarList) => 1 +Int #length(VL)    rule #length(.VarList) => 0
+  rule #length(T TL:TmList ) => 1 +Int #length(TL)    rule #length(.TmList ) => 0
+  rule #length(T TL:TyList ) => 1 +Int #length(TL)    rule #length(.TyList ) => 0
 
   syntax Bool ::= #in(GlobalName, NameList)                            [function]
   // ----------------------------------------------------------------------------
