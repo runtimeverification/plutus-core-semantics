@@ -142,7 +142,22 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax PreInstructions ::= #loadOperand(Tm, LocalName)
   syntax Operand ::= #useOperand(Tm, LocalName)                        [function]
-  
+
+  // Some constructs need to load / use `TmList`s
+
+  syntax PreInstructions ::= #loadOperands(TmList, LocalNames)         [function]
+  // ----------------------------------------------------------------------------
+  rule #loadOperands(T TL, (LN, LNS))
+    => #concatInsList(#loadOperand(T, LN), #loadOperands(TL, LNS))
+  rule #loadOperands(.TmList, .LocalNames) => .Instructions
+
+  syntax Operands ::= #useOperands(TmList, LocalNames)                 [function]
+  // ----------------------------------------------------------------------------
+  rule #useOperands(T TL, (LN, LNS))
+    => #useOperand(T, LN), #useOperands(TL, LNS)
+  rule #useOperands(.TmList, .LocalNames) => .Operands
+
+
   // Basic Constructs
   // ----------------
   
