@@ -117,6 +117,7 @@ def generate_tests(type):
             ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],   11),
             ("case-simple", "SimpleCase", "testMyNat",      [7],    53),
             ("case-simple", "SimpleCase", "testMyNat",      [-4],   12),
+            ("case-simple", "SimpleCase", "testPair",       [13],  26),
            ]
 
     if type == 'translation':
