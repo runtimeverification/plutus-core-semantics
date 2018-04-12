@@ -295,15 +295,24 @@ module PLUTUS-CORE-TRANSLATION
   // qualified name, we simply call that function.
 
   rule #loadOperand((con QC .ValList), LN) => LN = call #qualCToGlobalName(QC)(.Operands) .Instructions
-  rule #loadOperand((con QC V:Val), LN)
-    => #concatInsList( #loadOperand(V, #mkLN("op", !N))
-                     , LN = call #qualCToGlobalName(QC)(#useOperand(V, #mkLN("op", !N)))
-                       .Instructions
-                     )
+
+  // To generate multiple fresh `LocalName`s we need an auxilary function.
+
+  rule #loadOperand((con QC TL:TmList), LN) => #loadOperandDCAux(QC, TL, #mkLNs(#length(TL), "ops"), LN) 
 
   // K's parsing means that ValLists and TermLists are distinct unrelated sorts.
   // If the list contains only Vals, then there will be no free vars, so we
   // just return the ValList
+
+  rule #loadOperand((con QC VL:ValList          ), LN)
+    => #loadOperand((con QC #valListToTmList(VL)), LN)
+
+  syntax PreInstructions ::= #loadOperandDCAux(QualC, TmList, LocalNames, LocalName)
+  rule #loadOperandDCAux(QC, TL, LNS, LN)
+    => #concatInsList( #loadOperands(TL, LNS)
+                     , LN = call #qualCToGlobalName(QC)(#useOperands(TL, LNS))
+                       .Instructions
+                     )
 
   rule #bindVar((con QC VL:ValList), Y, BLN)
     => (con QC VL)
@@ -354,10 +363,24 @@ module PLUTUS-CORE-TRANSLATION
   // ... where we translate the body of the case statement
 
   rule #labelAndLoad((QC (VS) RHS), OP, RET, MATCH, END)
-    => #concatInsList( #label(MATCH) .Instructions
-                     , #loadOperand(RHS, RET)
-                     , RET = #useOperand(RHS, RET)
-                       br END)
+    => #concatInsList( #label(MATCH)
+                       OP = shift OP, -8
+                       .Instructions
+                     , #labelAndLoadDeconstruct(VS, RHS, OP, 0)
+                     , #concatInsList( #loadOperand(RHS, RET)
+                                     , RET = #useOperand(RHS, RET)
+                                       br END
+                                       .Instructions))
+
+  syntax PreInstructions ::= #labelAndLoadDeconstruct(VarList, Tm, Operand, Int)
+  rule #labelAndLoadDeconstruct(V VL, T, OP, OFFSET)
+    => #concatInsList( #mkLN("subtermAddr", !N) = add OP, OFFSET
+                       #mkLN("matchOp", !N) = load #mkLN("subtermAddr", !N)
+                       .Instructions
+                     , #labelAndLoadDeconstruct(VL, #bindVar(T, V, #mkLN("matchOp", !N)), OP, OFFSET +Int 1)
+                     )
+  rule #labelAndLoadDeconstruct(.VarList, T, OP, OFFSET)
+    => .Instructions
 
   rule #useOperand((case T CLS), LN) => LN
 
