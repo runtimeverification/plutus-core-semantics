@@ -100,9 +100,6 @@ def generate_tests(type):
             ("case-simple", "SimpleCase", "nonExhaustive",  [13],  19),
             ("case-simple", "SimpleCase", "nonExhaustive",  [-13], ExitCode_NonExhaustive),
 
-            ("case-simple", "SimpleCase", "testMyNat", [7],    53),
-            ("case-simple", "SimpleCase", "testMyNat", [-4],   12),
-
             ("recursion",   "Recursion",  "sumToN",     [10, 0], 55),
            ]
 
@@ -118,6 +115,8 @@ def generate_tests(type):
     execution_unimplemented = [
             ("case-simple", "SimpleCase", "fooBarOrKungFu", [3],    7),
             ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],   11),
+            ("case-simple", "SimpleCase", "testMyNat",      [7],    53),
+            ("case-simple", "SimpleCase", "testMyNat",      [-4],   12),
            ]
 
     if type == 'translation':
