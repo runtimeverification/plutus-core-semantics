@@ -835,9 +835,6 @@ module PLUTUS-CORE-TRANSLATION
                   | #modNameToString(ModName)
                                             [function, hook(STRING.token2string)]
 
-  // Helpers for fresh variables
-  // ---------------------------
-
   // Other utilities
   // ---------------
 
