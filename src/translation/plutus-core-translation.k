@@ -270,7 +270,7 @@ module PLUTUS-CORE-TRANSLATION
   rule #bindToTerm(ARITY)
     => #concatInsListFct( #bindToTerm(ARITY -Int 1)
                         , #mkLN("subtermPtr") = add #mkLN("ret"), ARITY -Int 1
-                          store #mkLN("subtermPtr"), #mkLN("param" +String Int2String(ARITY))
+                          store #mkLN("param" +String Int2String(ARITY)), #mkLN("subtermPtr")
                          .Instructions
                         )
     when ARITY >Int 0
@@ -366,21 +366,21 @@ module PLUTUS-CORE-TRANSLATION
     => #concatInsList( #label(MATCH)
                        OP = shift OP, -8
                        .Instructions
-                     , #labelAndLoadDeconstruct(VS, RHS, OP, 0)
-                     , #concatInsList( #loadOperand(RHS, RET)
-                                     , RET = #useOperand(RHS, RET)
-                                       br END
-                                       .Instructions))
+                     , #labelAndLoadDeconstruct(VS, RHS, OP, 0, RET)
+                     , br END
+                       .Instructions)
 
-  syntax PreInstructions ::= #labelAndLoadDeconstruct(VarList, Tm, Operand, Int)
-  rule #labelAndLoadDeconstruct(V VL, T, OP, OFFSET)
+  syntax PreInstructions ::= #labelAndLoadDeconstruct(VarList, Tm, Operand, Int, LocalName)
+  rule #labelAndLoadDeconstruct(V VL, RHS, OP, OFFSET, RET)
     => #concatInsList( #mkLN("subtermAddr", !N) = add OP, OFFSET
                        #mkLN("matchOp", !N) = load #mkLN("subtermAddr", !N)
                        .Instructions
-                     , #labelAndLoadDeconstruct(VL, #bindVar(T, V, #mkLN("matchOp", !N)), OP, OFFSET +Int 1)
+                     , #labelAndLoadDeconstruct(VL, #bindVar(RHS, V, #mkLN("matchOp", !N)), OP, OFFSET +Int 1, RET)
                      )
-  rule #labelAndLoadDeconstruct(.VarList, T, OP, OFFSET)
-    => .Instructions
+  rule #labelAndLoadDeconstruct(.VarList, RHS, OP, OFFSET, RET)
+    => #concatInsList( #loadOperand(RHS, #mkLN("match", !N))
+                     , RET = #useOperand(RHS, #mkLN("match", !N))
+                       .Instructions)
 
   rule #useOperand((case T CLS), LN) => LN
 
@@ -763,17 +763,17 @@ module PLUTUS-CORE-TRANSLATION
          ...
        </constructors>
        <iele> TLDS:TopLevelDefinitions
-           => define #qualCToGlobalName(QC) ( #createArgs(ARITY) ) {
+           => define #qualCToGlobalName(QC) ( #createArgs(0, ARITY) ) {
                 IS
                 .LabeledBlocks
               }
               TLDS
        </iele>
 
-  syntax LocalNames ::= #createArgs(Int)                              [function]
-  rule #createArgs(0) => .LocalNames
-  rule #createArgs(I) => #mkLN("param" +String Int2String(I)), #createArgs(I -Int 1)
-    when I >Int 0
+  syntax LocalNames ::= #createArgs(Int, Int)                          [function]
+  rule #createArgs(T, T) => .LocalNames
+  rule #createArgs(I, T) => #mkLN("param" +String Int2String(I+Int 1)), #createArgs(I +Int 1, T)
+                                                                          [owise]
 
   rule <plutus> #constructorsToIele => .K ... </plutus>
        <constructors> .Bag </constructors>
