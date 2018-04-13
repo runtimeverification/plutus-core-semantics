@@ -116,8 +116,12 @@ def generate_tests(type):
     execution_unimplemented = [
             ("case-simple", "SimpleCase", "fooBarOrKungFu", [3],       7),
             ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],      11),
-            ("case-simple", "SimpleCase", "testMyNat",      [7],       53),
-            ("case-simple", "SimpleCase", "testMyNat",      [-4],      12),
+
+            ("case-simple", "SimpleCase", "testMyNat",      [0],       0),
+            ("case-simple", "SimpleCase", "testMyNat",      [1],       -2),
+            ("case-simple", "SimpleCase", "testMyNat",      [-4],      0),
+            ("case-simple", "SimpleCase", "testMyNat",      [7],       -14),
+
             ("case-simple", "SimpleCase", "secondArg",      [13, 21],  21),
             ("case-simple", "SimpleCase", "testPair",       [13],      26),
            ]
