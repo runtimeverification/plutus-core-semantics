@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 
+from __future__ import print_function
 from subprocess import Popen, PIPE
 
 import json
@@ -167,14 +168,14 @@ def test_translation(file, mod, fct, args, expected):
     temp_json.write("\n")
     temp_json.flush()
 
-    # Print JSON spec for debugging.
-    json.dump(iele_test, sys.stdout, indent=2)
-
     blockchain_args = ["./blockchaintest", temp_json.name]
     blockchaintest = Popen(blockchain_args, stdout=PIPE, cwd=base(".build/iele/"))
     (output, err) = blockchaintest.communicate()
     exit_code = blockchaintest.wait()
-    print output.replace('`<', "\n`<")
+
+    def line_is_interesting(l):
+        return any(["output" in l, "exit" in l])
+    list(map(print, filter(line_is_interesting, output.replace('`<', "\n`<").splitlines())))
 
     assert exit_code == 0
 
