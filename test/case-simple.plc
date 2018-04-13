@@ -1,6 +1,6 @@
 (program
 
-  (module SimpleCase (import) (export () (boolean nonExhaustive fooBarOrKungFu testMyNat testPair))
+  (module SimpleCase (import) (export () (boolean nonExhaustive fooBarOrKungFu testMyNat testPair secondArg))
 
     (declare boolean (fun (integer) (integer)))
     (define boolean
@@ -60,6 +60,10 @@
     // MyNat is a datatype with a constructor taking in an argument
 
     (data MyPair () (MyMkPair (integer) (integer)))
+
+    (declare secondArg (fun (integer) (fun (integer) (integer))))
+    (define secondArg
+      (lam x (lam y [SimpleCase.myFst (con SimpleCase.MyMkPair y x)])))
 
     (declare myFst (fun (con SimpleCase.MyPair) (integer)))
     (define myFst

@@ -114,11 +114,12 @@ def generate_tests(type):
             ("ctor-case", "Foo", "baz", [0], 23),
            ]
     execution_unimplemented = [
-            ("case-simple", "SimpleCase", "fooBarOrKungFu", [3],    7),
-            ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],   11),
-            ("case-simple", "SimpleCase", "testMyNat",      [7],    53),
-            ("case-simple", "SimpleCase", "testMyNat",      [-4],   12),
-            ("case-simple", "SimpleCase", "testPair",       [13],  26),
+            ("case-simple", "SimpleCase", "fooBarOrKungFu", [3],       7),
+            ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],      11),
+            ("case-simple", "SimpleCase", "testMyNat",      [7],       53),
+            ("case-simple", "SimpleCase", "testMyNat",      [-4],      12),
+            ("case-simple", "SimpleCase", "secondArg",      [13, 21],  21),
+            ("case-simple", "SimpleCase", "testPair",       [13],      26),
            ]
 
     if type == 'translation':
