@@ -1,0 +1,11 @@
+(program
+  (module Foo (import) (export () (applyId))
+
+    (declare id (fun (integer) (integer)))
+    (define id (lam x x))
+
+    (declare applyId (fun (integer) (integer)))
+    (define applyId (lam x [Foo.id]))
+
+  )
+)

@@ -2,6 +2,9 @@
 
   (module SimpleCase (import) (export () (boolean nonExhaustive fooBarOrKungFu testMyNat testPair secondArg))
 
+    // Bool comparison ops are capatable with Prelude.True Prelude.False
+    // -----------------------------------------------------------------
+
     (declare boolean (fun (integer) (integer)))
     (define boolean
       (lam x
@@ -9,11 +12,17 @@
           (Prelude.True  () 19)
           (Prelude.False () 23))))
 
+    // Non exhaustive case matching should fail
+    // ----------------------------------------
+
     (declare nonExhaustive (fun (integer) (integer)))
     (define nonExhaustive
       (lam x
         (case (builtin equalsInteger x 13)
           (Prelude.True  () 19))))
+
+    // Nullary Constructors
+    // --------------------
 
     (data Foo () (Kung) (Bar))
 
@@ -35,29 +44,8 @@
     (define fooBarOrKungFu
       (lam x [ SimpleCase.fooToInt [ SimpleCase.intToFoo x]]))
 
-    // MyNat is a datatype with a constructor taking in an argument
-
-    (data MyNat () (Zero) (Succ (con CaseSimple.MyNat)))
-
-    (declare myNatToInt (fun (con SimpleCase.MyNat) (integer)))
-    (define myNatToInt
-      (lam x
-        (case x
-          (SimpleCase.Zero ()  53)
-          (SimpleCase.Succ (y) 12))))
-
-    (declare intToMyNat (fun (integer) (con SimpleCase.Foo)))
-    (define intToMyNat
-      (lam x
-        (case (builtin equalsInteger 7 x)
-          (Prelude.True  () (con SimpleCase.Zero))
-          (Prelude.False () (con SimpleCase.Succ (con SimpleCase.Zero))))))
-
-    (declare testMyNat (fun (integer) (integer)))
-    (define testMyNat
-      (lam x [ SimpleCase.myNatToInt [ SimpleCase.intToMyNat x]]))
-
-    // MyNat is a datatype with a constructor taking in an argument
+    // Binary Constructors
+    // -------------------
 
     (data MyPair () (MyMkPair (integer) (integer)))
 
@@ -85,6 +73,31 @@
     (define testPair
       (lam x [SimpleCase.mySnd (con SimpleCase.MyMkPair x (builtin multiplyInteger x 2))]))
 
+    // Recursive Constructors
+    // ----------------------
+
+    (data MyNat () (Zero) (Succ (con CaseSimple.MyNat)))
+
+    // Map MyNats on to the negative intgers
+
+    (declare myNatToInt (fun (con SimpleCase.MyNat) (integer)))
+    (define  myNatToInt
+      (lam x (case x
+        (SimpleCase.Zero () 0)
+        (SimpleCase.Succ (y) (builtin subtractInteger [SimpleCase.myNatToInt y] 1)))))
+
+    // NegNat |-> 0; PosNat |-> 2*MyNat
+
+    (declare intToMyNat (fun (integer) (con SimpleCase.Foo)))
+    (define intToMyNat
+      (lam x
+        (case (builtin lessThanEqualsInteger x 0)
+          (Prelude.True  () (con SimpleCase.Zero))
+          (Prelude.False () (con SimpleCase.Succ (con SimpleCase.Succ [SimpleCase.intToMyNat (builtin subtractInteger x 1)]))))))
+
+    (declare testMyNat (fun (integer) (integer)))
+    (define testMyNat
+      (lam x [ SimpleCase.myNatToInt [ SimpleCase.intToMyNat x]]))
   )
 
 )
