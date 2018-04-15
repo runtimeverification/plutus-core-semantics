@@ -25,7 +25,6 @@ module PLUTUS-CORE-EXECUTION
       <modules>
         // K5 Does not like cells named 'module'
         <Module multiplicity="*" type="Set">
-          <curr> 0 </curr>
           <name> .ModName </name>
           <dataCons> .TyExpList </dataCons>
           <decl> .NameList:NameList </decl>
@@ -170,8 +169,6 @@ module PLUTUS-CORE-EXECUTION
   rule ( inst M:Tm T:Ty ) => .K
 
   // Begin processing a module, add new <Module> cell
-  //rule ( module MN:ModName (import MNL) (export (TXL) (NL)) DEFS ) .DecList => DEFS
-
   rule
     <k>
       ( module MN:ModName (import MNL) (export (TXL) (NL:NameList)) DEFS ) => DEFS ...
@@ -179,7 +176,6 @@ module PLUTUS-CORE-EXECUTION
     <modules> ...
       .Bag =>
       <Module>
-        <curr> 1 </curr>
         <name> MN </name>
         <dataCons> .TyExpList </dataCons>
         <decl> .NameList:NameList </decl>
@@ -192,60 +188,42 @@ module PLUTUS-CORE-EXECUTION
   // Add data declaration to dataCons subcell
   rule
     <k> ( data TC:TyCon ( KSL:KSigList ) AL:AltList ) => .K ... </k>
-    <curr> 1 </curr>
-    <dataCons> DL => ( TC ( #getConListAlt(AL) ) ) DL </dataCons>
+    <Module>
+      <name> MN </name>
+      <dataCons> DL => ( TC ( #getConListAlt(AL) ) ) DL </dataCons>
+      ...
+    </Module>
 
   // Add declared name to decls
   rule
     <k> ( declare N T:Ty ) => .K ... </k>
-    <curr> 1 </curr>
-    <decl> DL => N DL </decl>
+    <Module>
+      <name> MN </name>
+      <decl> DL => N DL </decl>
+      ...
+    </Module>
 
   // Add V to env of current module
   rule
     <k> ( define N:Name V:Val ) => .K ... </k>
-    <curr> 1 </curr>
-    <name> MN </name>
     <lenv> _ => .Map </lenv>
     <genv> ... .Map => (MN . N):QualN |-> V ... </genv>
+    <Module>
+      <name> MN </name>
+      ...
+    </Module>
 
   // Finishing processing a module as there are no more definitions
   rule <k> .DecList => .K ... </k>
-       <curr> 1 => 0 </curr>
+       <Module>
+         <name> MN </name>
+         ...
+       </Module>
 
   // Qualified Name reduces if it is in the current module
   rule
     <k> (MN . N):QualN => V ... </k>
     <genv> ... (MN . N):QualN |-> V ... </genv>
-    <curr> 1 </curr>
-    <name> MN </name>
-    <decl> DL:NameList </decl>
-    when N #in_n DL
-
-  // Qualified name reduces if the name is exported from a different module
-  // which is imported by the current module
-  rule
-    <k> (MN' . N):QualN => V ... </k>
-    <genv> ... (MN' . N):QualN |-> V ... </genv>
-    <Module>
-      <curr> 1 </curr>
-      <name> MN </name>
-      <dataCons> _ </dataCons>
-      <decl> _ </decl>
-      <importedModules> MNL </importedModules>
-      <exportTy> _ </exportTy>
-      <exportTm> _ </exportTm>
-    </Module>
-    <Module>
-      <curr> 0 </curr>
-      <name> MN' </name>
-      <dataCons> _ </dataCons>
-      <decl> DL:NameList </decl>
-      <importedModules> _ </importedModules>
-      <exportTy> _ </exportTy>
-      <exportTm> NL:NameList </exportTm>
-    </Module>
-    when (MN' #in_mn MNL) andBool (N #in_n NL) andBool (N #in_n DL)
 
   /***************************************************************************/
   /************************   PATTERN MATCHING   *****************************/
@@ -265,34 +243,30 @@ module PLUTUS-CORE-EXECUTION
   // Case match is valid if the type was defined in the current module and
   // all clauses match all constructors
   rule
-    <k> ( case M CLS ) => #valid ~> ( case M CLS ) ... </k>
-    <curr> 1 </curr>
-    <name> MN </name>
-    <dataCons> TXL </dataCons>
+    <k> (.K => #valid) ~> ( case M CLS ) ... </k>
+    <Module>
+      <name> MN </name>
+      <dataCons> TXL </dataCons>
+      ...
+    </Module>
     when #getConListCl(CLS) #in_tx TXL
 
   // Case match is valid if the type was defined in another module, all
   // clauses match all constructors, all constructors are exported from that
-  // module, and that module is importad from the current module
+  // module, and that module is importad from the current module.
+  // Also add imported module to module stack and mark for popping later.
   rule
-    <k> ( case M CLS ) => #valid ~> ( case M CLS ) ... </k>
+    <k> (.K => #valid) ~> ( case M CLS ) ... </k>
     <Module>
-      <curr> 1 </curr>
       <name> MN </name>
-      <dataCons> _ </dataCons>
-      <decl> _ </decl>
       <importedModules> MNL </importedModules>
-      <exportTy> _ </exportTy>
-      <exportTm> _ </exportTm>
+      ...
     </Module>
     <Module>
-      <curr> 0 </curr>
       <name> MN' </name>
       <dataCons> TXL </dataCons>
-      <decl> _ </decl>
-      <importedModules> _ </importedModules>
       <exportTy> TXL' </exportTy>
-      <exportTm> _ </exportTm>      
+      ...
     </Module>
     when #getConListCl(CLS) #in_tx TXL andBool #getConListCl(CLS) #in_tx TXL'
                                        andBool MN' #in_mn MNL
@@ -334,7 +308,6 @@ module PLUTUS-CORE-EXECUTION
        <modules> ...
          .Bag =>
          <Module>
-           <curr> 1 </curr>
            <name> #MainModule </name>
            <dataCons> .TyExpList </dataCons>
            <decl> .NameList:NameList </decl>
