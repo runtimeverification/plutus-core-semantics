@@ -58,8 +58,6 @@ def toPlutusReturn(expected):
 
 def generate_tests(type):
     passing = [
-            ("arith-ops", "Foo", "notPublic",   [19, 23],            ExitCode_NotPublic),
-
             ("arith-ops", "Foo", "add",         [19, 23],            42  ),
             ("arith-ops", "Foo", "addFive",     [12],                17  ),
             ("arith-ops", "Foo", "addFiveApp",  [6],                 11  ),
@@ -102,18 +100,7 @@ def generate_tests(type):
             ("case-simple", "SimpleCase", "nonExhaustive",  [-13], ExitCode_NonExhaustive),
 
             ("recursion",   "Recursion",  "sumToN",     [10, 0], 55),
-           ]
 
-    unimplemented = [
-            ("ctor-duplicate",               "Duplicate", "one",  [], None),
-            ("module-call-private-indirect", "Foo",       "bar", [0],   19),
-            ("module-call-private-indirect", "Foo",       "baz", [0],   23),
-           ]
-    translation_unimplemented = [
-            ("ctor-case", "Foo", "bar", [0], 19),
-            ("ctor-case", "Foo", "baz", [0], 23),
-           ]
-    execution_unimplemented = [
             ("case-simple", "SimpleCase", "fooBarOrKungFu", [3],       7),
             ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],      11),
 
@@ -126,17 +113,30 @@ def generate_tests(type):
             ("case-simple", "SimpleCase", "testPair",       [13],      26),
            ]
 
+    unimplemented = [
+            ("ctor-duplicate", "Duplicate", "one",  [], None),
+           ]
+    translation_unimplemented = [
+            ("ctor-case", "Foo", "bar", [0], 19),
+            ("ctor-case", "Foo", "baz", [0], 23),
+            ("module-call-private-indirect", "Foo", "bar", [0],   19),
+            ("module-call-private-indirect", "Foo", "baz", [0],   23),
+           ]
+    execution_unimplemented = [
+            ("arith-ops", "Foo", "notPublic",   [19, 23],            ExitCode_NotPublic),
+           ]
+
     if type == 'translation':
-        return (passing                                                                    +
-                execution_unimplemented                                                    +
-                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)              +
-                map(pytest.mark.xfail(reason="translation unimplemented"), translation_unimplemented)
+        return (passing                                                                               +
+                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)                         +
+                map(pytest.mark.xfail(reason="translation unimplemented"), translation_unimplemented) +
+                execution_unimplemented
                )
     if type == 'execution':
-        return (passing                                                                    +
-                translation_unimplemented                                                  +
-                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)              +
-                map(pytest.mark.xfail(reason="execution unimplemented"), execution_unimplemented)
+        return (passing                                                                               +
+                translation_unimplemented                                                             +
+                map(pytest.mark.xfail(reason="translation unimplemented"), execution_unimplemented)   +
+                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)
                )
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('execution'))
