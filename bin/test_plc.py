@@ -51,10 +51,19 @@ def toIeleReturn(expected):
     else                    : return []
 
 def toPlutusReturn(expected):
-    if type(expected) is int: return str(expected)
-    elif expected == False  : return "(con Prelude.False .ValList)"
-    elif expected == True   : return "(con Prelude.True .ValList)"
-    else                    : return []
+    if type(expected) is int : return str(expected)
+    if type(expected) is str : return '#' + expected
+    if expected == False     : return "(con Prelude.False .ValList)"
+    if expected == True      : return "(con Prelude.True .ValList)"
+    return []
+
+def toPlutusArg(arg):
+    if type(arg) is int: return "#token(\""  + str(arg) + "\", \"Int\")"
+    if type(arg) is str: return "#token(\"#" +      arg + "\", \"ByStr\")"
+
+def toIeleArg(arg):
+    if type(arg) is int: return hex(arg)
+    if type(arg) is str: return arg
 
 def generate_tests(type):
     passing = [
@@ -162,7 +171,7 @@ def test_translation(file, mod, fct, args, expected):
     account = "0x1000000000000000000000000000000000000000"
     template["pre"][account]["code"] = template["postState"][account]["code"] = base("test/", file + ".iele")
     template["blocks"][0]["transactions"][0]["function"] = fct
-    template["blocks"][0]["transactions"][0]["arguments"] = map(hex, args)
+    template["blocks"][0]["transactions"][0]["arguments"] = map(toIeleArg, args)
     template["blocks"][0]["results"][0]["status"] = toIeleExitStatus(expected)
     template["blocks"][0]["results"][0]["out"] = toIeleReturn(expected)
 
@@ -188,7 +197,7 @@ def kast_args(args):
     if args == []:
         return "`.List{\"tmList\"}`(.KList)"
     else:
-        return "tmList(#token(\"" + str(args[0]) + "\", \"Int\")," + kast_args(args[1:]) + ")"
+        return "tmList("+ toPlutusArg(args[0]) + "," + kast_args(args[1:]) + ")"
 
 def extract_exec_output(config):
     config_xml = xml.dom.minidom.parseString(config)
