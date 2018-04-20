@@ -1,0 +1,13 @@
+(program
+  (module Foo (import) (export () (toByteString takeByteStringx))
+
+    (declare toByteString (fun (integer) (bytestring)))
+    (define  toByteString
+      (lam x (builtin integerToByteString x)))
+
+    (declare takeByteStringx (fun (integer) (fun (bytestring) (integer))))
+    (define  takeByteStringx
+      (lam x (lam y (builtin takeByteString x y))))
+
+  )
+)

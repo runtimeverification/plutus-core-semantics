@@ -19,6 +19,7 @@ def bin(*args):
 
 class ExitCode_NotPublic    : pass
 class ExitCode_DivByZero    : pass
+class ExitCode_TakeFromEmpty: pass
 class ExitCode_NonExhaustive: pass
 
 def toIeleExitStatus(expected):
@@ -35,6 +36,7 @@ def toIeleExitStatus(expected):
 
     if   expected == ExitCode_NotPublic     : return FUNC_NOT_FOUND
     elif expected == ExitCode_DivByZero     : return USER_ERROR
+    elif expected == ExitCode_TakeFromEmpty : return USER_ERROR
     elif expected == ExitCode_NonExhaustive : return USER_ERROR
     else                                    : return ""
 
@@ -42,6 +44,7 @@ def toPlutusExitCode(expected):
     if   expected == ExitCode_NotPublic     : return 1
     elif expected == ExitCode_DivByZero     : return 1
     elif expected == ExitCode_NonExhaustive : return 1
+    elif expected == ExitCode_TakeFromEmpty : return 1
     else                                    : return 0
 
 def toIeleReturn(expected):
@@ -103,6 +106,12 @@ def generate_tests(type):
             ("cmp-ops", "Foo", "equals",        [12, 17], False),
             # ("cmp-ops", "Foo", "myTrue",        [],       True ),
 
+            ("bytestring", "Foo", "toByteString",    [0x2345],  "2345"),
+            ("bytestring", "Foo", "toByteString",    [0x0000],  "0000"),
+            ("bytestring", "Foo", "takeByteStringx", [0,   "23"],   ""),
+            ("bytestring", "Foo", "takeByteStringx", [1, "2345"], "23"),
+            ("bytestring", "Foo", "takeByteStringx", [0,  ""],      ""),
+            ("bytestring", "Foo", "takeByteStringx", [2,  ""], ExitCode_TakeFromEmpty),
             ("case-simple", "SimpleCase", "boolean",        [13],  19),
             ("case-simple", "SimpleCase", "boolean",        [-13], 23),
             ("case-simple", "SimpleCase", "nonExhaustive",  [13],  19),
