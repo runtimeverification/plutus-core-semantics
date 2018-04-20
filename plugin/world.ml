@@ -107,7 +107,8 @@ module InMemoryWorldState = struct
   let reset_state () = accounts := StringMap.empty
 end
 
-let connections = ThreadLocal.create 10
+let in_chan_ref = ref None
+let out_chan_ref = ref None
 
 let input_framed in_chan decoder =
   let len = input_binary_int in_chan in
@@ -124,7 +125,9 @@ let output_framed out_chan encoder v =
 
 module NetworkWorldState = struct
   let send_query (q: Msg_types.vmquery) (decoder : Pbrt.Decoder.t -> 'a) : 'a =
-    let (in_chan,out_chan) = ThreadLocal.find connections in
+    let (in_chan,out_chan) = match !in_chan_ref,!out_chan_ref with
+    | Some c1, Some c2 -> c1, c2 
+    | _ -> failwith "channels not set for network" in
     output_framed out_chan Msg_pb.encode_vmquery q;
     input_framed in_chan decoder
 
@@ -144,79 +147,52 @@ end
 
 let _VERSION = String.trim ApiVersion._VERSION
 
-let serve addr (run_transaction : Msg_types.call_context -> Msg_types.call_result) =
-  (* server side *)
-  let process_transactions chans : unit =
-    let (in_chan,out_chan) = chans in
-    try
+let serve addr run_transaction : unit =
+  let process_transactions in_chan out_chan : unit =
+    in_chan_ref := Some in_chan;
+    out_chan_ref := Some out_chan;
+    let finish () = Unix.shutdown_connection in_chan;
+                    close_in in_chan 
+    in
+    (try
+      let hello = input_framed in_chan Msg_pb.decode_hello in
+      if String.equal hello.version _VERSION then
       while true do
         let call_context = input_framed in_chan Msg_pb.decode_call_context in
         let call_result = run_transaction call_context in
         output_framed out_chan Msg_pb.encode_vmquery (Call_result call_result)
       done
+      else ()
     with
       End_of_file -> ()
-        (* The server closing the connection instead of sending
-           another request is the expected end of a session *)
-  in
-  let accept_connection conn =
-    let fd, _ = conn in
-    let in_chan = Unix.in_channel_of_descr fd in
-    let out_chan = Unix.out_channel_of_descr fd in
-    let chans = (in_chan,out_chan) in
-    ThreadLocal.put connections chans;
-    let finish () = ThreadLocal.remove connections;
-                    Unix.shutdown fd Unix.SHUTDOWN_SEND;
-                    Unix.close fd in
-    (try
-      let hello = input_framed in_chan Msg_pb.decode_hello in
-      if String.equal hello.version _VERSION then
-        process_transactions chans
-    with
-      exn -> prerr_endline(Printexc.to_string exn); Printexc.print_backtrace stderr; finish (); raise exn);
+    | exn -> finish (); raise exn);
     finish ()
-  in
-  let serve_on socket =
-    while true do
-      let conn = Unix.accept socket in
-      if Array.length Sys.argv > 3 && Sys.argv.(3) = "debug" then accept_connection conn else let _ = Thread.create accept_connection conn in ()
-    done
   in
   let print_addr = function
   | Unix.ADDR_UNIX str -> "file://" ^ str
   | Unix.ADDR_INET(inet,port) -> "tcp://" ^ (Unix.string_of_inet_addr inet) ^ ":" ^ (string_of_int port)
   in
-  let create_socket addr =
-    let open Unix in
-    let sock = socket PF_INET SOCK_STREAM 0 in
-    let timeout = ref 1 in
-    while (
-      try
-        Unix.bind sock addr;
-        false
-      with Unix.Unix_error(Unix.EADDRINUSE, _, _) -> 
-        print_endline("Socket in use, retrying in " ^ (string_of_int !timeout) ^ "...");
-        true
-    ) do
-      Unix.sleep !timeout;
-      timeout := !timeout + 1
-    done;
-    listen sock 10;
-    let new_addr = Unix.getsockname sock in
-    print_endline("Listening for requests at address " ^ (print_addr new_addr));
-    sock
-  in
-  serve_on (create_socket addr)
-
+  let timeout = ref 1 in
+  while (
+    try
+      let open Unix in
+      let sock = socket PF_INET SOCK_STREAM 0 in
+      bind sock addr;
+      let new_addr = getsockname sock in
+      close sock;
+      print_endline("Listening for requests at address " ^ (print_addr new_addr));
+      establish_server process_transactions new_addr;
+      false
+    with Unix.Unix_error(Unix.EADDRINUSE, _, _) ->
+      print_endline("Socket in use, retrying in " ^ (string_of_int !timeout) ^ "...");
+      true
+  ) do
+    Unix.sleep !timeout;
+    timeout := !timeout + 1
+  done
+  
 let send addr ctx =
-  let create_socket addr =
-    let open Unix in
-    let sock = socket PF_INET SOCK_STREAM 0 in
-    connect sock addr;
-    sock
-  in
-  let sock = create_socket addr in
-  let chans = (Unix.in_channel_of_descr sock, Unix.out_channel_of_descr sock) in
+  let chans = Unix.open_connection addr in
   let hello = {version=_VERSION;config=Iele_config} in
     output_framed (snd chans) Msg_pb.encode_hello hello;
     output_framed (snd chans) Msg_pb.encode_call_context ctx;
@@ -239,6 +215,8 @@ let send addr ctx =
       | Call_result res ->
         result := Some res
     done;
+    Unix.shutdown_connection (fst chans);
+    close_in (fst chans);
     match !result with
     | Some res -> res
     | None -> failwith "unreachable"
