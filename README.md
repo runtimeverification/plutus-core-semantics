@@ -37,7 +37,11 @@ Issues
 
 ### New issues
 
-1. Is Prelude assumed to be imported always? If not, how do comparison operators work with returning something of type `(con Prelude.Bool)`
+1. The behaviour of `takeByteString` of a non-zero value from the empty
+   bytestring is not defined in the spec. We assume we should get stuck and
+   fail?
+
+2. Is Prelude assumed to be imported always? If not, how do comparison operators work with returning something of type `(con Prelude.Bool)`
   - On the same note, should we be able to write `(define myTrue (Prelude.True))` without importing Prelude?
 
 ### Old Issues
