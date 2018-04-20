@@ -98,8 +98,9 @@ module PLUTUS-CORE-EXECUTION
     => substrString(#toStringVerbatim(B), 1, lengthString(#toStringVerbatim(B)))
 
   rule ( builtin takeByteString N:Int B:ByStr )
-    => #toByStr(substrString(#toString(B), 0, N))
+    => #toByStr(substrString(#toString(B), 0, N *Int 2))
 
+  // TODO: Probably also broken
   rule ( builtin dropByteString N:Int B:ByStr )
     => #toByStr(substrString(#toString(B), N, lengthString(#toString(B))))
 
