@@ -396,6 +396,19 @@ module PLUTUS-CORE-TRANSLATION
   // Builtins
   // --------
 
+  // Unary builtins
+
+  rule #loadOperand((builtin B:UnaryBuiltin T1:Tm), LN)
+    => #concatInsList(#loadOperand(T1, #mkLN("bltinN1", !N1)),
+                      #translateUnaryBuiltin( B:UnaryBuiltin, LN
+                                            , #useOperand(T1, #mkLN("bltinN1", !N1))))
+  rule #useOperand((builtin B:UnaryBuiltin  T1:Tm), LN) => LN
+  rule #bindVar((builtin N T1), Y:Var, BLN)
+    => (builtin N #bindVar(T1, Y, BLN))
+
+  syntax Instructions ::= #translateUnaryBuiltin(UnaryBuiltin, LocalName, Operand) [function]
+  // -------------------------------------------------------------------------------------------------
+
   // Binary builtins share code for `#loadOperand` and `#useOperand`.
 
   rule #loadOperand((builtin B:BinaryBuiltin T1:Tm T2:Tm), LN)
