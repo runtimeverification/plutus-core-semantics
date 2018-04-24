@@ -826,6 +826,17 @@ module PLUTUS-CORE-TRANSLATION
 
   // Helpers for ...
   // ===============
+
+  // ... desugar multi-argument application/lambdas
+  // ----------------------------------------------
+
+  syntax Tm ::= #desugarApp(Tm)                                        [function]
+  rule #desugarApp([F T1:Tm]) => [F T1]
+  rule #desugarApp([F T1 T2 TS:TmList]) => #desugarApp([[F T1] T2 TS])
+
+  rule #useOperand([F T1 T2 TS:TmList], LN) => #useOperand(#desugarApp([F T1 T2 TS]), LN)
+  rule #loadOperand([F T1 T2 TS:TmList], LN) => #loadOperand(#desugarApp([F T1 T2 TS]), LN)
+  rule #bindVar([F T1 T2 TS:TmList], V, LN) => #bindVar(#desugarApp([F T1 T2 TS]), V, LN)
   
   // ... generating `Instruction`s
   // ------------------------------
