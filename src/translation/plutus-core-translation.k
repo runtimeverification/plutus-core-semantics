@@ -84,6 +84,23 @@ module PLUTUS-CORE-TRANSLATION
          </constructor>
        </constructors>
 
+  // Typing Related Constructs
+  // =========================
+
+  // Ignore `Dec`s related to typing
+  rule <plutus> _:TDec => .K ... </plutus>
+  rule <plutus> _:MDec => .K ... </plutus>
+
+  // Ignore `abs`
+  rule #useOperand(  (abs _ T), LN ) => #useOperand(T, LN)
+  rule #loadOperand( (abs _ T), LN ) => #loadOperand(T, LN)
+  rule #bindVar( (abs _ T), V, LN ) => #bindVar(T, V, LN)
+
+  // Ignore `inst`
+  rule #useOperand(  (inst T _), LN ) => #useOperand(T, LN)
+  rule #loadOperand( (inst T _), LN ) => #loadOperand(T, LN)
+  rule #bindVar( (inst T _), V, LN ) => #bindVar(T, V, LN)
+
   // Top-Level Functions
   // ===================
 
@@ -105,11 +122,6 @@ module PLUTUS-CORE-TRANSLATION
                 ...
        </plutus>
   rule <plutus> .DecList => .K ... </plutus>
-
-  // Ignore `Dec`s related to typing
-
-  rule <plutus> _:TDec => .K ... </plutus>
-  rule <plutus> _:MDec => .K ... </plutus>
 
   syntax K ::= #topLevelFunction(Name, Int, VarList, Tm)
   // TODO: Avoid name collisions when `#bind`ing
