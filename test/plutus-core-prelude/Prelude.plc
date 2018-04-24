@@ -438,11 +438,11 @@
     ;;     (builtin integerToFloat x)))
     
     
-    (declare integerToByteString
-      (fun (integer) (bytestring)))
-    (define integerToByteString
-      (lam x
-        (builtin integerToByteString x)))
+    ;; (declare integerToByteString
+    ;;   (fun (integer) (bytestring)))
+    ;; (define integerToByteString
+    ;;   (lam x
+    ;;     (builtin integerToByteString x)))
     
     
     
@@ -550,46 +550,46 @@
     ;; ByteString Tools
     ;;
     
-    (declare concatenate
-      (fun (bytestring) (fun (bytestring) (bytestring))))
-    (define concatenate
-      (lam x (lam y
-        (builtin concatenate x y))))
+    ;; (declare concatenate
+    ;;   (fun (bytestring) (fun (bytestring) (bytestring))))
+    ;; (define concatenate
+    ;;   (lam x (lam y
+    ;;     (builtin concatenate x y))))
     
     
-    (declare takeByteString
-      (fun (integer) (fun (bytestring) (bytestring))))
-    (define takeByteString
-      (lam n (lam x
-        (builtin takeByteString n x))))
+    ;; (declare takeByteString
+    ;;   (fun (integer) (fun (bytestring) (bytestring))))
+    ;; (define takeByteString
+    ;;   (lam n (lam x
+    ;;     (builtin takeByteString n x))))
     
     
-    (declare dropByteString
-      (fun (integer) (fun (bytestring) (bytestring))))
-    (define dropByteString
-      (lam n (lam x
-        (builtin dropByteString n x))))
+    ;; (declare dropByteString
+    ;;   (fun (integer) (fun (bytestring) (bytestring))))
+    ;; (define dropByteString
+    ;;   (lam n (lam x
+    ;;     (builtin dropByteString n x))))
     
     
-    (declare sha2_256
-      (fun (bytestring) (bytestring)))
-    (define sha2_256
-      (lam x
-        (builtin sha2_256 x)))
+    ;; (declare sha2_256
+    ;;   (fun (bytestring) (bytestring)))
+    ;; (define sha2_256
+    ;;   (lam x
+    ;;     (builtin sha2_256 x)))
     
     
-    (declare sha3_256
-      (fun (bytestring) (bytestring)))
-    (define sha3_256
-      (lam x
-        (builtin sha3_256 x)))
+    ;; (declare sha3_256
+    ;;   (fun (bytestring) (bytestring)))
+    ;; (define sha3_256
+    ;;   (lam x
+    ;;     (builtin sha3_256 x)))
     
     
-    (declare equalsByteString
-      (fun (bytestring) (fun (bytestring) (con Prelude.Bool))))
-    (define equalsByteString
-      (lam x (lam y
-        (builtin equalsByteString x y))))
+    ;; (declare equalsByteString
+    ;;   (fun (bytestring) (fun (bytestring) (con Prelude.Bool))))
+    ;; (define equalsByteString
+    ;;   (lam x (lam y
+    ;;     (builtin equalsByteString x y))))
     
     
     
@@ -1897,106 +1897,108 @@
               (con Prelude.MASTTree)))
     
     
-    (data MASTPath ()
-      (MASTPathSuccess)
-      (MASTPathFailure)
-      (MASTPathIfTrue (con Prelude.MASTProp)
-                      (con Prelude.MASTPath)
-                      (bytestring))
-      (MASTPathIfFalse (con Prelude.MASTProp)
-                       (bytestring)
-                       (con Prelude.MASTPath)))
+    ;; (data MASTPath ()
+    ;;   (MASTPathSuccess)
+    ;;   (MASTPathFailure)
+    ;;   (MASTPathIfTrue (con Prelude.MASTProp)
+    ;;                   (con Prelude.MASTPath)
+    ;;                   (bytestring))
+    ;;   (MASTPathIfFalse (con Prelude.MASTProp)
+    ;;                    (bytestring)
+    ;;                    (con Prelude.MASTPath)))
     
     
-    (declare evalMASTPath
-      (fun (con Prelude.MASTPath) (con Prelude.Bool)))
-    (define evalMASTPath
-      (lam m
-        (case m
-          (Prelude.MASTPathSuccess () (con Prelude.True))
-          (Prelude.MASTPathFailure () (con Prelude.False))
-          (Prelude.MASTPathIfTrue (test t f)
-            (case [Prelude.evalMASTProp test]
-              (Prelude.True () [Prelude.evalMASTPath t])
-              (Prelude.False ()
-                (con Prelude.False))))
-          (Prelude.MASTPathIfFalse (test t f)
-            (case [Prelude.evalMASTProp test]
-              (Prelude.True ()
-                (con Prelude.False))
-              (Prelude.False () [Prelude.evalMASTPath f]))))))
+    ;; (declare evalMASTPath
+    ;;   (fun (con Prelude.MASTPath) (con Prelude.Bool)))
+    ;; (define evalMASTPath
+    ;;   (lam m
+    ;;     (case m
+    ;;       (Prelude.MASTPathSuccess () (con Prelude.True))
+    ;;       (Prelude.MASTPathFailure () (con Prelude.False))
+    ;;       (Prelude.MASTPathIfTrue (test t f)
+    ;;         (case [Prelude.evalMASTProp test]
+    ;;           (Prelude.True () [Prelude.evalMASTPath t])
+    ;;           (Prelude.False ()
+    ;;             (con Prelude.False))))
+    ;;       (Prelude.MASTPathIfFalse (test t f)
+    ;;         (case [Prelude.evalMASTProp test]
+    ;;           (Prelude.True ()
+    ;;             (con Prelude.False))
+    ;;           (Prelude.False () [Prelude.evalMASTPath f]))))))
     
     
-    (declare hashMASTProp
-      (fun (con Prelude.MASTProp) (bytestring)))
-    (define hashMASTProp
-      (lam m
-        (case m
-          (Prelude.MASTTrue () #00)
-          (Prelude.MASTFalse () #01)
-          (Prelude.MASTNot (x)
-            [Prelude.sha2_256
-              [Prelude.concatenate #02 [Prelude.hashMASTProp x]]])
-          (Prelude.MASTAnd (x y)
-            [Prelude.sha2_256
-              [Prelude.concatenate #03
-                [Prelude.concatenate
-                  [Prelude.hashMASTProp x]
-                  [Prelude.hashMASTProp y]]]])
-          (Prelude.MASTOr (x y)
-            [Prelude.sha2_256
-              [Prelude.concatenate #04
-                [Prelude.concatenate
-                  [Prelude.hashMASTProp x]
-                  [Prelude.hashMASTProp y]]]]))))
+    ;; (declare hashMASTProp
+    ;;   (fun (con Prelude.MASTProp) (bytestring)))
+    ;; (define hashMASTProp
+    ;;   (lam m
+    ;;     (case m
+    ;;       (Prelude.MASTTrue () #00)
+    ;;       (Prelude.MASTFalse () #01)
+    ;;       (Prelude.MASTNot (x)
+    ;;         [Prelude.sha2_256
+    ;;           [Prelude.concatenate #02 [Prelude.hashMASTProp x]]])
+    ;;       (Prelude.MASTAnd (x y)
+    ;;         [Prelude.sha2_256
+    ;;           [Prelude.concatenate #03
+    ;;             [Prelude.concatenate
+    ;;               [Prelude.hashMASTProp x]
+    ;;               [Prelude.hashMASTProp y]]]])
+    ;;       (Prelude.MASTOr (x y)
+    ;;         [Prelude.sha2_256
+    ;;           [Prelude.concatenate #04
+    ;;             [Prelude.concatenate
+    ;;               [Prelude.hashMASTProp x]
+    ;;               [Prelude.hashMASTProp y]]]]))))
     
     
-    (declare hashMASTTree
-      (fun (con Prelude.MASTTree) (bytestring)))
-    (define hashMASTTree
-      (lam m
-        (case m
-          (Prelude.MASTSuccess () #00)
-          (Prelude.MASTFailure () #01)
-          (Prelude.MASTIf (test t f)
-            [Prelude.sha2_256
-              [Prelude.concatenate #02
-                [Prelude.concatenate
-                  [Prelude.hashMASTTree t]
-                  [Prelude.hashMASTTree f]]]]))))
+    ;; (declare hashMASTTree
+    ;;   (fun (con Prelude.MASTTree) (bytestring)))
+    ;; (define hashMASTTree
+    ;;   (lam m
+    ;;     (case m
+    ;;       (Prelude.MASTSuccess () #00)
+    ;;       (Prelude.MASTFailure () #01)
+    ;;       (Prelude.MASTIf (test t f)
+    ;;         [Prelude.sha2_256
+    ;;           [Prelude.concatenate #02
+    ;;             [Prelude.concatenate
+    ;;               [Prelude.hashMASTTree t]
+    ;;               [Prelude.hashMASTTree f]]]]))))
     
     
-    (declare hashMASTPath
-      (fun (con Prelude.MASTPath) (bytestring)))
-    (define hashMASTPath
-      (lam m
-        (case m
-          (Prelude.MASTPathSuccess () #00)
-          (Prelude.MASTPathFailure () #01)
-          (Prelude.MASTPathIfTrue (test t fhash)
-            [Prelude.sha2_256
-              [Prelude.concatenate #02
-                [Prelude.concatenate
-                  [Prelude.hashMASTPath t]
-                  fhash]]])
-          (Prelude.MASTPathIfFalse (test thash f)
-            [Prelude.sha2_256
-              [Prelude.concatenate #02
-                [Prelude.concatenate
-                  thash
-                  [Prelude.hashMASTPath f]]]]))))
+    ;; (declare hashMASTPath
+    ;;   (fun (con Prelude.MASTPath) (bytestring)))
+    ;; (define hashMASTPath
+    ;;   (lam m
+    ;;     (case m
+    ;;       (Prelude.MASTPathSuccess () #00)
+    ;;       (Prelude.MASTPathFailure () #01)
+    ;;       (Prelude.MASTPathIfTrue (test t fhash)
+    ;;         [Prelude.sha2_256
+    ;;           [Prelude.concatenate #02
+    ;;             [Prelude.concatenate
+    ;;               [Prelude.hashMASTPath t]
+    ;;               fhash]]])
+    ;;       (Prelude.MASTPathIfFalse (test thash f)
+    ;;         [Prelude.sha2_256
+    ;;           [Prelude.concatenate #02
+    ;;             [Prelude.concatenate
+    ;;               thash
+    ;;               [Prelude.hashMASTPath f]]]]))))
     
     
-    (declare checkMAST
-      (fun (bytestring)
-           (fun (con Prelude.MASTPath)
-                (con Prelude.Bool))))
-    (define checkMAST
-      (lam hash (lam path
-        (case [Prelude.evalMASTPath path]
-          (Prelude.False ()
-            (con Prelude.False))
-          (Prelude.True ()
-            [Prelude.equalsByteString
-              hash
-              [Prelude.hashMASTPath path]])))))))
+    ;; (declare checkMAST
+    ;;   (fun (bytestring)
+    ;;        (fun (con Prelude.MASTPath)
+    ;;             (con Prelude.Bool))))
+    ;; (define checkMAST
+    ;;   (lam hash (lam path
+    ;;     (case [Prelude.evalMASTPath path]
+    ;;       (Prelude.False ()
+    ;;         (con Prelude.False))
+    ;;       (Prelude.True ()
+    ;;         [Prelude.equalsByteString
+    ;;           hash
+    ;;           [Prelude.hashMASTPath path]])))))
+
+))
