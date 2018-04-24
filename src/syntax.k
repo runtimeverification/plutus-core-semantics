@@ -112,7 +112,6 @@ module PLUTUS-CORE-COMMON
   syntax Tm         ::= Var
                       | QualN
                       | "(" "isa" Tm Ty ")"
-                      | "(" "abs" Var Tm ")"
                       | "(" "inst" Tm Ty ")"
                       // TODO: remove let?
                       | "(" "let" Tm Var Tm ")"                     [strict(1)]
@@ -192,6 +191,7 @@ module PLUTUS-CORE-COMMON
                       | ByStr
 
   syntax Val        ::= ValResult
+                      | "(" "abs" Var Tm ")"
                       | "(" "lam" VarList Tm ")"                       [binder]
 
   syntax KResult    ::= ValResult
