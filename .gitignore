@@ -13,3 +13,6 @@
 # Python / pytest caches
 .pytest_cache/
 __pycache__/
+
+# pre.plc files generated after preprocessing
+/test/*.pre.plc
