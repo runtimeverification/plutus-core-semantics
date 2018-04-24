@@ -127,13 +127,15 @@ def generate_tests(type):
             ("modules", "Bar", "four",                      [5],       4),
             ("modules", "Foo", "four",                      [5],       4),
 
-            ("module-call-private-indirect", "Foo", "bar", [0],   19),
-            ("module-call-private-indirect", "Foo", "baz", [0],   23),
-
            ]
 
     unimplemented = [
             ("ctor-duplicate", "Duplicate", "one",  [], None),
+
+            # Should fail in typechecking phase
+            ("module-call-private-indirect", "Foo", "bar", [0], None),
+            ("module-call-private-indirect", "Foo", "baz", [0], None),
+
            ]
     translation_unimplemented = [
             ("ctor-case", "Foo", "bar", [0], 19),
