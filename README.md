@@ -40,7 +40,9 @@ Issues
 *. The behaviour of `takeByteString` of a non-zero value from the empty
    bytestring is not defined in the spec. We assume we should get stuck and
    fail?
-   
+
+* In IELE, the last contract is the public interface. Is something similar the case for Plutus modules?
+
 ### Resolved Issues
 
 1. Is Prelude assumed to be imported always? If not, how do comparison operators work with returning something of type `(con Prelude.Bool)`
