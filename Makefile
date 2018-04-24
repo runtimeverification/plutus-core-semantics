@@ -91,12 +91,16 @@ test-failing: test-erc20 test-verify test-verify-commented
 execution_tests:=$(wildcard test/execution/*.plc)
 erc20_tests:=$(wildcard test/erc20/*.plc)
 
+preprocess_plc:= $(wildcard tests/*.plc)
+.PRECIOUS: test/%.pre.plc
+test/%.pre.plc: test/%.plc bin/preprocess src/Prelude-supported.plc
+	bin/preprocess < $< > $@
 translate_plc:=test/arith-ops.plc test/cmp-ops.plc test/case-simple.plc \
                test/recursion.plc test/modules.plc
 translate-to-iele: $(translate_plc:.plc=.iele)
 test-erc20: $(erc20_tests:=.test)
 
-test/%.iele: test/%.plc .build/translation/plutus-core-kompiled/interpreter
+test/%.iele: test/%.pre.plc .build/translation/plutus-core-kompiled/interpreter
 	bash -c 'source bin/activate                                          && \
 	         ./bin/kplc run translation $< | bin/config-to-iele > $@'
 
