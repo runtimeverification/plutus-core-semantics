@@ -39,13 +39,13 @@
        greaterThanEqualsInteger
        maxInteger
        minInteger
-       equalsFloat
-       lessThanFloat
-       lessThanEqualsFloat
-       greaterThanFloat
-       greaterThanEqualsFloat
-       maxFloat
-       minFloat
+       ;; equalsFloat
+       ;; lessThanFloat
+       ;; lessThanEqualsFloat
+       ;; greaterThanFloat
+       ;; greaterThanEqualsFloat
+       ;; maxFloat
+       ;; minFloat
        maybe
        isJust
        isNothing
@@ -96,9 +96,9 @@
        any
        all
        sumInteger
-       sumFloat
+       ;; sumFloat
        productInteger
-       productFloat
+       ;; productFloat
        maximumBy
        minimumBy
        project
@@ -431,11 +431,11 @@
           (Prelude.False () y)))))
     
     
-    (declare integerToFloat
-      (fun (integer) (float)))
-    (define integerToFloat
-      (lam x
-        (builtin integerToFloat x)))
+    ;; (declare integerToFloat
+    ;;   (fun (integer) (float)))
+    ;; (define integerToFloat
+    ;;   (lam x
+    ;;     (builtin integerToFloat x)))
     
     
     (declare integerToByteString
@@ -450,99 +450,99 @@
     ;; Float Tools
     ;;
     
-    (declare addFloat
-      (fun (float) (fun (float) (float))))
-    (define addFloat
-      (lam x (lam y
-        (builtin addFloat x y))))
+    ;; (declare addFloat
+    ;;   (fun (float) (fun (float) (float))))
+    ;; (define addFloat
+    ;;   (lam x (lam y
+    ;;     (builtin addFloat x y))))
     
     
-    (declare subtractFloat
-      (fun (float) (fun (float) (float))))
-    (define subtractFloat
-      (lam x (lam y
-        (builtin subtractFloat x y))))
+    ;; (declare subtractFloat
+    ;;   (fun (float) (fun (float) (float))))
+    ;; (define subtractFloat
+    ;;   (lam x (lam y
+    ;;     (builtin subtractFloat x y))))
     
     
-    (declare multiplyFloat
-      (fun (float) (fun (float) (float))))
-    (define multiplyFloat
-      (lam x (lam y
-        (builtin multiplyFloat x y))))
+    ;; (declare multiplyFloat
+    ;;   (fun (float) (fun (float) (float))))
+    ;; (define multiplyFloat
+    ;;   (lam x (lam y
+    ;;     (builtin multiplyFloat x y))))
     
     
-    (declare divideFloat
-      (fun (float) (fun (float) (float))))
-    (define divideFloat
-      (lam x (lam y
-        (builtin divideFloat x y))))
+    ;; (declare divideFloat
+    ;;   (fun (float) (fun (float) (float))))
+    ;; (define divideFloat
+    ;;   (lam x (lam y
+    ;;     (builtin divideFloat x y))))
     
     
-    (declare equalsFloat
-      (fun (float) (fun (float) (con Prelude.Bool))))
-    (define equalsFloat
-      (lam x (lam y
-        (builtin equalsFloat x y))))
+    ;; (declare equalsFloat
+    ;;   (fun (float) (fun (float) (con Prelude.Bool))))
+    ;; (define equalsFloat
+    ;;   (lam x (lam y
+    ;;     (builtin equalsFloat x y))))
     
     
-    (declare lessThanFloat
-      (fun (float) (fun (float) (con Prelude.Bool))))
-    (define lessThanFloat
-      (lam x (lam y
-        (builtin lessThanFloat x y))))
+    ;; (declare lessThanFloat
+    ;;   (fun (float) (fun (float) (con Prelude.Bool))))
+    ;; (define lessThanFloat
+    ;;   (lam x (lam y
+    ;;     (builtin lessThanFloat x y))))
     
     
-    (declare greaterThanFloat
-      (fun (float) (fun (float) (con Prelude.Bool))))
-    (define greaterThanFloat
-      (lam x (lam y
-        (builtin lessThanFloat y x))))
+    ;; (declare greaterThanFloat
+    ;;   (fun (float) (fun (float) (con Prelude.Bool))))
+    ;; (define greaterThanFloat
+    ;;   (lam x (lam y
+    ;;     (builtin lessThanFloat y x))))
     
     
-    (declare lessThanEqualsFloat
-      (fun (float) (fun (float) (con Prelude.Bool))))
-    (define lessThanEqualsFloat
-      (lam x (lam y
-        (builtin lessThanEqualsFloat x y))))
+    ;; (declare lessThanEqualsFloat
+    ;;   (fun (float) (fun (float) (con Prelude.Bool))))
+    ;; (define lessThanEqualsFloat
+    ;;   (lam x (lam y
+    ;;     (builtin lessThanEqualsFloat x y))))
     
     
-    (declare greaterThanEqualsFloat
-      (fun (float) (fun (float) (con Prelude.Bool))))
-    (define greaterThanEqualsFloat
-      (lam x (lam y
-        (builtin lessThanEqualsFloat y x))))
+    ;; (declare greaterThanEqualsFloat
+    ;;   (fun (float) (fun (float) (con Prelude.Bool))))
+    ;; (define greaterThanEqualsFloat
+    ;;   (lam x (lam y
+    ;;     (builtin lessThanEqualsFloat y x))))
     
     
-    (declare ceil
-      (fun (float) (integer)))
-    (define ceil
-      (lam x
-        (builtin ceil x)))
+    ;; (declare ceil
+    ;;   (fun (float) (integer)))
+    ;; (define ceil
+    ;;   (lam x
+    ;;     (builtin ceil x)))
     
     
-    (declare floor
-      (fun (float) (integer)))
-    (define floor
-      (lam x
-        (builtin floor x)))
+    ;; (declare floor
+    ;;   (fun (float) (integer)))
+    ;; (define floor
+    ;;   (lam x
+    ;;     (builtin floor x)))
     
     
-    (declare maxFloat
-      (fun (float) (fun (float) (float))))
-    (define maxFloat
-      (lam x (lam y
-        (case [Prelude.lessThanFloat x y]
-          (Prelude.True () y)
-          (Prelude.False () x)))))
+    ;; (declare maxFloat
+    ;;   (fun (float) (fun (float) (float))))
+    ;; (define maxFloat
+    ;;   (lam x (lam y
+    ;;     (case [Prelude.lessThanFloat x y]
+    ;;       (Prelude.True () y)
+    ;;       (Prelude.False () x)))))
     
     
-    (declare minFloat
-      (fun (float) (fun (float) (float))))
-    (define minFloat
-      (lam x (lam y
-        (case [Prelude.lessThanFloat x y]
-          (Prelude.True () x)
-          (Prelude.False () y)))))
+    ;; (declare minFloat
+    ;;   (fun (float) (fun (float) (float))))
+    ;; (define minFloat
+    ;;   (lam x (lam y
+    ;;     (case [Prelude.lessThanFloat x y]
+    ;;       (Prelude.True () x)
+    ;;       (Prelude.False () y)))))
     
     
     
@@ -1477,11 +1477,11 @@
           Prelude.addInteger 0 xs]))
     
     
-    (declare sumFloat
-      (fun (con Prelude.List (float)) (float)))
-    (define sumFloat
-      (lam xs [(inst (inst Prelude.foldl (float)) (float))
-        Prelude.addFloat 0.0 xs]))
+    ;; (declare sumFloat
+    ;;   (fun (con Prelude.List (float)) (float)))
+    ;; (define sumFloat
+    ;;   (lam xs [(inst (inst Prelude.foldl (float)) (float))
+    ;;     Prelude.addFloat 0.0 xs]))
     
     (declare productInteger
       (fun (con Prelude.List (integer)) (integer)))
@@ -1491,12 +1491,12 @@
           Prelude.multiplyInteger 1 xs]))
     
     
-    (declare productFloat
-      (fun (con Prelude.List (float)) (float)))
-    (define productFloat
-      (lam xs
-        [(inst (inst Prelude.foldl (float)) (float))
-          Prelude.multiplyFloat 1.0 xs]))
+    ;; (declare productFloat
+    ;;   (fun (con Prelude.List (float)) (float)))
+    ;; (define productFloat
+    ;;   (lam xs
+    ;;     [(inst (inst Prelude.foldl (float)) (float))
+    ;;       Prelude.multiplyFloat 1.0 xs]))
     
     (declare maximumBy
       (forall a (type)
