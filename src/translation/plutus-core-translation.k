@@ -608,9 +608,9 @@ module PLUTUS-CORE-TRANSLATION
        </function>
        <function>
          <k> #dispatchJumpTable:PreInstructions
-                => #concatInsList( #dispatchCheckCond(JI, #mkGN(#modNameToString(MN) +String "." +String #nameToString(FN)), #length(PARAMS))
+                => #concatInsList( #dispatchCheckCond(JI, #mkGN(#plToString(MN) +String "." +String #plToString(FN)), #length(PARAMS))
                                  , #dispatchJumpTable
-                                 , #dispatchCall(JI, #mkGN(#modNameToString(MN) +String "." +String #nameToString(FN)), #length(PARAMS)))
+                                 , #dispatchCall(JI, #mkGN(#plToString(MN) +String "." +String #plToString(FN)), #length(PARAMS)))
             ...
          </k>
          ...
@@ -742,7 +742,7 @@ module PLUTUS-CORE-TRANSLATION
          ...
        </functions>
        <iele> TLDS:TopLevelDefinitions
-           => (define public #mkGN(#modNameToString(MN) +String "." +String #nameToString(NAME))
+           => (define public #mkGN(#plToString(MN) +String "." +String #plToString(NAME))
                 (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
        <exports> NL </exports>
@@ -765,7 +765,7 @@ module PLUTUS-CORE-TRANSLATION
          ...
        </functions>
        <iele> TLDS:TopLevelDefinitions
-           => (define #mkGN(#modNameToString(MN) +String "." +String #nameToString(NAME))
+           => (define #mkGN(#plToString(MN) +String "." +String #plToString(NAME))
                 (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
        <exports> NL </exports>
@@ -892,9 +892,9 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax GlobalName ::= #nameToGlobalName(Name)                        [function]
                       | #qualCToGlobalName(QualC)                      [function]
-  rule #nameToGlobalName(N:Name) => #mkGN(#nameToString(N))
+  rule #nameToGlobalName(N:Name) => #mkGN(#plToString(N))
   rule #qualCToGlobalName(MN . C)
-    => #mkGN(#modNameToString(MN) +String "." +String #conToString(C))
+    => #mkGN(#plToString(MN) +String "." +String #plToString(C))
  
   syntax LocalName ::= #varToLocalName(Var)                            [function]
   rule #varToLocalName(V:Var) => #mkLN(#varToString(V))
@@ -903,11 +903,10 @@ module PLUTUS-CORE-TRANSLATION
   rule #varsToLocalNames(.VarList) => .LocalNames
   rule #varsToLocalNames(X XS)     => #varToLocalName(X) , #varsToLocalNames(XS)
 
-  syntax String ::= #nameToString(Name)     [function, hook(STRING.token2string)]
+  // rule #plToString(X:BinaryBuiltin) => "XXXXXXXX"
+
+  syntax String ::= #plToString(K)          [function, hook(STRING.token2string)]
                   | #varToString(Var)       [function, hook(STRING.token2string)]
-                  | #conToString(Con)       [function, hook(STRING.token2string)]
-                  | #modNameToString(ModName)
-                                            [function, hook(STRING.token2string)]
                   | #globalNameToString(GlobalName)
                                             [function, hook(STRING.token2string)]
 

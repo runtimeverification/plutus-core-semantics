@@ -22,12 +22,13 @@ module PLUTUS-CORE-COMMON
 
   syntax UnaryBuiltin ::= "integerToByteString"
                         | "sha3_256" | "sha2_256"
-  syntax BinaryBuiltin ::= "addInteger" | "subtractInteger"
-                         | "multiplyInteger" | "divideInteger" | "remainderInteger"
-                         | "equalsInteger" | "lessThanInteger" | "greaterThanInteger"
-                         | "lessThanEqualsInteger" | "greaterThanEqualsInteger"
-                         | "concatenate" | "equalsByteString"
-                         | "takeByteString" | "dropByteString"
+  syntax BinaryBuiltin ::= "addInteger"            [token] | "subtractInteger"          [token]
+                         | "multiplyInteger"       [token] | "divideInteger"            [token]
+                         | "remainderInteger"      [token] | "equalsInteger"            [token]
+                         | "lessThanInteger"       [token] | "greaterThanInteger"       [token]
+                         | "lessThanEqualsInteger" [token] | "greaterThanEqualsInteger" [token]
+                         | "concatenate"           [token] | "equalsByteString"         [token]
+                         | "takeByteString"        [token] | "dropByteString"           [token]
   syntax BuiltinName ::= UnaryBuiltin | BinaryBuiltin
 
   // Name.
