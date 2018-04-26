@@ -57,6 +57,32 @@ module PLUTUS-CORE-TRANSLATION
       </constructors>
     </T>
 
+  // Tuneable knobs
+  // ==============
+
+  // Number of bytes to reserve for constructor IDs and jump IDs in their representations
+  syntax Int ::= "#CidOffset"                                          [function]
+               | "#CidOffsetBits"                                      [function]
+               | "#CidWidth"                                           [function]
+               | "#CidWidthBits"                                       [function]
+               | "#CidBitMask"                                         [function]
+               | "#CidMax"                                             [function]
+               | "#numArgsOffset"                                      [function]
+               | "#numArgsWidth"                                       [function]
+               | "#JIWidth"                                            [function]
+               | "#JIWidthBits"                                        [function]
+  
+  rule #CidOffset     => 1
+  rule #CidOffsetBits => 8 *Int #CidOffset
+  rule #CidWidth      => 1
+  rule #CidWidthBits  => 8 *Int #CidWidth
+  rule #CidMax        => 2^Int #CidWidthBits
+  rule #CidBitMask    => #CidMax -Int 1
+  rule #numArgsOffset => 1
+  rule #numArgsWidth  => 1
+  rule #JIWidth       => 1
+  rule #JIWidthBits   => 8 *Int #JIWidth
+
   // Create Implicit Constructors
   // ============================
 
@@ -293,10 +319,10 @@ module PLUTUS-CORE-TRANSLATION
     when ARITY >Int 0
 
   rule #returnTerm(ARITY, CID)
-    => #mkLN("ret") = shift #mkLN("ret"), 8
+    => #mkLN("ret") = shift #mkLN("ret"), #CidOffsetBits
        #mkLN("ret") = or #mkLN("ret"), CID
        ret #mkLN("ret")
-    when CID <Int 2 ^Int 8
+    when CID <Int #CidMax
 
   // Data Constructors
   // -----------------
@@ -366,7 +392,7 @@ module PLUTUS-CORE-TRANSLATION
   // If the operands ctor matches the constructor's id, we jump to that case...
 
   rule <k> #compareAndJump((QC (VS) RHS), OP, MATCH)
-        => #mkLN("ctor", !COND) = and OP, (2 ^Int 8 -Int 1)
+        => #mkLN("ctor", !COND) = and OP, #CidBitMask
            #mkLN("cond", !COND) = cmp eq CID, #mkLN("ctor", !COND)
            br #mkLN("cond", !COND), MATCH
           .Instructions ...
@@ -381,7 +407,7 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #labelAndLoad((QC (VS) RHS), OP, RET, MATCH, END)
     => #concatInsList( #label(MATCH)
-                       OP = shift OP, -8
+                       OP = shift OP, (0 -Int #CidWidthBits)
                        .Instructions
                      , #labelAndLoadDeconstruct(VS, RHS, OP, 0, RET)
                      , br END
@@ -488,8 +514,8 @@ module PLUTUS-CORE-TRANSLATION
   syntax Instructions ::= #bindEnv(Map, LocalName)                     [function]
 
   rule #allocBind(N, JI, E) => (N = call #mkGN("alloc")(1 +Int size(E))
-                                store JI, N:LocalName, 0, 1
-                                store 0, N:LocalName,  1, 1
+                                store JI, N:LocalName, 0              , #JIWidth
+                                store 0, N:LocalName,  #numArgsOffset , #numArgsWidth
                                 #bindEnv(E, N)
                                ):Instructions
   rule #bindEnv(.Map, _) => .Instructions
@@ -654,7 +680,7 @@ module PLUTUS-CORE-TRANSLATION
   syntax FunctionDefinition ::= "#staticAppendArg"                     [function]
   rule #staticAppendArg
     => define #mkGN("appendArg") (#mkLN("closure"), #mkLN("closureId"), #mkLN("param")) {
-           #mkLN("numParams")   = load #mkLN("closure"),   1, 1
+           #mkLN("numParams")   = load #mkLN("closure"),   #numArgsOffset, #numArgsWidth
            #mkLN("numParams")   = add  #mkLN("numParams"), 1
            #mkLN("spaceNeeded") = add  #mkLN("numParams"), 1
            #mkLN("ret")         = call #mkGN("alloc")(#mkLN("spaceNeeded"))
@@ -666,7 +692,7 @@ module PLUTUS-CORE-TRANSLATION
            store #mkLN("closureId"), #mkLN("writeAddr")
 
            #comment("Update number of parameters")
-           store #mkLN("numParams"), #mkLN("writeAddr"), 1, 1
+           store #mkLN("numParams"), #mkLN("writeAddr"), (#numArgsOffset -Int 1), #numArgsWidth
 
            #comment("Copy arguments one at a time")
            #label(#mkIN("while"))
@@ -694,7 +720,7 @@ module PLUTUS-CORE-TRANSLATION
   // the MSB the Jump ID, and the other the number of arguments stored in the
   // closure.
   syntax Operand ::= #closureId(Int, Int)                              [function]
-  rule #closureId(JI, NUMARGS) => NUMARGS +Int (JI <<Int 8)
+  rule #closureId(JI, NUMARGS) => NUMARGS +Int (JI <<Int #JIWidthBits)
 
   // If the closure contains one less than the number of arguments that the
   // function accepts, we call the function
