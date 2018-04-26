@@ -72,15 +72,15 @@ module PLUTUS-CORE-TRANSLATION
                | "#JIWidth"                                            [function]
                | "#JIWidthBits"                                        [function]
   
-  rule #CidOffset     => 1
+  rule #CidOffset     => 2
   rule #CidOffsetBits => 8 *Int #CidOffset
-  rule #CidWidth      => 1
+  rule #CidWidth      => 2
   rule #CidWidthBits  => 8 *Int #CidWidth
   rule #CidMax        => 2^Int #CidWidthBits
   rule #CidBitMask    => #CidMax -Int 1
-  rule #numArgsOffset => 1
-  rule #numArgsWidth  => 1
-  rule #JIWidth       => 1
+  rule #numArgsOffset => 2
+  rule #numArgsWidth  => 2
+  rule #JIWidth       => 2
   rule #JIWidthBits   => 8 *Int #JIWidth
 
   // Create Implicit Constructors
