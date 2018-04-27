@@ -40,7 +40,6 @@ module PLUTUS-CORE-TRANSLATION
           <modName> .K                  </modName>
           <fName>   .K                  </fName>
           <params> .VarList:VarList     </params>
-          <env>    .Map                 </env>
           <k>      .K:K                 </k>
           <jumpId> -1                   </jumpId>
           <hasDispatchEntry> false:Bool </hasDispatchEntry>
@@ -142,7 +141,6 @@ module PLUTUS-CORE-TRANSLATION
             <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
                                     ret #useOperand(T:Tm, #mkLN("ret")) .Instructions)
             </k>
-            <env> .Map </env>
             <hasDispatchEntry> false:Bool </hasDispatchEntry>
             <readyForDispatch> false:Bool </readyForDispatch>
          </function>
@@ -478,9 +476,8 @@ module PLUTUS-CORE-TRANSLATION
          ...
           <function>
             <k> #loadOperand((lam X:Var T:Tm), LN:LocalName)
-             => #allocBind(LN, !N, #addParamsToEnv(VS:VarList, M:Map))
+             => #allocBind(LN, !N, #addParamsToEnv(VS:VarList, .Map))
              ... </k>
-            <env> M </env>
             <params> VS:VarList </params>
             ...
           </function>
@@ -606,7 +603,6 @@ module PLUTUS-CORE-TRANSLATION
                                               , #dispatchJumpTable )
   
                            </k>
-                           <env>    .Map                   </env>
                            <params> #mkVar("closure") #mkVar("param") .VarList </params>
                            <hasDispatchEntry> true:Bool         </hasDispatchEntry>
                            <readyForDispatch> false:Bool        </readyForDispatch>
@@ -753,7 +749,6 @@ module PLUTUS-CORE-TRANSLATION
            <modName> MN:ModName      </modName>
            <fName>   NAME:Name       </fName>
            <params>  VARS:VarList    </params>
-           <env>     ENV             </env>
            <k>       IS:Instructions </k>
            ...
          </function> => .Bag
@@ -776,7 +771,6 @@ module PLUTUS-CORE-TRANSLATION
            <modName> MN:ModName      </modName>
            <fName>   NAME:Name       </fName>
            <params>  VARS:VarList    </params>
-           <env>     ENV             </env>
            <k>       IS:Instructions </k>
            ...
          </function> => .Bag
