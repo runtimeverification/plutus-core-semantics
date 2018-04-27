@@ -288,10 +288,13 @@ module PLUTUS-CORE-TRANSLATION
          <constructor>
            <cName> MN . CON </cName>
            <cK> #translateIeleCtor </cK>
-           <cId> !ID:Int </cId>
+           <cId> #mkConId(MN . CON) </cId>
            <arity> #length(TL) </arity>
          </constructor>
        </constructors>
+
+  syntax Int ::= #mkConId(QualC)                                       [function]
+  rule #mkConId(QC) => !ID:Int
 
   syntax K ::= "#translateIeleCtor"
   rule <constructor>
