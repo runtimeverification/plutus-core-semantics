@@ -20,9 +20,9 @@ module PLUTUS-CORE-TRANSLATION
   
   configuration
     <T>
-      <plutus> #createImplicitCtors
-            ~> $PGM:Prg ~> #createDispatch:K
-            ~> #translated? ~> #functionsToIele ~> #constructorsToIele
+      <plutus> $PGM:Prg
+            ~> #createDispatch:K ~> #translated?
+            ~> #functionsToIele ~> #constructorsToIele
             ~> #moveToContractCell
       </plutus>
       <iele> #staticAlloc
@@ -82,33 +82,6 @@ module PLUTUS-CORE-TRANSLATION
   rule #numArgsWidth  => 2
   rule #JIWidth       => 2
   rule #JIWidthBits   => 8 *Int #JIWidth
-
-  // Create Implicit Constructors
-  // ============================
-
-  // Since comparison operators in Plutus use constructors True and False,
-  // we need to implicitly define these even if the Prelude is not imported.
-
-  // The constructor ids 1 and 0 correspond to the result of the cmp instruction
-  // in IELE so that case matching on booleans work as intended.
-
-  syntax K ::= "#createImplicitCtors"
-  rule <plutus> #createImplicitCtors => .K ... </plutus>
-       <constructors> ...
-         .Bag =>
-         <constructor>
-           <cName> #mkQualC("Prelude", "True") </cName>
-           <cId> 1 </cId>
-           <arity> 0 </arity>
-           <cK> #translateIeleCtor </cK>
-         </constructor>
-         <constructor>
-           <cName> #mkQualC("Prelude", "False") </cName>
-           <cId> 0 </cId>
-           <arity> 0 </arity>
-           <cK> #translateIeleCtor </cK>
-         </constructor>
-       </constructors>
 
   // Typing Related Constructs
   // =========================
@@ -294,7 +267,11 @@ module PLUTUS-CORE-TRANSLATION
        </constructors>
 
   syntax Int ::= #mkConId(QualC)                                       [function]
-  rule #mkConId(QC) => !ID:Int
+  rule #mkConId(QC) => 0
+    when #mkQualC("Prelude", "False") ==K QC
+  rule #mkConId(QC) => 1
+    when #mkQualC("Prelude", "True") ==K QC
+  rule #mkConId(QC) => !ID:Int                                            [owise]
 
   syntax K ::= "#translateIeleCtor"
   rule <constructor>
