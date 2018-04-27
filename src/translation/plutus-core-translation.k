@@ -216,7 +216,7 @@ module PLUTUS-CORE-TRANSLATION
           </function>
           <function>
             <k> #loadOperand(MN:ModName . NAME:Name, LN:LocalName)
-             => #allocBind(LN, JI, .Map)
+             => #allocBind(LN, JI, .VarList)
              ... </k>
             ...
           </function>
@@ -232,7 +232,7 @@ module PLUTUS-CORE-TRANSLATION
             <fName> NAME </fName>
             <jumpId> JI </jumpId>
             <k> #loadOperand(MN:ModName . NAME:Name, LN:LocalName)
-             => #allocBind(LN, JI, .Map)
+             => #allocBind(LN, JI, .VarList)
              ... </k>
             ...
           </function>
@@ -476,9 +476,9 @@ module PLUTUS-CORE-TRANSLATION
          ...
           <function>
             <k> #loadOperand((lam X:Var T:Tm), LN:LocalName)
-             => #allocBind(LN, !N, #addParamsToEnv(VS:VarList, .Map))
+             => #allocBind(LN, !N, VS)
              ... </k>
-            <params> VS:VarList </params>
+            <params> VS </params>
             ...
           </function>
        </functions>
@@ -487,20 +487,20 @@ module PLUTUS-CORE-TRANSLATION
   // `#allocBind` generates instructions to allocate a closure and bind its
   // environment.
   
-  syntax Instructions ::= #allocBind(LocalName, Int, Map)              [function]
-  syntax Instructions ::= #bindEnv(Map, LocalName)                     [function]
+  syntax Instructions ::= #allocBind(LocalName, Int, VarList)          [function]
+  syntax Instructions ::= #bindEnv(LocalName, VarList, Int)            [function]
 
-  rule #allocBind(N, JI, E) => (N = call #mkGN("alloc")(1 +Int size(E))
-                                store JI, N:LocalName, 0              , #JIWidth
-                                store 0, N:LocalName,  #numArgsOffset , #numArgsWidth
-                                #bindEnv(E, N)
-                               ):Instructions
-  rule #bindEnv(.Map, _) => .Instructions
-  rule #bindEnv((OFF:Int |-> V:Var) M:Map, LN) => (
-                                          #mkLN("bindPtr", !N) = add LN, (OFF +Int 1)
-                                          store #varToLocalName(V), #mkLN("bindPtr", !N)
-                                          #bindEnv(M, LN)
-                                         ):Instructions
+  rule #allocBind(N, JI, VS) => (N = call #mkGN("alloc")(1 +Int #length(VS))
+                                 store JI, N:LocalName, 0              , #JIWidth
+                                 store 0, N:LocalName,  #numArgsOffset , #numArgsWidth
+                                 #bindEnv(N, VS, 1)
+                                ):Instructions
+  rule #bindEnv(_ , .VarList, _     ) => .Instructions
+  rule #bindEnv(LN, V VS    , OFFSET)
+    => (#mkLN("bindPtr", !N) = add LN, OFFSET
+        store #varToLocalName(V), #mkLN("bindPtr", !N)
+        #bindEnv(LN, VS, OFFSET +Int 1)
+       ):Instructions
   
   // `#addParamsToEnv` is a helper for building the environment map:
   // TODO: Should this really be called an environment?
