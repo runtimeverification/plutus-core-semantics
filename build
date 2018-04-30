@@ -7,7 +7,7 @@ set -e
 
 clean=false
 deps=false
-runner=(pytest -n 4)
+runner=(pytest -n 4 --failed-first)
 while [[  $# -ne 0 ]]; do case "$1" in
     clean) clean=true                          ;;
      deps) deps=true                           ;;
