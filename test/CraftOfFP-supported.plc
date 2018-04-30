@@ -1,0 +1,7 @@
+(program
+  
+  (module CraftOfFP
+    (import Prelude)
+    (export () ())
+  )
+)

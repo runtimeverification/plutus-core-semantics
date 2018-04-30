@@ -96,7 +96,8 @@ preprocess_plc:= $(wildcard tests/*.plc)
 test/%.pre.plc: test/%.plc bin/preprocess src/Prelude-supported.plc
 	bin/preprocess < $< > $@
 translate_plc:=test/arith-ops.plc test/cmp-ops.plc test/case-simple.plc \
-               test/recursion.plc test/modules.plc
+               test/recursion.plc test/modules.plc                      \
+               test/CraftOfFP-supported.plc
 translate-to-iele: $(translate_plc:.plc=.iele)
 test-erc20: $(erc20_tests:=.test)
 
