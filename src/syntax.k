@@ -8,7 +8,6 @@ module PLUTUS-CORE-SYNTAX
 endmodule
 
 module PLUTUS-CORE-COMMON
-  imports DOMAINS-SYNTAX
   imports BUILTIN-ID-TOKENS
   imports INT
   imports FLOAT
