@@ -1,7 +1,53 @@
 (program
-  
+
   (module CraftOfFP
     (import Prelude)
-    (export () ())
+    (export ()
+      (
+        test_exOrs_1
+        test_exOrs_2
+        test_exOrs_3
+        test_exOrs_4
+      )
+    )
+
+    (declare exOr (fun (con Prelude.Bool)
+                    (fun (con Prelude.Bool)
+                         (con Prelude.Bool))))
+    (define exOr (lam x (lam y
+      [Prelude.and [Prelude.or x y] [Prelude.not [Prelude.and x y]]])))
+
+
+    (declare exOr1 (fun (con Prelude.Bool)
+                     (fun (con Prelude.Bool)
+                          (con Prelude.Bool))))
+    (define exOr1 (lam x (lam y
+      (case x
+        (Prelude.True () [Prelude.not y])
+        (Prelude.False () y)))))
+
+
+    (declare prop_exOrs (fun (con Prelude.Bool)
+                          (fun (con Prelude.Bool)
+                               (con Prelude.Bool))))
+    (define prop_exOrs (lam x (lam y
+      [Prelude.equalsBool [CraftOfFP.exOr x y] [CraftOfFP.exOr1 x y]])))
+
+
+    (declare test_exOrs_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_exOrs_1 (lam x
+      [CraftOfFP.prop_exOrs (con Prelude.True) (con Prelude.True)]))
+
+    (declare test_exOrs_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_exOrs_2 (lam x
+      [CraftOfFP.prop_exOrs (con Prelude.True) (con Prelude.False)]))
+
+    (declare test_exOrs_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_exOrs_3 (lam x
+      [CraftOfFP.prop_exOrs (con Prelude.False) (con Prelude.True)]))
+
+    (declare test_exOrs_4 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_exOrs_4 (lam x
+      [CraftOfFP.prop_exOrs (con Prelude.False) (con Prelude.False)]))
   )
 )
