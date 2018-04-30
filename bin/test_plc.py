@@ -167,7 +167,7 @@ def generate_tests(type):
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('execution'))
 def test_execution(file, mod, fct, args, expected):
-    krun_args = [bin("kplc"), "run", "execution", base("test/", file +".plc"),
+    krun_args = [bin("kplc"), "run", "execution", base("test/", file +".pre.plc"),
                  "-cMAINMOD=#token(\"" + mod + "\", \"UpperName\")",
                  "-pMAINMOD=printf %s",
                  "-cMAINFCT=#token(\"" + fct + "\", \"LowerName\")",
