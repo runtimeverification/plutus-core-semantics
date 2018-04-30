@@ -127,6 +127,11 @@ def generate_tests(type):
             ("modules", "Bar", "four",                      [5],       4),
             ("modules", "Foo", "four",                      [5],       4),
 
+            ("CraftOfFP-supported", "CraftOfFP", "test_exOrs_1",  [0], True),
+            ("CraftOfFP-supported", "CraftOfFP", "test_exOrs_2",  [0], True),
+            ("CraftOfFP-supported", "CraftOfFP", "test_exOrs_3",  [0], True),
+            ("CraftOfFP-supported", "CraftOfFP", "test_exOrs_4",  [0], True),
+
            ]
 
     unimplemented = [

@@ -129,9 +129,9 @@
     
     
     
-    
-    Function Tools
-    
+   ;; 
+   ;; Function Tools
+   ;; 
     
    (declare id (forall a (type) (fun a a)))
    (define id

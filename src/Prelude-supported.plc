@@ -1,8 +1,85 @@
 (program
   (module Prelude
     (import)
-    (export ((Bool (True False))) () )
+    (export
 
-    (data Bool () (True) (False))
+      (
+      (Unit (MkUnit))
+      (Bool (True False))
+      )
+
+      (
+      not
+      and
+      or
+      equalsBool
+      )
+
+      )
+
+   ;;
+   ;; Unit Tools
+   ;;
+
+   (data Unit () (MkUnit))
+
+
+
+   ;;
+   ;; Boolean Tools
+   ;;
+
+   (data Bool () (True) (False))
+
+   (declare equalsBool
+     (fun (con Prelude.Bool)
+       (fun (con Prelude.Bool)
+            (con Prelude.Bool))))
+   (define equalsBool (lam x (lam y
+     (case x
+       (Prelude.True ()
+         (case y
+           (Prelude.True () (con Prelude.True))
+           (Prelude.False () (con Prelude.False))))
+       (Prelude.False ()
+         (case y
+           (Prelude.True () (con Prelude.False))
+           (Prelude.False () (con Prelude.True))))))))
+
+   (declare not
+     (fun (con Prelude.Bool) (con Prelude.Bool)))
+   (define not
+     (lam x
+       (case x
+         (Prelude.True ()
+           (con Prelude.False))
+         (Prelude.False ()
+           (con Prelude.True)))))
+
+
+   (declare and
+     (fun (con Prelude.Bool)
+          (fun (con Prelude.Bool)
+               (con Prelude.Bool))))
+   (define and
+     (lam x (lam y
+       (case x
+         (Prelude.True () y)
+         (Prelude.False ()
+           (con Prelude.False))))))
+
+
+   (declare or
+     (fun (con Prelude.Bool)
+          (fun (con Prelude.Bool)
+               (con Prelude.Bool))))
+   (define or
+     (lam x (lam y
+       (case x
+         (Prelude.True ()
+           (con Prelude.True))
+         (Prelude.False () y)))))
+
+
   )
 )
