@@ -106,12 +106,6 @@ def generate_tests(type):
             ("cmp-ops", "Foo", "equals",        [12, 17], False),
             # ("cmp-ops", "Foo", "myTrue",        [],       True ),
 
-            ("bytestring", "Foo", "toByteString",    [0x2345],  "2345"),
-            ("bytestring", "Foo", "toByteString",    [0x0000],  "0000"),
-            ("bytestring", "Foo", "takeByteStringx", [0,   "23"],   ""),
-            ("bytestring", "Foo", "takeByteStringx", [1, "2345"], "23"),
-            ("bytestring", "Foo", "takeByteStringx", [0,  ""],      ""),
-            ("bytestring", "Foo", "takeByteStringx", [2,  ""], ExitCode_TakeFromEmpty),
             ("case-simple", "SimpleCase", "boolean",        [13],  19),
             ("case-simple", "SimpleCase", "boolean",        [-13], 23),
             ("case-simple", "SimpleCase", "nonExhaustive",  [13],  19),
@@ -139,6 +133,13 @@ def generate_tests(type):
             ("ctor-case", "Foo", "baz", [0], 23),
             ("module-call-private-indirect", "Foo", "bar", [0],   19),
             ("module-call-private-indirect", "Foo", "baz", [0],   23),
+
+            # ("bytestring", "Foo", "toByteString",    [0x2345],  "2345"),
+            # ("bytestring", "Foo", "toByteString",    [0x0000],  "0000"),
+            # ("bytestring", "Foo", "takeByteStringx", [0,   "23"],   ""),
+            # ("bytestring", "Foo", "takeByteStringx", [1, "2345"], "23"),
+            # ("bytestring", "Foo", "takeByteStringx", [0,  ""],      ""),
+            # ("bytestring", "Foo", "takeByteStringx", [2,  ""], ExitCode_TakeFromEmpty),
            ]
     execution_unimplemented = [
             ("arith-ops", "Foo", "notPublic",   [19, 23],            ExitCode_NotPublic),
