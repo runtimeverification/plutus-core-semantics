@@ -29,7 +29,7 @@ module PLUTUS-CORE-TRANSLATION
              #staticAppendArg
              .TopLevelDefinitions
       </iele>
-      <modName> .K </modName>
+      <currMod> .K </currMod>
       <ieleContract> contract #mkIN("Foo") { .TopLevelDefinitions } </ieleContract>
       <totalFunctions> 0 </totalFunctions>
       <totalReadyForDispatch> 0 </totalReadyForDispatch>
@@ -37,7 +37,8 @@ module PLUTUS-CORE-TRANSLATION
       <exports> .NameList:NameList </exports>
       <functions>
         <function multiplicity="*" type="Set">
-          <fName>   #mkGN("noname")     </fName>
+          <modName> .K                  </modName>
+          <fName>   .K                  </fName>
           <params> .VarList:VarList     </params>
           <env>    .Map                 </env>
           <k>      .K:K                 </k>
@@ -86,19 +87,21 @@ module PLUTUS-CORE-TRANSLATION
   // Top-Level Functions
   // ===================
 
-  // Unwrap the outer `program`declaration. TODO: Currenty we only support
-  // a single module.
+  // Unwrap the outer `program`declaration.
 
-  rule <plutus> (program (module MN IS (export (TXS) (NS)) DS) ) => DS ... </plutus>
-       <modName> _ => MN </modName>
+  rule <plutus> (program MOD MODS) => MOD ~> (program MODS) ... </plutus>
+  rule <plutus> (program .ModList) => .K                    ... </plutus>
+
+  rule <plutus> (module MN IS (export (TXS) (NS)) DS) => DS ... </plutus>
+       <currMod> _ => MN </currMod>
        <exports> _ => NS </exports>
 
   // We iterate over `Dec`s, creating a named top level function for each.
 
   rule <plutus> D:Dec DS:DecList => D ~> DS ... </plutus>
 
-  rule <plutus> (define N:Name V:Val)
-             => #topLevelFunction(#nameToGlobalName(N), !JI, .VarList, V)
+  rule <plutus> (define NAME:Name V:Val)
+             => #topLevelFunction(NAME, !JI, .VarList, V)
                 ...
        </plutus>
   rule <plutus> .DecList => .K ... </plutus>
@@ -108,19 +111,21 @@ module PLUTUS-CORE-TRANSLATION
   rule <plutus> _:TDec => .K ... </plutus>
   rule <plutus> _:MDec => .K ... </plutus>
 
-  syntax K ::= #topLevelFunction(GlobalName, Int, VarList, Tm)
+  syntax K ::= #topLevelFunction(Name, Int, VarList, Tm)
   // TODO: Avoid name collisions when `#bind`ing
-  rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, (lam X:Var T:Tm))
-             => #topLevelFunction(GN, JI, X VARS, #bindVar(T:Tm, X, #varToLocalName(X)))
+  rule <plutus> #topLevelFunction(NAME, JI, VARS:VarList, (lam X:Var T:Tm))
+             => #topLevelFunction(NAME, JI, X VARS, #bindVar(T:Tm, X, #varToLocalName(X)))
                 ...
        </plutus>
-  rule <plutus> #topLevelFunction(GN, JI, VARS:VarList, T:Tm) => .K ... </plutus>
+  rule <plutus> #topLevelFunction(NAME, JI, VARS:VarList, T:Tm) => .K ... </plutus>
        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
        <dispatchedFunctionsLeft> DFL => DFL +Int 1 </dispatchedFunctionsLeft>
+       <currMod> MN </currMod>
        <functions> ...
          .Bag =>
          <function>
-            <fName> GN </fName>
+            <modName> MN </modName>
+            <fName> NAME </fName>
             <params> #reverse(VARS) </params>
             <jumpId> JI </jumpId>
             <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
@@ -195,18 +200,18 @@ module PLUTUS-CORE-TRANSLATION
   rule <functions>
          ...
           <function>
-            <fName> GN </fName>
+            <modName> MN </modName>
+            <fName> NAME </fName>
             <jumpId> JI </jumpId>
             ...
           </function>
           <function>
-            <k> #loadOperand(MN:ModName . N:Name, LN:LocalName)
+            <k> #loadOperand(MN:ModName . NAME:Name, LN:LocalName)
              => #allocBind(LN, JI, .Map)
              ... </k>
             ...
           </function>
        </functions>
-       when #nameToGlobalName(N) ==K GN
 
   // Unfortunately, K's matching syntax means that we need to duplicate the
   // rule for the recursive case.
@@ -214,15 +219,15 @@ module PLUTUS-CORE-TRANSLATION
   rule <functions>
          ...
           <function>
-            <fName> GN </fName>
+            <modName> MN </modName>
+            <fName> NAME </fName>
             <jumpId> JI </jumpId>
-            <k> #loadOperand(MN:ModName . N:Name, LN:LocalName)
+            <k> #loadOperand(MN:ModName . NAME:Name, LN:LocalName)
              => #allocBind(LN, JI, .Map)
              ... </k>
             ...
           </function>
        </functions>
-       when #nameToGlobalName(N) ==K GN
 
   // We do not need bind free variables.
 
@@ -239,7 +244,7 @@ module PLUTUS-CORE-TRANSLATION
              => ( data TYCON ( KSL )            ALTS )
                 ...
        </plutus>
-       <modName> MN:ModName </modName>
+       <currMod> MN:ModName </currMod>
        <constructors> ...
          .Bag =>
          <constructor>
@@ -413,7 +418,7 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #loadOperand((builtin B:BinaryBuiltin T1:Tm T2:Tm), LN)
     => #concatInsList(#loadOperand(T1, #mkLN("bltinN1", !N1)),
-                      #loadOperand(T2, #mkLN("bltinN1", !N2)),
+                      #loadOperand(T2, #mkLN("bltinN2", !N2)),
                       #translateBinBuiltin( B:BinaryBuiltin, LN
                                           , #useOperand(T1, #mkLN("bltinN1", !N1))
                                           , #useOperand(T2, #mkLN("bltinN2", !N2))))
@@ -462,7 +467,7 @@ module PLUTUS-CORE-TRANSLATION
             ...
           </function>
        </functions>
-       <plutus> (.K => #topLevelFunction(#mkGN("innerLambda", !N), !N, X, T:Tm)) ... </plutus>
+       <plutus> (.K => #topLevelFunction(#mkPN("innerLambda", !N), !N, X, T:Tm)) ... </plutus>
 
   // `#allocBind` generates instructions to allocate a closure and bind its
   // environment.
@@ -528,7 +533,7 @@ module PLUTUS-CORE-TRANSLATION
    rule #loadOperand([T1:Tm T2:Tm], LN)
      => #concatInsList( #loadOperand(T1, #mkLN("appT1", !N))
                       , #loadOperand(T2, #mkLN("appT2", !M))
-                      , LN = call #mkGN("dispatch")( #useOperand(T1, #mkLN("appT1", !N))
+                      , LN = call #mkGN("PlutusInternal.dispatch")( #useOperand(T1, #mkLN("appT1", !N))
                                                    , #useOperand(T2, #mkLN("appT2", !M)))
                         .Instructions
                       )
@@ -574,7 +579,8 @@ module PLUTUS-CORE-TRANSLATION
   rule <plutus> #createDispatch:K => .K:K ... </plutus>
        <functions> ... ( .Bag
                       => <function>
-                           <fName>   (#mkGN("dispatch")):GlobalName </fName>
+                           <modName> #mkMN("PlutusInternal") </modName>
+                           <fName>   (#mkPN("dispatch")):Name </fName>
                            <jumpId> -1                   </jumpId>
                            <k>
                                 #concatInsList( #mkLN("closureId") = load #mkLN("closure")
@@ -592,8 +598,9 @@ module PLUTUS-CORE-TRANSLATION
        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
   
   rule <function>
-          <fName>  FN </fName>
-          <jumpId> JI </jumpId>
+          <modName> MN </modName>
+          <fName>   FN </fName>
+          <jumpId>  JI </jumpId>
           <hasDispatchEntry> false:Bool => true:Bool </hasDispatchEntry>
           <readyForDispatch> true:Bool               </readyForDispatch>
           <params> PARAMS                            </params>
@@ -601,9 +608,9 @@ module PLUTUS-CORE-TRANSLATION
        </function>
        <function>
          <k> #dispatchJumpTable:PreInstructions
-                => #concatInsList( #dispatchCheckCond(JI, FN, #length(PARAMS))
+                => #concatInsList( #dispatchCheckCond(JI, #mkGN(#modNameToString(MN) +String "." +String #nameToString(FN)), #length(PARAMS))
                                  , #dispatchJumpTable
-                                 , #dispatchCall(JI, FN, #length(PARAMS)))
+                                 , #dispatchCall(JI, #mkGN(#modNameToString(MN) +String "." +String #nameToString(FN)), #length(PARAMS)))
             ...
          </k>
          ...
@@ -679,6 +686,7 @@ module PLUTUS-CORE-TRANSLATION
 
   // If the closure contains one less than the number of arguments that the
   // function accepts, we call the function
+  // TODO: see if we can remove (or use) GN param
   rule #dispatchCheckCond(JI, GN, NUMARGS)
     => #mkLN("cond") = cmp eq #mkLN("closureId"), #closureId(JI, NUMARGS -Int 1)
        br #mkLN("cond"), #mkIN("call" +String Int2String(JI:Int))
@@ -724,40 +732,44 @@ module PLUTUS-CORE-TRANSLATION
   rule <plutus> #functionsToIele ... </plutus>
        <functions>
          <function>
-           <fName>  GN:GlobalName   </fName>
-           <params> VARS:VarList    </params>
-           <env>    ENV             </env>
-           <k>      IS:Instructions </k>
+           <modName> MN:ModName      </modName>
+           <fName>   NAME:Name       </fName>
+           <params>  VARS:VarList    </params>
+           <env>     ENV             </env>
+           <k>       IS:Instructions </k>
            ...
          </function> => .Bag
          ...
        </functions>
        <iele> TLDS:TopLevelDefinitions
-           => (define public GN (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
+           => (define public #mkGN(#modNameToString(MN) +String "." +String #nameToString(NAME))
+                (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
        <exports> NL </exports>
        <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
        <totalReadyForDispatch> TF </totalReadyForDispatch>
        <totalFunctions> TF </totalFunctions>
-       when #in(GN, NL)
+       when #in(NAME, NL)
 
   // Convert private `<function>`s to IELE syntax
   rule <plutus> #functionsToIele ... </plutus>
        <functions>
          <function>
-           <fName>  GN:GlobalName   </fName>
-           <params> VARS:VarList    </params>
-           <env>    ENV             </env>
-           <k>      IS:Instructions </k>
+           <modName> MN:ModName      </modName>
+           <fName>   NAME:Name       </fName>
+           <params>  VARS:VarList    </params>
+           <env>     ENV             </env>
+           <k>       IS:Instructions </k>
            ...
          </function> => .Bag
          ...
        </functions>
        <iele> TLDS:TopLevelDefinitions
-           => (define GN (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
+           => (define #mkGN(#modNameToString(MN) +String "." +String #nameToString(NAME))
+                (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
        <exports> NL </exports>
-       when notBool #in(GN, NL)
+       when notBool #in(NAME, NL)
 
   rule <plutus> #functionsToIele => .K ... </plutus>
        <functions> .Bag </functions>
@@ -846,17 +858,23 @@ module PLUTUS-CORE-TRANSLATION
   syntax LocalNames ::= #mkLNs(Int, String)                            [function]
   syntax IeleName   ::= #mkIN(String)                                  [function]
                       | #mkIN(String, Int)            [function, klabel(mkIN_SI)]
+  syntax Name       ::= #mkPN(String)                                  [function]
+                      | #mkPN(String, Int)            [function, klabel(mkPN_SI)]
+  syntax ModName    ::= #mkMN(String)                                  [function]
   syntax Var        ::= #mkVar(String)                                 [function]
   syntax QualC      ::= #mkQualC(String, String)                       [function]
   // ----------------------------------------------------------------------------
   rule #mkGN(S)    => #parseToken("GlobalName", "@" +String S)
   rule #mkLN(S)    => #parseToken("LocalName",  "%" +String S)
   rule #mkIN(S)    => #parseToken("IeleName",               S)
+  rule #mkPN(S)    => #parseToken("Name",                   S)
+  rule #mkMN(S)    => #parseToken("ModName",                S)
   rule #mkVar(S)   => #parseToken("Var",                    S)
 
   rule #mkGN(S, I) => #mkGN(S +String Int2String(I))
   rule #mkLN(S, I) => #mkLN(S +String Int2String(I))
   rule #mkIN(S, I) => #mkIN(S +String Int2String(I))
+  rule #mkPN(S, I) => #mkPN(S +String Int2String(I))
 
   rule #mkLNs(0,   PREFIX) => .LocalNames
   rule #mkLNs(NUM, PREFIX) => #mkLN(PREFIX, !I), #mkLNs(NUM -Int 1, PREFIX)
@@ -890,6 +908,8 @@ module PLUTUS-CORE-TRANSLATION
                   | #conToString(Con)       [function, hook(STRING.token2string)]
                   | #modNameToString(ModName)
                                             [function, hook(STRING.token2string)]
+                  | #globalNameToString(GlobalName)
+                                            [function, hook(STRING.token2string)]
 
   syntax TmList ::= #valListToTmList(ValList)                          [function]
   rule #valListToTmList(V VL)     => V #valListToTmList(VL)
@@ -914,12 +934,11 @@ module PLUTUS-CORE-TRANSLATION
   rule #length(T TL:TmList ) => 1 +Int #length(TL)    rule #length(.TmList ) => 0
   rule #length(T TL:TyList ) => 1 +Int #length(TL)    rule #length(.TyList ) => 0
 
-  syntax Bool ::= #in(GlobalName, NameList)                            [function]
+  syntax Bool ::= #in(Name, NameList)                                  [function]
   // ----------------------------------------------------------------------------
-  rule #in(GN, .NameList) => false
-  rule #in(GN, N NL) => true
-    when GN ==K #nameToGlobalName(N)
-  rule #in(GN, N NL) => #in(GN, NL)
-    when GN =/=K #nameToGlobalName(N)
+  rule #in(NAME, .NameList) => false
+  rule #in(NAME, NAME  NL) => true
+  rule #in(NAME, NAME' NL) => #in(NAME, NL)
+    when NAME =/=K NAME'
 
 endmodule

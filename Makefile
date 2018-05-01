@@ -92,7 +92,7 @@ execution_tests:=$(wildcard test/execution/*.plc)
 erc20_tests:=$(wildcard test/erc20/*.plc)
 
 translate_plc:=test/arith-ops.plc test/cmp-ops.plc test/case-simple.plc \
-               test/recursion.plc
+               test/recursion.plc test/modules.plc
 translate-to-iele: $(translate_plc:.plc=.iele)
 test-erc20: $(erc20_tests:=.test)
 
