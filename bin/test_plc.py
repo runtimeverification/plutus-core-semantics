@@ -179,6 +179,7 @@ def test_execution(file, mod, fct, args, expected):
                  "-pMAINFCT=printf %s",
                  "-cMAINARGS=" + kast_args(args),
                  "-pMAINARGS=printf %s"]
+    print("'" + "' '".join(krun_args) + "'", file=sys.stderr)
     krun = Popen(krun_args, stdout=PIPE)
     (output, err) = krun.communicate()
     exit_code = krun.wait()
