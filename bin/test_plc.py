@@ -123,6 +123,13 @@ def generate_tests(type):
 
             ("case-simple", "SimpleCase", "secondArg",      [13, 21],  21),
             ("case-simple", "SimpleCase", "testPair",       [13],      26),
+
+            ("modules", "Bar", "four",                      [5],       4),
+            ("modules", "Foo", "four",                      [5],       4),
+
+            ("module-call-private-indirect", "Foo", "bar", [0],   19),
+            ("module-call-private-indirect", "Foo", "baz", [0],   23),
+
            ]
 
     unimplemented = [
@@ -131,8 +138,6 @@ def generate_tests(type):
     translation_unimplemented = [
             ("ctor-case", "Foo", "bar", [0], 19),
             ("ctor-case", "Foo", "baz", [0], 23),
-            ("module-call-private-indirect", "Foo", "bar", [0],   19),
-            ("module-call-private-indirect", "Foo", "baz", [0],   23),
 
             # ("bytestring", "Foo", "toByteString",    [0x2345],  "2345"),
             # ("bytestring", "Foo", "toByteString",    [0x0000],  "0000"),
@@ -180,7 +185,7 @@ def test_translation(file, mod, fct, args, expected):
     template = json.load(open(base("test/template.iele.json")))
     account = "0x1000000000000000000000000000000000000000"
     template["pre"][account]["code"] = template["postState"][account]["code"] = base("test/", file + ".iele")
-    template["blocks"][0]["transactions"][0]["function"] = fct
+    template["blocks"][0]["transactions"][0]["function"] = mod + "." + fct
     template["blocks"][0]["transactions"][0]["arguments"] = map(toIeleArg, args)
     template["blocks"][0]["results"][0]["status"] = toIeleExitStatus(expected)
     template["blocks"][0]["results"][0]["out"] = toIeleReturn(expected)

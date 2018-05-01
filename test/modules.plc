@@ -1,0 +1,20 @@
+(program
+
+  (module Foo (import) (export () (three four))
+
+   (declare three (fun (integer) (integer)))
+   (define three (lam x 3))
+
+   (declare four (fun (integer) (integer)))
+   (define four (lam x (builtin addInteger 1 [Foo.three 2])))
+
+  )
+
+  (module Bar (import Foo) (export () (four))
+
+   (declare four (fun (integer) (integer)))
+   (define four (lam x (builtin addInteger [Foo.three 2] 1)))
+
+  )
+
+) 
