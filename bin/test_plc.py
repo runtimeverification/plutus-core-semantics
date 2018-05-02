@@ -111,7 +111,8 @@ def generate_tests(type):
             ("case-simple", "SimpleCase", "nonExhaustive",  [13],  19),
             ("case-simple", "SimpleCase", "nonExhaustive",  [-13], ExitCode_NonExhaustive),
 
-            ("recursion",   "Recursion",  "sumToN",     [10, 0], 55),
+            ("recursion",   "Recursion",  "sumToN",         [10, 0], 55),
+            ("recursion",   "Recursion",  "factorial",      [6],    720),
 
             ("case-simple", "SimpleCase", "fooBarOrKungFu", [3],       7),
             ("case-simple", "SimpleCase", "fooBarOrKungFu", [-4],      11),

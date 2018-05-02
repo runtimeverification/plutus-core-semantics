@@ -1,6 +1,5 @@
 (program
-
-  (module Recursion (import) (export () (sumToN))
+  (module Recursion (import) (export () (sumToN factorial))
 
     (declare sumToN (fun (integer) (fun (integer) (integer))))
     (define sumToN
@@ -11,6 +10,21 @@
             [[Recursion.sumToN (builtin subtractInteger n 1)]
                                (builtin addInteger n s)])))))
 
-  )
 
+    (declare opToN (fun (fun (integer) (integer))
+                        (fun (integer) (fun (integer) (integer)))))
+    (define opToN
+      (lam f
+        (lam n (lam s
+          (case (builtin equalsInteger n 0)
+            (Prelude.True  () s)
+            (Prelude.False ()
+              [[Recursion.opToN f (builtin subtractInteger n 1)] [f n s]]
+            ))))))
+    (declare mult (fun (integer) (integer)))
+    (define mult (lam x (lam y (builtin multiplyInteger x y))))
+    (declare factorial (fun (integer) (integer)))
+    (define  factorial
+      (lam x [Recursion.opToN Recursion.mult x 1]))
+  )
 )
