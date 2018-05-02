@@ -27,6 +27,10 @@ module PLUTUS-CORE-TRANSLATION
       </plutus>
       <iele> #staticAlloc
              #staticAppendArg
+             #staticDispatch
+             #staticUnfold(2)
+             #staticUnfold(3)
+             #staticUnfold(4)
              .TopLevelDefinitions
       </iele>
       <currMod> .K </currMod>
@@ -211,12 +215,11 @@ module PLUTUS-CORE-TRANSLATION
           <function>
             <modName> MN </modName>
             <fName> NAME </fName>
-            <jumpId> JI </jumpId>
             ...
           </function>
           <function>
             <k> #loadOperand(MN:ModName . NAME:Name, LN:LocalName)
-             => #allocBind(LN, JI, .VarList)
+             => #allocBind(LN, MN, NAME, .VarList)
              ... </k>
             ...
           </function>
@@ -230,9 +233,9 @@ module PLUTUS-CORE-TRANSLATION
           <function>
             <modName> MN </modName>
             <fName> NAME </fName>
-            <jumpId> JI </jumpId>
+            <params> VARS </params>
             <k> #loadOperand(MN:ModName . NAME:Name, LN:LocalName)
-             => #allocBind(LN, JI, .VarList)
+             => #allocBind(LN, MN, NAME, .VarList)
              ... </k>
             ...
           </function>
@@ -476,30 +479,43 @@ module PLUTUS-CORE-TRANSLATION
          ...
           <function>
             <k> #loadOperand((lam X:Var T:Tm), LN:LocalName)
-             => #allocBind(LN, !N, VS)
+             => #allocBind(LN, MN, #mkPN("innerLambda", !N), VS)
              ... </k>
             <params> VS </params>
             ...
           </function>
        </functions>
+       <currMod> MN </currMod>
        <plutus> (.K => #topLevelFunction(#mkPN("innerLambda", !N), !N, X, T:Tm)) ... </plutus>
 
   // `#allocBind` generates instructions to allocate a closure and bind its
   // environment.
-  
-  syntax Instructions ::= #allocBind(LocalName, Int, VarList)          [function]
-  syntax Instructions ::= #bindEnv(LocalName, VarList, Int)            [function]
+  syntax PreInstructions ::= #allocBind(LocalName, ModName, Name, VarList)
+  syntax Instructions ::= #bindEnv(LocalName, VarList)                 [function]
 
-  rule #allocBind(N, JI, VS) => (N = call #mkGN("alloc")(1 +Int #length(VS))
-                                 store JI, N:LocalName, 0              , #JIWidth
-                                 store 0, N:LocalName,  #numArgsOffset , #numArgsWidth
-                                 #bindEnv(N, VS, 1)
-                                ):Instructions
-  rule #bindEnv(_ , .VarList, _     ) => .Instructions
-  rule #bindEnv(LN, V VS    , OFFSET)
-    => (#mkLN("bindPtr", !N) = add LN, OFFSET
-        store #varToLocalName(V), #mkLN("bindPtr", !N)
-        #bindEnv(LN, VS, OFFSET +Int 1)
+  rule <k> #allocBind(N, MN:ModName, FN:Name, FVS)
+        => (N = call #mkGN("alloc")(3 +Int #length(FVS))
+            store #qualNToGlobalName(MN . FN), N
+            #mkLN("writePtr") = add 1, N
+            store #length(PARAMS), #mkLN("writePtr")
+            #mkLN("writePtr") = add 1, #mkLN("writePtr") 
+            store 0, #mkLN("writePtr") // 0 params currently stored
+            #bindEnv(N, FVS)
+           ):Instructions
+           ...
+       </k>
+       <function>
+         <modName> MN </modName>
+         <fName>   FN </fName>
+         <params>  PARAMS </params>
+         ...
+       </function>
+
+  rule #bindEnv(_ , .VarList) => .Instructions
+  rule #bindEnv(LN, FV FVS)
+    => (#mkLN("writePtr") = add #mkLN("writePtr"), 1
+        store #varToLocalName(FV), #mkLN("writePtr")
+        #bindEnv(LN, FVS)
        ):Instructions
   
   // `#addParamsToEnv` is a helper for building the environment map:
@@ -655,79 +671,109 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax FunctionDefinition ::= "#staticAppendArg"                     [function]
   rule #staticAppendArg
-    => define #mkGN("appendArg") (#mkLN("closure"), #mkLN("closureId"), #mkLN("param")) {
-           #mkLN("numParams")   = load #mkLN("closure"),   #numArgsOffset, #numArgsWidth
-           #mkLN("numParams")   = add  #mkLN("numParams"), 1
-           #mkLN("spaceNeeded") = add  #mkLN("numParams"), 1
-           #mkLN("ret")         = call #mkGN("alloc")(#mkLN("spaceNeeded"))
+    => define #mkGN("appendArg") (#mkLN("closure"), #mkLN("param")) {
+           #mkLN("func") = load #mkLN("closure")
+           #mkLN("readPtr") = add #mkLN("closure"), 1
+           #mkLN("arity") = load #mkLN("readPtr")
+           #mkLN("readPtr") = add #mkLN("readPtr"), 1
+           #mkLN("numParamsStored") = load #mkLN("readPtr")
 
-           #comment("Location in returned closure to write to")
-           #mkLN("writeAddr") = #mkLN("ret")
+           #mkLN("spaceNeeded") = add #mkLN("numParamsStored"), 3
+           #mkLN("ret") = call #mkGN("alloc")(#mkLN("spaceNeeded"))
 
-           #comment("Copy closure ID")
-           store #mkLN("closureId"), #mkLN("writeAddr")
-
-           #comment("Update number of parameters")
-           store #mkLN("numParams"), #mkLN("writeAddr"), (#numArgsOffset -Int 1), #numArgsWidth
+           #mkLN("writePtr") = #mkLN("ret") 
+           store #mkLN("func"), #mkLN("writePtr")
+           #mkLN("writePtr") = add #mkLN("writePtr"), 1 
+           store #mkLN("arity"), #mkLN("writePtr")
+           #mkLN("writePtr") = add #mkLN("writePtr"), 1 
+           #mkLN("numParamsStored") = add #mkLN("numParamsStored"), 1
+           store #mkLN("numParamsStored"), #mkLN("writePtr")
 
            #comment("Copy arguments one at a time")
-           #label(#mkIN("while"))
-           #mkLN("numParams") = sub #mkLN("numParams"), 1
-           #mkLN("cond")      = cmp eq #mkLN("numParams"), 0
-           br #mkLN("cond"), #mkIN("done")
+           #mkLN("numParamsToCopy") = sub #mkLN("numParamsStored"), 1
+         #label(#mkIN("while"))
+           #mkLN("cond")      = cmp eq #mkLN("numParamsToCopy"), 0
+         br #mkLN("cond"), #mkIN("done")
 
-           #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
-           #mkLN("closure")   = add #mkLN("closure"),   1
-           #mkLN("v")         = load #mkLN("closure")
-           store #mkLN("v"), #mkLN("writeAddr")
+           #mkLN("writePtr") = add #mkLN("writePtr"), 1
+           #mkLN("readPtr")  = add #mkLN("readPtr"), 1
+           #mkLN("v")        = load #mkLN("readPtr")
+           store #mkLN("v"), #mkLN("writePtr")
+         br #mkIN("while")
 
-           br #mkIN("while")
-
-        #label(#mkIN("done"))
+         #label(#mkIN("done"))
            #comment("Add new parameter")
-           #mkLN("writeAddr") = add #mkLN("writeAddr"), 1
-           store #mkLN("param"), #mkLN("writeAddr")
+           #mkLN("writePtr") = add #mkLN("writePtr"), 1
+           store #mkLN("param"), #mkLN("writePtr")
 
            ret #mkLN("ret")
            .Instructions .LabeledBlocks
         }
 
-  // The closureId is the first entry in a closure. It is two bytes long, with
-  // the MSB the Jump ID, and the other the number of arguments stored in the
-  // closure.
-  syntax Operand ::= #closureId(Int, Int)                              [function]
-  rule #closureId(JI, NUMARGS) => NUMARGS +Int (JI <<Int #JIWidthBits)
+  syntax FunctionDefinition ::= "#staticDispatch"                      [function]
+  rule #staticDispatch
+    => define #mkGN("PlutusInternal.dispatch") (#mkLN("closure"), #mkLN("param")) {
+           #mkLN("func")      = load #mkLN("closure")
+           #mkLN("readPtr")   = add #mkLN("closure"), 1
+           #mkLN("arity")     = load #mkLN("readPtr")
+           #mkLN("readPtr")   = add #mkLN("readPtr"), 1
+           #mkLN("numParams") = load #mkLN("readPtr")
 
-  // If the closure contains one less than the number of arguments that the
-  // function accepts, we call the function
-  // TODO: see if we can remove (or use) GN param
-  rule #dispatchCheckCond(JI, GN, NUMARGS)
-    => #mkLN("cond") = cmp eq #mkLN("closureId"), #closureId(JI, NUMARGS -Int 1)
-       br #mkLN("cond"), #mkIN("call" +String Int2String(JI:Int))
+           #mkLN("numParamsPlus1") = add #mkLN("numParamsPlus1"), 1
+           #mkLN("notEnoughParams") = cmp ne #mkLN("numParamsPlus1"), #mkLN("arity")
+         br #mkLN("notEnoughParams"), #mkIN("notEnoughParams")
 
-  rule #dispatchCall(JI, GN, NUMARGS)
-    => #label(#mkIN("call" +String Int2String(JI:Int)))
-       #unfoldClosure(NUMARGS, 1, GN, ret #mkLN("ret"))
+           #mkLN("haveEnough1") = cmp eq 1, #mkLN("arity")
+         br #mkLN("haveEnough1"), #mkIN("haveEnough1")
 
-  syntax Instructions ::= #unfoldClosure(Int, Int, GlobalName, Instructions)
-                                                                       [function]
-  rule #unfoldClosure(NUMARGS, I, GN, IS)
-    => #mkLN("ret") = call GN(#makeArgsList(NUMARGS -Int 1, #mkLN("param")))
-       IS
-    when I ==Int NUMARGS
-  rule #unfoldClosure(0, _, _, _)
-    => call #mkGN("iele.invalid")(.Operands) .Instructions
-  rule #unfoldClosure(NUMARGS, I, GN, IS)
-    => #mkLN("closure") = add #mkLN("closure"), 1
-       #mkLN("param" +String Int2String(I)) = load #mkLN("closure")
-       #unfoldClosure(NUMARGS, I +Int 1, GN, IS)
-    when NUMARGS >Int 0 andBool I =/=Int NUMARGS
+           #mkLN("haveEnough2") = cmp eq 2, #mkLN("arity")
+         br #mkLN("haveEnough2"), #mkIN("haveEnough2")
 
-  syntax Operands ::= #makeArgsList(Int, Operands)                     [function]
-  rule #makeArgsList(0, OPS) => OPS
-  rule #makeArgsList(NUMARGS, OPS)
-    => #makeArgsList(NUMARGS -Int 1, #mkLN("param" +String Int2String(NUMARGS)), OPS)
-    when NUMARGS >Int 0
+           #mkLN("haveEnough3") = cmp eq 3, #mkLN("arity")
+         br #mkLN("haveEnough3"), #mkIN("haveEnough3")
+
+         #label(#mkIN("notEnoughParams"))
+           #mkLN("ret") = call #mkGN("appendArg") (#mkLN("closure"), #mkLN("param"))
+           ret #mkLN("ret")
+
+         #label(#mkIN("haveEnough1"))
+           #mkLN("ret") = call #mkLN("func") (#mkLN("param"))
+           ret #mkLN("ret")
+
+         #label(#mkIN("haveEnough2"))
+           #mkLN("ret") = call #mkGN("unfoldClosure2") (#mkLN("closure"), #mkLN("param"))
+           ret #mkLN("ret")
+
+         #label(#mkIN("haveEnough3"))
+           #mkLN("ret") = call #mkGN("unfoldClosure3") (#mkLN("closure"), #mkLN("param"))
+           ret #mkLN("ret")
+
+           .Instructions .LabeledBlocks
+       }
+
+  syntax FunctionDefinition ::= #staticUnfold(Int)                    [function]
+  rule #staticUnfold(ARITY)
+    => define #mkGN("PlutusInternal.staticUnfold", ARITY) (#mkLN("closure"), #mkLN("param")) {
+           #concatInsListFct( #unfoldClosureBody(1, ARITY)
+                            , // #mkLN("ret") = call #mkLN("func")(#unfoldClosureParams(1, ARITY))
+                              // ret #mkLN("ret")
+                              .Instructions
+                            )
+           .LabeledBlocks
+       }
+  syntax Instructions ::= #unfoldClosureBody(Int, Int)                 [function]
+  rule #unfoldClosureBody(N, ARITY) => .Instructions
+    when N +Int 1 ==K ARITY
+  rule #unfoldClosureBody(N, ARITY)
+    => #mkLN("readPtr") = add #mkLN("readPtr"), 1
+       #mkLN("param", N) = load #mkLN("readPtr")
+       #unfoldClosureBody(N +Int 1, ARITY)
+    when N +Int 1 =/=K ARITY
+
+  syntax Operands ::= #unfoldClosureParams(Int, Int)                   [function]
+  rule #unfoldClosureParams(ARITY, ARITY) => #mkLN("param")
+  rule #unfoldClosureParams(    N, ARITY)
+    => #mkLN("param", N), #unfoldClosureParams(N +Int 1, ARITY)
 
   // Checks that all functions have been converted
 
@@ -777,7 +823,7 @@ module PLUTUS-CORE-TRANSLATION
          ...
        </functions>
        <iele> TLDS:TopLevelDefinitions
-           => (define #mkGN(#plToString(MN) +String "." +String #plToString(NAME))
+           => (define #qualNToGlobalName(MN . NAME)
                 (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
        <exports> NL </exports>
@@ -915,8 +961,11 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax GlobalName ::= #nameToGlobalName(Name)                        [function]
                       | #qualCToGlobalName(QualC)                      [function]
+                      | #qualNToGlobalName(QualN)                      [function]
   rule #nameToGlobalName(N:Name) => #mkGN(#plToString(N))
   rule #qualCToGlobalName(MN . C)
+    => #mkGN(#plToString(MN) +String "." +String #plToString(C))
+  rule #qualNToGlobalName(MN . C)
     => #mkGN(#plToString(MN) +String "." +String #plToString(C))
  
   syntax LocalName ::= #varToLocalName(Var)                            [function]
