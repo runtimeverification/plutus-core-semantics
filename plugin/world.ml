@@ -83,7 +83,7 @@ module InMemoryWorldState = struct
   let hashes = ref []
 
   let add_blockhash hash =
-    hashes := hash :: !hashes
+    hashes := !hashes @ [hash]
 
   let get_account id =
     let id = Bytes.to_string id in
@@ -105,6 +105,7 @@ module InMemoryWorldState = struct
 
   let reset () = accounts := StringMap.empty; hashes := []
   let reset_state () = accounts := StringMap.empty
+  let reset_blockhash () = hashes := [Bytes.make 32 '\000']
 end
 
 let in_chan_ref = ref None

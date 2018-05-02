@@ -22,6 +22,7 @@ module InMemoryWorldState : sig
   val add_blockhash : bytes -> unit
   val reset : unit -> unit
   val reset_state : unit -> unit
+  val reset_blockhash : unit -> unit
 end
 module NetworkWorldState : WorldState
 

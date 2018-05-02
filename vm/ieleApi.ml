@@ -52,6 +52,7 @@ let test_rewindToBlock blocknumber =
   for i = 1 to num_to_remove do
     blocks := List.tl !blocks
   done;
+  World.InMemoryWorldState.reset_blockhash ();
   `Bool true
 
 let test_setChainParams params =
@@ -154,6 +155,7 @@ let mine_block () =
     let owner = tx |> member "to" |> to_string in
     let txcreate = owner = "" || owner = "0x" in
     let receipt = `Assoc [("gasUsed", `String gasUsed); ("status", `String status); ("contractAddress", if txcreate && List.length output > 0 then `String (to_hex (List.hd output_bytes)) else `Null); ("output", `List output_json); ("blockNumber", `String blockNumber); ("logs", `List logs)] in
+    World.InMemoryWorldState.add_blockhash (Bytes.of_string (String.sub hash 0 32));
     receipts := StringMap.add hash_hex receipt !receipts
   end
 
