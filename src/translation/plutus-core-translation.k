@@ -21,7 +21,7 @@ module PLUTUS-CORE-TRANSLATION
   configuration
     <T>
       <plutus> $PGM:Prg
-            ~> #createDispatch:K ~> #translated?
+            ~> #translated?
             ~> #functionsToIele ~> #constructorsToIele
             ~> #moveToContractCell
       </plutus>
@@ -37,7 +37,6 @@ module PLUTUS-CORE-TRANSLATION
       <ieleContract> contract #mkIN("Foo") { .TopLevelDefinitions } </ieleContract>
       <totalFunctions> 0 </totalFunctions>
       <totalTranslated> 0 </totalTranslated>
-      <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
       <exports> .NameList:NameList </exports>
       <functions>
         <function multiplicity="*" type="Set">
@@ -133,7 +132,6 @@ module PLUTUS-CORE-TRANSLATION
        </plutus>
   rule <plutus> #topLevelFunction(NAME, JI, VARS:VarList, T:Tm) => .K ... </plutus>
        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
-       <dispatchedFunctionsLeft> DFL => DFL +Int 1 </dispatchedFunctionsLeft>
        <currMod> MN </currMod>
        <functions> ...
          .Bag =>
@@ -594,81 +592,6 @@ module PLUTUS-CORE-TRANSLATION
                          ret 0
                          .Instructions .LabeledBlocks
                        }
-  
-  // Generate the dispatch function
-  // ------------------------------
-
-  syntax K ::= "#createDispatch"
-
-  // Building the dispatch table
-  // ---------------------------
-  
-  syntax PreInstructions ::= "#dispatchJumpTable"
-                                             /* JI , NAME      , NUMARGS */
-                           | #dispatchCheckCond(Int, GlobalName, Int)
-                           | #dispatchCall     (Int, GlobalName, Int)
-  rule <plutus> #createDispatch:K => .K:K ... </plutus>
-       <functions> ... ( .Bag
-                      => <function>
-                           <modName> #mkMN("PlutusInternal") </modName>
-                           <fName>   (#mkPN("dispatch")):Name </fName>
-                           <jumpId> -1                   </jumpId>
-                           <k>
-                                #concatInsList( #mkLN("closureId") = load #mkLN("closure")
-                                                .Instructions
-                                              , #dispatchJumpTable )
-  
-                           </k>
-                           <params> #mkVar("closure") #mkVar("param") .VarList </params>
-                           <hasDispatchEntry> true:Bool         </hasDispatchEntry>
-                           <readyForDispatch> false:Bool        </readyForDispatch>
-                         </function>
-                       )
-       </functions>
-       <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
-  
-  rule <function>
-          <modName> MN </modName>
-          <fName>   FN </fName>
-          <jumpId>  JI </jumpId>
-          <hasDispatchEntry> false:Bool => true:Bool </hasDispatchEntry>
-          <readyForDispatch> true:Bool               </readyForDispatch>
-          <params> PARAMS                            </params>
-          ...
-       </function>
-       <function>
-         <k> #dispatchJumpTable:PreInstructions
-                => #concatInsList( #dispatchCheckCond(JI, #mkGN(#plToString(MN) +String "." +String #plToString(FN)), #length(PARAMS))
-                                 , #dispatchJumpTable
-                                 , #dispatchCall(JI, #mkGN(#plToString(MN) +String "." +String #plToString(FN)), #length(PARAMS)))
-            ...
-         </k>
-         ...
-       </function>
-       <dispatchedFunctionsLeft> DFL => DFL -Int 1 </dispatchedFunctionsLeft>
-  
-  rule <function>
-          <k> _:Instructions </k>
-          <hasDispatchEntry> _:Bool                  </hasDispatchEntry>
-          <readyForDispatch> false:Bool => true:Bool </readyForDispatch>
-          ...
-       </function>
-       <totalTranslated> TR => TR +Int 1 </totalTranslated>
-  
-  // Once all functions execpt #mkGN("dispatch") have been processed, ther are no more entrys to be dispatched
-  rule <function>
-          <k> #dispatchJumpTable =>
-              #mkLN("ret") = call #mkGN("appendArg")(#mkLN("closure"), #mkLN("closureId"), #mkLN("param"))
-              ret #mkLN("ret")
-              ...
-         </k>
-          ...
-       </function>
-       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
-       <totalTranslated> TRFD:Int </totalTranslated>
-       <totalFunctions> TF:Int </totalFunctions>
-    when TF:Int ==K (TRFD:Int +Int 1)
-
   syntax FunctionDefinition ::= "#staticAppendArg"                     [function]
   rule #staticAppendArg
     => define #mkGN("appendArg") (#mkLN("closure"), #mkLN("param")) {
@@ -779,9 +702,16 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax K ::= "#translated?"
   rule <plutus> #translated? => .K ... </plutus>
-       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
        <totalTranslated> TF </totalTranslated>
        <totalFunctions> TF </totalFunctions>
+
+  rule <function>
+          <k> _:Instructions </k>
+          <hasDispatchEntry> _:Bool                  </hasDispatchEntry>
+          <readyForDispatch> false:Bool => true:Bool </readyForDispatch>
+          ...
+       </function>
+       <totalTranslated> TR => TR +Int 1 </totalTranslated>
 
   // Convert functions to IELE
 
@@ -805,9 +735,6 @@ module PLUTUS-CORE-TRANSLATION
                 (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
        <exports> NL </exports>
-       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
-       <totalTranslated> TF </totalTranslated>
-       <totalFunctions> TF </totalFunctions>
        when #in(NAME, NL)
 
   // Convert private `<function>`s to IELE syntax
