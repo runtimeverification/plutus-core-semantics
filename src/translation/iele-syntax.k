@@ -27,7 +27,7 @@ module IELE-SYNTAX
   
   syntax Keyword ::= "br"   | "call"   | "staticcall" | "at" | "send"  | "gaslimit" | "ret"      | "void"   | "revert"
                    | "log"  | "create" | "copycreate" | "selfdestruct" | "contract" | "external" | "define" | "public"
-                   | "log2" | "bswap"
+                   | "log2" | "bswap"  | "calladdress"
   syntax IeleName ::= Keyword [token]
 
   syntax NumericIeleName ::= r"[0-9]+" [token]
@@ -187,6 +187,8 @@ module IELE-COMMON
   syntax AccountCallInst ::= "staticcall" Operand "at" Operand "(" Operands ")" "gaslimit" Operand
                            | LValues "=" "staticcall" Operand "at" Operand "(" Operands ")" "gaslimit" Operand [hybrid, seqstrict(2,3,4,5)]
 
+  syntax CallAddressInst ::= LValue "=" "calladdress" GlobalName "at" Operand [hybrid, strict(3)]
+
   syntax ReturnInst ::= "ret" NonEmptyOperands [hybrid, strict(1)]
                       | "ret" "void"
   syntax RevertInst ::= "revert" Operand [hybrid, strict(1)]
@@ -286,13 +288,14 @@ module IELE-COMMON
   | CondJumpInst
   | LocalCallInst
   | AccountCallInst
+  | CallAddressInst
   | ReturnInst
   | RevertInst
   | LogInst
   | CreateInst
   | SelfdestructInst
 
-  syntax Instructions ::= List{Instruction, ""} [klabel(instructionList)]
+  syntax Instructions ::= List{Instruction, ""} [klabel(instructionList), format(%1%2%n%3)]
 
 
 
@@ -315,9 +318,9 @@ module IELE-COMMON
   | GlobalDefinition
   | ContractDeclaration
 
-  syntax TopLevelDefinitions ::= List{TopLevelDefinition, ""} [klabel(topLevelDefinitionList)]
+  syntax TopLevelDefinitions ::= List{TopLevelDefinition, ""} [klabel(topLevelDefinitionList), format(%1%2%n%3)]
 
-  syntax ContractDefinition ::= "contract" IeleName "{" TopLevelDefinitions "}"
+  syntax ContractDefinition ::= "contract" IeleName "{" TopLevelDefinitions "}" [format(%1 %2 %3%n%i%4%d%n%5)]
 
   syntax Contract ::= List{ContractDefinition, ""} [klabel(contractDefinitionList)]
 
@@ -348,8 +351,8 @@ module IELE-COMMON
   syntax FunctionParameters ::= LocalNames
 
   syntax FunctionDefinition ::= 
-    "define" FunctionSignature "{" Blocks "}"
-  | "define" "public" FunctionSignature "{" Blocks "}"
+    "define" FunctionSignature "{" Blocks "}"             [format(%1 %2 %3%i%n%4%d%n%5%n)]
+  | "define" "public" FunctionSignature "{" Blocks "}" [format(%1 %2 %3 %4%i%n%5%d%n%6%n)]
 
 
 
