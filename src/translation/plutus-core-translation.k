@@ -642,7 +642,7 @@ module PLUTUS-CORE-TRANSLATION
            #mkLN("readPtr")   = add #mkLN("readPtr"), 1
            #mkLN("numParams") = load #mkLN("readPtr")
 
-           #mkLN("numParamsPlus1") = add #mkLN("numParamsPlus1"), 1
+           #mkLN("numParamsPlus1") = add #mkLN("numParams"), 1
            #mkLN("notEnoughParams") = cmp ne #mkLN("numParamsPlus1"), #mkLN("arity")
          br #mkLN("notEnoughParams"), #mkIN("notEnoughParams")
 
@@ -664,11 +664,11 @@ module PLUTUS-CORE-TRANSLATION
            ret #mkLN("ret")
 
          #label(#mkIN("haveEnough2"))
-           #mkLN("ret") = call #mkGN("unfoldClosure2") (#mkLN("closure"), #mkLN("param"))
+           #mkLN("ret") = call #mkGN("PlutusInternal.unfoldClosure2") (#mkLN("closure"), #mkLN("param"))
            ret #mkLN("ret")
 
          #label(#mkIN("haveEnough3"))
-           #mkLN("ret") = call #mkGN("unfoldClosure3") (#mkLN("closure"), #mkLN("param"))
+           #mkLN("ret") = call #mkGN("PlutusInternal.unfoldClosure3") (#mkLN("closure"), #mkLN("param"))
            ret #mkLN("ret")
 
            .Instructions .LabeledBlocks
@@ -676,27 +676,30 @@ module PLUTUS-CORE-TRANSLATION
 
   syntax FunctionDefinition ::= #staticUnfold(Int)                    [function]
   rule #staticUnfold(ARITY)
-    => define #mkGN("PlutusInternal.staticUnfold", ARITY) (#mkLN("closure"), #mkLN("param")) {
-           #concatInsListFct( #unfoldClosureBody(1, ARITY)
-                            , // #mkLN("ret") = call #mkLN("func")(#unfoldClosureParams(1, ARITY))
-                              // ret #mkLN("ret")
+    => define #mkGN("PlutusInternal.unfoldClosure", ARITY) (#mkLN("closure"), #mkLN("param")) {
+           #concatInsListFct( #mkLN("func") = load #mkLN("closure")
+                              #mkLN("readPtr") = add #mkLN("closure"), 2
+                              #unfoldClosureBody(1, ARITY)
+                            , #mkLN("ret") = call #mkLN("func")(#unfoldClosureParams(1, ARITY))
+                              ret #mkLN("ret")
                               .Instructions
                             )
            .LabeledBlocks
        }
   syntax Instructions ::= #unfoldClosureBody(Int, Int)                 [function]
   rule #unfoldClosureBody(N, ARITY) => .Instructions
-    when N +Int 1 ==K ARITY
+    when N ==Int ARITY
   rule #unfoldClosureBody(N, ARITY)
     => #mkLN("readPtr") = add #mkLN("readPtr"), 1
        #mkLN("param", N) = load #mkLN("readPtr")
        #unfoldClosureBody(N +Int 1, ARITY)
-    when N +Int 1 =/=K ARITY
+    when N <Int ARITY
 
   syntax Operands ::= #unfoldClosureParams(Int, Int)                   [function]
-  rule #unfoldClosureParams(ARITY, ARITY) => #mkLN("param")
+  rule #unfoldClosureParams(ARITY, ARITY) => #mkLN("param"), .Operands
   rule #unfoldClosureParams(    N, ARITY)
     => #mkLN("param", N), #unfoldClosureParams(N +Int 1, ARITY)
+    when N <Int ARITY
 
   // Checks that all functions have been converted
 
