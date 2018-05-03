@@ -19,9 +19,20 @@
 module IELE-SYNTAX
   imports IELE-COMMON
 
-  syntax IeleName ::= r"(?<![A-Za-z0-9\\_\\.\\-\\$])[a-zA-Z\\.\\_\\-\\$][0-9a-zA-Z\\.\\_\\-\\$]*" [token, notInRules, prec(3)]
+  syntax IeleName ::= r"(?<![A-Za-z0-9\\_\\.\\-\\$])[a-zA-Z\\.\\_\\$][0-9a-zA-Z\\.\\_\\-\\$]*" [token, notInRules, prec(3)]
+
+  syntax Keyword ::= "load" | "store" | "sload"  | "sstore" | "iszero" | "not"  | "add"  | "mul"  | "sub" | "div"
+                   | "exp"  | "mod"   | "addmod" | "mulmod" | "expmod" | "byte" | "sext" | "twos" | "and" | "or"
+                   | "xor"  | "shift" | "lt"     | "le"     | "gt"     | "ge"   | "eq"   | "ne"   | "cmp" | "sha3"
+  
+  syntax Keyword ::= "br"   | "call"   | "staticcall" | "at" | "send"  | "gaslimit" | "ret"      | "void"   | "revert"
+                   | "log"  | "create" | "copycreate" | "selfdestruct" | "contract" | "external" | "define" | "public"
+                   | "log2" | "bswap"
+  syntax IeleName ::= Keyword [token]
 
   syntax NumericIeleName ::= r"[0-9]+" [token]
+
+  syntax StringIeleName ::= r"\\\"(([^\\\"\\\\])|(\\\\[0-9a-fA-F]{2}))*\\\"" [token]
 endmodule
 
 
@@ -30,8 +41,11 @@ endmodule
 
 module IELE-COMMON
   imports DOMAINS-SYNTAX
+  imports INT-SYNTAX
   syntax NumericIeleName ::= Int
+  syntax StringIeleName
   syntax IeleName ::= NumericIeleName
+  syntax IeleName ::= StringIeleName [klabel(StringIeleName), avoid]
 
 
 
@@ -55,7 +69,9 @@ module IELE-COMMON
 
 
 
-  syntax Constant ::= Int | GlobalName
+  syntax Constant ::= IntConstant | GlobalName
+  syntax IntConstant ::= Int | Bool | HexConstant
+  syntax HexConstant ::= r"0x[0-9a-fA-F]+" [token]
 
 
 
@@ -133,9 +149,11 @@ module IELE-COMMON
   syntax MulModInst ::= LValue "=" "mulmod" Operand "," Operand "," Operand [hybrid, seqstrict(2,3,4)]
   syntax ExpModInst ::= LValue "=" "expmod" Operand "," Operand "," Operand [hybrid, seqstrict(2,3,4)]
 
-  syntax ByteInst ::= LValue "=" "byte" /* byte index, 0 being the LSB */ Operand "," Operand [hybrid, seqstrict(2,3)]
-  syntax SExtInst ::= LValue "=" "sext" /* width in bytes */              Operand "," Operand [hybrid, seqstrict(2,3)]
-  syntax TwosInst ::= LValue "=" "twos" /* width in bytes */              Operand "," Operand [hybrid, seqstrict(2,3)]
+  syntax LogInst   ::= LValue "=" "log2"                                    Operand             [hybrid, strict(2)]
+  syntax ByteInst  ::= LValue "=" "byte"  /* byte index, 0 being the LSB */ Operand "," Operand [hybrid, seqstrict(2,3)]
+  syntax SExtInst  ::= LValue "=" "sext"  /* width in bytes */              Operand "," Operand [hybrid, seqstrict(2,3)]
+  syntax TwosInst  ::= LValue "=" "twos"  /* width in bytes */              Operand "," Operand [hybrid, seqstrict(2,3)]
+  syntax BswapInst ::= LValue "=" "bswap" /* width in bytes */              Operand "," Operand [hybrid, seqstrict(2,3)]
 
   syntax AndInst   ::= LValue "=" "and"   Operand "," Operand [hybrid, seqstrict(2,3)]
   syntax OrInst    ::= LValue "=" "or"    Operand "," Operand [hybrid, seqstrict(2,3)]
@@ -162,12 +180,12 @@ module IELE-COMMON
 
 
 
-  syntax LocalCallInst   ::= "call" GlobalName "(" Operands ")"
-                           | LValues "=" "call" GlobalName "(" Operands ")" [hybrid, strict(3)]
-  syntax AccountCallInst ::= "call" GlobalName "at" Operand "(" Operands ")" "send" Operand "," "gaslimit" Operand
-                           | LValues "=" "call" GlobalName "at" Operand "(" Operands ")" "send" Operand "," "gaslimit" Operand [hybrid, seqstrict(3,4,5,6)]
-  syntax AccountCallInst ::= "staticcall" GlobalName "at" Operand "(" Operands ")" "gaslimit" Operand
-                           | LValues "=" "staticcall" GlobalName "at" Operand "(" Operands ")" "gaslimit" Operand [hybrid, seqstrict(3,4,5)]
+  syntax LocalCallInst   ::= "call" Operand "(" Operands ")"
+                           | LValues "=" "call" Operand "(" Operands ")" [hybrid, strict(2,3)]
+  syntax AccountCallInst ::= "call" Operand "at" Operand "(" Operands ")" "send" Operand "," "gaslimit" Operand
+                           | LValues "=" "call" Operand "at" Operand "(" Operands ")" "send" Operand "," "gaslimit" Operand [hybrid, seqstrict(2,3,4,5,6)]
+  syntax AccountCallInst ::= "staticcall" Operand "at" Operand "(" Operands ")" "gaslimit" Operand
+                           | LValues "=" "staticcall" Operand "at" Operand "(" Operands ")" "gaslimit" Operand [hybrid, seqstrict(2,3,4,5)]
 
   syntax ReturnInst ::= "ret" NonEmptyOperands [hybrid, strict(1)]
                       | "ret" "void"
@@ -257,6 +275,7 @@ module IELE-COMMON
   | ByteInst
   | SExtInst
   | TwosInst
+  | BswapInst
   | AndInst
   | OrInst
   | XorInst
@@ -273,7 +292,8 @@ module IELE-COMMON
   | CreateInst
   | SelfdestructInst
 
-  syntax Instructions ::= List{Instruction, ""} [klabel(instructionList), format(%1%2%n%3)]
+  syntax Instructions ::= List{Instruction, ""} [klabel(instructionList)]
+
 
 
 
@@ -295,9 +315,9 @@ module IELE-COMMON
   | GlobalDefinition
   | ContractDeclaration
 
-  syntax TopLevelDefinitions ::= List{TopLevelDefinition, ""} [klabel(topLevelDefinitionList), format(%1%2%n%3)]
+  syntax TopLevelDefinitions ::= List{TopLevelDefinition, ""} [klabel(topLevelDefinitionList)]
 
-  syntax ContractDefinition ::= "contract" IeleName "{" TopLevelDefinitions "}" [format(%1 %2 %3%n%i%4%d%n%5)]
+  syntax ContractDefinition ::= "contract" IeleName "{" TopLevelDefinitions "}"
 
   syntax Contract ::= List{ContractDefinition, ""} [klabel(contractDefinitionList)]
 
@@ -315,7 +335,7 @@ module IELE-COMMON
 
 
 
-  syntax GlobalDefinition ::= GlobalName "=" Int
+  syntax GlobalDefinition ::= GlobalName "=" IntConstant  [klabel(globalDefinition)]
 
 
 
@@ -328,8 +348,8 @@ module IELE-COMMON
   syntax FunctionParameters ::= LocalNames
 
   syntax FunctionDefinition ::= 
-    "define" FunctionSignature "{" Blocks "}"                   [format(%1 %2 %3%i%n%4%d%n%5%n)]
-  | "define" "public" FunctionSignature "{" Blocks "}"       [format(%1 %2 %3 %4%i%n%5%d%n%6%n)]
+    "define" FunctionSignature "{" Blocks "}"
+  | "define" "public" FunctionSignature "{" Blocks "}"
 
 
 
@@ -344,7 +364,7 @@ module IELE-COMMON
   syntax UnlabeledBlock ::= Instructions
 
   syntax Blocks [flatPredicate]
-  syntax Blocks ::= UnlabeledBlock LabeledBlocks | LabeledBlocks
+  syntax Blocks ::= UnlabeledBlock LabeledBlocks [avoid] | LabeledBlocks
 
 
 
@@ -363,10 +383,10 @@ module IELE-COMMON
 
 
 
-  // rule call NAME ( ARGS ) => .LValues = call NAME ( ARGS ) [macro]
-  // rule call NAME at CONTRACT ( ARGS ) send VALUE , gaslimit GLIMIT => .LValues = call NAME at CONTRACT ( ARGS ) send VALUE , gaslimit GLIMIT [macro]
-  // rule staticcall NAME at CONTRACT ( ARGS ) gaslimit GLIMIT => .LValues = staticcall NAME at CONTRACT ( ARGS ) gaslimit GLIMIT [macro]
-  // rule ret void => ret .NonEmptyOperands [macro]
+  rule call NAME ( ARGS ) => .LValues = call NAME ( ARGS ) [macro]
+  rule call NAME at CONTRACT ( ARGS ) send VALUE , gaslimit GLIMIT => .LValues = call NAME at CONTRACT ( ARGS ) send VALUE , gaslimit GLIMIT [macro]
+  rule staticcall NAME at CONTRACT ( ARGS ) gaslimit GLIMIT => .LValues = staticcall NAME at CONTRACT ( ARGS ) gaslimit GLIMIT [macro]
+  rule ret void => ret .NonEmptyOperands [macro]
 endmodule
 
 
