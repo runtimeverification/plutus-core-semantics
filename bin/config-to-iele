@@ -1,24 +1,41 @@
 #!/usr/bin/env python2
 
+from __future__ import print_function
+
 commaSeparated = ['Operands', 'LocalNames', 'LValues']
 others = ['Instructions', 'LabeledBlocks', 'TopLevelDefinitions']
 
 import sys
 import xml.dom.minidom
 import string
+import re
 
 def remove_prefix(text, prefix):
     if text.startswith(prefix):
         return text[len(prefix):]
     return text
 
+def remove_four_space(line):
+    return remove_prefix(line, '    ')
+
+def remove_empty_lvalue_call(line):
+    return line.replace('    .LValues = call', '    call')
+
+def remove_empty_list_constructs(line):
+    for listSort in commaSeparated:
+        line = line.replace(' , .' + listSort, '')
+    for listSort in commaSeparated + others:
+        line = line.replace('.'   + listSort, '')
+    return line
+
+# Main
+# ====
+
 config = xml.dom.minidom.parse(sys.stdin)
 iele   = config.getElementsByTagName('ieleContract')[0].firstChild.data
-for listSort in commaSeparated:
-    iele = iele.replace(' , .' + listSort, '')
-for listSort in commaSeparated + others:
-    iele = iele.replace('.'   + listSort, '')
+lines = string.split(iele, "\n")
+lines = map(remove_four_space           , lines)
+lines = map(remove_empty_lvalue_call    , lines)
+lines = map(remove_empty_list_constructs, lines)
 
-prefix = '    '
-for line in string.split(iele, "\n"):
-    print(remove_prefix(line, prefix))
+list(map(print, lines))
