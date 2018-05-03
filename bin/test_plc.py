@@ -202,6 +202,9 @@ def test_translation(file, mod, fct, args, expected):
     temp_json.write("\n")
     temp_json.flush()
 
+# Useful for debugging:
+#    json.dump(iele_test, sys.stderr, sort_keys=True, indent=4, separators=(',', ': '))
+
     blockchain_args = ["./blockchaintest", temp_json.name]
     blockchaintest = Popen(blockchain_args, stdout=PIPE, cwd=base(".build/iele/"))
     (output, err) = blockchaintest.communicate()
