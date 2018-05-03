@@ -36,7 +36,7 @@ module PLUTUS-CORE-TRANSLATION
       <currMod> .K </currMod>
       <ieleContract> contract #mkIN("Foo") { .TopLevelDefinitions } </ieleContract>
       <totalFunctions> 0 </totalFunctions>
-      <totalReadyForDispatch> 0 </totalReadyForDispatch>
+      <totalTranslated> 0 </totalTranslated>
       <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
       <exports> .NameList:NameList </exports>
       <functions>
@@ -653,7 +653,7 @@ module PLUTUS-CORE-TRANSLATION
           <readyForDispatch> false:Bool => true:Bool </readyForDispatch>
           ...
        </function>
-       <totalReadyForDispatch> TR => TR +Int 1 </totalReadyForDispatch>
+       <totalTranslated> TR => TR +Int 1 </totalTranslated>
   
   // Once all functions execpt #mkGN("dispatch") have been processed, ther are no more entrys to be dispatched
   rule <function>
@@ -665,7 +665,7 @@ module PLUTUS-CORE-TRANSLATION
           ...
        </function>
        <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
-       <totalReadyForDispatch> TRFD:Int </totalReadyForDispatch>
+       <totalTranslated> TRFD:Int </totalTranslated>
        <totalFunctions> TF:Int </totalFunctions>
     when TF:Int ==K (TRFD:Int +Int 1)
 
@@ -780,7 +780,7 @@ module PLUTUS-CORE-TRANSLATION
   syntax K ::= "#translated?"
   rule <plutus> #translated? => .K ... </plutus>
        <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
-       <totalReadyForDispatch> TF </totalReadyForDispatch>
+       <totalTranslated> TF </totalTranslated>
        <totalFunctions> TF </totalFunctions>
 
   // Convert functions to IELE
@@ -806,7 +806,7 @@ module PLUTUS-CORE-TRANSLATION
        </iele>
        <exports> NL </exports>
        <dispatchedFunctionsLeft> 0 </dispatchedFunctionsLeft>
-       <totalReadyForDispatch> TF </totalReadyForDispatch>
+       <totalTranslated> TF </totalTranslated>
        <totalFunctions> TF </totalFunctions>
        when #in(NAME, NL)
 
