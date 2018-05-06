@@ -476,7 +476,7 @@ module PLUTUS-CORE-TRANSLATION
   syntax PreInstructions ::= #allocBind(LocalName, ModName, Name,      VarList)
   syntax PreInstructions ::= #allocBind(LocalName, ModName, Name, Int, VarList)
                                                      [klabel(allocBindWithArity)]
-  syntax Instructions ::= #bindEnv(LocalName, VarList)                 [function]
+  syntax Instructions ::= #bindEnv(LocalName, VarList, Int)            [function]
 
   rule <k> #allocBind(N, MN:ModName, FN:Name,                  FVS)
         => #allocBind(N, MN:ModName, FN:Name, #length(PARAMS), FVS)
@@ -501,20 +501,14 @@ module PLUTUS-CORE-TRANSLATION
        </function>
 
   rule #allocBind(N, MN:ModName, FN:Name, ARITY, FVS)
-    => (N = call #mkGN("alloc")(3 +Int #length(FVS))
-        store #qualNToGlobalName(MN . FN), N
-        #mkLN("writePtr") = add 1, N
-        store ARITY, #mkLN("writePtr")
-        #mkLN("writePtr") = add 1, #mkLN("writePtr")
-        store 0, #mkLN("writePtr") // 0 params currently stored
-        #bindEnv(N, FVS)
-   ):Instructions
+    => (N = call #mkGN("PlutusInternal.closure.new")(#qualNToGlobalName(MN.FN), ARITY, 0)
+        #bindEnv(N, FVS, 0)
+       ):Instructions
 
-  rule #bindEnv(_ , .VarList) => .Instructions
-  rule #bindEnv(LN, FV FVS)
-    => (#mkLN("writePtr") = add #mkLN("writePtr"), 1
-        store #varToLocalName(FV), #mkLN("writePtr")
-        #bindEnv(LN, FVS)
+  rule #bindEnv(_ , .VarList, N) => .Instructions
+  rule #bindEnv(LN, FV FVS,   N)
+    => (call #mkGN("PlutusInternal.closure.nthArg.set")(LN, N, #varToLocalName(FV))
+        #bindEnv(LN, FVS, N +Int 1)
        ):Instructions
 
   // `#addParamsToEnv` is a helper for building the environment map:
