@@ -33,13 +33,20 @@ define @PlutusInternal.closure.nthArg.set(%closure, %n, %val) {
   ret void
 }
 
+define @PlutusTest.third(%one, %two, %three, %four, %five) {
+  ret %three
+}
+
 define public @PlutusTest.closure() {
+// Creating a new closure
+// ----------------------
+
   %testNum = 1
-  %cl = call @PlutusInternal.closure.new(123, 5, 2)
+  %cl = call @PlutusInternal.closure.new(@PlutusTest.third, 5, 2)
 
   %testNum = 2
   %actual = call @PlutusInternal.closure.func(%cl)
-  %testResult = cmp ne %actual, 123
+  %testResult = cmp ne %actual, @PlutusTest.third
   br %testResult, invalid
  
   %testNum = 3
@@ -58,6 +65,9 @@ define public @PlutusTest.closure() {
   %testResult = cmp ne %actual, 5
   br %testResult, invalid
 
+// Accessing and setting arguments
+// -------------------------------
+
   %testNum = 7
   %actual = call @PlutusInternal.closure.nthArg(%cl, 2)
   %testResult = cmp ne %actual, 0
@@ -69,15 +79,52 @@ define public @PlutusTest.closure() {
   %testResult = cmp ne %actual, 2222
   br %testResult, invalid
 
+// Appending Arguments
+// -------------------
+
   %testNum = 9
   %cl1 = call @appendArg(%cl, 3333)
-  %actual = call @PlutusInternal.closure.nthArg(%cl1, 3)
-  %testResult = cmp ne %actual, 3333
+  %actual = call @PlutusInternal.closure.func(%cl1)
+  %testResult = cmp ne %actual, @PlutusTest.third
   br %testResult, invalid
 
   %testNum = 10
   %actual = call @PlutusInternal.closure.nthArg(%cl1, 2)
   %testResult = cmp ne %actual, 2222
+  br %testResult, invalid
+
+  %testNum = 11
+  %actual = call @PlutusInternal.closure.nthArg(%cl1, 3)
+  %testResult = cmp ne %actual, 3333
+  br %testResult, invalid
+
+  %testNum = 12
+  %actual = call @PlutusInternal.closure.bound(%cl1)
+  %testResult = cmp ne %actual, 3
+  br %testResult, invalid
+
+  %testNum = 13
+  %actual = call @PlutusInternal.closure.arity(%cl1)
+  %testResult = cmp ne %actual, 5
+  br %testResult, invalid
+
+// Dispatch
+// --------
+
+  %testNum = 14
+  %cl2 = call @PlutusInternal.dispatch(%cl1, 4444)
+  %actual = call @PlutusInternal.closure.bound(%cl2)
+  %testResult = cmp ne %actual, 4
+  br %testResult, invalid
+
+  %testNum = 15
+  %actual = call @PlutusInternal.closure.arity(%cl2)
+  %testResult = cmp ne %actual, 5
+  br %testResult, invalid
+
+  %testNum = 16
+  %actual = call @PlutusInternal.dispatch(%cl2)
+  %testResult = cmp ne %actual, 3333
   br %testResult, invalid
 
   ret 0
@@ -101,6 +148,12 @@ define @PlutusInternal.dispatch ( %closure , %param ) {
   br %haveEnough2 , haveEnough2
   %haveEnough3 = cmp eq 3 , %arity
   br %haveEnough3 , haveEnough3
+  %haveEnough4 = cmp eq 4 , %arity
+  br %haveEnough4 , haveEnough4
+  %haveEnough5 = cmp eq 5 , %arity
+  br %haveEnough5 , haveEnough5
+
+  call @iele.invalid()
 
 notEnoughParams:
   %ret = call @appendArg ( %closure , %param )
@@ -109,13 +162,17 @@ notEnoughParams:
 haveEnough1:
   %ret = call %func ( %param )
   ret %ret
-
 haveEnough2:
   %ret = call @PlutusInternal.unfoldClosure2 ( %closure , %param )
   ret %ret
-
 haveEnough3:
   %ret = call @PlutusInternal.unfoldClosure3 ( %closure , %param )
+  ret %ret
+haveEnough4:
+  %ret = call @PlutusInternal.unfoldClosure4 ( %closure , %param )
+  ret %ret
+haveEnough5:
+  %ret = call @PlutusInternal.unfoldClosure5 ( %closure , %param )
   ret %ret
 }
 
@@ -149,6 +206,21 @@ define @PlutusInternal.unfoldClosure4 ( %closure , %param ) {
   %readPtr = add %readPtr , 1
   %param3 = load %readPtr
   %ret = call %func ( %param1 , %param2 , %param3 , %param )
+  ret %ret
+}
+
+define @PlutusInternal.unfoldClosure5 ( %closure , %param ) {
+  %func = load %closure
+  %readPtr = add %closure , 2
+  %readPtr = add %readPtr , 1
+  %param1 = load %readPtr
+  %readPtr = add %readPtr , 1
+  %param2 = load %readPtr
+  %readPtr = add %readPtr , 1
+  %param3 = load %readPtr
+  %readPtr = add %readPtr , 1
+  %param4 = load %readPtr
+  %ret = call %func ( %param1 , %param2 , %param3, %param4 , %param )
   ret %ret
 }
 
