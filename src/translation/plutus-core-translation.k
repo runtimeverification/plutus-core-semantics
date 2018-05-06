@@ -39,8 +39,7 @@ module PLUTUS-CORE-TRANSLATION
           <params> .VarList:VarList     </params>
           <k>      .K:K                 </k>
           <jumpId> -1                   </jumpId>
-          <hasDispatchEntry> false:Bool </hasDispatchEntry>
-          <readyForDispatch> false:Bool </readyForDispatch>
+          <translated> false:Bool </translated>
         </function>
       </functions>
       <constructors>
@@ -137,8 +136,7 @@ module PLUTUS-CORE-TRANSLATION
             <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
                                     ret #useOperand(T:Tm, #mkLN("ret")) .Instructions)
             </k>
-            <hasDispatchEntry> false:Bool </hasDispatchEntry>
-            <readyForDispatch> false:Bool </readyForDispatch>
+            <translated> false:Bool </translated>
          </function>
        </functions>                                                       [owise]
   
@@ -598,8 +596,7 @@ module PLUTUS-CORE-TRANSLATION
 
   rule <function>
           <k> _:Instructions </k>
-          <hasDispatchEntry> _:Bool                  </hasDispatchEntry>
-          <readyForDispatch> false:Bool => true:Bool </readyForDispatch>
+          <translated> false:Bool => true:Bool </translated>
           ...
        </function>
        <totalTranslated> TR => TR +Int 1 </totalTranslated>
