@@ -212,7 +212,7 @@ def test_translation(file, mod, fct, args, expected):
     exit_code = blockchaintest.wait()
 
     def line_is_interesting(l):
-        return any(["output" in l, "exit" in l])
+        return any(["<k>" in l, "<exit-code>" in l, "<output>" in l])
     list(map(print, filter(line_is_interesting, output.replace('`<', "\n`<").splitlines())))
 
     assert exit_code == 0
