@@ -155,7 +155,8 @@ def generate_tests(type):
             # ("bytestring", "Foo", "takeByteStringx", [2,  ""], ExitCode_TakeFromEmpty),
            ]
     execution_unimplemented = [
-            ("arith-ops", "Foo", "notPublic",   [19, 23],            ExitCode_NotPublic),
+            ("arith-ops", "Foo", "notPublic",    [19, 23], ExitCode_NotPublic),
+            ("arith-ops", "PlutusTest", "closure", [],                  0),
            ]
 
     if type == 'translation':

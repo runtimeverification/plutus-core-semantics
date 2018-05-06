@@ -1,3 +1,90 @@
+define @PlutusInternal.closure.new(%func, %arity, %boundArgs) {
+  %spaceNeeded = add 3, %boundArgs
+  %ret = call @alloc(%spaceNeeded)
+  %writePtr = %ret                 store %func     , %writePtr
+  %writePtr = add %writePtr, 1     store %arity    , %writePtr
+  %writePtr = add %writePtr, 1     store %boundArgs, %writePtr
+  ret %ret
+}
+define @PlutusInternal.closure.func(%closure) {
+  %ret = load %closure ret %ret
+}
+define @PlutusInternal.closure.arity(%closure) {
+  %ptr = add %closure, 1
+  %ret = load %ptr
+  ret %ret
+}
+define @PlutusInternal.closure.bound(%closure) {
+  %ptr = add %closure, 2
+  %ret = load %ptr
+  ret %ret
+}
+// 1-based
+define @PlutusInternal.closure.nthArg(%closure, %n) {
+  %ptr = add %closure, 2
+  %ptr = add %ptr, %n
+  %ret = load %ptr
+  ret %ret
+}
+define @PlutusInternal.closure.nthArg.set(%closure, %n, %val) {
+  %ptr = add %closure, 2
+  %ptr = add %ptr, %n
+  store %val, %ptr
+  ret void
+}
+
+define public @PlutusTest.closure() {
+  %testNum = 1
+  %cl = call @PlutusInternal.closure.new(123, 5, 2)
+
+  %testNum = 2
+  %actual = call @PlutusInternal.closure.func(%cl)
+  %testResult = cmp ne %actual, 123
+  br %testResult, invalid
+ 
+  %testNum = 3
+  %actual = call @PlutusInternal.closure.arity(%cl)
+  %testResult = cmp ne %actual, 5
+  br %testResult, invalid
+
+  %testNum = 4
+  %actual = call @PlutusInternal.closure.bound(%cl)
+  %testResult = cmp ne %actual, 2
+  br %testResult, invalid
+
+  %testNum = 5
+  %nextAlloc = call @alloc(1)
+  %actual = sub %nextAlloc, %cl
+  %testResult = cmp ne %actual, 5
+  br %testResult, invalid
+
+  %testNum = 7
+  %actual = call @PlutusInternal.closure.nthArg(%cl, 2)
+  %testResult = cmp ne %actual, 0
+  br %testResult, invalid
+
+  %testNum = 8
+            call @PlutusInternal.closure.nthArg.set(%cl, 2, 2222)
+  %actual = call @PlutusInternal.closure.nthArg    (%cl, 2)
+  %testResult = cmp ne %actual, 2222
+  br %testResult, invalid
+
+  %testNum = 9
+  %cl1 = call @appendArg(%cl, 3333)
+  %actual = call @PlutusInternal.closure.nthArg(%cl1, 3)
+  %testResult = cmp ne %actual, 3333
+  br %testResult, invalid
+
+  %testNum = 10
+  %actual = call @PlutusInternal.closure.nthArg(%cl1, 2)
+  %testResult = cmp ne %actual, 2222
+  br %testResult, invalid
+
+  ret 0
+invalid:
+  ret %testNum, %actual
+}
+
 define @PlutusInternal.dispatch ( %closure , %param ) {
   %func = load %closure
   %readPtr = add %closure , 1
@@ -82,43 +169,25 @@ define @alloc ( %size ) {
 
   allocZero:
   ret 0
-   
 }
 
 define @appendArg ( %closure , %param ) {
-  %func = load %closure
-  %readPtr = add %closure , 1
-  %arity = load %readPtr
-  %readPtr = add %readPtr , 1
-  %numParamsStored = load %readPtr
+  %func = call @PlutusInternal.closure.func(%closure)
+  %arity = call @PlutusInternal.closure.arity(%closure)
+  %boundOld = call @PlutusInternal.closure.bound(%closure)
+  %boundNew = add %boundOld , 1
 
-  %spaceNeeded = add %numParamsStored , 3
-  %ret = call @alloc ( %spaceNeeded )
-  %writePtr = %ret
-  store %func , %writePtr
-  %writePtr = add %writePtr , 1
-  store %arity , %writePtr
-  %writePtr = add %writePtr , 1
-  %numParamsStored = add %numParamsStored , 1
-  store %numParamsStored , %writePtr
+  %ret = call @PlutusInternal.closure.new(%func, %arity, %boundNew)
 
-  // "Copy arguments one at a time"
-  %numParamsToCopy = sub %numParamsStored , 1
-
+  %n = 0
 while:
-  %cond = cmp eq %numParamsToCopy , 0
+  %cond = cmp eq %boundOld , %n
+  %n = add %n, 1
   br %cond , done
-  %writePtr = add %writePtr , 1
-  %readPtr = add %readPtr , 1
-  %v = load %readPtr
-  store %v , %writePtr
+  %paramN = call @PlutusInternal.closure.nthArg(%closure, %n)
+  call @PlutusInternal.closure.nthArg.set(%ret, %n, %paramN)
   br while
-
 done:
-
-  // "Add new parameter"
-  %writePtr = add %writePtr , 1
-  store %param , %writePtr
+  call @PlutusInternal.closure.nthArg.set(%ret, %n, %param)
   ret %ret
-   
 }
