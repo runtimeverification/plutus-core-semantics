@@ -1,0 +1,124 @@
+define @PlutusInternal.dispatch ( %closure , %param ) {
+  %func = load %closure
+  %readPtr = add %closure , 1
+  %arity = load %readPtr
+  %readPtr = add %readPtr , 1
+  %numParams = load %readPtr
+
+  %numParamsPlus1 = add %numParams , 1
+  %notEnoughParams = cmp ne %numParamsPlus1 , %arity
+  br %notEnoughParams , notEnoughParams
+  %haveEnough1 = cmp eq 1 , %arity
+  br %haveEnough1 , haveEnough1
+  %haveEnough2 = cmp eq 2 , %arity
+  br %haveEnough2 , haveEnough2
+  %haveEnough3 = cmp eq 3 , %arity
+  br %haveEnough3 , haveEnough3
+
+notEnoughParams:
+  %ret = call @appendArg ( %closure , %param )
+  ret %ret
+
+haveEnough1:
+  %ret = call %func ( %param )
+  ret %ret
+
+haveEnough2:
+  %ret = call @PlutusInternal.unfoldClosure2 ( %closure , %param )
+  ret %ret
+
+haveEnough3:
+  %ret = call @PlutusInternal.unfoldClosure3 ( %closure , %param )
+  ret %ret
+}
+
+define @PlutusInternal.unfoldClosure2 ( %closure , %param ) {
+  %func = load %closure
+  %readPtr = add %closure , 2
+  %readPtr = add %readPtr , 1
+  %param1 = load %readPtr
+  %ret = call %func ( %param1 , %param )
+  ret %ret
+}
+
+define @PlutusInternal.unfoldClosure3 ( %closure , %param ) {
+  %func = load %closure
+  %readPtr = add %closure , 2
+  %readPtr = add %readPtr , 1
+  %param1 = load %readPtr
+  %readPtr = add %readPtr , 1
+  %param2 = load %readPtr
+  %ret = call %func ( %param1 , %param2 , %param )
+  ret %ret
+}
+
+define @PlutusInternal.unfoldClosure4 ( %closure , %param ) {
+  %func = load %closure
+  %readPtr = add %closure , 2
+  %readPtr = add %readPtr , 1
+  %param1 = load %readPtr
+  %readPtr = add %readPtr , 1
+  %param2 = load %readPtr
+  %readPtr = add %readPtr , 1
+  %param3 = load %readPtr
+  %ret = call %func ( %param1 , %param2 , %param3 , %param )
+  ret %ret
+}
+
+define @alloc ( %size ) {
+  %isZero = cmp eq %size , 0
+  br %isZero , allocZero
+  %alloc_counter_ptr = 0
+  %alloced = load %alloc_counter_ptr
+  %isInitialized = cmp ne 0 , %alloced
+  br %isInitialized , initialized
+  %alloced = 1
+
+  initialized:
+  %ret = %alloced
+  %alloced = add %size , %alloced
+  store %alloced , %alloc_counter_ptr
+  ret %ret
+
+  allocZero:
+  ret 0
+   
+}
+
+define @appendArg ( %closure , %param ) {
+  %func = load %closure
+  %readPtr = add %closure , 1
+  %arity = load %readPtr
+  %readPtr = add %readPtr , 1
+  %numParamsStored = load %readPtr
+
+  %spaceNeeded = add %numParamsStored , 3
+  %ret = call @alloc ( %spaceNeeded )
+  %writePtr = %ret
+  store %func , %writePtr
+  %writePtr = add %writePtr , 1
+  store %arity , %writePtr
+  %writePtr = add %writePtr , 1
+  %numParamsStored = add %numParamsStored , 1
+  store %numParamsStored , %writePtr
+
+  // "Copy arguments one at a time"
+  %numParamsToCopy = sub %numParamsStored , 1
+
+while:
+  %cond = cmp eq %numParamsToCopy , 0
+  br %cond , done
+  %writePtr = add %writePtr , 1
+  %readPtr = add %readPtr , 1
+  %v = load %readPtr
+  store %v , %writePtr
+  br while
+
+done:
+
+  // "Add new parameter"
+  %writePtr = add %writePtr , 1
+  store %param , %writePtr
+  ret %ret
+   
+}

@@ -25,13 +25,7 @@ module PLUTUS-CORE-TRANSLATION
             ~> #functionsToIele ~> #constructorsToIele
             ~> #moveToContractCell
       </plutus>
-      <iele> #staticAlloc
-             #staticAppendArg
-             #staticDispatch
-             #staticUnfold(2)
-             #staticUnfold(3)
-             #staticUnfold(4)
-             .TopLevelDefinitions
+      <iele> #insertRuntimeHere
       </iele>
       <currMod> .K </currMod>
       <ieleContract> contract #mkIN("Foo") { .TopLevelDefinitions } </ieleContract>
@@ -587,138 +581,7 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #bindVar([T1 T2], X:Var, BLN)
     => [#bindVar(T1, X, BLN) #bindVar(T2, X, BLN)]
-  
-  // Generate static functions
-  // =========================
 
-  syntax FunctionDefinition ::= "#staticAlloc"                         [function]
-  rule #staticAlloc => define #mkGN("alloc") (#mkLN("size") , .LocalNames) {
-                         #mkLN("isZero") = cmp eq #mkLN("size"), 0
-                         br #mkLN("isZero"), #mkIN("allocZero")
-                         #mkLN("alloc_counter_ptr") = 0
-                         #mkLN("alloced") = load #mkLN("alloc_counter_ptr")
-                         #mkLN("isInitialized") = cmp ne 0, #mkLN("alloced")
-                         br #mkLN("isInitialized"), #mkIN("initialized")
-                         #mkLN("alloced") = 1
-                      #label(#mkIN("initialized"))
-                         #mkLN("ret") = #mkLN("alloced")
-                         #mkLN("alloced") = add #mkLN("size"), #mkLN("alloced")
-                         store #mkLN("alloced"), #mkLN("alloc_counter_ptr")
-                         ret #mkLN("ret")
-                      #label(#mkIN("allocZero"))
-                         ret 0
-                         .Instructions .LabeledBlocks
-                       }
-  syntax FunctionDefinition ::= "#staticAppendArg"                     [function]
-  rule #staticAppendArg
-    => define #mkGN("appendArg") (#mkLN("closure"), #mkLN("param")) {
-           #mkLN("func") = load #mkLN("closure")
-           #mkLN("readPtr") = add #mkLN("closure"), 1
-           #mkLN("arity") = load #mkLN("readPtr")
-           #mkLN("readPtr") = add #mkLN("readPtr"), 1
-           #mkLN("numParamsStored") = load #mkLN("readPtr")
-
-           #mkLN("spaceNeeded") = add #mkLN("numParamsStored"), 3
-           #mkLN("ret") = call #mkGN("alloc")(#mkLN("spaceNeeded"))
-
-           #mkLN("writePtr") = #mkLN("ret") 
-           store #mkLN("func"), #mkLN("writePtr")
-           #mkLN("writePtr") = add #mkLN("writePtr"), 1 
-           store #mkLN("arity"), #mkLN("writePtr")
-           #mkLN("writePtr") = add #mkLN("writePtr"), 1 
-           #mkLN("numParamsStored") = add #mkLN("numParamsStored"), 1
-           store #mkLN("numParamsStored"), #mkLN("writePtr")
-
-           #comment("Copy arguments one at a time")
-           #mkLN("numParamsToCopy") = sub #mkLN("numParamsStored"), 1
-         #label(#mkIN("while"))
-           #mkLN("cond")      = cmp eq #mkLN("numParamsToCopy"), 0
-         br #mkLN("cond"), #mkIN("done")
-
-           #mkLN("writePtr") = add #mkLN("writePtr"), 1
-           #mkLN("readPtr")  = add #mkLN("readPtr"), 1
-           #mkLN("v")        = load #mkLN("readPtr")
-           store #mkLN("v"), #mkLN("writePtr")
-         br #mkIN("while")
-
-         #label(#mkIN("done"))
-           #comment("Add new parameter")
-           #mkLN("writePtr") = add #mkLN("writePtr"), 1
-           store #mkLN("param"), #mkLN("writePtr")
-
-           ret #mkLN("ret")
-           .Instructions .LabeledBlocks
-        }
-
-  syntax FunctionDefinition ::= "#staticDispatch"                      [function]
-  rule #staticDispatch
-    => define #mkGN("PlutusInternal.dispatch") (#mkLN("closure"), #mkLN("param")) {
-           #mkLN("func")      = load #mkLN("closure")
-           #mkLN("readPtr")   = add #mkLN("closure"), 1
-           #mkLN("arity")     = load #mkLN("readPtr")
-           #mkLN("readPtr")   = add #mkLN("readPtr"), 1
-           #mkLN("numParams") = load #mkLN("readPtr")
-
-           #mkLN("numParamsPlus1") = add #mkLN("numParams"), 1
-           #mkLN("notEnoughParams") = cmp ne #mkLN("numParamsPlus1"), #mkLN("arity")
-         br #mkLN("notEnoughParams"), #mkIN("notEnoughParams")
-
-           #mkLN("haveEnough1") = cmp eq 1, #mkLN("arity")
-         br #mkLN("haveEnough1"), #mkIN("haveEnough1")
-
-           #mkLN("haveEnough2") = cmp eq 2, #mkLN("arity")
-         br #mkLN("haveEnough2"), #mkIN("haveEnough2")
-
-           #mkLN("haveEnough3") = cmp eq 3, #mkLN("arity")
-         br #mkLN("haveEnough3"), #mkIN("haveEnough3")
-
-         #label(#mkIN("notEnoughParams"))
-           #mkLN("ret") = call #mkGN("appendArg") (#mkLN("closure"), #mkLN("param"))
-           ret #mkLN("ret")
-
-         #label(#mkIN("haveEnough1"))
-           #mkLN("ret") = call #mkLN("func") (#mkLN("param"))
-           ret #mkLN("ret")
-
-         #label(#mkIN("haveEnough2"))
-           #mkLN("ret") = call #mkGN("PlutusInternal.unfoldClosure2") (#mkLN("closure"), #mkLN("param"))
-           ret #mkLN("ret")
-
-         #label(#mkIN("haveEnough3"))
-           #mkLN("ret") = call #mkGN("PlutusInternal.unfoldClosure3") (#mkLN("closure"), #mkLN("param"))
-           ret #mkLN("ret")
-
-           .Instructions .LabeledBlocks
-       }
-
-  syntax FunctionDefinition ::= #staticUnfold(Int)                    [function]
-  rule #staticUnfold(ARITY)
-    => define #mkGN("PlutusInternal.unfoldClosure", ARITY) (#mkLN("closure"), #mkLN("param")) {
-           #concatInsListFct( #mkLN("func") = load #mkLN("closure")
-                              #mkLN("readPtr") = add #mkLN("closure"), 2
-                              #unfoldClosureBody(1, ARITY)
-                            , #mkLN("ret") = call #mkLN("func")(#unfoldClosureParams(1, ARITY))
-                              ret #mkLN("ret")
-                              .Instructions
-                            )
-           .LabeledBlocks
-       }
-  syntax Instructions ::= #unfoldClosureBody(Int, Int)                 [function]
-  rule #unfoldClosureBody(N, ARITY) => .Instructions
-    when N ==Int ARITY
-  rule #unfoldClosureBody(N, ARITY)
-    => #mkLN("readPtr") = add #mkLN("readPtr"), 1
-       #mkLN("param", N) = load #mkLN("readPtr")
-       #unfoldClosureBody(N +Int 1, ARITY)
-    when N <Int ARITY
-
-  syntax Operands ::= #unfoldClosureParams(Int, Int)                   [function]
-  rule #unfoldClosureParams(ARITY, ARITY) => #mkLN("param"), .Operands
-  rule #unfoldClosureParams(    N, ARITY)
-    => #mkLN("param", N), #unfoldClosureParams(N +Int 1, ARITY)
-    when N <Int ARITY
-
-  // Checks that all functions have been converted
   // Finalization
   // ============
 
@@ -787,7 +650,7 @@ module PLUTUS-CORE-TRANSLATION
   rule <plutus> #functionsToIele => .K ... </plutus>
        <functions> .Bag </functions>
 
-  // When there are no functions left, add IELE functions for each constructor
+  // Next, we generate IELE functions for each data constructor
 
   syntax K ::= "#constructorsToIele"
   rule <plutus> #constructorsToIele ... </plutus>
@@ -815,6 +678,11 @@ module PLUTUS-CORE-TRANSLATION
 
   rule <plutus> #constructorsToIele => .K ... </plutus>
        <constructors> .Bag </constructors>
+
+  // The `#insertRuntimeHere` construct serves as a marker for the
+  // post-processor to insert the runtime platform.
+
+  syntax TopLevelDefinitions ::= "#insertRuntimeHere"
 
   // When there are no functions or constructors left, return a top-level contract
 

@@ -28,6 +28,11 @@ def remove_empty_list_constructs(line):
         line = line.replace('.'   + listSort, '')
     return line
 
+def insert_runtime_platform(line):
+    if line.strip() != '#insertRuntimeHere':
+        return line
+    return open('src/translation/plutus-runtime.iele').read()
+
 # Main
 # ====
 
@@ -37,5 +42,5 @@ lines = string.split(iele, "\n")
 lines = map(remove_four_space           , lines)
 lines = map(remove_empty_lvalue_call    , lines)
 lines = map(remove_empty_list_constructs, lines)
-
+lines = map(insert_runtime_platform     , lines)
 list(map(print, lines))

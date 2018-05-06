@@ -101,9 +101,12 @@ translate_plc:=test/arith-ops.plc test/cmp-ops.plc   test/case-simple.plc \
 translate-to-iele: $(translate_plc:.plc=.iele)
 test-erc20: $(erc20_tests:=.test)
 
-test/%.iele: test/%.pre.plc .build/translation/plutus-core-kompiled/interpreter
-	bash -c 'source bin/activate                                          && \
-	         ./bin/kplc run translation $< | bin/config-to-iele > $@'
+test/%.iele: test/%.pre.plc                                                    \
+             .build/translation/plutus-core-kompiled/interpreter               \
+             bin/translation-post-process                                      \
+             src/translation/plutus-runtime.iele
+	  ./bin/kplc run translation $< \
+	| bin/translation-post-process > $@
 
 test-verify: .build/execution/plutus-core-kompiled/interpreter
 	./bin/kplc prove execution verification/int-addition_spec.k             verification/dummy.plcore
