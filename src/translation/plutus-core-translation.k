@@ -62,10 +62,6 @@ module PLUTUS-CORE-TRANSLATION
                | "#CidWidthBits"                                       [function]
                | "#CidBitMask"                                         [function]
                | "#CidMax"                                             [function]
-               | "#numArgsOffset"                                      [function]
-               | "#numArgsWidth"                                       [function]
-               | "#JIWidth"                                            [function]
-               | "#JIWidthBits"                                        [function]
 
   rule #CidOffset     => 2
   rule #CidOffsetBits => 8 *Int #CidOffset
@@ -73,10 +69,6 @@ module PLUTUS-CORE-TRANSLATION
   rule #CidWidthBits  => 8 *Int #CidWidth
   rule #CidMax        => 2^Int #CidWidthBits
   rule #CidBitMask    => #CidMax -Int 1
-  rule #numArgsOffset => 2
-  rule #numArgsWidth  => 2
-  rule #JIWidth       => 2
-  rule #JIWidthBits   => 8 *Int #JIWidth
 
   // Typing Related Constructs
   // =========================
