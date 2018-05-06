@@ -177,49 +177,35 @@ haveEnough5:
 }
 
 define @PlutusInternal.unfoldClosure2 ( %closure , %param ) {
-  %func = load %closure
-  %readPtr = add %closure , 2
-  %readPtr = add %readPtr , 1
-  %param1 = load %readPtr
+  %func   = call @PlutusInternal.closure.func(%closure)
+  %param1 = call @PlutusInternal.closure.nthArg(%closure, 1)
   %ret = call %func ( %param1 , %param )
   ret %ret
 }
 
 define @PlutusInternal.unfoldClosure3 ( %closure , %param ) {
-  %func = load %closure
-  %readPtr = add %closure , 2
-  %readPtr = add %readPtr , 1
-  %param1 = load %readPtr
-  %readPtr = add %readPtr , 1
-  %param2 = load %readPtr
+  %func   = call @PlutusInternal.closure.func(%closure)
+  %param1 = call @PlutusInternal.closure.nthArg(%closure, 1)
+  %param2 = call @PlutusInternal.closure.nthArg(%closure, 2)
   %ret = call %func ( %param1 , %param2 , %param )
   ret %ret
 }
 
 define @PlutusInternal.unfoldClosure4 ( %closure , %param ) {
-  %func = load %closure
-  %readPtr = add %closure , 2
-  %readPtr = add %readPtr , 1
-  %param1 = load %readPtr
-  %readPtr = add %readPtr , 1
-  %param2 = load %readPtr
-  %readPtr = add %readPtr , 1
-  %param3 = load %readPtr
+  %func   = call @PlutusInternal.closure.func(%closure)
+  %param1 = call @PlutusInternal.closure.nthArg(%closure, 1)
+  %param2 = call @PlutusInternal.closure.nthArg(%closure, 2)
+  %param3 = call @PlutusInternal.closure.nthArg(%closure, 3)
   %ret = call %func ( %param1 , %param2 , %param3 , %param )
   ret %ret
 }
 
 define @PlutusInternal.unfoldClosure5 ( %closure , %param ) {
-  %func = load %closure
-  %readPtr = add %closure , 2
-  %readPtr = add %readPtr , 1
-  %param1 = load %readPtr
-  %readPtr = add %readPtr , 1
-  %param2 = load %readPtr
-  %readPtr = add %readPtr , 1
-  %param3 = load %readPtr
-  %readPtr = add %readPtr , 1
-  %param4 = load %readPtr
+  %func   = call @PlutusInternal.closure.func(%closure)
+  %param1 = call @PlutusInternal.closure.nthArg(%closure, 1)
+  %param2 = call @PlutusInternal.closure.nthArg(%closure, 2)
+  %param3 = call @PlutusInternal.closure.nthArg(%closure, 3)
+  %param4 = call @PlutusInternal.closure.nthArg(%closure, 4)
   %ret = call %func ( %param1 , %param2 , %param3, %param4 , %param )
   ret %ret
 }
