@@ -719,6 +719,14 @@ module PLUTUS-CORE-TRANSLATION
     when N <Int ARITY
 
   // Checks that all functions have been converted
+  // Finalization
+  // ============
+
+  // Some constructs depend on being able to look up the number or arguments
+  // a function takes, etc. This means that moving `<function>`s out of the
+  // `<functions>` cell into the `<iele>` cell needs to wait until all functions are
+  // completely translated. `#translated?` acts as a barrier preventing this
+  // from happening.
 
   syntax K ::= "#translated?"
   rule <plutus> #translated? => .K ... </plutus>
