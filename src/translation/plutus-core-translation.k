@@ -5,19 +5,19 @@ module PLUTUS-CORE-TRANSLATION
 
   imports PLUTUS-CORE-COMMON
   imports IELE-COMMON
-  
+
   // For some reason <function multiplicity='*' type='*'> isn't being parsed correctly
   // TODO: Figure out why we need this, but KEVM, IELE etc do not.
-  
+
   syntax #CellName ::= "type"                                             [token]
-  
+
   // Configuration
   // =============
-  
+
   // The translation process converts a Plutus program initially loaded in the
   // `<plutus>` cell into a number of functions in the `<function>` cells.
   // We also generate functions for allocating memory, and dispatching functions.
-  
+
   configuration
     <T>
       <plutus> $PGM:Prg
@@ -66,7 +66,7 @@ module PLUTUS-CORE-TRANSLATION
                | "#numArgsWidth"                                       [function]
                | "#JIWidth"                                            [function]
                | "#JIWidthBits"                                        [function]
-  
+
   rule #CidOffset     => 2
   rule #CidOffsetBits => 8 *Int #CidOffset
   rule #CidWidth      => 2
@@ -139,10 +139,10 @@ module PLUTUS-CORE-TRANSLATION
             <translated> false:Bool </translated>
          </function>
        </functions>                                                       [owise]
-  
+
   // Converting Plutus Constructs to IELE
   // ====================================
-  
+
   // For each Plutus construct, the translation process needs to know how to convert
   // to convert it to the corresponding IELE construct and load that into an `Operand`.
   // This is done via `#loadOperand` and `#useOperand`. The process must also be able
@@ -168,15 +168,15 @@ module PLUTUS-CORE-TRANSLATION
 
   // Basic Constructs
   // ----------------
-  
+
   // `Int`s and parameters are particularly simple, since they correspond directly
   // to `Operand`s. We do nothing to load them:
-  
+
   rule #loadOperand(I:Int, LN) => .Instructions
   rule #loadOperand(V:Var, LN) => .Instructions
-  
+
   // and use them directly:
-  
+
   rule #useOperand(I:Int, LN) => I:Int
   rule #useOperand(V:Var, LN) => #varToLocalName(V:Var)
 
@@ -312,7 +312,7 @@ module PLUTUS-CORE-TRANSLATION
 
   // To generate multiple fresh `LocalName`s we need an auxilary function.
 
-  rule #loadOperand((con QC TL:TmList), LN) => #loadOperandDCAux(QC, TL, #mkLNs(#length(TL), "ops"), LN) 
+  rule #loadOperand((con QC TL:TmList), LN) => #loadOperandDCAux(QC, TL, #mkLNs(#length(TL), "ops"), LN)
 
   // K's parsing means that ValLists and TermLists are distinct unrelated sorts.
   // If the list contains only Vals, then there will be no free vars, so we
@@ -455,7 +455,7 @@ module PLUTUS-CORE-TRANSLATION
 
   // Converting a Lambda to a Closure
   // --------------------------------
-  
+
   // Converting a lambda is particularly complex. We must:
   //
   //  - Generate a new function for the inner part of the lambda,
@@ -464,7 +464,7 @@ module PLUTUS-CORE-TRANSLATION
   //    the parameters as `#boundVar`s, so they can correctly access their value
   //    from the closure passed.
   //  - Allocate a closure and bind its environment.
-  
+
   rule <functions>
          ...
           <function>
@@ -513,7 +513,7 @@ module PLUTUS-CORE-TRANSLATION
         store #qualNToGlobalName(MN . FN), N
         #mkLN("writePtr") = add 1, N
         store ARITY, #mkLN("writePtr")
-        #mkLN("writePtr") = add 1, #mkLN("writePtr") 
+        #mkLN("writePtr") = add 1, #mkLN("writePtr")
         store 0, #mkLN("writePtr") // 0 params currently stored
         #bindEnv(N, FVS)
    ):Instructions
@@ -524,10 +524,10 @@ module PLUTUS-CORE-TRANSLATION
         store #varToLocalName(FV), #mkLN("writePtr")
         #bindEnv(LN, FVS)
        ):Instructions
-  
+
   // `#addParamsToEnv` is a helper for building the environment map:
   // TODO: Should this really be called an environment?
-  
+
   syntax Map ::= #addParamsToEnv(VarList, Map)                         [function]
   rule #addParamsToEnv(X:Var XS, MAP:Map) => #addParamsToEnv(XS, (size(MAP) |-> X:Var):Map MAP:Map)
   rule #addParamsToEnv(.VarList, MAP:Map) => MAP:Map
@@ -548,7 +548,7 @@ module PLUTUS-CORE-TRANSLATION
   syntax Tm     ::= #bindVar(Tm, Var, LocalName)                       [function]
   syntax ClList ::= #bindVarClL(ClList, Var, LocalName)                [function]
   syntax TmList ::= #bindVarTL(TmList, Var, LocalName)                 [function]
-  
+
   rule #bindVar(#boundVar(J), X, BLN) => #boundVar(J)
 
   // When replacing free vars in a TermList, we replace the free var for all terms in that list.
@@ -556,18 +556,18 @@ module PLUTUS-CORE-TRANSLATION
   rule #bindVarTL(.TmList, X, BLN) => .TmList
   rule #bindVarTL(T TL, X, BLN)
     => #bindVar(T, X, BLN) #bindVarTL(TL, X, BLN)
-  
+
   // For `#boundVar`s `#loadOperand` directly uses the function's parameter.
 
   rule #loadOperand(#boundVar(BLN), LN) => .Instructions
-  rule #useOperand(#boundVar(BLN), LN) => BLN 
-  
+  rule #useOperand(#boundVar(BLN), LN) => BLN
+
   // Lambda Applications
   // -------------------
-  
+
   // Lambda applications simply pass the closure generated by `#allocBind` to
   // `#mkGN("dispatch")`.
-  
+
    rule #loadOperand([T1:Tm T2:Tm], LN)
      => #concatInsList( #loadOperand(T1, #mkLN("appT1", !N))
                       , #loadOperand(T2, #mkLN("appT2", !M))
@@ -703,13 +703,13 @@ module PLUTUS-CORE-TRANSLATION
   rule #useOperand([F T1 T2 TS:TmList], LN) => #useOperand(#desugarApp([F T1 T2 TS]), LN)
   rule #loadOperand([F T1 T2 TS:TmList], LN) => #loadOperand(#desugarApp([F T1 T2 TS]), LN)
   rule #bindVar([F T1 T2 TS:TmList], V, LN) => #bindVar(#desugarApp([F T1 T2 TS]), V, LN)
-  
+
   // ... generating `Instruction`s
   // ------------------------------
-  
+
    syntax PreInstructions ::= Instructions
    syntax KResult         ::= Instructions
-  
+
   syntax PreInstructions
       ::= #concatInsList(PreInstructions, PreInstructions)               [strict]
         | #concatInsList(PreInstructions, PreInstructions, PreInstructions) [klabel(concatInsList3)]
@@ -728,7 +728,7 @@ module PLUTUS-CORE-TRANSLATION
   syntax Instructions ::= #addInsToBack(Instructions, Instructions)    [function]
   rule #addInsToBack(.Instructions, IS) => IS:Instructions
   rule #addInsToBack(I IS, IS') => I #addInsToBack(IS, IS')
-  
+
   // TODO: We should be using `Block`s instead of `Instructions` in some places
   // TODO: Rename to `#label`
 
@@ -787,7 +787,7 @@ module PLUTUS-CORE-TRANSLATION
     => #mkGN(#plToString(MN) +String "." +String #plToString(C))
   rule #qualNToGlobalName(MN . C)
     => #mkGN(#plToString(MN) +String "." +String #plToString(C))
- 
+
   syntax LocalName ::= #varToLocalName(Var)                            [function]
   rule #varToLocalName(V:Var) => #mkLN(#varToString(V))
 
