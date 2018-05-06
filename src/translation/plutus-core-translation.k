@@ -488,18 +488,14 @@ module PLUTUS-CORE-TRANSLATION
 
   // `#allocBind` generates instructions to allocate a closure and bind its
   // environment.
-  syntax PreInstructions ::= #allocBind(LocalName, ModName, Name, VarList)
+
+  syntax PreInstructions ::= #allocBind(LocalName, ModName, Name,      VarList)
+  syntax PreInstructions ::= #allocBind(LocalName, ModName, Name, Int, VarList)
+                                                     [klabel(allocBindWithArity)]
   syntax Instructions ::= #bindEnv(LocalName, VarList)                 [function]
 
-  rule <k> #allocBind(N, MN:ModName, FN:Name, FVS)
-        => (N = call #mkGN("alloc")(3 +Int #length(FVS))
-            store #qualNToGlobalName(MN . FN), N
-            #mkLN("writePtr") = add 1, N
-            store #length(PARAMS), #mkLN("writePtr")
-            #mkLN("writePtr") = add 1, #mkLN("writePtr") 
-            store 0, #mkLN("writePtr") // 0 params currently stored
-            #bindEnv(N, FVS)
-           ):Instructions
+  rule <k> #allocBind(N, MN:ModName, FN:Name,                  FVS)
+        => #allocBind(N, MN:ModName, FN:Name, #length(PARAMS), FVS)
            ...
        </k>
        <function>
@@ -508,6 +504,27 @@ module PLUTUS-CORE-TRANSLATION
          <params>  PARAMS </params>
          ...
        </function>
+
+  rule  <function>
+         <k> #allocBind(N, MN:ModName, FN:Name,                  FVS)
+          => #allocBind(N, MN:ModName, FN:Name, #length(PARAMS), FVS)
+             ...
+         </k>
+         <modName> MN </modName>
+         <fName>   FN </fName>
+         <params>  PARAMS </params>
+         ...
+       </function>
+
+  rule #allocBind(N, MN:ModName, FN:Name, ARITY, FVS)
+    => (N = call #mkGN("alloc")(3 +Int #length(FVS))
+        store #qualNToGlobalName(MN . FN), N
+        #mkLN("writePtr") = add 1, N
+        store ARITY, #mkLN("writePtr")
+        #mkLN("writePtr") = add 1, #mkLN("writePtr") 
+        store 0, #mkLN("writePtr") // 0 params currently stored
+        #bindEnv(N, FVS)
+   ):Instructions
 
   rule #bindEnv(_ , .VarList) => .Instructions
   rule #bindEnv(LN, FV FVS)
