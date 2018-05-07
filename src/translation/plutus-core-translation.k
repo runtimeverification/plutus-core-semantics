@@ -39,7 +39,6 @@ module PLUTUS-CORE-TRANSLATION
           <params> .VarList:VarList     </params>
           <k multiplicity="?" >.K:K      </k>
           <jumpId> -1                   </jumpId>
-          <translated> false:Bool </translated>
         </function>
       </functions>
       <constructors>
@@ -128,7 +127,6 @@ module PLUTUS-CORE-TRANSLATION
             <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
                                     ret #useOperand(T:Tm, #mkLN("ret")) .Instructions)
             </k>
-            <translated> false:Bool </translated>
          </function>
        </functions>                                                       [owise]
 
