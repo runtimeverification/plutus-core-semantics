@@ -555,8 +555,8 @@ module PLUTUS-CORE-TRANSLATION
   // `#mkGN("dispatch")`.
 
    rule #loadOperand([T1:Tm T2:Tm], LN)
-     => #concatInsList( #loadOperand(T1, #mkLN("appT1", !N))
-                      , #loadOperand(T2, #mkLN("appT2", !M))
+     => #concatInsList( #loadOperand(T2, #mkLN("appT2", !M))
+                      , #loadOperand(T1, #mkLN("appT1", !N))
                       , LN = call #mkGN("PlutusInternal.dispatch")( #useOperand(T1, #mkLN("appT1", !N))
                                                    , #useOperand(T2, #mkLN("appT2", !M)))
                         .Instructions
