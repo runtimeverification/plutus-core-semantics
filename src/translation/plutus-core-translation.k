@@ -760,7 +760,7 @@ module PLUTUS-CORE-TRANSLATION
     => #mkGN(#plToString(MN) +String "." +String #plToString(C))
 
   syntax LocalName ::= #varToLocalName(Var)                            [function]
-  rule #varToLocalName(V:Var) => #mkLN(#varToString(V))
+  rule #varToLocalName(V:Var) => #mkLN(replaceAll(#varToString(V), "'", ".prime"))
 
   syntax LocalNames ::= #varsToLocalNames(VarList)                     [function]
   rule #varsToLocalNames(.VarList) => .LocalNames
