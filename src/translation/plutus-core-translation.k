@@ -22,7 +22,7 @@ module PLUTUS-CORE-TRANSLATION
     <T>
       <plutus> $PGM:Prg
             ~> #translated?
-            ~> #functionsToIele ~> #constructorsToIele
+            ~> #constructorsToIele
             ~> #moveToContractCell
       </plutus>
       <iele> #insertRuntimeHere
@@ -580,26 +580,15 @@ module PLUTUS-CORE-TRANSLATION
        <totalTranslated> TF </totalTranslated>
        <totalFunctions> TF </totalFunctions>
 
-  rule <function>
-          <k> _:Instructions </k>
-          <translated> false:Bool => true:Bool </translated>
-          ...
-       </function>
-       <totalTranslated> TR => TR +Int 1 </totalTranslated>
-
   // Convert functions to IELE
-
-  syntax K ::= "#functionsToIele"
-
   // TODO: streamline converting public and private functions to IELE
   // Convert public `<function>`s to IELE syntax
-  rule <plutus> #functionsToIele ... </plutus>
-       <functions>
+  rule <functions>
          <function>
            <modName> MN:ModName      </modName>
            <fName>   NAME:Name       </fName>
            <params>  VARS:VarList    </params>
-           (<k>       IS:Instructions </k> => .Bag)
+          (<k>       IS:Instructions </k> => .Bag)
            ...
          </function>
          ...
@@ -609,18 +598,18 @@ module PLUTUS-CORE-TRANSLATION
                 (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
        <exports> NL </exports>
+       <totalTranslated> TR => TR +Int 1 </totalTranslated>
        when #in(NAME, NL)
 
   // Convert private `<function>`s to IELE syntax
-  rule <plutus> #functionsToIele ... </plutus>
-       <functions>
+  rule <functions>
          <function>
            <modName> MN:ModName      </modName>
            <fName>   NAME:Name       </fName>
            <params>  VARS:VarList    </params>
-           <k>       IS:Instructions </k>
+          (<k>       IS:Instructions </k> => .Bag)
            ...
-         </function> => .Bag
+         </function>
          ...
        </functions>
        <iele> TLDS:TopLevelDefinitions
@@ -628,10 +617,8 @@ module PLUTUS-CORE-TRANSLATION
                 (#varsToLocalNames(VARS)) { IS .LabeledBlocks }):FunctionDefinition TLDS
        </iele>
        <exports> NL </exports>
+       <totalTranslated> TR => TR +Int 1 </totalTranslated>
        when notBool #in(NAME, NL)
-
-  rule <plutus> #functionsToIele => .K ... </plutus>
-       <functions> .Bag </functions>
 
   // Next, we generate IELE functions for each data constructor
 
@@ -670,9 +657,7 @@ module PLUTUS-CORE-TRANSLATION
   // When there are no functions or constructors left, return a top-level contract
 
   syntax K ::= "#moveToContractCell"
-  rule <functions> .Bag </functions>
-       <constructors> .Bag </constructors>
-       <plutus> #moveToContractCell => .K ... </plutus>
+  rule <plutus> #moveToContractCell => .K ... </plutus>
        <iele> TLDS:TopLevelDefinitions => .TopLevelDefinitions </iele>
        <ieleContract> _ => contract #mkIN("Foo") { TLDS } </ieleContract>
 
