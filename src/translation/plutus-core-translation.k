@@ -37,7 +37,7 @@ module PLUTUS-CORE-TRANSLATION
           <modName> .K                  </modName>
           <fName>   .K                  </fName>
           <params> .VarList:VarList     </params>
-          <k>      .K:K                 </k>
+          <k multiplicity="?" >.K:K      </k>
           <jumpId> -1                   </jumpId>
           <translated> false:Bool </translated>
         </function>
@@ -599,9 +599,9 @@ module PLUTUS-CORE-TRANSLATION
            <modName> MN:ModName      </modName>
            <fName>   NAME:Name       </fName>
            <params>  VARS:VarList    </params>
-           <k>       IS:Instructions </k>
+           (<k>       IS:Instructions </k> => .Bag)
            ...
-         </function> => .Bag
+         </function>
          ...
        </functions>
        <iele> TLDS:TopLevelDefinitions
