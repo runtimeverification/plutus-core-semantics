@@ -402,6 +402,11 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #bindVarClL((QC (VS) T) CLS, X, BLN)
     => (QC (VS) #bindVar(T, X, BLN)) #bindVarClL(CLS, X, BLN)
+    when notBool(#in(X, VS))
+
+  rule #bindVarClL((QC (VS) T) CLS, X, BLN)
+    => (QC (VS) T) CLS
+    when #in(X, VS)
 
   // Builtins
   // --------
@@ -800,11 +805,17 @@ module PLUTUS-CORE-TRANSLATION
   rule #length(T TL:TmList ) => 1 +Int #length(TL)    rule #length(.TmList ) => 0
   rule #length(T TL:TyList ) => 1 +Int #length(TL)    rule #length(.TyList ) => 0
 
-  syntax Bool ::= #in(Name, NameList)                                  [function]
+  syntax Bool ::= #in(Name, NameList)               [function, klabel(inVarList)]
+                | #in(Var,  VarList)               [function, klabel(inNameList)]
   // ----------------------------------------------------------------------------
-  rule #in(NAME, .NameList) => false
-  rule #in(NAME, NAME  NL) => true
-  rule #in(NAME, NAME' NL) => #in(NAME, NL)
+  rule #in(NAME:Name, .NameList) => false
+  rule #in(NAME:Name, NAME  NL) => true
+  rule #in(NAME:Name, NAME' NL) => #in(NAME, NL)
     when NAME =/=K NAME'
+
+  rule #in(VAR:Var, .VarList) => false
+  rule #in(VAR:Var, VAR  VL) => true
+  rule #in(VAR:Var, VAR' VL) => #in(VAR, VL)
+    when VAR =/=K VAR'
 
 endmodule
