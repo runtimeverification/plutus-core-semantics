@@ -168,7 +168,7 @@ module PLUTUS-CORE-EXECUTION
   // Ignoring typing stuff
   rule ( isa M:Tm T:Ty ) => .K
   rule ( abs V:Var M:Tm ):Tm => M
-  rule ( inst M:Tm T:Ty ) => .K
+  rule ( inst M:Tm T:Ty ) => M
 
   // Begin processing a module, add new <Module> cell
   rule
