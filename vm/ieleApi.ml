@@ -72,9 +72,7 @@ let get_account_field address blocknumber field convert default =
   with Not_found -> default
 
 let eth_getCode address blocknumber = 
-  let code = get_account_field address blocknumber "code" to_string "0x" in
-  let code_raw = of_hex code in
-  `String (Bytes.to_string code_raw)
+  `String (get_account_field address blocknumber "code" to_string "0x")
 
 let eth_getBlockByNumber blocknumber =
   let block = get_block blocknumber in
