@@ -472,7 +472,7 @@ module PLUTUS-CORE-TRANSLATION
           </function>
        </functions>
        <currMod> MN </currMod>
-       <plutus> (.K => #topLevelFunction(#mkPN("innerLambda", !N), !N, X, T:Tm)) ... </plutus>
+       <plutus> (.K => #topLevelFunction(#mkPN("innerLambda", !N), !N, X #reverse(VS), T:Tm)) ... </plutus>
 
   // `#allocBind` generates instructions to allocate a closure and bind its
   // environment.
