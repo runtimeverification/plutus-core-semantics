@@ -505,8 +505,8 @@ module PLUTUS-CORE-TRANSLATION
        </function>
 
   rule #allocBind(N, MN:ModName, FN:Name, ARITY, FVS)
-    => (N = call #mkGN("PlutusInternal.closure.new")(#qualNToGlobalName(MN.FN), ARITY, 0)
-        #bindEnv(N, FVS, 0)
+    => (N = call #mkGN("PlutusInternal.closure.new")(#qualNToGlobalName(MN.FN), ARITY, #length(FVS))
+        #bindEnv(N, FVS, 1)
        ):Instructions
 
   rule #bindEnv(_ , .VarList, N) => .Instructions
