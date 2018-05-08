@@ -1,10 +1,16 @@
 #!/usr/bin/env python2
 
+from __future__ import print_function
 import sys
 
 def remove_comments_line(line):
     line = line.split(";")
     return line[0].rstrip()
+
+# K's parser gets confused by, e.g. `Prelude.List`, thinking that the `.List`
+# bit is an empty list.
+def dotListToDotSpaceList(line):
+    return line.replace('.List', '. List')
 
 orig = sys.stdin.readlines()
 prelude = open("src/Prelude-supported.plc").readlines()
@@ -12,5 +18,7 @@ prelude = open("src/Prelude-supported.plc").readlines()
 def flatten(xs):
     return sum(xs, [])
 
-preprocessed_lines = map(remove_comments_line, flatten([[orig[0]], prelude[1:-1], orig[1:]]))
-print("\n".join(preprocessed_lines))
+lines = [orig[0]] + prelude[1:-1] + orig[1:]
+lines = map(remove_comments_line, lines)
+lines = map(dotListToDotSpaceList, lines)
+list(map(print, lines))
