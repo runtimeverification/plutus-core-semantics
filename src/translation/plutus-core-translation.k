@@ -114,6 +114,12 @@ module PLUTUS-CORE-TRANSLATION
              => #topLevelFunction(NAME, JI, X VARS, #bindVar(T:Tm, X, #varToLocalName(X)))
                 ...
        </plutus>
+
+  // Ignore typing constructs -- they are not important to translation.
+
+  rule <plutus> #topLevelFunction(NAME, JI, VARS, (abs  _ T:Tm)) => #topLevelFunction(NAME, JI, VARS, T) ... </plutus>
+  rule <plutus> #topLevelFunction(NAME, JI, VARS, (inst T:Tm _)) => #topLevelFunction(NAME, JI, VARS, T) ... </plutus>
+
   rule <plutus> #topLevelFunction(NAME, JI, VARS:VarList, T:Tm) => .K ... </plutus>
        <totalFunctions> TF:Int => TF:Int +Int 1 </totalFunctions>
        <currMod> MN </currMod>
