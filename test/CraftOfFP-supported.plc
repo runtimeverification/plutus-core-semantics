@@ -1,23 +1,57 @@
 (program
-
+  
   (module CraftOfFP
     (import Prelude)
-    (export ()
-      (
-        test_exOrs_1
-        test_exOrs_2
-        test_exOrs_3
-        test_exOrs_4
-      )
-    )
+    (export () (
+         test_exOrs_1           test_exOrs_2           test_exOrs_3
+         test_exOrs_4           test_max1_1            test_max1_2
+         test_max1_3            test_max1_4            test_max1_5
+         test_max1_6            test_max1_7            test_max1_8
+         test_max1_9            test_max2_1            test_max2_2
+         test_max2_3            test_max2_4            test_max2_5
+         test_max2_6            test_max2_7            test_max2_8
+         test_max2_9            test_max3_1            test_max3_2
+         test_max3_3            test_max3_4            test_max3_5
+         test_max3_6            test_max3_7            test_max3_8
+         test_max3_9            test_between1          test_fact_1
+         test_fact_2            test_fact_3            test_WinLose_1
+         test_WinLose_2         test_WinLose_3         test_mystery_1
+         test_mystery_2         test_mystery_3         test_mystery_4
+         test_mystery_5         test_mystery_6         test_mystery_7
+         test_mystery_8         test_mystery_9         test_mystery_10
+         test_mystery_11        test_mystery_12        test_mystery_13
+         test_mystery_14        test_mystery_15        test_mystery_16
+         test_mystery_17        test_mystery_18        test_mystery_19
+         test_mystery_20        test_mystery_21        test_mystery_22
+         test_mystery_23        test_mystery_24        test_mystery_25
+         test_mystery_26        test_mystery_27        test_sumDoubleAll_1
+         test_sumDoubleAll_2    test_lengthPlusPlus_1  test_lengthPlusPlus_2
+         test_lengthPlusPlus_3  test_lengthPlusPlus_4  test_reversePlusPlus_1
+         test_reversePlusPlus_2 test_reversePlusPlus_3 test_reversePlusPlus_4
+         test_assocPlusPlus_1   test_assocPlusPlus_2   test_assocPlusPlus_3
+         test_assocPlusPlus_4   test_assocPlusPlus_5   test_assocPlusPlus_6
+         test_assocPlusPlus_7   test_assocPlusPlus_8   test_shunt_1
+         test_shunt_2           test_shunt_3           test_shunt_4
+         test_reverse_1         test_reverse_2         test_fact2_1
+         test_fact2_2           test_fact2_3           test_zip_1
+         test_zip_2             test_mf_1              test_mf_2
+         test_mf_3              test_mf_4              test_mf_5
+         test_mf_6              test_mf_7              test_mf_8
+         test_collapse_1        test_collapse_2        test_collapse_3
+         test_collapse_4        test_sizeT_1           test_sizeT_2
+    ))
 
+    
+    
+    
+    
     (declare exOr (fun (con Prelude.Bool)
                     (fun (con Prelude.Bool)
                          (con Prelude.Bool))))
     (define exOr (lam x (lam y
       [Prelude.and [Prelude.or x y] [Prelude.not [Prelude.and x y]]])))
-
-
+    
+    
     (declare exOr1 (fun (con Prelude.Bool)
                      (fun (con Prelude.Bool)
                           (con Prelude.Bool))))
@@ -25,29 +59,918 @@
       (case x
         (Prelude.True () [Prelude.not y])
         (Prelude.False () y)))))
-
-
+    
+    
     (declare prop_exOrs (fun (con Prelude.Bool)
                           (fun (con Prelude.Bool)
                                (con Prelude.Bool))))
     (define prop_exOrs (lam x (lam y
       [Prelude.equalsBool [CraftOfFP.exOr x y] [CraftOfFP.exOr1 x y]])))
-
-
+    
+    
     (declare test_exOrs_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
     (define test_exOrs_1 (lam x
       [CraftOfFP.prop_exOrs (con Prelude.True) (con Prelude.True)]))
-
+    
     (declare test_exOrs_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
     (define test_exOrs_2 (lam x
       [CraftOfFP.prop_exOrs (con Prelude.True) (con Prelude.False)]))
-
+    
     (declare test_exOrs_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
     (define test_exOrs_3 (lam x
       [CraftOfFP.prop_exOrs (con Prelude.False) (con Prelude.True)]))
-
+    
     (declare test_exOrs_4 (fun (con Prelude.Unit) (con Prelude.Bool)))
     (define test_exOrs_4 (lam x
       [CraftOfFP.prop_exOrs (con Prelude.False) (con Prelude.False)]))
+    
+    
+    
+    
+    
+    
+    (declare max (fun (integer)
+                   (fun (integer)
+                        (integer))))
+    (define max (lam x (lam y
+      (case [Prelude.greaterThanEqualsInteger x y]
+        (Prelude.True () x)
+        (Prelude.False () y)))))
+    
+    
+    (declare prop_max1 (fun (integer)
+                         (fun (integer)
+                              (con Prelude.Bool))))
+    (define prop_max1 (lam x (lam y
+      [Prelude.and
+        [Prelude.lessThanEqualsInteger x [CraftOfFP.max x y]]
+        [Prelude.lessThanEqualsInteger y [CraftOfFP.max x y]]])))
+    
+    
+    (declare prop_max2 (fun (integer)
+                         (fun (integer)
+                              (con Prelude.Bool))))
+    (define prop_max2 (lam x (lam y
+      [Prelude.or
+        [Prelude.equalsInteger x [CraftOfFP.max x y]]
+        [Prelude.equalsInteger y [CraftOfFP.max x y]]])))
+    
+    
+    (declare prop_max3 (fun (integer)
+                         (fun (integer)
+                              (con Prelude.Bool))))
+    (define prop_max3 (lam x (lam y
+      [Prelude.or
+        [Prelude.equalsInteger x [CraftOfFP.max x y]]
+        [Prelude.equalsInteger y [CraftOfFP.max x y]]])))
+    
+    
+    (declare test_max1_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max1_1 (lam x
+      [CraftOfFP.prop_max1 0 0]))
+    
+    (declare test_max1_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max1_2 (lam x
+      [CraftOfFP.prop_max1 0 13]))
+    
+    (declare test_max1_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max1_3 (lam x
+      [CraftOfFP.prop_max1 0 42]))
+    
+    (declare test_max1_4 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max1_4 (lam x
+      [CraftOfFP.prop_max1 13 0]))
+    
+    (declare test_max1_5 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max1_5 (lam x
+      [CraftOfFP.prop_max1 13 13]))
+    
+    (declare test_max1_6 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max1_6 (lam x
+      [CraftOfFP.prop_max1 13 42]))
+    
+    (declare test_max1_7 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max1_7 (lam x
+      [CraftOfFP.prop_max1 42 0]))
+    
+    (declare test_max1_8 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max1_8 (lam x
+      [CraftOfFP.prop_max1 42 13]))
+    
+    (declare test_max1_9 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max1_9 (lam x
+      [CraftOfFP.prop_max1 42 42]))
+    
+    
+    (declare test_max2_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max2_1 (lam x
+      [CraftOfFP.prop_max2 0 0]))
+    
+    (declare test_max2_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max2_2 (lam x
+      [CraftOfFP.prop_max2 0 13]))
+    
+    (declare test_max2_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max2_3 (lam x
+      [CraftOfFP.prop_max2 0 42]))
+    
+    (declare test_max2_4 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max2_4 (lam x
+      [CraftOfFP.prop_max2 13 0]))
+    
+    (declare test_max2_5 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max2_5 (lam x
+      [CraftOfFP.prop_max2 13 13]))
+    
+    (declare test_max2_6 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max2_6 (lam x
+      [CraftOfFP.prop_max2 13 42]))
+    
+    (declare test_max2_7 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max2_7 (lam x
+      [CraftOfFP.prop_max2 42 0]))
+    
+    (declare test_max2_8 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max2_8 (lam x
+      [CraftOfFP.prop_max2 42 13]))
+    
+    (declare test_max2_9 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max2_9 (lam x
+      [CraftOfFP.prop_max2 42 42]))
+    
+    
+     (declare test_max3_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max3_1 (lam x
+      [CraftOfFP.prop_max3 0 0]))
+    
+    (declare test_max3_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max3_2 (lam x
+      [CraftOfFP.prop_max3 0 13]))
+    
+    (declare test_max3_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max3_3 (lam x
+      [CraftOfFP.prop_max3 0 42]))
+    
+    (declare test_max3_4 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max3_4 (lam x
+      [CraftOfFP.prop_max3 13 0]))
+    
+    (declare test_max3_5 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max3_5 (lam x
+      [CraftOfFP.prop_max3 13 13]))
+    
+    (declare test_max3_6 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max3_6 (lam x
+      [CraftOfFP.prop_max3 13 42]))
+    
+    (declare test_max3_7 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max3_7 (lam x
+      [CraftOfFP.prop_max3 42 0]))
+    
+    (declare test_max3_8 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max3_8 (lam x
+      [CraftOfFP.prop_max3 42 13]))
+    
+    (declare test_max3_9 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_max3_9 (lam x
+      [CraftOfFP.prop_max3 42 42]))
+    
+    
+    
+    
+    
+    (declare betwee1n
+      (fun (integer)
+        (fun (integer)
+          (fun (integer)
+               (con Prelude.Bool)))))
+    (define between (lam x (lam y (lam z
+      [Prelude.or
+        [Prelude.and
+          [Prelude.lessThanEqualsInteger x y]
+          [Prelude.lessThanEqualsInteger y z]]
+        [Prelude.and
+          [Prelude.greaterThanEqualsInteger x y]
+          [Prelude.greaterThanEqualsInteger y z]]]))))
+    
+    
+    (declare test_between1
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_between1 (lam x
+      [Prelude.equalsBool
+        [CraftOfFP.between 2 3 4]
+        (con Prelude.True)]))
+    
+    
+    
+    
+    
+    (declare fact (fun (integer) (integer)))
+    (define fact (lam n
+      (case [Prelude.greaterThanInteger n 1]
+        (Prelude.True ()
+          [Prelude.multiplyInteger
+            n
+            [CraftOfFP.fact [Prelude.subtractInteger n 1]]])
+        (Prelude.False () 1))))
+    
+    
+    (declare prop_fact (fun (integer) (con Prelude.Bool)))
+    (define prop_fact (lam n
+      [Prelude.greaterThanInteger [CraftOfFP.fact n] 0]))
+    
+    
+    (declare test_fact_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_fact_1 (lam x
+      [CraftOfFP.prop_fact 0]))
+    
+    (declare test_fact_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_fact_2 (lam x
+      [CraftOfFP.prop_fact 13]))
+    
+    (declare test_fact_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_fact_3 (lam x
+      [CraftOfFP.prop_fact 42]))
+    
+    
+    
+    
+    
+    
+    
+    (data Move () (Rock) (Paper) (Scissors))
+    
+
+    (declare mysteryMax (fun (integer)
+                          (fun (integer)
+                            (fun (integer)
+                                 (integer)))))
+    (define mysteryMax (lam x (lam y (lam z
+      (case [Prelude.and [Prelude.greaterThanEqualsInteger x y]
+                         [Prelude.greaterThanEqualsInteger x z]]
+         (Prelude.True () x)
+         (Prelude.False ()
+           (case [Prelude.and [Prelude.greaterThanEqualsInteger y x]
+                              [Prelude.greaterThanEqualsInteger y z]]
+              (Prelude.True () y)
+              (Prelude.False () z))))))))
+    
+    
+    (declare prop_mystery (fun (integer)
+                            (fun (integer)
+                              (fun (integer)
+                                   (con Prelude.Bool)))))
+    (define prop_mystery (lam x (lam y (lam z
+      [Prelude.equalsInteger
+        [CraftOfFP.mysteryMax x y z]
+        [Prelude.maxInteger [Prelude.maxInteger x y] z]]))))
+    
+    
+    (declare test_mystery_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_1 (lam x
+      [CraftOfFP.prop_mystery 0 0 0]))
+    
+    (declare test_mystery_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_2 (lam x
+      [CraftOfFP.prop_mystery 0 0 13]))
+    
+    (declare test_mystery_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_3 (lam x
+      [CraftOfFP.prop_mystery 0 0 42]))
+    
+    (declare test_mystery_4 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_4 (lam x
+      [CraftOfFP.prop_mystery 0 13 0]))
+    
+    (declare test_mystery_5 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_5 (lam x
+      [CraftOfFP.prop_mystery 0 13 13]))
+    
+    (declare test_mystery_6 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_6 (lam x
+      [CraftOfFP.prop_mystery 0 13 42]))
+    
+    (declare test_mystery_7 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_7 (lam x
+      [CraftOfFP.prop_mystery 0 42 0]))
+    
+    (declare test_mystery_8 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_8 (lam x
+      [CraftOfFP.prop_mystery 0 42 13]))
+    
+    (declare test_mystery_9 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_9 (lam x
+      [CraftOfFP.prop_mystery 0 42 42]))
+    
+    
+    (declare test_mystery_10 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_10 (lam x
+      [CraftOfFP.prop_mystery 13 0 0]))
+    
+    (declare test_mystery_11 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_11 (lam x
+      [CraftOfFP.prop_mystery 13 0 13]))
+    
+    (declare test_mystery_12 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_12 (lam x
+      [CraftOfFP.prop_mystery 13 0 42]))
+    
+    (declare test_mystery_13 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_13 (lam x
+      [CraftOfFP.prop_mystery 13 13 0]))
+    
+    (declare test_mystery_14 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_14 (lam x
+      [CraftOfFP.prop_mystery 13 13 13]))
+    
+    (declare test_mystery_15 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_15 (lam x
+      [CraftOfFP.prop_mystery 13 13 42]))
+    
+    (declare test_mystery_16 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_16 (lam x
+      [CraftOfFP.prop_mystery 13 42 0]))
+    
+    (declare test_mystery_17 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_17 (lam x
+      [CraftOfFP.prop_mystery 13 42 13]))
+    
+    (declare test_mystery_18 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_18 (lam x
+      [CraftOfFP.prop_mystery 13 42 42]))
+    
+    
+    (declare test_mystery_19 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_19 (lam x
+      [CraftOfFP.prop_mystery 42 0 0]))
+    
+    (declare test_mystery_20 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_20 (lam x
+      [CraftOfFP.prop_mystery 42 0 13]))
+    
+    (declare test_mystery_21 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_21 (lam x
+      [CraftOfFP.prop_mystery 42 0 42]))
+    
+    (declare test_mystery_22 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_22 (lam x
+      [CraftOfFP.prop_mystery 42 13 0]))
+    
+    (declare test_mystery_23 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_23 (lam x
+      [CraftOfFP.prop_mystery 42 13 13]))
+    
+    (declare test_mystery_24 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_24 (lam x
+      [CraftOfFP.prop_mystery 42 13 42]))
+    
+    (declare test_mystery_25 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_25 (lam x
+      [CraftOfFP.prop_mystery 42 42 0]))
+    
+    (declare test_mystery_26 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_26 (lam x
+      [CraftOfFP.prop_mystery 42 42 13]))
+    
+    (declare test_mystery_27 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mystery_27 (lam x
+      [CraftOfFP.prop_mystery 42 42 42]))
+    
+    
+    
+    
+    
+    
+    (declare doubleAll (fun (con Prelude.List (integer))
+                            (con Prelude.List (integer))))
+    (define doubleAll (lam xs
+      (case xs
+        (Prelude.Nil ()
+          (con Prelude.Nil))
+        (Prelude.Cons (x xs')
+          (con Prelude.Cons
+            [Prelude.multiplyInteger 2 x]
+            [CraftOfFP.doubleAll xs'])))))
+    
+    
+    (declare prop_sumDoubleAll (fun (con Prelude.List (integer))
+                                    (con Prelude.Bool)))
+    (define prop_sumDoubleAll (lam xs
+      [Prelude.equalsInteger
+        [Prelude.sumInteger [CraftOfFP.doubleAll xs]]
+        [Prelude.multiplyInteger 2 [Prelude.sumInteger xs]]]))
+    
+    
+    (declare test_sumDoubleAll_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_sumDoubleAll_1 (lam x
+      [CraftOfFP.prop_sumDoubleAll
+        (con Prelude.Nil)]))
+    
+    (declare test_sumDoubleAll_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_sumDoubleAll_2 (lam x
+      [CraftOfFP.prop_sumDoubleAll
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    
+    (declare prop_lengthPlusPlus
+      (fun (con Prelude.List (integer))
+        (fun (con Prelude.List (integer))
+             (con Prelude.Bool))))
+    (define prop_lengthPlusPlus (lam xs (lam ys
+      [Prelude.equalsInteger
+        [(inst Prelude.length (integer))
+          [(inst Prelude.append (integer)) xs ys]]
+        [Prelude.addInteger
+          [(inst Prelude.length (integer)) xs]
+          [(inst Prelude.length (integer)) ys]]])))
+    
+    
+    (declare test_lengthPlusPlus_1
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_lengthPlusPlus_1 (lam x
+      [CraftOfFP.prop_lengthPlusPlus
+        (con Prelude.Nil)
+        (con Prelude.Nil)]))
+    
+    (declare test_lengthPlusPlus_2
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_lengthPlusPlus_2 (lam x
+      [CraftOfFP.prop_lengthPlusPlus
+        (con Prelude.Nil)
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    (declare test_lengthPlusPlus_3
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_lengthPlusPlus_3 (lam x
+      [CraftOfFP.prop_lengthPlusPlus
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Nil)]))
+    
+    (declare test_lengthPlusPlus_4
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_lengthPlusPlus_4 (lam x
+      [CraftOfFP.prop_lengthPlusPlus
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    
+     
+    (declare prop_reversePlusPlus
+      (fun (con Prelude.List (integer))
+        (fun (con Prelude.List (integer))
+             (con Prelude.Bool))))
+    (define prop_reversePlusPlus (lam xs (lam ys
+      [(inst Prelude.equalsList (integer)) Prelude.equalsInteger
+        [(inst Prelude.reverse (integer))
+          [(inst Prelude.append (integer)) xs ys]]
+        [(inst Prelude.append (integer))
+          [(inst Prelude.reverse (integer)) ys]
+          [(inst Prelude.reverse (integer)) xs]]])))
+    
+    
+    (declare test_reversePlusPlus_1
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_reversePlusPlus_1 (lam x
+      [CraftOfFP.prop_reversePlusPlus
+        (con Prelude.Nil)
+        (con Prelude.Nil)]))
+    
+    (declare test_reversePlusPlus_2
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_reversePlusPlus_2 (lam x
+      [CraftOfFP.prop_reversePlusPlus
+        (con Prelude.Nil)
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    (declare test_reversePlusPlus_3
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_reversePlusPlus_3 (lam x
+      [CraftOfFP.prop_reversePlusPlus
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Nil)]))
+    
+    (declare test_reversePlusPlus_4
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_reversePlusPlus_4 (lam x
+      [CraftOfFP.prop_reversePlusPlus
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    
+    (declare prop_assocPlusPlus
+      (fun (con Prelude.List (integer))
+        (fun (con Prelude.List (integer))
+          (fun (con Prelude.List (integer))
+               (con Prelude.Bool)))))
+    (define prop_assocPlusPlus (lam xs (lam ys (lam zs
+      [(inst Prelude.equalsList (integer)) Prelude.equalsInteger
+        [(inst Prelude.append (integer))
+           [(inst Prelude.append (integer)) xs ys]
+           zs]
+        [(inst Prelude.append (integer))
+          xs
+          [(inst Prelude.append (integer)) ys zs]]]))))
+    
+    
+    (declare test_assocPlusPlus_1
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_assocPlusPlus_1 (lam x
+      [CraftOfFP.prop_assocPlusPlus
+        (con Prelude.Nil)
+        (con Prelude.Nil)
+        (con Prelude.Nil)]))
+    
+    (declare test_assocPlusPlus_2
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_assocPlusPlus_2 (lam x
+      [CraftOfFP.prop_assocPlusPlus
+        (con Prelude.Nil)
+        (con Prelude.Nil)
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    (declare test_assocPlusPlus_3
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_assocPlusPlus_3 (lam x
+      [CraftOfFP.prop_assocPlusPlus
+        (con Prelude.Nil)
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Nil)]))
+    
+    (declare test_assocPlusPlus_4
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_assocPlusPlus_4 (lam x
+      [CraftOfFP.prop_assocPlusPlus
+        (con Prelude.Nil)
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    (declare test_assocPlusPlus_5
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_assocPlusPlus_5 (lam x
+      [CraftOfFP.prop_assocPlusPlus
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Nil)
+        (con Prelude.Nil)]))
+    
+    (declare test_assocPlusPlus_6
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_assocPlusPlus_6 (lam x
+      [CraftOfFP.prop_assocPlusPlus
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Nil)
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    (declare test_assocPlusPlus_7
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_assocPlusPlus_7 (lam x
+      [CraftOfFP.prop_assocPlusPlus
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Nil)]))
+    
+    (declare test_assocPlusPlus_8
+      (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_assocPlusPlus_8 (lam x
+      [CraftOfFP.prop_assocPlusPlus
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    
+    (declare shunt (fun (con Prelude.List (integer))
+                     (fun (con Prelude.List (integer))
+                          (con Prelude.List (integer)))))
+    (define shunt (lam xs (lam ys
+      (case xs
+        (Prelude.Nil () ys)
+        (Prelude.Cons (x xs')
+          [CraftOfFP.shunt xs' (con Prelude.Cons x ys)])))))
+    
+    
+    (declare prop_shunt (fun (con Prelude.List (integer))
+                          (fun (con Prelude.List (integer))
+                               (con Prelude.Bool))))
+    (define prop_shunt (lam xs (lam ys
+      [(inst Prelude.equalsList (integer)) Prelude.equalsInteger
+        [CraftOfFP.shunt
+          [CraftOfFP.shunt xs ys]
+          (con Prelude.Nil)]
+        [CraftOfFP.shunt
+          ys
+          xs]])))
+    
+    
+    (declare test_shunt_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_shunt_1 (lam x
+      [CraftOfFP.prop_shunt
+        (con Prelude.Nil)
+        (con Prelude.Nil)]))
+    
+    (declare test_shunt_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_shunt_2 (lam x
+      [CraftOfFP.prop_shunt
+        (con Prelude.Nil)
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    (declare test_shunt_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_shunt_3 (lam x
+      [CraftOfFP.prop_shunt
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Nil)]))
+    
+    (declare test_shunt_4 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_shunt_4 (lam x
+      [CraftOfFP.prop_shunt
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    
+    (declare reverse (fun (con Prelude.List (integer))
+                          (con Prelude.List (integer))))
+    (define reverse (lam xs
+      (case xs
+        (Prelude.Nil () (con Prelude.Nil))
+        (Prelude.Cons (x xs')
+          [(inst Prelude.append (integer))
+            [CraftOfFP.reverse xs']
+            (con Prelude.Cons x (con Prelude.Nil))]))))
+    
+    
+    (declare rev (fun (con Prelude.List (integer))
+                      (con Prelude.List (integer))))
+    (define rev (lam xs
+      [CraftOfFP.shunt xs (con Prelude.Nil)]))
+    
+    
+    (declare prop_reverse (fun (con Prelude.List (integer))
+                               (con Prelude.Bool)))
+    (define prop_reverse (lam xs
+      [(inst Prelude.equalsList (integer)) Prelude.equalsInteger
+        [CraftOfFP.reverse xs]
+        [CraftOfFP.rev xs]]))
+    
+    
+    (declare test_reverse_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_reverse_1 (lam x
+      [CraftOfFP.prop_reverse
+        (con Prelude.Nil)]))
+    
+    (declare test_reverse_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_reverse_2 (lam x
+      [CraftOfFP.prop_reverse
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    
+    
+    
+    
+    
+    
+    (declare factAux (fun (integer) (fun (integer) (integer))))
+    (define factAux (lam n (lam p
+      (case [Prelude.equalsInteger n 0]
+        (Prelude.True () p)
+        (Prelude.False ()
+          [CraftOfFP.factAux [Prelude.subtractInteger n 1]
+                             [Prelude.multiplyInteger n p]])))))
+    
+    
+    (declare fact2 (fun (integer) (integer)))
+    (define fact2 (lam n [CraftOfFP.factAux n 1]))
+    
+    
+    (declare prop_fact2 (fun (integer) (con Prelude.Bool)))
+    (define prop_fact2 (lam n
+      [Prelude.equalsInteger
+        [CraftOfFP.fact n]
+        [CraftOfFP.fact2 n]]))
+    
+    
+    (declare test_fact2_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_fact2_1 (lam x
+      [CraftOfFP.prop_fact2 0]))
+    
+    (declare test_fact2_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_fact2_2 (lam x
+      [CraftOfFP.prop_fact2 13]))
+    
+    (declare test_fact2_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_fact2_3 (lam x
+      [CraftOfFP.prop_fact2 42]))
+    
+    
+    
+    
+    
+    (declare prop_zip
+      (fun (con Prelude.List (con Prelude.Pair (integer) (integer)))
+           (con Prelude.Bool)))
+    (define prop_zip (lam xs
+      [(inst Prelude.equalsList (con Prelude.Pair (integer) (integer)))
+        [(inst (inst Prelude.equalsPair (integer)) (integer))
+          Prelude.equalsInteger
+          Prelude.equalsInteger]
+        [(inst (inst (inst Prelude.uncurry (con Prelude.List (integer)))
+                     (con Prelude.List (integer)))
+               (con Prelude.List (con Prelude.Pair (integer) (integer))))
+          (inst (inst Prelude.zip (integer)) (integer))
+          [(inst (inst Prelude.unzip (integer)) (integer))
+            xs]]
+        xs]))
+    
+    
+    (declare prop_mf
+      (fun (fun (integer) (con Prelude.Bool))
+        (fun (fun (integer) (integer))
+          (fun (con Prelude.List (integer))
+               (con Prelude.Bool)))))
+    (define prop_mf (lam p (lam f (lam xs
+      [(inst Prelude.equalsList (integer))
+        Prelude.equalsInteger
+        [(inst Prelude.filter (integer))
+          p
+          [(inst (inst Prelude.map (integer)) (integer))
+            f
+            xs]]
+        [(inst (inst Prelude.map (integer)) (integer))
+          f
+          [(inst Prelude.filter (integer))
+            (lam xs' [p [f xs']])
+            xs]]]))))
+    
+    
+    (declare test_zip_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_zip_1 (lam x
+      [CraftOfFP.prop_zip (con Prelude.Nil)]))
+    
+    (declare test_zip_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_zip_2 (lam x
+      [CraftOfFP.prop_zip
+        (con Prelude.Cons (con Prelude.MkPair 0 1)
+          (con Prelude.Cons (con Prelude.MkPair 3 4)
+            (con Prelude.Cons (con Prelude.MkPair 5 6)
+              (con Prelude.Nil))))]))
+    
+    (declare even (fun (integer) (con Prelude.Bool)))
+    (declare odd (fun (integer) (con Prelude.Bool)))
+    
+    (define even (lam n
+      (case [Prelude.equalsInteger n 0]
+        (Prelude.True () (con Prelude.True))
+        (Prelude.False ()
+          [CraftOfFP.odd [Prelude.subtractInteger n 1]]))))
+    
+    (define odd (lam n
+      (case [Prelude.equalsInteger n 0]
+        (Prelude.True () (con Prelude.False))
+        (Prelude.False ()
+          [CraftOfFP.even [Prelude.subtractInteger n 1]]))))
+    
+    (declare test_mf_1 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mf_1 (lam x
+      [CraftOfFP.prop_mf
+        CraftOfFP.even
+        [Prelude.addInteger 2]
+        (con Prelude.Nil)]))
+    
+    (declare test_mf_2 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mf_2 (lam x
+      [CraftOfFP.prop_mf
+        CraftOfFP.even
+        [Prelude.addInteger 2]
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+        (declare test_mf_3 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mf_3 (lam x
+      [CraftOfFP.prop_mf
+        CraftOfFP.even
+        [Prelude.multiplyInteger 2]
+        (con Prelude.Nil)]))
+    
+    (declare test_mf_4 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mf_4 (lam x
+      [CraftOfFP.prop_mf
+        CraftOfFP.even
+        [Prelude.multiplyInteger 2]
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+    (declare test_mf_5 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mf_5 (lam x
+      [CraftOfFP.prop_mf
+        CraftOfFP.odd
+        [Prelude.addInteger 2]
+        (con Prelude.Nil)]))
+    
+    (declare test_mf_6 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mf_6 (lam x
+      [CraftOfFP.prop_mf
+        CraftOfFP.odd
+        [Prelude.addInteger 2]
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
+        (declare test_mf_7 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mf_7 (lam x
+      [CraftOfFP.prop_mf
+        CraftOfFP.odd
+        [Prelude.multiplyInteger 2]
+        (con Prelude.Nil)]))
+    
+    (declare test_mf_8 (fun (con Prelude.Unit) (con Prelude.Bool)))
+    (define test_mf_8 (lam x
+      [CraftOfFP.prop_mf
+        CraftOfFP.odd
+        [Prelude.multiplyInteger 2]
+        (con Prelude.Cons 0
+          (con Prelude.Cons 13
+            (con Prelude.Cons 42
+              (con Prelude.Nil))))]))
+    
   )
 )

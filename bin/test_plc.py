@@ -127,13 +127,44 @@ def generate_tests(type):
 
             ("modules", "Bar", "four",                      [5],       4),
             ("modules", "Foo", "four",                      [5],       4),
-
-            ("CraftOfFP-supported", "CraftOfFP", "test_exOrs_1",  [0], True),
-            ("CraftOfFP-supported", "CraftOfFP", "test_exOrs_2",  [0], True),
-            ("CraftOfFP-supported", "CraftOfFP", "test_exOrs_3",  [0], True),
-            ("CraftOfFP-supported", "CraftOfFP", "test_exOrs_4",  [0], True),
-
-           ]
+        ]
+    craftOfFP = [
+        'test_exOrs_1',           'test_reversePlusPlus_2', 'test_exOrs_2',
+        'test_reversePlusPlus_3', 'test_exOrs_3',           'test_mystery_1',
+        'test_reversePlusPlus_4', 'test_exOrs_4',           'test_mystery_2',
+        'test_assocPlusPlus_1',   'test_max1_1',            'test_mystery_3',
+        'test_assocPlusPlus_2',   'test_max1_2',            'test_mystery_4',
+        'test_assocPlusPlus_3',   'test_max1_3',            'test_mystery_5',
+        'test_assocPlusPlus_4',   'test_max1_4',            'test_mystery_6',
+        'test_assocPlusPlus_5',   'test_max1_5',            'test_mystery_7',
+        'test_assocPlusPlus_6',   'test_max1_6',            'test_mystery_8',
+        'test_assocPlusPlus_7',   'test_max1_7',            'test_mystery_9',
+        'test_assocPlusPlus_8',   'test_max1_8',            'test_mystery_10',
+        'test_shunt_1',           'test_max1_9',            'test_mystery_11',
+        'test_shunt_2',           'test_max2_1',            'test_mystery_12',
+        'test_shunt_3',           'test_max2_2',            'test_mystery_13',
+        'test_shunt_4',           'test_max2_3',            'test_mystery_14',
+        'test_reverse_1',         'test_max2_4',            'test_mystery_15',
+        'test_reverse_2',         'test_max2_5',            'test_mystery_16',
+        'test_fact2_1',           'test_max2_6',            'test_mystery_17',
+        'test_fact2_2',           'test_max2_7',            'test_mystery_18',
+        'test_fact2_3',           'test_max2_8',            'test_mystery_19',
+        'test_zip_1',             'test_max2_9',            'test_mystery_20',
+        'test_zip_2',             'test_max3_1',            'test_mystery_21',
+        'test_mf_1',              'test_max3_2',            'test_mystery_22',
+        'test_mf_2',              'test_max3_3',            'test_mystery_23',
+        'test_mf_3',              'test_max3_4',            'test_mystery_24',
+        'test_mf_4',              'test_max3_5',            'test_mystery_25',
+        'test_mf_5',              'test_max3_6',            'test_mystery_26',
+        'test_mf_6',              'test_max3_7',            'test_mystery_27',
+        'test_mf_7',              'test_max3_8',            'test_sumDoubleAll_1',
+        'test_mf_8',              'test_max3_9',            'test_sumDoubleAll_2',
+        'test_between1',          'test_lengthPlusPlus_1',  'test_fact_1',
+        'test_lengthPlusPlus_2',  'test_fact_2',            'test_lengthPlusPlus_3',
+        'test_fact_3',            'test_lengthPlusPlus_4',  'test_reversePlusPlus_1',
+        ]
+    craftOfFP = map(
+        lambda t: ("CraftOfFP-supported", "CraftOfFP", t, [0], True), craftOfFP)
 
     unimplemented = [
             ("ctor-duplicate", "Duplicate", "one",  [], None),
@@ -163,13 +194,15 @@ def generate_tests(type):
         return (passing                                                                               +
                 map(pytest.mark.xfail(reason="unimplemented"), unimplemented)                         +
                 map(pytest.mark.xfail(reason="translation unimplemented"), translation_unimplemented) +
-                execution_unimplemented
+                execution_unimplemented                                                               +
+                craftOfFP
                )
     if type == 'execution':
         return (passing                                                                               +
                 translation_unimplemented                                                             +
                 map(pytest.mark.xfail(reason="translation unimplemented"), execution_unimplemented)   +
-                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)
+                map(pytest.mark.xfail(reason="unimplemented"), unimplemented)                         +
+                craftOfFP
                )
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('execution'))
