@@ -38,7 +38,6 @@ module PLUTUS-CORE-TRANSLATION
           <fName>   .K                  </fName>
           <params> .VarList:VarList     </params>
           <k multiplicity="?" >.K:K      </k>
-          <jumpId> -1                   </jumpId>
         </function>
       </functions>
       <constructors>
@@ -129,7 +128,6 @@ module PLUTUS-CORE-TRANSLATION
             <modName> MN </modName>
             <fName> NAME </fName>
             <params> #reverse(VARS) </params>
-            <jumpId> JI </jumpId>
             <k>      #concatInsList(#loadOperand(T:Tm, #mkLN("ret")),
                                     ret #useOperand(T:Tm, #mkLN("ret")) .Instructions)
             </k>
@@ -193,8 +191,7 @@ module PLUTUS-CORE-TRANSLATION
 
   rule #useOperand(QN:QualN, LN) => LN
 
-  // To generate the closure to call the function, we grab its `jumpId`
-  // and create the closure.
+  // To load a Qalified name, we generate a closure with no included environment
 
   rule <functions>
          ...
@@ -459,8 +456,7 @@ module PLUTUS-CORE-TRANSLATION
 
   // Converting a lambda is particularly complex. We must:
   //
-  //  - Generate a new function for the inner part of the lambda,
-  //    Its `<jumpId>` is to be used as a pseudo function pointer.
+  //  - Generate a new function for the inner part of the lambda
   //  - Mark variables in the body of the lambda that take their values from
   //    the parameters as `#boundVar`s, so they can correctly access their value
   //    from the closure passed.
