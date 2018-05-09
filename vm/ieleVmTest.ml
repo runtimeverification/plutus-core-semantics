@@ -52,7 +52,7 @@ let test_transaction header (state: (string * Basic.json) list) (tx: Basic.json)
 
 let rec canonicalize assoc =
   List.map (fun (k,v) -> match (k,v) with
-  | "code", `String code -> "code",`String(if code = "" then "" else if String.sub code 0 2 = "0x" then code else to_hex (assemble code))
+  | "code", `String code -> "code",`String(if code = "" then "" else if String.sub code 0 2 = "0x" then code else to_hex_unsigned (assemble code))
   | _, `Assoc a -> (k,`Assoc(sort_assoc_list (canonicalize a)))
   | _ -> k,v) assoc
 
