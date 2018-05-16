@@ -1,3 +1,5 @@
+Sys.catch_break true;;
+
 let usage = "Usage: vm PORT BIND_ADDRESS [debug]"
 let arg_error msg = prerr_string msg; prerr_newline (); prerr_endline usage; exit 1;;
 

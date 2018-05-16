@@ -18,20 +18,17 @@ end
 let getOrUpdate hash key default =
   try Hashtbl.find hash key
   with Not_found -> let value = default () in Hashtbl.add hash key value; value
-let getOrUpdateLocal local_hash key default =
-  getOrUpdate (ThreadLocal.getOrUpdate local_hash (fun () -> Hashtbl.create 10))
-    key default
 
 module Make ( W : World.WorldState ) : KWorldState = struct
   module IntHash = Hashtbl.Make(Z)
 
-  let accounts = ThreadLocal.create 10
-  let storages = ThreadLocal.create 10
-  let codes    = ThreadLocal.create 10
-  let blockhashes = ThreadLocal.create 10
+  let accounts = Hashtbl.create 10
+  let storages = Hashtbl.create 10
+  let codes    = Hashtbl.create 10
+  let blockhashes = Hashtbl.create 10
 
   let get_account acct =
-    getOrUpdateLocal accounts acct (fun () -> W.get_account (of_z_width 20 acct))
+    getOrUpdate accounts acct (fun () -> W.get_account (of_z_width 20 acct))
 
   let get_balance acct = to_z_unsigned (get_account acct).balance
   let get_nonce acct = to_z_unsigned (get_account acct).nonce
@@ -41,18 +38,18 @@ module Make ( W : World.WorldState ) : KWorldState = struct
     Bytes.length account.balance <> 0 || Bytes.length account.nonce <> 0
 
   let get_storage_data acct index =
-    let map = getOrUpdateLocal storages acct (fun () -> Hashtbl.create 10) in
+    let map = getOrUpdate storages acct (fun () -> Hashtbl.create 10) in
     getOrUpdate map index (fun () -> to_z (W.get_storage_data (of_z_width 20 acct) (of_z index)))
 
   let get_code acct =
-    getOrUpdateLocal codes acct (fun () -> Bytes.to_string (W.get_code (of_z_width 20 acct)))
+    getOrUpdate codes acct (fun () -> Bytes.to_string (W.get_code (of_z_width 20 acct)))
 
   let get_blockhash offset =
-    getOrUpdateLocal blockhashes offset (fun () -> to_z_unsigned (W.get_blockhash (Z.to_int offset)))
+    getOrUpdate blockhashes offset (fun () -> to_z_unsigned (W.get_blockhash (Z.to_int offset)))
 
   let clear () =
-    ThreadLocal.remove accounts;
-    ThreadLocal.remove storages;
-    ThreadLocal.remove codes;
-    ThreadLocal.remove blockhashes
+    Hashtbl.clear accounts;
+    Hashtbl.clear storages;
+    Hashtbl.clear codes;
+    Hashtbl.clear blockhashes
 end
