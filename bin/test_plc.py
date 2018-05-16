@@ -172,13 +172,9 @@ def generate_tests(type):
 
 @pytest.mark.parametrize("file, mod, fct, args, expected", generate_tests('execution'))
 def test_execution(file, mod, fct, args, expected):
-    krun_args = [bin("kplc"), "run", "execution", base("test/", file +".pre.plc"),
-                 "-cMAINMOD=#token(\"" + mod + "\", \"UpperName\")",
-                 "-pMAINMOD=printf %s",
-                 "-cMAINFCT=#token(\"" + fct + "\", \"LowerName\")",
-                 "-pMAINFCT=printf %s",
-                 "-cMAINARGS=" + kast_args(args),
-                 "-pMAINARGS=printf %s"]
+    krun_args = [ bin("kplc"), "run", "execution"
+                , base("test/", file +".pre.plc"), mod, fct
+                , "--args"] + map(toPlutusArg, args)
     print("'" + "' '".join(krun_args) + "'", file=sys.stderr)
     krun = Popen(krun_args, stdout=PIPE)
     (output, err) = krun.communicate()
@@ -215,12 +211,6 @@ def test_translation(file, mod, fct, args, expected):
     list(map(print, filter(line_is_interesting, output.replace('`<', "\n`<").splitlines())))
 
     assert exit_code == 0
-
-def kast_args(args):
-    if args == []:
-        return "`.List{\"tmList\"}`(.KList)"
-    else:
-        return "tmList("+ toPlutusArg(args[0]) + "," + kast_args(args[1:]) + ")"
 
 def extract_exec_output(config):
     config_xml = xml.dom.minidom.parseString(config)

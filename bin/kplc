@@ -11,13 +11,31 @@ def base(*args)     : return os.path.join(_base, *args)
 def bin(*args)      : return base('bin', *args)
 def build(*args)    : return base('.build', *args)
 
+def kast_args(args):
+    if args == []:
+        return "`.List{\"tmList\"}`(.KList)"
+    else:
+        return "tmList("+ args[0] + "," + kast_args(args[1:]) + ")"
+
 # Runners
 # -------
 
-def run_krun(driver, file, *args): 
+def run_krun(args):
     os.environ['K_OPTS'] = '-Xss500m'
-    print('krun',  '--directory', build(driver), file, *args, file=sys.stderr)
-    os.execlp('krun',  'krun', '--directory', build(driver), file, *args)
+    command = ['krun']
+    command += ['--directory', build(args.driver)]
+    command += args.kopts
+    command += [args.program]
+    if args.driver == 'execution':
+        command += [ "-pMAINMOD=printf %s",
+                     "-cMAINMOD=#token(\"" + args.module + "\", \"UpperName\")",
+                     "-cMAINFCT=#token(\"" + args.main + "\", \"LowerName\")",
+                     "-pMAINFCT=printf %s",
+                     "-cMAINARGS=" + kast_args(args.args),
+                     "-pMAINARGS=printf %s"
+                   ]
+    print("'" + "' '".join(command) + "'", file=sys.stderr) #DEBUG
+    os.execlp('krun',  *command)
 
 def run_kprove(driver, spec, init, *args):
     os.stat(spec)
@@ -31,22 +49,25 @@ def run_kprove(driver, spec, init, *args):
 def main():
     argparser = ArgumentParser(description='krun a Plutus Core program')
     subparsers = argparser.add_subparsers(dest='subparser')
-    run = subparsers.add_parser('run', help='Run a Plutus Program using a particular kompiled definition')
-    run.add_argument('driver',  help='kompiled definition to use in `.build`')
-    run.add_argument('program', help='Plutus Core program')
-    run.add_argument('args',    nargs=REMAINDER, help='additional arguments to pass to `krun`')
+    run = subparsers.add_parser('run',           help='Run a Plutus Program using a particular kompiled definition')
+    run.add_argument('driver',                   help='kompiled definition to use in `.build`')
+    run.add_argument('program',                  help='Plutus Core program')
+    run.add_argument('module',        nargs='?', help='Main module (for exection only)')
+    run.add_argument('main',          nargs='?', help='Main function (for execution only)')
+    run.add_argument('kopts',         nargs='*', help='options to pass to `krun`')
+    run.add_argument('--args',        nargs='*', help="""arguments to pass to the program""")
 
     prove = subparsers.add_parser('prove', help='Check a Plutus Program against a reachability specification')
     prove.add_argument('driver' , help='kompiled definition to use in `.build`')
     prove.add_argument('spec'   , help='reachability spec')
     prove.add_argument('program', help='Plutus Core program')
-    prove.add_argument('args',    nargs=REMAINDER, help='additional arguments to pass to `krun`')
+    prove.add_argument('kopts',    nargs=REMAINDER, help='additional arguments to pass to `krun`')
 
     args = argparser.parse_args()
     if args.subparser == 'run':
-        run_krun(args.driver,            args.program, *args.args)
+        run_krun(args)
     elif args.subparser == 'prove':
-        run_krun(args.driver, args.spec, args.program, *args.args)
+        run_krun(args.driver, args.spec, args.program, *args.kopts)
 
 if __name__ == '__main__':
     main()
