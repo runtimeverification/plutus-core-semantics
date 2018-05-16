@@ -15,7 +15,12 @@ def kast_args(args):
     if args == []:
         return "`.List{\"tmList\"}`(.KList)"
     else:
-        return "tmList("+ args[0] + "," + kast_args(args[1:]) + ")"
+        return "tmList("+ kast_arg(args[0]) + "," + kast_args(args[1:]) + ")"
+
+def kast_arg(arg):
+    if arg.startswith('#'):
+        return '#token("' + str(arg) + '", "ByStr")'
+    return     '#token("' +     arg  + '", "Int")'
 
 # Runners
 # -------
