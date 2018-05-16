@@ -61,8 +61,8 @@ def toPlutusReturn(expected):
     return []
 
 def toPlutusArg(arg):
-    if type(arg) is int: return "#token(\""  + str(arg) + "\", \"Int\")"
-    if type(arg) is str: return "#token(\"#" +      arg + "\", \"ByStr\")"
+    if type(arg) is int: return        str(arg)
+    if type(arg) is str: return "#" +      arg
 
 def toIeleArg(arg):
     if type(arg) is int: return hex(arg)
