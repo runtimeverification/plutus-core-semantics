@@ -69,12 +69,10 @@ let k_to_log (log: k) : log_entry = match log with
   [KApply3(LbllogEntry, [Int address], [List(SortList,Lbl_List_,topics)], data)] ->
   let z_topics = List.map k_to_z topics in
   let module Def = (val Plugin.get ()) in
-  let bytes_data = 
-    match Def.eval (KApply(LblunparseByteStack, [data])) [Bottom] with
-    | [String bytes] -> Bytes.of_string bytes
-    | _ -> failwith "Invalid value where string was expected"
-  in
+  (match data with
+  | [Bytes bytes_data] ->
   {address=World.of_z_width 20 address;topics=List.map (World.of_z_width 32) z_topics;data=bytes_data}
+  | _ -> failwith "Invalid value where Bytes was expected")
 | _ -> failwith "Invalid value found where SubstateLogEntry was expected"
 
 let z_of_rlp rlp =
