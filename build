@@ -6,6 +6,7 @@ base="$(cd "$(dirname "$0")"; pwd)"
 build_dir="$base/.build"
 k_submodule="$build_dir/k"
 k_bin_dir="$k_submodule/k-distribution/target/release/k/bin"
+plutus_core_kompiled="$build_dir/plutus-core"
 
 # Dependencies
 # ============
@@ -36,11 +37,18 @@ init_env() {
     export PATH="$PATH:$k_bin_dir"
 }
 
+# K Specifications
+# ================
+
+kompile_spec() {
+    kompile --backend ocaml plutus-core.k --directory "$plutus_core_kompiled"
+}
+
 # Main
 # ====
 
 init_env
-[[ -x "$k_submodule/.git"  ]]                   || download_k
+[[ -f "$k_submodule/.git"  ]]                   || download_k
 [[ -x "$build_dir/opam/4.03.0+k/bin/ocamlc" ]]  || build_ocamlc
 [[ -x "$k_bin_dir/kompile" ]]                   || build_k
-kompile --version
+kompile_spec
