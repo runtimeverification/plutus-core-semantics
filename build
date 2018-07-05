@@ -8,10 +8,18 @@ k_submodule="$build_dir/k"
 k_bin_dir="$k_submodule/k-distribution/target/release/k/bin"
 plutus_core_kompiled="$build_dir/plutus-core"
 
+# Basic Utility functions
+# =======================
+
+log() {
+    echo >&2 "=== " $@
+}
+
 # Dependencies
 # ============
 
 download_k() {
+    log "Downloading K"
     git submodule update --init --recursive .build/k
 }
 
@@ -20,6 +28,7 @@ download_k() {
 #
 export OPAMROOT="$build_dir/opam"
 build_ocamlc() {
+    log "Setting up OCaml"
     opam init --quiet --no-setup --yes
     opam repository add k "$k_submodule/k-distribution/target/release/k/lib/opam" \
         || opam repository set-url k "$k_submodule/k-distribution/target/release/k/lib/opam"
@@ -29,6 +38,7 @@ build_ocamlc() {
 }
 
 build_k() {
+    log "Building K"
 	(cd "$k_submodule" && mvn package -q -DskipTests)
 }
 
@@ -41,6 +51,7 @@ init_env() {
 # ================
 
 kompile_spec() {
+    log "kompiling Plutus Core"
     kompile --backend ocaml plutus-core.k --directory "$plutus_core_kompiled"
 }
 
