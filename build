@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -eu     # Fail on non-zero exit code, undefined variable
+
+base="$(cd "$(dirname "$0")"; pwd)"
