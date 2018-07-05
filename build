@@ -50,9 +50,14 @@ init_env() {
 # K Specifications
 # ================
 
-kompile_spec() {
+kompile_def() {
     log "kompiling Plutus Core"
-    kompile --backend ocaml plutus-core.k --directory "$plutus_core_kompiled"
+    kompile --backend java plutus-core.k --directory "$plutus_core_kompiled" "$@"
+}
+
+kprove_spec() {
+    log "Checking spec"
+    kprove --debug --verbose --directory "$plutus_core_kompiled" plutus-core-spec.k /dev/null
 }
 
 # Main
@@ -62,4 +67,5 @@ init_env
 [[ -f "$k_submodule/.git"  ]]                   || download_k
 [[ -x "$build_dir/opam/4.03.0+k/bin/ocamlc" ]]  || build_ocamlc
 [[ -x "$k_bin_dir/kompile" ]]                   || build_k
-kompile_spec
+kompile_def
+kprove_spec
