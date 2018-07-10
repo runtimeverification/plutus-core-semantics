@@ -57,7 +57,7 @@ kompile_def() {
 
 kprove_spec() {
     log "Checking spec"
-    kprove --debug --verbose --directory "$plutus_core_kompiled" plutus-core-spec.k /dev/null
+    kprove --directory "$plutus_core_kompiled" plutus-core-spec.k x.plc
 }
 
 # Main
