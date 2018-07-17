@@ -4,6 +4,7 @@ module PLUTUS-CORE-SYNTAX
     syntax TyBuiltinName ::= "(" "integer" ")"
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Constant      ::= Size "!" Int                                                [function]
+                           | Size
 
 
     syntax Type      ::= "(" "con" TyBuiltinName ")"
