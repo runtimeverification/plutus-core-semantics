@@ -3,7 +3,7 @@ module PLUTUS-CORE-SYNTAX
 
     syntax TyBuiltinName ::= "(" "integer" ")"
     syntax Size          ::= Int // TODO: This should not allow negative integers
-    syntax Constant      ::= Size "!" Int                            [function]
+    syntax Constant      ::= Size "!" Int                                                [function]
 
 
     syntax Type      ::= "(" "con" TyBuiltinName ")"
@@ -22,6 +22,6 @@ module PLUTUS-CORE
 
     rule S:Int ! V:Int => int(S, V) when -2 ^Int(8 *Int S:Int -Int 1) <=Int V
                                  andBool V <Int 2 ^Int(8 *Int S:Int -Int 1)
-    rule S:Int ! V:Int => (error (con (integer)))                       [owise]
+    rule S:Int ! V:Int => (error (con (integer)))                                           [owise]
 
 endmodule
