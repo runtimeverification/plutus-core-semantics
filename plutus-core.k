@@ -21,8 +21,9 @@ module PLUTUS-CORE
     syntax BoundedInt ::= int(Int , Int)
     syntax Constant   ::= BoundedInt
 
-    rule S:Int ! V:Int => int(S, V) when -2 ^Int(8 *Int S:Int -Int 1) <=Int V
-                                 andBool V <Int 2 ^Int(8 *Int S:Int -Int 1)
-    rule S:Int ! V:Int => (error (con (integer)))                                           [owise]
+    rule S:Int ! V:Int => int(S, V)
+      requires -2 ^Int(8 *Int S:Int -Int 1) <=Int V andBool V  <Int 2 ^Int(8 *Int S:Int -Int 1)
+    rule S:Int ! V:Int => (error (con (integer)))
+      requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
 
 endmodule
