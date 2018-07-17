@@ -1,7 +1,8 @@
 module PLUTUS-CORE-SYNTAX
     imports INT
 
-    syntax Constant   ::= Int "!" Int                                [function]
+    syntax Size          ::= Int // TODO: This should not allow negative integers
+    syntax Constant      ::= Size "!" Int                            [function]
 
     syntax Term       ::= "(" "error" ")"
                         | Value
