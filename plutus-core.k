@@ -1,16 +1,37 @@
 module PLUTUS-CORE-SYNTAX
     imports INT
 
+    syntax Name
+    syntax Var           ::= Name
+    syntax TyVar         ::= Name
+    syntax TyBuiltinName ::= Name
+    syntax BuiltinName   ::= Name
+
+    syntax ByteString
+
     syntax TyBuiltinName ::= "(" "integer" ")"
     syntax Size          ::= Int // TODO: This should not allow negative integers
-    syntax Constant      ::= Size "!" Int                                                [function]
+    syntax Constant      ::= Size "!" Int        [function]
+                           | Size "!" ByteString [function]
                            | Size
 
+    syntax Term ::= "(" "run" Term ")"
+                  | "[" Term TyValue "]"
+                  | "[" Term Term "]"
+                  | "(" "error" Type ")"
+                  | Value
 
-    syntax Type      ::= "(" "con" TyBuiltinName ")"
-    syntax Term       ::= "(" "error" Type ")"
-                        | Value
-    syntax Value      ::= "(" "con" Constant ")"
+    syntax Value ::= "(" "fix" Var TyValue Term ")"
+                   | "(" "abs" TyVar Kind Value ")"
+                   | "(" "wrap" TyVar TyValue Value ")"
+                   | "(" "lam" Var TyValue Term ")"
+                   | "(" "con" Constant ")"
+
+    syntax Type ::= "(" "con" TyBuiltinName ")"
+
+    syntax TyValue
+
+    syntax Kind
 
 endmodule
 
