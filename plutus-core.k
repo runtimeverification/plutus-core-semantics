@@ -11,6 +11,7 @@ module PLUTUS-CORE-SYNTAX
 
     syntax TyBuiltinName ::= "(" "integer" ")"
     syntax Size          ::= Int // TODO: This should not allow negative integers
+    syntax Version
     syntax Constant      ::= Size "!" Int        [function]
                            | Size "!" ByteString [function]
                            | Size
@@ -27,11 +28,31 @@ module PLUTUS-CORE-SYNTAX
                    | "(" "lam" Var TyValue Term ")"
                    | "(" "con" Constant ")"
 
-    syntax Type ::= "(" "con" TyBuiltinName ")"
+    syntax Type ::= TyVar
+                  | "(" "rec" Type ")"
+                  | "(" "fun" Type Type ")"
+                  | "(" "all" TyVar Kind Type ")"
+                  | "(" "fix" TyVar Type ")"
+                  | "(" "lam" TyVar Kind Type ")"
+                  | "[" Type Type "]"
+                  | "(" "con" TyBuiltinName ")"
+                  | TyValue
 
-    syntax TyValue
+    syntax TyValue ::= "(" "rec" TyValue ")"
+                     | "(" "fun" TyValue TyValue ")"
+                     | "(" "all" TyVar Kind TyValue ")"
+                     | "(" "fix" TyVar TyValue ")"
+                     | "(" "lam" TyVar Kind Type ")"
+                     | NeutralTy
 
-    syntax Kind
+    syntax NeutralTy ::= TyVar
+                       | "[" NeutralTy TyValue "]"
+
+    syntax Kind ::= "(" "type" ")"
+                  | "(" "fun" Kind Kind ")"
+                  | "(" "size" ")"
+
+    syntax Program ::= "(" "version" Version Term ")"
 
 endmodule
 
