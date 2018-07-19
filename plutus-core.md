@@ -36,7 +36,6 @@ module PLUTUS-CORE-SYNTAX
                   | "(" "fix" TyVar Type ")"
                   | "(" "lam" TyVar Kind Type ")"
                   | "[" Type Type "]"
-                  | "(" "con" TyBuiltinName ")"
                   | TyValue
 
     syntax TyValue ::= "(" "rec" TyValue ")"
@@ -44,6 +43,7 @@ module PLUTUS-CORE-SYNTAX
                      | "(" "all" TyVar Kind TyValue ")"
                      | "(" "fix" TyVar TyValue ")"
                      | "(" "lam" TyVar Kind Type ")"
+                     | "(" "con" TyBuiltinName ")"
                      | NeutralTy
 
     syntax NeutralTy ::= TyVar
