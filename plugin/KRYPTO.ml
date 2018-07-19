@@ -106,7 +106,7 @@ let hook_bn128ate c lbl sort config ff = match c with
   [List(_, _, a)], [List(_, _, b)] ->
   let g1a = List.map get_pt a in
   let g2b = List.map get_pt_g2 b in
-  let fq12c = List.map BN128Pairing.pairing (List.combine g2b g1a) in
+  let fq12c = List.map (BN128Pairing.pairing ~exponentiate:false) (List.combine g2b g1a) in
   let product = List.fold_left BN128Elements.FQP.mulp BN128Elements.FQP.one_fq12 fq12c in
-  [Bool (product = BN128Elements.FQP.one_fq12)]
+  [Bool ((BN128Elements.FQP.pow product BN128Pairing.final_exponent) = BN128Elements.FQP.one_fq12)]
 | _ -> failwith "bn128ate"
