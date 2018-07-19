@@ -46,7 +46,6 @@ module PLUTUS-CORE-COMMON
                   | "(" "fun" Type Type ")"
                   | "(" "all" TyVar Kind Type ")"
                   | "(" "fix" TyVar Type ")"
-                  | "(" "lam" TyVar Kind Type ")"
                   | "[" Type Type "]"
                   | TyValue
 
