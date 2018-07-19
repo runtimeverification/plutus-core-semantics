@@ -19,4 +19,4 @@ The file `plutus-core.md` defines the Plutus Core language, and the file
 - Underspecified grammar, for example [ Term TermList ] doesn't parse
 - `addInteger` test has no size
 - `(fix ...)` rule changes type (Fig. 9)
- 
+- In syntax, (Fig. 2), lambda terms take in Type Values, but in the semantics (Fig. 9), they take in any Type
