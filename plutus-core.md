@@ -1,8 +1,19 @@
 ```k
 module PLUTUS-CORE-SYNTAX
-    imports INT
+    imports PLUTUS-CORE-COMMON
+    syntax LowerName     ::= #LowerId [token, autoreject]
+    syntax UpperName     ::= #UpperId [token, autoReject]
+endmodule
 
-    syntax Name          ::= r"[a-zA-Z][a-zA-Z0-9\\_']*"                        [token, autoReject]
+module PLUTUS-CORE-COMMON
+    imports INT
+    imports BUILTIN-ID-TOKENS
+
+    syntax LowerName
+    syntax UpperName
+
+    // TODO: make Name have same regex as in spec
+    syntax Name          ::= LowerName | UpperName
     syntax Var           ::= Name
     syntax TyVar         ::= Name
     syntax TyBuiltinName ::= Name
@@ -55,10 +66,12 @@ module PLUTUS-CORE-SYNTAX
 
     syntax Program ::= "(" "version" Version Term ")"
 
+    syntax KResult ::= Value
+
 endmodule
 
 module PLUTUS-CORE
-    imports PLUTUS-CORE-SYNTAX
+    imports PLUTUS-CORE-COMMON
     configuration <k> $PGM </k>
 
     syntax BoundedInt ::= int(Int , Int)
