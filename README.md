@@ -12,3 +12,11 @@ The file `plutus-core.md` defines the Plutus Core language, and the file
 [spec]:        https://github.com/psygnisfive/Plutus-Core-Spec
 [pandoc]:      https://pandoc.org
 [ninja-build]: https://ninja-build.org
+
+# Percieved mistakes / shortcommings in the specification
+
+- `[(con integer) s]` is a type but `s` is a size (which is not a type.)
+- Underspecified grammar, for example [ Term TermList ] doesn't parse
+- `addInteger` test has no size
+- `(fix ...)` rule changes type (Fig. 9)
+ 
