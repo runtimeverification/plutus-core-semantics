@@ -17,7 +17,7 @@ module PLUTUS-CORE-SYNTAX
                            | Size
 
     syntax Term ::= "(" "run" Term ")"
-                  | "[" Term TyValue "]"
+                  | "{" Term TyValue "}"
                   | "[" Term Term "]"
                   | "(" "error" Type ")"
                   | Value
