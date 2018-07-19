@@ -51,8 +51,7 @@ init_env() {
 # ================
 
 kompile_def() {
-    log "kompiling Plutus Core"
-    kompile --backend java plutus-core.k --directory "$plutus_core_kompiled" "$@"
+    ninja
 }
 
 kprove_spec() {

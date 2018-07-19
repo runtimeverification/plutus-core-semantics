@@ -1,0 +1,14 @@
+# Infrastructure generic to all K Projects
+# ========================================
+
+rule kompile
+    command     = kompile --backend $backend --debug --directory $out $in
+    description = "Kompiling: $out"
+
+# Plutus specific infrastructure
+# ==============================
+
+builddir = .build
+
+build $builddir/plutus-core: kompile plutus-core.k
+    backend = java
