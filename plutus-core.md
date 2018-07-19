@@ -2,19 +2,19 @@
 module PLUTUS-CORE-SYNTAX
     imports INT
 
-    syntax Name          ::= r"[a-zA-Z][a-zA-Z0-9\\_']*" [token, autoReject]
+    syntax Name          ::= r"[a-zA-Z][a-zA-Z0-9\\_']*"                        [token, autoReject]
     syntax Var           ::= Name
     syntax TyVar         ::= Name
     syntax TyBuiltinName ::= Name
     syntax BuiltinName   ::= Name
 
-    syntax ByteString ::= r"\\#[a-fA-F0-9]([a-fA-F0-9])*" [token]
+    syntax ByteString ::= r"\\#[a-fA-F0-9]([a-fA-F0-9])*"                                   [token]
 
     syntax TyBuiltinName ::= "(" "integer" ")"
     syntax Size          ::= Int // TODO: This should not allow negative integers
-    syntax Version       ::= r"[0-9]+(.[0-9]+)*" [token]
-    syntax Constant      ::= Size "!" Int        [function]
-                           | Size "!" ByteString [function]
+    syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
+    syntax Constant      ::= Size "!" Int                                                [function]
+                           | Size "!" ByteString                                         [function]
                            | Size
 
     syntax Term ::= "(" "run" Term ")"
