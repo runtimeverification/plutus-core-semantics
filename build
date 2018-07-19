@@ -13,9 +13,8 @@ plutus_core_kompiled="$build_dir/plutus-core"
 # Basic Utility functions
 # =======================
 
-log() {
-    echo >&2 "=== " $@
-}
+log()  { echo >&2 "=== " $@ ; }
+fail() { log "$@"; exit 1   ; }
 
 # Dependencies
 # ============
@@ -45,6 +44,7 @@ build_k() {
 }
 
 init_env() {
+    type -t ninja > /dev/null || fail "ninja-build not available. Giving up."
     eval $(opam config env)
     export PATH="$PATH:$k_bin_dir"
 }
