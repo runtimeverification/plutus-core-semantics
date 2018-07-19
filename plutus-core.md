@@ -12,7 +12,7 @@ module PLUTUS-CORE-SYNTAX
 
     syntax TyBuiltinName ::= "(" "integer" ")"
     syntax Size          ::= Int // TODO: This should not allow negative integers
-    syntax Version       ::= r"[0-9]+(.[0-9]+)∗" [token]
+    syntax Version       ::= r"[0-9]+(.[0-9]+)*" [token]
     syntax Constant      ::= Size "!" Int        [function]
                            | Size "!" ByteString [function]
                            | Size
