@@ -1,3 +1,4 @@
+```k
 module PLUTUS-CORE-SPEC
     imports PLUTUS-CORE
 
@@ -10,3 +11,4 @@ module PLUTUS-CORE-SPEC
     rule <k> 2 ! -32768 </k> => <k> int(2, -32768)          </k>                    [specification]
     rule <k> 2 ! -32769 </k> => <k> (error (con (integer))) </k>                    [specification]
 endmodule
+```

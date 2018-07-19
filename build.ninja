@@ -1,14 +1,30 @@
+# This ninja-build file requires pandoc-tangle, kompile, etc to be in PATH. As such it is not meant
+# to be run directly, but through the ./build script.
+
 # Infrastructure generic to all K Projects
 # ========================================
 
+builddir = .build
+
 rule kompile
-    command     = kompile --backend $backend --debug --directory $out $in
-    description = "Kompiling: $out"
+    description     = Kompiling: $out
+    command         = kompile --backend $backend --debug --directory $out $in
+
+tangle_selector = .k
+tangle_repository = $builddir/pandoc-tangle
+rule tangle
+    description = Kompiling: $out
+    command     = LUA_PATH=$tangle_repository/?.lua    $
+                  pandoc $in -o $out --metadata=code:$tangle_selector --to "$tangle_repository/tangle.lua"
 
 # Plutus specific infrastructure
 # ==============================
 
-builddir = .build
+tangleddir = $builddir/tangled/
 
-build $builddir/plutus-core: kompile plutus-core.k
-    backend = java
+build $builddir/plutus-core          : kompile $tangleddir/plutus-core.k
+    backend         = java
+build $tangleddir/plutus-core.k      : tangle plutus-core.md
+build $tangleddir/plutus-core-spec.k : tangle plutus-core-spec.md
+
+default $tangleddir/plutus-core-spec.k $builddir/plutus-core

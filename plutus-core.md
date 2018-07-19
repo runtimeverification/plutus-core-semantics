@@ -1,3 +1,4 @@
+```k
 module PLUTUS-CORE-SYNTAX
     imports INT
 
@@ -69,3 +70,4 @@ module PLUTUS-CORE
       requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
 
 endmodule
+```
