@@ -28,7 +28,8 @@ module PLUTUS-CORE-COMMON
                            | Size "!" ByteString                                         [function]
                            | Size
 
-    syntax Term ::= "(" "run" Term ")"
+    syntax Term ::= Var
+                  | "(" "run" Term ")"
                   | "{" Term TyValue "}"
                   | "[" Term Term "]"
                   | "(" "error" Type ")"
