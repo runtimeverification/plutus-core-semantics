@@ -49,3 +49,8 @@ build test : phony check-spec
 build check-spec : kprove $tangleddir/plutus-core-spec.k $
                  | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
     directory = $builddir/plutus-core-java
+build .build/t/builtin-app.plc.out : krun t/builtin-app.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+    directory = $builddir/plutus-core-ocaml
+
+build .build/t/builtin-app.plc.test : check-test-result .build/t/builtin-app.plc.out
+    expected = t/builtin-app.plc.expected
