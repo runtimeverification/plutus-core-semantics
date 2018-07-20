@@ -6,9 +6,6 @@ base="$(cd "$(dirname "$0")"; pwd)"
 build_dir="$base/.build"
 k_submodule="$build_dir/k"
 k_bin_dir="$k_submodule/k-distribution/target/release/k/bin"
-pandoc_tangle_submodule="$build_dir/k"
-pandoc_tangle_bin_dir="$pandoc_tangle_submodule/"
-plutus_core_kompiled="$build_dir/plutus-core"
 
 # Basic Utility functions
 # =======================
@@ -49,18 +46,6 @@ init_env() {
     export PATH="$PATH:$k_bin_dir"
 }
 
-# K Specifications
-# ================
-
-kompile_def() {
-    ninja
-}
-
-kprove_spec() {
-    log "Checking spec"
-    kprove --directory "$plutus_core_kompiled" .build/tangled/plutus-core-spec.k
-}
-
 # Main
 # ====
 
@@ -68,5 +53,4 @@ init_env
 [[ -f "$k_submodule/.git"  ]]                   || download_k
 [[ -x "$build_dir/opam/4.03.0+k/bin/ocamlc" ]]  || build_ocamlc
 [[ -x "$k_bin_dir/kompile" ]]                   || build_k
-kompile_def
-kprove_spec
+ninja
