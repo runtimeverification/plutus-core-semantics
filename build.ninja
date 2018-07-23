@@ -13,7 +13,7 @@ rule kompile
 
 rule krun
     description     = Running $in
-    command         = krun --debug --directory $directory $in
+    command         = krun --debug --directory $directory $in > $out
 
 rule kprove
     description     = Checking specification $in
