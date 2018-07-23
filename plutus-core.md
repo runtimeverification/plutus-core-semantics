@@ -24,8 +24,8 @@ module PLUTUS-CORE-COMMON
     syntax TyBuiltinName ::= "(" "integer" ")"
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
-    syntax Constant      ::= Size "!" Int                                                [function]
-                           | Size "!" ByteString                                         [function]
+    syntax Constant      ::= Size "!" Int
+                           | Size "!" ByteString
                            | Size
 
     syntax Term ::= Var
@@ -75,12 +75,11 @@ module PLUTUS-CORE
     configuration <k> $PGM </k>
 
     syntax BoundedInt ::= int(Int , Int)
-    syntax Constant   ::= BoundedInt
+    syntax Term       ::= BoundedInt
 
-    rule S:Int ! V:Int => int(S, V)
+    rule (con S:Int ! V:Int) => int(S, V)
       requires -2 ^Int(8 *Int S:Int -Int 1) <=Int V andBool V  <Int 2 ^Int(8 *Int S:Int -Int 1)
-    rule S:Int ! V:Int => (error (con (integer)))
+    rule (con S:Int ! V:Int) => (error (con (integer)))
       requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
-
 endmodule
 ```
