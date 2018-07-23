@@ -8,7 +8,7 @@ builddir = .build
 testdir  = $builddir/test
 
 rule kompile
-    description     = Kompiling $in
+    description     = Kompiling $in ($backend)
     command         = kompile --backend $backend --debug --directory $$(dirname $$(dirname $out)) $in
 
 rule krun
