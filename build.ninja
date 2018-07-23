@@ -9,7 +9,7 @@ testdir  = $builddir/test
 
 rule kompile
     description     = Kompiling: $out
-    command         = kompile --backend $backend --debug --directory $out $in
+    command         = kompile --backend $backend --debug --directory $$(dirname $$(dirname $out)) $in
 
 rule krun
     description     = Kompiling: $out
@@ -26,14 +26,18 @@ rule tangle
     command     = LUA_PATH=$tangle_repository/?.lua    $
                   pandoc $in -o $out --metadata=code:$tangle_selector --to "$tangle_repository/tangle.lua"
 
+rule check-test-result
+    description = Checking $in
+    command = git diff --no-index $in $expected
+
 # Plutus specific infrastructure
 # ==============================
 
 tangleddir = $builddir/tangled/
 
-build $builddir/plutus-core-java     : kompile $tangleddir/plutus-core.k
+build $builddir/plutus-core-java/plutus-core-kompiled/timestamp : kompile $tangleddir/plutus-core.k
     backend = java
-build $builddir/plutus-core-ocaml    : kompile $tangleddir/plutus-core.k
+build $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp : kompile $tangleddir/plutus-core.k
     backend = ocaml
 build $tangleddir/plutus-core.k      : tangle plutus-core.md
 build $tangleddir/plutus-core-spec.k : tangle plutus-core-spec.md
@@ -42,5 +46,6 @@ build $tangleddir/plutus-core-spec.k : tangle plutus-core-spec.md
 # ---------------
 
 build test : phony check-spec
-build check-spec : kprove $tangleddir/plutus-core-spec.k
+build check-spec : kprove $tangleddir/plutus-core-spec.k $
+                 | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
     directory = $builddir/plutus-core-java
