@@ -8,11 +8,11 @@ builddir = .build
 testdir  = $builddir/test
 
 rule kompile
-    description     = Kompiling: $out
+    description     = Kompiling $in
     command         = kompile --backend $backend --debug --directory $$(dirname $$(dirname $out)) $in
 
 rule krun
-    description     = Kompiling: $out
+    description     = Kompiling: $in
     command         = kompile --backend $backend --debug --directory $out $in
 
 rule kprove
@@ -22,7 +22,7 @@ rule kprove
 tangle_selector = .k
 tangle_repository = $builddir/pandoc-tangle
 rule tangle
-    description = Kompiling: $out
+    description = Tangling $in
     command     = LUA_PATH=$tangle_repository/?.lua    $
                   pandoc $in -o $out --metadata=code:$tangle_selector --to "$tangle_repository/tangle.lua"
 
