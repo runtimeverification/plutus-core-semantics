@@ -12,7 +12,7 @@ rule kompile
     command         = kompile --backend $backend --debug --directory $$(dirname $$(dirname $out)) $in
 
 rule krun
-    description     = Running $in
+    description     = Running $in ($directory)
     command         = krun --debug --directory $directory $in > $out
 
 rule kprove
