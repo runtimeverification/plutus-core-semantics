@@ -17,7 +17,8 @@ The file `plutus-core.md` defines the Plutus Core language, and the file
 Percieved mistakes / shortcommings in the specification
 =======================================================
 
-- `[(con integer) s]` is a type but `s` is a size (which is not a type.)
+- Are sizes supposed to be both Constants and TyConstants, or should they only be TyConstants
+
 - Underspecified grammar, for example [ Term TermList ] doesn't parse
 - `addInteger` test has no size
 - `(fix ...)` rule changes type (Fig. 9)
