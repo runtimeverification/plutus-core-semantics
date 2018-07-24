@@ -22,18 +22,24 @@ module PLUTUS-CORE-COMMON
     syntax ByteString ::= r"\\#[a-fA-F0-9]([a-fA-F0-9])*"                                   [token]
 
     syntax TyBuiltinName ::= "(" "integer" ")"
+    syntax BuiltinName   ::= "addInteger"
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
     syntax Constant      ::= Size "!" Int
                            | Size "!" ByteString
-                           | Size
+                           | BuiltinName
+
+    syntax TyConstant    ::= Size
+                           | TyBuiltinName
 
     syntax Term ::= Var
                   | "(" "run" Term ")"
                   | "{" Term TyValue "}"
-                  | "[" Term Term "]"
-                  | "(" "error" Type ")"
+                  | "[" Term Term "]"                                                      [strict]
+                  | Error
                   | Value
+    syntax Error ::= "(" "error" Type ")"
+    syntax KResult    ::= Error
 
     syntax Value ::= "(" "fix" Var TyValue Term ")"
                    | "(" "abs" TyVar Kind Value ")"
@@ -66,8 +72,6 @@ module PLUTUS-CORE-COMMON
 
     syntax Program ::= "(" "version" Version Term ")"
 
-    syntax KResult ::= Value
-
 endmodule
 
 module PLUTUS-CORE
@@ -76,10 +80,22 @@ module PLUTUS-CORE
 
     syntax BoundedInt ::= int(Int , Int)
     syntax Term       ::= BoundedInt
+    syntax KResult    ::= BoundedInt
 
     rule (con S:Int ! V:Int) => int(S, V)
       requires -2 ^Int(8 *Int S:Int -Int 1) <=Int V andBool V  <Int 2 ^Int(8 *Int S:Int -Int 1)
     rule (con S:Int ! V:Int) => (error (con (integer)))
       requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
+
+    syntax CurriedBuiltin ::= curried(BuiltinName)
+                            | curried(BuiltinName, Term)                                [strict(2)]
+    syntax Term           ::= CurriedBuiltin
+    syntax KResult        ::= CurriedBuiltin
+
+    rule (con addInteger) => curried(addInteger)
+    rule [curried(addInteger) int(S, V)] => curried(addInteger, int(S, V))
+    rule [curried(addInteger, int(S, V1)) int(S, V2)]
+      => (con S ! (V1 +Int V2))
+    rule <k> [curried(addInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 +Int V2)) </k>
 endmodule
 ```

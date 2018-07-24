@@ -27,6 +27,17 @@ or an `Error` term).
     rule <k> (con S ! V:Int)  => C:KValue  </k>                                  [specification]
 ```
 
+### Integer arithmetic
+
+```k
+    rule  <k> [ [(con addInteger) (con 1 ! 1)] (con 1 ! 1) ]
+           => (con 1 ! 2)
+         </k>                                                                    [specification]
+    rule  <k> [ [(con addInteger) (con 1 ! 66)] (con 1 ! 66) ]
+           => (error (con (integer)))
+         </k>                                                                    [specification]
+```
+
 ```k
 endmodule
 ```

@@ -1,1 +1,1 @@
-[(lam x a x) (con 1 ! 128)]
+[ [(con addInteger) (con 1 ! 1)] (con 1 ! 1) ]
