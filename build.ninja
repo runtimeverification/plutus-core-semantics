@@ -12,8 +12,8 @@ rule kompile
     command         = kompile --backend $backend --debug --directory $$(dirname $$(dirname $out)) $in
 
 rule krun
-    description     = Kompiling: $in
-    command         = kompile --backend $backend --debug --directory $out $in
+    description     = Running $in
+    command         = krun --debug --directory $directory $in
 
 rule kprove
     description     = Checking specification $in
