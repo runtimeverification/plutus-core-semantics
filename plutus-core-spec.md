@@ -53,6 +53,16 @@ or an `Error` term).
     rule  <k> [ [(con multiplyInteger) (con 1 ! 12)] (con 1 ! 11) ]
            => (error (con (integer)))
          </k>                                                                    [specification]
+         
+    rule  <k> [ [(con divideInteger) (con 3 ! 10)] (con 3 ! 3) ]
+           => (con 3 ! 3)
+         </k>                                                                    [specification]
+    rule  <k> [ [(con divideInteger) (con 3 ! 0)] (con 3 ! 10) ]
+           => (con 3 ! 0)
+         </k>                                                                    [specification]
+    rule  <k> [ [(con divideInteger) (con 2 ! 66)] (con 2 ! 0) ]
+           => (error (con (integer)))
+         </k>                                                                    [specification]
 ```
 
 ```k
