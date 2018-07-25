@@ -92,10 +92,12 @@ module PLUTUS-CORE
     syntax Term           ::= CurriedBuiltin
     syntax KResult        ::= CurriedBuiltin
 
+    // addInteger builtin
     rule (con addInteger) => curried(addInteger)
     rule [curried(addInteger) int(S, V)] => curriedArg(addInteger, int(S, V))
     rule [curriedArg(addInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 +Int V2))
 
+    // subtractInteger builtin
     rule (con subtractInteger) => curried(subtractInteger)
     rule [curried(subtractInteger) int(S, V)] => curriedArg(subtractInteger, int(S, V))
     rule [curriedArg(subtractInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 -Int V2))
