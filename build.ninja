@@ -17,7 +17,7 @@ rule krun
 
 rule kprove
     description     = Checking specification $in
-    command         = kprove --debug --directory $directory $in
+    command         = kprove --directory $directory $in
 
 tangle_selector = .k
 tangle_repository = $builddir/pandoc-tangle
