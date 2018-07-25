@@ -88,14 +88,12 @@ module PLUTUS-CORE
       requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
 
     syntax CurriedBuiltin ::= curried(BuiltinName)
-                            | curried(BuiltinName, Term)                                [strict(2)]
+                            | curriedArg(BuiltinName, Term) [strict(2)]
     syntax Term           ::= CurriedBuiltin
     syntax KResult        ::= CurriedBuiltin
 
     rule (con addInteger) => curried(addInteger)
-    rule [curried(addInteger) int(S, V)] => curried(addInteger, int(S, V))
-    rule [curried(addInteger, int(S, V1)) int(S, V2)]
-      => (con S ! (V1 +Int V2))
-    rule <k> [curried(addInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 +Int V2)) </k>
+    rule [curried(addInteger) int(S, V)] => curriedArg(addInteger, int(S, V))
+    rule [curriedArg(addInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 +Int V2))
 endmodule
 ```
