@@ -47,6 +47,12 @@ or an `Error` term).
            => (error (con (integer)))
          </k>                                                                    [specification]
 
+    rule  <k> [ [(con multiplyInteger) (con 3 ! 10)] (con 3 ! 8) ]
+           => (con 3 ! 80)
+         </k>                                                                    [specification]
+    rule  <k> [ [(con multiplyInteger) (con 1 ! 12)] (con 1 ! 11) ]
+           => (error (con (integer)))
+         </k>                                                                    [specification]
 ```
 
 ```k
