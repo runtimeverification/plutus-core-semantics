@@ -22,7 +22,7 @@ module PLUTUS-CORE-COMMON
     syntax ByteString ::= r"\\#[a-fA-F0-9]([a-fA-F0-9])*"                                   [token]
 
     syntax TyBuiltinName ::= "(" "integer" ")"
-    syntax BuiltinName   ::= "addInteger"
+    syntax BuiltinName   ::= "addInteger" | "subtractInteger"
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
     syntax Constant      ::= Size "!" Int
@@ -95,5 +95,10 @@ module PLUTUS-CORE
     rule (con addInteger) => curried(addInteger)
     rule [curried(addInteger) int(S, V)] => curriedArg(addInteger, int(S, V))
     rule [curriedArg(addInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 +Int V2))
+
+    rule (con subtractInteger) => curried(subtractInteger)
+    rule [curried(subtractInteger) int(S, V)] => curriedArg(subtractInteger, int(S, V))
+    rule [curriedArg(subtractInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 -Int V2))
+
 endmodule
 ```

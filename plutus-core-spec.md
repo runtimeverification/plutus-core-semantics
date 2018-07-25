@@ -36,6 +36,17 @@ or an `Error` term).
     rule  <k> [ [(con addInteger) (con 1 ! 66)] (con 1 ! 66) ]
            => (error (con (integer)))
          </k>                                                                    [specification]
+
+    rule  <k> [ [(con subtractInteger) (con 3 ! 10)] (con 3 ! 8) ]
+           => (con 3 ! 2)
+         </k>                                                                    [specification]
+    rule  <k> [ [(con subtractInteger) (con 3 ! 7)] (con 3 ! 10) ]
+           => (con 3 ! -3)
+         </k>                                                                    [specification]
+    rule  <k> [ [(con subtractInteger) (con 1 ! 66)] (con 1 ! -66) ]
+           => (error (con (integer)))
+         </k>                                                                    [specification]
+
 ```
 
 ```k
