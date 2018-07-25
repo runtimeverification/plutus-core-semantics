@@ -23,7 +23,7 @@ module PLUTUS-CORE-COMMON
 
     syntax TyBuiltinName ::= "(" "integer" ")"
     syntax BuiltinName   ::= "addInteger" | "subtractInteger" | "multiplyInteger"
-                           | "divideInteger"
+                           | "divideInteger" | "remainderInteger"
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
     syntax Constant      ::= Size "!" Int
@@ -114,6 +114,13 @@ module PLUTUS-CORE
     rule [curriedArg(divideInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 /Int V2))
       requires V2 =/=Int 0
     rule [curriedArg(divideInteger, int(S, V1)) int(S, 0)] => (error (con (integer)))
+
+    // remainderInteger builtin
+    rule (con remainderInteger) => curried(remainderInteger)
+    rule [curried(remainderInteger) int(S, V)] => curriedArg(remainderInteger, int(S, V))
+    rule [curriedArg(remainderInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 %Int V2))
+      requires V2 =/=Int 0
+    rule [curriedArg(remainderInteger, int(S, V1)) int(S, 0)] => (error (con (integer)))
 
 endmodule
 ```
