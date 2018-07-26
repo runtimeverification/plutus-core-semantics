@@ -72,6 +72,17 @@ rule <k> [[(con remainderInteger) (con 2 ! 66)] (con 2 ! 0) ] => (error (con (in
                                                                                     [specification]
 ```
 
+Complex nested expressions:
+
+```k
+rule <k> [[(con addInteger) [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)]]
+                            [[(con multiplyInteger ) (con 3 ! 2 )] (con 3 ! 2)]
+         ]
+      => (con 3 ! 5)
+    </k>
+```
+
+
 ```k
 endmodule
 ```
