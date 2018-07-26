@@ -22,8 +22,11 @@ module PLUTUS-CORE-COMMON
     syntax ByteString ::= r"\\#[a-fA-F0-9]([a-fA-F0-9])*"                                   [token]
 
     syntax TyBuiltinName ::= "(" "integer" ")"
-    syntax BuiltinName   ::= "addInteger" | "subtractInteger" | "multiplyInteger"
-                           | "divideInteger" | "remainderInteger"
+    syntax BuiltinName   ::= BinaryIntegerBuiltin
+    syntax BinaryIntegerBuiltin ::= "addInteger"       | "subtractInteger"
+                                  | "multiplyInteger"  | "divideInteger"
+                                  | "remainderInteger"
+
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
     syntax Constant      ::= Size "!" Int
@@ -40,7 +43,6 @@ module PLUTUS-CORE-COMMON
                   | Error
                   | Value
     syntax Error ::= "(" "error" Type ")"
-    syntax KResult    ::= Error
 
     syntax Value ::= "(" "fix" Var TyValue Term ")"
                    | "(" "abs" TyVar Kind Value ")"
@@ -79,6 +81,8 @@ module PLUTUS-CORE
     imports PLUTUS-CORE-COMMON
     configuration <k> $PGM </k>
 
+    syntax KResult    ::= Error
+
     syntax BoundedInt ::= int(Int , Int)
     syntax Term       ::= BoundedInt
     syntax KResult    ::= BoundedInt
@@ -88,39 +92,37 @@ module PLUTUS-CORE
     rule (con S:Int ! V:Int) => (error (con (integer)))
       requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
 
-    syntax CurriedBuiltin ::= curried(BuiltinName)
-                            | curriedArg(BuiltinName, Term) [strict(2)]
+    syntax CurriedBuiltinResult ::= curried(BinaryIntegerBuiltin)
+                                  | curriedArg(BinaryIntegerBuiltin, Error)
+                                  | curriedArg(BinaryIntegerBuiltin, BoundedInt)
+    syntax KResult        ::= CurriedBuiltinResult
+    syntax CurriedBuiltin ::= CurriedBuiltinResult
+                            | curriedArg(BinaryIntegerBuiltin, Term)                    [strict(2)]
     syntax Term           ::= CurriedBuiltin
-    syntax KResult        ::= CurriedBuiltin
+
+    // BinaryIntegerBuiltins
+    rule (con B:BinaryIntegerBuiltin)                        => curried(B)
+    rule [curried(B:BinaryIntegerBuiltin) TM]                => curriedArg(B, TM)
+    rule [curriedArg(B:BinaryIntegerBuiltin, (error TY)) TM] => (error TY)
+    rule [curriedArg(B:BinaryIntegerBuiltin, TM) (error TY)] => (error TY)
 
     // addInteger builtin
-    rule (con addInteger) => curried(addInteger)
-    rule [curried(addInteger) int(S, V)] => curriedArg(addInteger, int(S, V))
     rule [curriedArg(addInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 +Int V2))
 
     // subtractInteger builtin
-    rule (con subtractInteger) => curried(subtractInteger)
-    rule [curried(subtractInteger) int(S, V)] => curriedArg(subtractInteger, int(S, V))
     rule [curriedArg(subtractInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 -Int V2))
 
     // multiplyInteger builtin
-    rule (con multiplyInteger) => curried(multiplyInteger)
-    rule [curried(multiplyInteger) int(S, V)] => curriedArg(multiplyInteger, int(S, V))
     rule [curriedArg(multiplyInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 *Int V2))
-    
+
     // divideInteger builtin
-    rule (con divideInteger) => curried(divideInteger)
-    rule [curried(divideInteger) int(S, V)] => curriedArg(divideInteger, int(S, V))
     rule [curriedArg(divideInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 /Int V2))
       requires V2 =/=Int 0
     rule [curriedArg(divideInteger, int(S, V1)) int(S, 0)] => (error (con (integer)))
 
     // remainderInteger builtin
-    rule (con remainderInteger) => curried(remainderInteger)
-    rule [curried(remainderInteger) int(S, V)] => curriedArg(remainderInteger, int(S, V))
     rule [curriedArg(remainderInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 %Int V2))
       requires V2 =/=Int 0
     rule [curriedArg(remainderInteger, int(S, V1)) int(S, 0)] => (error (con (integer)))
-
 endmodule
 ```

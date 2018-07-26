@@ -80,8 +80,17 @@ rule <k> [[(con addInteger) [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)]]
          ]
       => (con 3 ! 5)
     </k>
+rule <k> [[(con addInteger) [[(con remainderInteger) (con 1 ! 10)] (con 1 ! 3)]]
+                            [[(con multiplyInteger ) (con 1 ! 15 )] (con 1 ! 16)]
+         ]
+      => (error (con (integer)))
+    </k>
+rule <k> [[(con addInteger) [[(con remainderInteger) (con 3 ! 66)] (con 3 ! 0)]]
+                            [[(con multiplyInteger ) (con 3 ! 2 )] (con 3 ! 2)]
+         ]
+      => (error (con (integer)))
+    </k>
 ```
-
 
 ```k
 endmodule
