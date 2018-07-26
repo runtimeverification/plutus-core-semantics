@@ -51,6 +51,6 @@ init_env() {
 
 init_env
 [[ -f "$k_submodule/.git"  ]]                   || download_k
-[[ -x "$build_dir/opam/4.03.0+k/bin/ocamlc" ]]  || build_ocamlc
 [[ -x "$k_bin_dir/kompile" ]]                   || build_k
+[[ -x "$build_dir/opam/4.03.0+k/bin/ocamlc" ]]  || build_ocamlc
 ninja "$@"
