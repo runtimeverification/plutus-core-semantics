@@ -3,6 +3,47 @@ Here, we define unit tests as reachability claims.
 ```k
 module PLUTUS-CORE-SPEC
     imports PLUTUS-CORE
+    imports PLUTUS-CORE-SYNTAX
+```
+
+Lambda Calculus
+---------------
+
+Basic application:
+
+```k
+rule <k> [ (lam x a x) (con 1 ! 1) ] => int(1, 1) </k>
+     <env> .Map => .Map </env>
+     <store> .Map => _ </store>
+  [specification]
+
+rule <k> [ (lam x a x) (con 1 ! 128) ] => (error (con (integer))) </k>
+     <env> .Map => .Map </env>
+     <store> .Map => _ </store>
+  [specification]
+ 
+rule <k> [ (lam y a x) (con 1 ! 1) ] => x ~> .Map </k>
+     <env> .Map => _ </env>
+     <store> .Map => _ </store>
+  [specification]
+```
+
+Nested application:
+
+```k
+rule <k> [[(lam x a (lam y b x)) (con 1 ! 0)] (con 2 ! 123)] => int(1, 0) </k>
+     <env> .Map => .Map </env>
+     <store> .Map => _ </store>
+  [specification]
+```
+
+Application uses capture-free substitution:
+
+```k
+rule <k> [ (lam x a (lam x b x)) (con 1 ! 1) ] => closure(_, x, x) </k>
+     <env> .Map => .Map </env>
+     <store> .Map => _ </store>
+  [specification]
 ```
 
 Integers & Integer arithmetic

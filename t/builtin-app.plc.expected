@@ -1,3 +1,11 @@
-<k>
-  int ( 1 , 2 )
-</k>
+<generatedTop>
+  <k>
+    int ( 1 , 2 )
+  </k>
+  <env>
+    .Map
+  </env>
+  <store>
+    .Map
+  </store>
+</generatedTop>
