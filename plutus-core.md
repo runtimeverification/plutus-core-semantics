@@ -1,10 +1,18 @@
+Syntax
+======
+
+We separate the parsing of `Name` tokens from the rest of the synax to reduce conflicts when
+defining rules:
+
 ```k
 module PLUTUS-CORE-SYNTAX
     imports PLUTUS-CORE-COMMON
     syntax LowerName     ::= #LowerId [token, autoreject]
     syntax UpperName     ::= #UpperId [token, autoReject]
 endmodule
+```
 
+```k
 module PLUTUS-CORE-COMMON
     imports INT
     imports BUILTIN-ID-TOKENS
@@ -74,16 +82,29 @@ module PLUTUS-CORE-COMMON
                   | "(" "size" ")"
 
     syntax Program ::= "(" "version" Version Term ")"
-
 endmodule
+```
 
+Semantics
+=========
+
+Configuration
+-------------
+
+```k
 module PLUTUS-CORE-CONFIGURATION
+
     imports PLUTUS-CORE-COMMON
     configuration <k> $PGM </k>
 
     syntax KResult    ::= Error
 endmodule
+```
 
+Bounded Integer Arithmetic
+--------------------------
+
+```k
 module PLUTUS-CORE-ARITHMETIC
     imports PLUTUS-CORE-CONFIGURATION
 
@@ -129,7 +150,12 @@ module PLUTUS-CORE-ARITHMETIC
       requires V2 =/=Int 0
     rule [curriedArg(remainderInteger, int(S, V1)) int(S, 0)] => (error (con (integer)))
 endmodule
+```
 
+Main Module
+-----------
+
+```k
 module PLUTUS-CORE
     imports PLUTUS-CORE-ARITHMETIC
 endmodule
