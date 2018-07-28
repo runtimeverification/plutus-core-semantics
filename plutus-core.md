@@ -77,11 +77,15 @@ module PLUTUS-CORE-COMMON
 
 endmodule
 
-module PLUTUS-CORE
+module PLUTUS-CORE-CONFIGURATION
     imports PLUTUS-CORE-COMMON
     configuration <k> $PGM </k>
 
     syntax KResult    ::= Error
+endmodule
+
+module PLUTUS-CORE-ARITHMETIC
+    imports PLUTUS-CORE-CONFIGURATION
 
     syntax BoundedInt ::= int(Int , Int)
     syntax Term       ::= BoundedInt
@@ -124,5 +128,9 @@ module PLUTUS-CORE
     rule [curriedArg(remainderInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 %Int V2))
       requires V2 =/=Int 0
     rule [curriedArg(remainderInteger, int(S, V1)) int(S, 0)] => (error (con (integer)))
+endmodule
+
+module PLUTUS-CORE
+    imports PLUTUS-CORE-ARITHMETIC
 endmodule
 ```
