@@ -173,6 +173,13 @@ rule <k> [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false </k>  [spec
 rule <k> [[(con equalsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true </k>   [specification]
 ```
 
+Resize integer
+
+```k
+rule <k> [[(con resizeInteger) (con 1)] (con 2 ! 100)] => (con 1 ! 100)           </k>  [specification]
+rule <k> [[(con resizeInteger) (con 1)] (con 2 ! 128)] => (error (con (integer))) </k>  [specification]
+```
+
 ```k
 endmodule
 ```

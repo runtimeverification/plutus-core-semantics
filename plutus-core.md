@@ -30,19 +30,21 @@ module PLUTUS-CORE-COMMON
     syntax ByteString ::= r"\\#[a-fA-F0-9]([a-fA-F0-9])*"                                   [token]
 
     syntax TyBuiltinName ::= "(" "integer" ")"
-    syntax BuiltinName   ::= BinaryIntegerBuiltin
-    syntax BinaryIntegerBuiltin ::= "addInteger"         | "subtractInteger"
-                                  | "multiplyInteger"    | "divideInteger"
-                                  | "remainderInteger"
-                                  | "lessThanInteger"    | "lessThanEqualsInteger"
-                                  | "greaterThanInteger" | "greaterThanEqualsInteger"
-                                  | "equalsInteger"
+    syntax BuiltinName   ::= BinaryBuiltin
+    syntax BinaryBuiltin ::= "addInteger"         | "subtractInteger"
+                           | "multiplyInteger"    | "divideInteger"
+                           | "remainderInteger"
+                           | "lessThanInteger"    | "lessThanEqualsInteger"
+                           | "greaterThanInteger" | "greaterThanEqualsInteger"
+                           | "equalsInteger"
+                           | "resizeInteger"
 
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
     syntax Constant      ::= Size "!" Int
                            | Size "!" ByteString
                            | BuiltinName
+                           | Size
 
     syntax TyConstant    ::= Size
                            | TyBuiltinName
@@ -149,27 +151,32 @@ Bounded Integer Arithmetic
 ```k
 module PLUTUS-CORE-ARITHMETIC
     imports PLUTUS-CORE-CONFIGURATION
+    syntax KResult      ::= Error
 
     syntax BoundedInt ::= int(Int , Int)
-    syntax ResultTerm ::= BoundedInt
+    syntax Size ::= size(Int)                                                [klabel(sizeConstant)]
+                                                      /* klabel prevents conflict with size(Set) */
+    syntax ResultTerm ::= BoundedInt | Size
 
     rule (con S:Int ! V:Int) => int(S, V)
       requires -2 ^Int(8 *Int S:Int -Int 1) <=Int V andBool V  <Int 2 ^Int(8 *Int S:Int -Int 1)
     rule (con S:Int ! V:Int) => (error (con (integer)))
       requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
 
-    syntax CurriedBuiltinResult ::= curried(BinaryIntegerBuiltin)
-                                  | curriedArg(BinaryIntegerBuiltin, ResultTerm)
-    syntax KResult        ::= CurriedBuiltinResult
+    rule (con S:Int) => size(S)
+
+    syntax CurriedBuiltinResult ::= curried(BinaryBuiltin)
+                                  | curriedArg(BinaryBuiltin, ResultTerm)
+    syntax ResultTerm     ::= CurriedBuiltinResult
     syntax CurriedBuiltin ::= CurriedBuiltinResult
-                            | curriedArg(BinaryIntegerBuiltin, Term)                    [strict(2)]
+                            | curriedArg(BinaryBuiltin, Term)                    [strict(2)]
     syntax Term           ::= CurriedBuiltin
 
-    // BinaryIntegerBuiltins
-    rule (con B:BinaryIntegerBuiltin)                        => curried(B)
-    rule [curried(B:BinaryIntegerBuiltin) TM]                => curriedArg(B, TM)
-    rule [curriedArg(B:BinaryIntegerBuiltin, (error TY)) TM] => (error TY)
-    rule [curriedArg(B:BinaryIntegerBuiltin, TM) (error TY)] => (error TY)
+    // BinaryBuiltins
+    rule (con B:BinaryBuiltin)                        => curried(B)
+    rule [curried(B:BinaryBuiltin) TM]                => curriedArg(B, TM)
+    rule [curriedArg(B:BinaryBuiltin, (error TY)) TM] => (error TY)
+    rule [curriedArg(B:BinaryBuiltin, TM) (error TY)] => (error TY)
 
     // addInteger builtin
     rule [curriedArg(addInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 +Int V2))
@@ -218,6 +225,10 @@ module PLUTUS-CORE-ARITHMETIC
     rule [curriedArg(equalsInteger, int(S, V1)) int(S, V1)] => #true
     rule [curriedArg(equalsInteger, int(S, V1)) int(S, V2)] => #false
       requires V1 =/=Int V2
+
+    // BinaryBuiltins
+    // resizeInteger builtin
+    rule [curriedArg(resizeInteger, size(S1)) int(S2, V)] => (con S1 ! V)
 endmodule
 
 module PLUTUS-CORE-MACROS
