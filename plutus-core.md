@@ -31,9 +31,12 @@ module PLUTUS-CORE-COMMON
 
     syntax TyBuiltinName ::= "(" "integer" ")"
     syntax BuiltinName   ::= BinaryIntegerBuiltin
-    syntax BinaryIntegerBuiltin ::= "addInteger"       | "subtractInteger"
-                                  | "multiplyInteger"  | "divideInteger"
+    syntax BinaryIntegerBuiltin ::= "addInteger"         | "subtractInteger"
+                                  | "multiplyInteger"    | "divideInteger"
                                   | "remainderInteger"
+                                  | "lessThanInteger"    | "lessThanEqualsInteger"
+                                  | "greaterThanInteger" | "greaterThanEqualsInteger"
+                                  | "equalsInteger"
 
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
@@ -94,6 +97,7 @@ Configuration
 ```k
 module PLUTUS-CORE-CONFIGURATION
     imports PLUTUS-CORE-COMMON
+    imports PLUTUS-CORE-MACROS
     imports DOMAINS
 
     configuration <k> $PGM:Term </k>
@@ -185,6 +189,53 @@ module PLUTUS-CORE-ARITHMETIC
     rule [curriedArg(remainderInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 %Int V2))
       requires V2 =/=Int 0
     rule [curriedArg(remainderInteger, int(S, V1)) int(S, 0)] => (error (con (integer)))
+
+    // lessThanInteger builtin
+    rule [curriedArg(lessThanInteger, int(S, V1)) int(S, V2)] => #true
+      requires V1 <Int V2
+    rule [curriedArg(lessThanInteger, int(S, V1)) int(S, V2)] => #false
+      requires V1 >=Int V2
+
+    // lessThanEqualsInteger builtin
+    rule [curriedArg(lessThanEqualsInteger, int(S, V1)) int(S, V2)] => #true
+      requires V1 <=Int V2
+    rule [curriedArg(lessThanEqualsInteger, int(S, V1)) int(S, V2)] => #false
+      requires V1 >Int V2
+
+    // greaterThanInteger builtin
+    rule [curriedArg(greaterThanInteger, int(S, V1)) int(S, V2)] => #true
+      requires V1 >Int V2
+    rule [curriedArg(greaterThanInteger, int(S, V1)) int(S, V2)] => #false
+      requires V1 <=Int V2
+
+    // greaterThanEqualsInteger builtin
+    rule [curriedArg(greaterThanEqualsInteger, int(S, V1)) int(S, V2)] => #true
+      requires V1 >=Int V2
+    rule [curriedArg(greaterThanEqualsInteger, int(S, V1)) int(S, V2)] => #false
+      requires V1 <Int V2
+
+    // equalsInteger builtin
+    rule [curriedArg(equalsInteger, int(S, V1)) int(S, V1)] => #true
+    rule [curriedArg(equalsInteger, int(S, V1)) int(S, V2)] => #false
+      requires V1 =/=Int V2
+endmodule
+
+module PLUTUS-CORE-MACROS
+    imports PLUTUS-CORE-COMMON
+
+    syntax TyVar ::= "alpha"
+    syntax Var ::= "t" | "f" | "x"
+
+    syntax TyValue ::= "#unit" [macro]
+    rule #unit => (all alpha (type) (fun alpha alpha))
+
+    syntax Term ::= "#unitval" [macro]
+    rule #unitval => (abs alpha (type) (lam x alpha x))
+
+    syntax Term ::= "#true"  [macro]
+                  | "#false" [macro]
+    rule #true => (abs alpha (type) (lam t (fun #unit alpha) (lam f (fun #unit alpha) [t #unitval])))
+    rule #false => (abs alpha (type) (lam t (fun #unit alpha) (lam f (fun #unit alpha) [f #unitval])))
 endmodule
 ```
 

@@ -133,6 +133,46 @@ rule <k> [[(con addInteger) [[(con remainderInteger) (con 3 ! 66)] (con 3 ! 0)]]
     </k>
 ```
 
+Less than:
+
+```k
+rule <k> [[(con lessThanInteger) (con 3 ! 10)] (con 3 ! 3)]  => #false </k>  [specification]
+rule <k> [[(con lessThanInteger) (con 3 ! 3)] (con 3 ! 10)]  => #true </k>   [specification]
+rule <k> [[(con lessThanInteger) (con 3 ! 10)] (con 3 ! 10)] => #false </k>  [specification]
+```
+
+Less than or equal to:
+
+```k
+rule <k> [[(con lessThanEqualsInteger) (con 3 ! 10)] (con 3 ! 3)]  => #false </k>  [specification]
+rule <k> [[(con lessThanEqualsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #true </k>   [specification]
+rule <k> [[(con lessThanEqualsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true </k>   [specification]
+```
+
+Greater than:
+
+```k
+rule <k> [[(con greaterThanInteger) (con 3 ! 10)] (con 3 ! 3)]  => #true </k>   [specification]
+rule <k> [[(con greaterThanInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false </k>  [specification]
+rule <k> [[(con greaterThanInteger) (con 3 ! 10)] (con 3 ! 10)] => #false </k>  [specification]
+```
+
+Greater than or equal to:
+
+```k
+rule <k> [[(con greaterThanEqualsInteger) (con 3 ! 10)] (con 3 ! 3)]  => #true </k>   [specification]
+rule <k> [[(con greaterThanEqualsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false </k>  [specification]
+rule <k> [[(con greaterThanEqualsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true </k>   [specification]
+```
+
+Equal to
+
+```k
+rule <k> [[(con equalsInteger) (con 3 ! 10)] (con 3 ! 3)]  => #false </k>  [specification]
+rule <k> [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false </k>  [specification]
+rule <k> [[(con equalsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true </k>   [specification]
+```
+
 ```k
 endmodule
 ```
