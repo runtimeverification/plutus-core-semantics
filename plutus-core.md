@@ -99,8 +99,17 @@ module PLUTUS-CORE-CONFIGURATION
     configuration <k> $PGM:Term </k>
                   <env> .Map </env>
                   <store> .Map </store>
+```
 
-    syntax KResult    ::= Error
+Since our concept of `KResult` differs slightly from the specifications notion of `Value`s (e.g.
+`(con (1 ! 999))` is not fully executed) we define a sort of "fully executed" terms.
+
+```k
+    syntax ResultTerm
+    syntax Term    ::= ResultTerm
+    syntax KResult ::= ResultTerm
+
+    syntax ResultTerm ::= Error
 endmodule
 ```
 
@@ -114,9 +123,8 @@ that works for both symbolic exectution, and for both the Java and OCaml backend
 module PLUTUS-CORE-LAMBDA-CALCULUS
     imports PLUTUS-CORE-CONFIGURATION
 
-    syntax Closure ::= closure(Map, Var, Term)
-    syntax Term    ::= Closure
-    syntax KResult ::= Closure
+    syntax Closure    ::= closure(Map, Var, Term)
+    syntax ResultTerm ::= Closure
 
     rule <k> (lam X _:TyValue M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
@@ -139,8 +147,7 @@ module PLUTUS-CORE-ARITHMETIC
     imports PLUTUS-CORE-CONFIGURATION
 
     syntax BoundedInt ::= int(Int , Int)
-    syntax Term       ::= BoundedInt
-    syntax KResult    ::= BoundedInt
+    syntax ResultTerm ::= BoundedInt
 
     rule (con S:Int ! V:Int) => int(S, V)
       requires -2 ^Int(8 *Int S:Int -Int 1) <=Int V andBool V  <Int 2 ^Int(8 *Int S:Int -Int 1)
@@ -148,8 +155,7 @@ module PLUTUS-CORE-ARITHMETIC
       requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
 
     syntax CurriedBuiltinResult ::= curried(BinaryIntegerBuiltin)
-                                  | curriedArg(BinaryIntegerBuiltin, Error)
-                                  | curriedArg(BinaryIntegerBuiltin, BoundedInt)
+                                  | curriedArg(BinaryIntegerBuiltin, ResultTerm)
     syntax KResult        ::= CurriedBuiltinResult
     syntax CurriedBuiltin ::= CurriedBuiltinResult
                             | curriedArg(BinaryIntegerBuiltin, Term)                    [strict(2)]
