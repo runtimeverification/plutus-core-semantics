@@ -99,7 +99,7 @@ Configuration
 ```k
 module PLUTUS-CORE-CONFIGURATION
     imports PLUTUS-CORE-COMMON
-    imports PLUTUS-CORE-MACROS
+    imports PLUTUS-CORE-ABBREVIATIONS
     imports DOMAINS
 
     configuration <k> $PGM:Term </k>
@@ -230,8 +230,15 @@ module PLUTUS-CORE-ARITHMETIC
     // resizeInteger builtin
     rule [curriedArg(resizeInteger, size(S1)) int(S2, V)] => (con S1 ! V)
 endmodule
+```
 
-module PLUTUS-CORE-MACROS
+Abbreviations
+-------------
+
+The Plutus Core specification defines some abbreviations:
+
+```k
+module PLUTUS-CORE-ABBREVIATIONS
     imports PLUTUS-CORE-COMMON
 
     syntax TyVar ::= "alpha"
