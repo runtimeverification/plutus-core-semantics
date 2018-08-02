@@ -25,3 +25,5 @@ Percieved mistakes / shortcommings in the specification
 - In syntax, (Fig. 2), lambda terms take in Type Values, but in the semantics (Fig. 9), they take in any Type
 
 - Is there a reason `(error ...)` is not a value? It seems to make more sense within the context of the rest of the semantics.
+
+- resizeInteger and intToByteString: arguments say i has size s1, should it be s0?
