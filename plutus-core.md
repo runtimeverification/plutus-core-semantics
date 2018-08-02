@@ -27,9 +27,9 @@ module PLUTUS-CORE-COMMON
     syntax TyBuiltinName ::= Name
     syntax BuiltinName   ::= Name
 
-    syntax ByteString ::= r"\\#[a-fA-F0-9]([a-fA-F0-9])*"                                   [token]
+    syntax ByteString ::= r"`[a-fA-F0-9][a-fA-F0-9]*"               [notInRules, token, autoReject]
 
-    syntax TyBuiltinName ::= "(" "integer" ")"
+    syntax TyBuiltinName ::= "(" "integer" ")" | "(" "bytestring" ")"
     syntax BuiltinName   ::= BinaryBuiltin
     syntax BinaryBuiltin ::= "addInteger"         | "subtractInteger"
                            | "multiplyInteger"    | "divideInteger"
@@ -232,6 +232,33 @@ module PLUTUS-CORE-ARITHMETIC
 endmodule
 ```
 
+Bytestrings
+-----------
+
+```k
+module PLUTUS-CORE-BYTESTRING
+    imports PLUTUS-CORE-CONFIGURATION
+    imports BYTES
+
+    syntax Term ::= #bytestring(Int, String)
+                  | #bytestringBytes(Int, Int, Bytes)
+    syntax ResultTerm ::= bytestring(Int, Bytes)
+    syntax String ::= ByteString2String(ByteString) [function, hook(STRING.token2string)]
+
+    rule (con S ! BS:ByteString) => #bytestring(S, replaceFirst(ByteString2String(BS), "`", ""))
+    rule #bytestring(S, STR:String)
+      => #bytestringBytes( S
+                         , (lengthString(STR) +Int 1) /Int 2
+                         , Int2Bytes(String2Base(STR, 16) , LE, Unsigned))
+
+    rule #bytestringBytes(S, L, B) => (error (con (bytestring)))
+      requires S <Int L
+
+    rule #bytestringBytes(S, L, B:Bytes) => bytestring(S, padLeftBytes(B, L -Int lengthBytes(B), 0))
+      requires S >=Int L
+endmodule
+```
+
 Type Erasure
 ------------
 
@@ -278,6 +305,7 @@ Main Module
 module PLUTUS-CORE
     imports PLUTUS-CORE-LAMBDA-CALCULUS
     imports PLUTUS-CORE-ARITHMETIC
+    imports PLUTUS-CORE-BYTESTRING
     imports PLUTUS-CORE-TYPE-ERASURE
 endmodule
 ```
