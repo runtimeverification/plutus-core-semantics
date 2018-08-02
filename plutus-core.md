@@ -38,6 +38,7 @@ module PLUTUS-CORE-COMMON
                            | "greaterThanInteger" | "greaterThanEqualsInteger"
                            | "equalsInteger"
                            | "resizeInteger"
+                           | "intToByteString"
 
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
@@ -226,9 +227,19 @@ module PLUTUS-CORE-ARITHMETIC
     rule [curriedArg(equalsInteger, int(S, V1)) int(S, V2)] => #false
       requires V1 =/=Int V2
 
-    // BinaryBuiltins
     // resizeInteger builtin
     rule [curriedArg(resizeInteger, size(S1)) int(S2, V)] => (con S1 ! V)
+
+    // intToByteString builtin
+    rule [curriedArg(intToByteString, size(S1)) int(S2, V)] => #toByteString((con S1 ! V), S1 -Int S2)
+
+    syntax ByteString ::= #toByteString(Term, Int) [strict(1), function]
+    rule #toByteString((error TY), _) => (error (con (bytestring)))
+    rule #toByteString(int(S, V), PAD) => bytestring(S, padRightBytes(Int2Bytes(V, LE, Signed), PAD, 0))
+      requires PAD >Int 0
+    rule #toByteString(int(S, V), PAD) => bytestring(S, Int2Bytes(V, BE, Signed))
+      requires PAD <=Int 0
+
 endmodule
 ```
 

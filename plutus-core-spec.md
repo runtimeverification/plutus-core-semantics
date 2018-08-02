@@ -217,6 +217,11 @@ rule <k> (con 2 ! `10000 )           => (error (con (bytestring))) </k>      [sp
 rule <k> (con 8 ! `0123456789abcdef) => bytestring(8, 239 : 205 : 171 : 137 : 103 : 69 : 35 : 1 : nilBytes) </k> [specification]
 ```
 
+Integer to ByteString
+
+```k
+// rule <k> [[(con intToByteString) (con 1)] (con 2 ! 100)] => (con 1 ! 100)           </k>  [specification]
+```
 
 TODO: The behaviour of converting negative integers to bytestrings is not specified:
 
