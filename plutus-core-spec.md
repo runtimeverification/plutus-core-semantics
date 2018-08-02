@@ -180,6 +180,31 @@ rule <k> [[(con resizeInteger) (con 1)] (con 2 ! 100)] => (con 1 ! 100)         
 rule <k> [[(con resizeInteger) (con 1)] (con 2 ! 128)] => (error (con (integer))) </k>  [specification]
 ```
 
+Booleans & Unit
+---------------
+
+`#true`:
+
+```k
+rule  <k>[[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 3)]
+              (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
+       => int(3, 1)
+     </k>
+     <env> .Map => .Map </env>
+     <store> .Map => _ </store> [specification]
+```
+
+`#false`:
+
+```k
+rule  <k> [[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 2)]
+             (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
+       => int(3, 2)
+     </k>
+     <env> .Map => .Map </env>
+     <store> .Map => _ </store> [specification]
+```
+
 ```k
 endmodule
 ```
