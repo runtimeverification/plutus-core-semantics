@@ -220,7 +220,10 @@ rule <k> (con 8 ! `0123456789abcdef) => bytestring(8, 239 : 205 : 171 : 137 : 10
 Integer to ByteString
 
 ```k
-// rule <k> [[(con intToByteString) (con 1)] (con 2 ! 100)] => (con 1 ! 100)           </k>  [specification]
+rule <k> [[(con intToByteString) (con 1)] (con 2 ! 100)] => bytestring(1, 100 : nilBytes) </k>
+                                                                                    [specification]
+rule <k> [[(con intToByteString) (con 1)] (con 2 ! 999)] => (error (con (bytestring))) </k>
+                                                                                    [specification]
 ```
 
 TODO: The behaviour of converting negative integers to bytestrings is not specified:
