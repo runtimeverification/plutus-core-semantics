@@ -232,6 +232,20 @@ module PLUTUS-CORE-ARITHMETIC
 endmodule
 ```
 
+Type Erasure
+------------
+
+In this specification, we ignore types and assume that the program is well typed. We must therefore
+erase certain type constructs.
+
+```k
+module PLUTUS-CORE-TYPE-ERASURE
+    imports PLUTUS-CORE-CONFIGURATION
+
+    rule (abs TY KI TM) => TM
+endmodule
+```
+
 Abbreviations
 -------------
 
@@ -264,5 +278,6 @@ Main Module
 module PLUTUS-CORE
     imports PLUTUS-CORE-LAMBDA-CALCULUS
     imports PLUTUS-CORE-ARITHMETIC
+    imports PLUTUS-CORE-TYPE-ERASURE
 endmodule
 ```
