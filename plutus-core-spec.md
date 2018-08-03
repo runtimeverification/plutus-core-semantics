@@ -218,6 +218,13 @@ rule <k> (con 8 ! `0123456789abcdef) => bytestring(8, 239 : 205 : 171 : 137 : 10
 ```
 
 
+TODO: The behaviour of converting negative integers to bytestrings is not specified:
+
+```k
+// rule <k> [[(con intToByteString) (con 3)] (con 2 ! -100)]
+//       => bytestring(3, TODO_WHAT_GOES_HERE : 0 : 0 : nilBytes) </k>                                 [specification]
+```
+
 ```k
 endmodule
 ```

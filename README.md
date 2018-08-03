@@ -27,3 +27,6 @@ Percieved mistakes / shortcommings in the specification
 - Is there a reason `(error ...)` is not a value? It seems to make more sense within the context of the rest of the semantics.
 
 - resizeInteger and intToByteString: arguments say i has size s1, should it be s0?
+
+- `intToByteString`: Behaviour for negative integers is not specified. Which binary representation
+  should we use?
