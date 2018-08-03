@@ -258,31 +258,37 @@ module PLUTUS-CORE-BYTESTRINGS
     imports PLUTUS-CORE-BUILTINS
     imports BYTES
 
-    syntax Term ::= #bytestring(Int, String)
-                  | #bytestringBytes(Int, Int, Bytes)
     syntax ResultTerm ::= bytestring(Int, Bytes)
-    syntax String ::= ByteString2String(ByteString) [function, hook(STRING.token2string)]
+```
 
-    rule (con S ! BS:ByteString) => #bytestring(S, replaceFirst(ByteString2String(BS), "`", ""))
-    rule #bytestring(S, STR:String)
-      => #bytestringBytes( S
-                         , (lengthString(STR) +Int 1) /Int 2
-                         , Int2Bytes(String2Base(STR, 16) , BE, Unsigned))
-    rule #bytestringBytes(S, L, B) => (error (con (bytestring)))
-      requires S <Int L
-    rule #bytestringBytes(S, L, B:Bytes) => bytestring(S, padLeftBytes(B, L -Int lengthBytes(B), 0))
-      requires S >=Int L
+The following constructs convert various data types to byte strings, 0-padding them if they are less
+than the length parameter.
+
+```k
+    syntax Term ::= #bytestringSizeString(Int, String)
+                  | #bytestringSizeBytes(Int, Bytes)
+                  | #bytestringSizeLengthInt(Int, Int, Int)
+                  | #bytestringSizeLengthBytes(Int, Int, Bytes)
+
+    rule #bytestringSizeString(S, STR:String)
+      => #bytestringSizeLengthInt( S
+                                 , (lengthString(STR) +Int 1) /Int 2
+                                 , String2Base(STR, 16))
+    rule #bytestringSizeLengthInt(S, L, I)
+      => #bytestringSizeLengthBytes(S, L, Int2Bytes(I, BE, Unsigned))
+    rule #bytestringSizeLengthBytes(S, L, B)
+      => #bytestringSizeBytes(S, padLeftBytes(B, L, 0))
+    rule #bytestringSizeBytes(S, B) => bytestring(S, B)           when lengthBytes(B) <=Int S
+    rule #bytestringSizeBytes(S, B) => (error (con (bytestring))) when lengthBytes(B)  >Int S
+```
+
+```k
+    syntax String ::= ByteString2String(ByteString) [function, hook(STRING.token2string)]
+    rule (con S ! BS:ByteString) => #bytestringSizeString(S, replaceFirst(ByteString2String(BS), "`", ""))
 
     // intToByteString builtin
-    rule [curriedArg(intToByteString, size(S1)) int(S2, V:Int)]
-      => #toByteString((con S1 ! V), S1 -Int S2)
-
-    syntax ByteString ::= #toByteString(Term, Int) [strict(1), function]
-    rule #toByteString((error TY), _) => (error (con (bytestring)))
-    rule #toByteString(int(S, V), PAD) => bytestring(S, padRightBytes(Int2Bytes(V, LE, Signed), PAD, 0))
-      requires PAD >Int 0
-    rule #toByteString(int(S, V), PAD) => bytestring(S, Int2Bytes(V, BE, Signed))
-      requires PAD <=Int 0
+    rule [curriedArg(intToByteString, size(S1:Int)) int(S2, V:Int)]
+      => #bytestringSizeLengthInt(S1, S1, V)
 endmodule
 ```
 

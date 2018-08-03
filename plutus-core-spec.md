@@ -209,21 +209,25 @@ Bytestrings
 -----------
 
 ```k
-rule <k> (con 2 ! `0 )               => bytestring(2,     0 : nilBytes) </k> [specification]
-rule <k> (con 2 ! `00 )              => bytestring(2,     0 : nilBytes) </k> [specification]
-rule <k> (con 2 ! `0000 )            => bytestring(2, 0 : 0 : nilBytes) </k> [specification]
-rule <k> (con 2 ! `00000 )           => (error (con (bytestring))) </k>      [specification]
-rule <k> (con 2 ! `10000 )           => (error (con (bytestring))) </k>      [specification]
+rule <k> (con 2 ! `0 )               => bytestring(2,      0 : nilBytes) </k>       [specification]
+rule <k> (con 2 ! `00 )              => bytestring(2,      0 : nilBytes) </k>       [specification]
+rule <k> (con 2 ! `0000 )            => bytestring(2, 0  : 0 : nilBytes) </k>       [specification]
+rule <k> (con 2 ! `1000 )            => bytestring(2, 16 : 0 : nilBytes) </k>       [specification]
+rule <k> (con 2 ! `00000 )           => (error (con (bytestring))) </k>             [specification]
 rule <k> (con 8 ! `0123456789abcdef) => bytestring(8, 1 : 35 : 69 : 103 : 137 : 171 : 205 : 239 : nilBytes) </k> [specification]
 ```
 
 Integer to ByteString
 
 ```k
-rule <k> [[(con intToByteString) (con 1)] (con 2 ! 100)] => bytestring(1, 100 : nilBytes) </k>
-                                                                                    [specification]
-rule <k> [[(con intToByteString) (con 1)] (con 2 ! 999)] => (error (con (bytestring))) </k>
-                                                                                    [specification]
+rule <k> [[(con intToByteString) (con 1 )] (con 2 ! 100)]
+      => bytestring(1 , 100 : nilBytes) </k>                                        [specification]
+rule <k> [[(con intToByteString) (con 3)] (con 2 ! 100)]
+      => bytestring(3, 0 : 0 : 100 : nilBytes) </k>                                 [specification]
+rule <k> [[(con intToByteString) (con 5)] (con 2 ! 100)]
+      => bytestring(5, 0 : 0 : 0 : 0 : 100 : nilBytes) </k>                         [specification]
+rule <k> [[(con intToByteString) (con 1 )] (con 2 ! 999)]
+      => (error (con (bytestring))) </k>                                            [specification]
 ```
 
 TODO: The behaviour of converting negative integers to bytestrings is not specified:
