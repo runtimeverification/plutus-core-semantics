@@ -267,7 +267,7 @@ module PLUTUS-CORE-BYTESTRINGS
     rule #bytestring(S, STR:String)
       => #bytestringBytes( S
                          , (lengthString(STR) +Int 1) /Int 2
-                         , Int2Bytes(String2Base(STR, 16) , LE, Unsigned))
+                         , Int2Bytes(String2Base(STR, 16) , BE, Unsigned))
     rule #bytestringBytes(S, L, B) => (error (con (bytestring)))
       requires S <Int L
     rule #bytestringBytes(S, L, B:Bytes) => bytestring(S, padLeftBytes(B, L -Int lengthBytes(B), 0))

@@ -214,7 +214,7 @@ rule <k> (con 2 ! `00 )              => bytestring(2,     0 : nilBytes) </k> [sp
 rule <k> (con 2 ! `0000 )            => bytestring(2, 0 : 0 : nilBytes) </k> [specification]
 rule <k> (con 2 ! `00000 )           => (error (con (bytestring))) </k>      [specification]
 rule <k> (con 2 ! `10000 )           => (error (con (bytestring))) </k>      [specification]
-rule <k> (con 8 ! `0123456789abcdef) => bytestring(8, 239 : 205 : 171 : 137 : 103 : 69 : 35 : 1 : nilBytes) </k> [specification]
+rule <k> (con 8 ! `0123456789abcdef) => bytestring(8, 1 : 35 : 69 : 103 : 137 : 171 : 205 : 239 : nilBytes) </k> [specification]
 ```
 
 Integer to ByteString
