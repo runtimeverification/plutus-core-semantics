@@ -279,8 +279,8 @@ than the length parameter.
       => #bytestringSizeLengthBytes(S, L, Int2Bytes(I, BE, Unsigned))
     rule #bytestringSizeLengthBytes(S, L, B)
       => #bytestringSizeBytes(S, padLeftBytes(B, L, 0))
-    rule #bytestringSizeBytes(S, B) => bytestring(S, B)           when lengthBytes(B) <=Int S
-    rule #bytestringSizeBytes(S, B) => (error (con (bytestring))) when lengthBytes(B)  >Int S
+    rule #bytestringSizeBytes(S, B) => bytestring(S, B)           requires lengthBytes(B) <=Int S
+    rule #bytestringSizeBytes(S, B) => (error (con (bytestring))) requires lengthBytes(B)  >Int S
 ```
 
 Convert bytestring literals into their internal representation:
@@ -301,13 +301,13 @@ Bytestring builtins:
 
     rule [curriedArg(takeByteString, int(S1, I1)) bytestring(S2, B2)]
       => bytestring(S2, substrBytes(B2, 0, I1))
-      when I1 >Int 0 andBool I1 <=Int lengthBytes(B2)
+      requires I1 >Int 0 andBool I1 <=Int lengthBytes(B2)
     rule [curriedArg(takeByteString, int(S1, I1)) bytestring(S2, B2)]
       => bytestring(S2, .Bytes)
-      when I1 <=Int 0
+      requires I1 <=Int 0
     rule [curriedArg(takeByteString, int(S1, I1)) bytestring(S2, B2)]
       => bytestring(S2, B2)
-      when I1 >Int lengthBytes(B2)
+      requires I1 >Int lengthBytes(B2)
 ```
 
 ```k
