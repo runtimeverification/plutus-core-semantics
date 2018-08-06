@@ -237,6 +237,36 @@ TODO: The behaviour of converting negative integers to bytestrings is not specif
 //       => bytestring(3, TODO_WHAT_GOES_HERE : 0 : 0 : nilBytes) </k>                                 [specification]
 ```
 
+Concatentate:
+
+```k
+rule <k> [ [ (con concatenate) (con 2 ! `01  ) ]
+                               (con 2 ! `03  ) ]
+      => bytestring(2, 01 : 03 : nilBytes) </k>                                     [specification]
+rule <k> [ [ (con concatenate) (con 2 ! `0102) ]
+                               (con 2 ! `0304) ]
+      => (error (con (bytestring))) </k>                                            [specification]
+```
+
+`takeByteString`
+: returns the prefix of `xs` of length `n`, or `xs` itself if `n > length xs`.
+
+```k
+rule <k> [[(con takeByteString) (con 1 ! 2)] (con 8 ! `0123456789abcdef)]
+      => bytestring(8, 1 : 35 : nilBytes)
+     </k>                                                                           [specification]
+rule <k> [[(con takeByteString) (con 1 ! 31)] (con 8 ! `0123456789abcdef)]
+      => bytestring(8, 1 : 35 : 69 : 103 : 137 : 171 : 205 : 239 : nilBytes)
+     </k>                                                                           [specification]
+rule <k> [[(con takeByteString) (con 1 ! 0)] (con 8 ! `0123456789abcdef)]
+      => bytestring(8, nilBytes)
+     </k>                                                                           [specification]
+// This is the observed Haskell behaviour for negative lengths.
+rule <k> [[(con takeByteString) (con 1 ! -1)] (con 8 ! `0123456789abcdef)]
+      => bytestring(8, nilBytes)
+     </k>                                                                           [specification]
+```
+
 ```k
 endmodule
 ```

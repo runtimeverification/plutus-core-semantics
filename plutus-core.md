@@ -39,6 +39,7 @@ module PLUTUS-CORE-COMMON
                            | "equalsInteger"
                            | "resizeInteger"
                            | "intToByteString"
+                           | "concatenate"        | "takeByteString"
 
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
@@ -282,13 +283,34 @@ than the length parameter.
     rule #bytestringSizeBytes(S, B) => (error (con (bytestring))) when lengthBytes(B)  >Int S
 ```
 
+Convert bytestring literals into their internal representation:
+
 ```k
     syntax String ::= ByteString2String(ByteString) [function, hook(STRING.token2string)]
     rule (con S ! BS:ByteString) => #bytestringSizeString(S, replaceFirst(ByteString2String(BS), "`", ""))
+```
 
-    // intToByteString builtin
+Bytestring builtins:
+
+```k
     rule [curriedArg(intToByteString, size(S1:Int)) int(S2, V:Int)]
       => #bytestringSizeLengthInt(S1, S1, V)
+
+    rule [curriedArg(concatenate, bytestring(S1, V1)) bytestring(S1, V2)]
+      => #bytestringSizeBytes(S1, V1 +Bytes V2)
+
+    rule [curriedArg(takeByteString, int(S1, I1)) bytestring(S2, B2)]
+      => bytestring(S2, substrBytes(B2, 0, I1))
+      when I1 >Int 0 andBool I1 <=Int lengthBytes(B2)
+    rule [curriedArg(takeByteString, int(S1, I1)) bytestring(S2, B2)]
+      => bytestring(S2, .Bytes)
+      when I1 <=Int 0
+    rule [curriedArg(takeByteString, int(S1, I1)) bytestring(S2, B2)]
+      => bytestring(S2, B2)
+      when I1 >Int lengthBytes(B2)
+```
+
+```k
 endmodule
 ```
 
