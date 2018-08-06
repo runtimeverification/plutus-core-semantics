@@ -280,6 +280,31 @@ rule <k> [[(con resizeByteString) (con 2)] (con 5 ! `abcdef)]
       => (error (con (bytestring))) </k>                                            [specification]
 ```
 
+Equals (ByteStrings)
+
+```k
+rule <k> [[(con equalsByteString) (con 3 ! `abcd)]
+                                  (con 3 ! `abcde)]
+      => #false </k>                                                                [specification]
+
+rule <k> [[(con equalsByteString) (con 3 ! `abcde)]
+                                  (con 3 ! `abcd)]
+      => #false </k>                                                                [specification]
+
+rule <k> [[(con equalsByteString) (con 2 ! `0001)]
+                                  (con 2 ! `01)]
+      => #false </k>                                                                [specification]
+
+rule <k> [[(con equalsByteString) (con 3 ! `abcd)]
+                                  (con 3 ! `abcd)]
+      => #true </k>                                                                 [specification]
+
+rule <k> [[(con equalsByteString) (con 2 ! `abcd)]
+                                  (con 1 ! `abcd)]
+      => (error (con (bytestring))) </k>                                            [specification]
+
+```
+
 ```k
 endmodule
 ```

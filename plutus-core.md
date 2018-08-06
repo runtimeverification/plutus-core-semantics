@@ -40,7 +40,7 @@ module PLUTUS-CORE-COMMON
                            | "resizeInteger"
                            | "intToByteString"
                            | "concatenate"        | "takeByteString"
-                           | "resizeByteString"
+                           | "resizeByteString"   | "equalsByteString"
 
     syntax Size          ::= Int // TODO: This should not allow negative integers
     syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
@@ -317,6 +317,10 @@ Bytestring builtins:
     rule [curriedArg(resizeByteString, size(S1:Int)) bytestring(S2, B2)]
       => (error (con (bytestring)))
       requires S1 <Int lengthBytes(B2)
+
+    rule [curriedArg(equalsByteString, bytestring(S1, B1)) bytestring(S1, B1)] => #true
+    rule [curriedArg(equalsByteString, bytestring(S, B1)) bytestring(S, B2)] => #false
+      requires B1 =/=K B2
 ```
 
 ```k
