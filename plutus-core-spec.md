@@ -267,6 +267,19 @@ rule <k> [[(con takeByteString) (con 1 ! -1)] (con 8 ! `0123456789abcdef)]
      </k>                                                                           [specification]
 ```
 
+Resize ByteString
+
+```k
+rule <k> [[(con resizeByteString) (con 3)] (con 5 ! `abcdef)]
+      => bytestring (3, 171 : 205 : 239 : nilBytes ) </k>                           [specification]
+
+rule <k> [[(con resizeByteString) (con 5)] (con 3 ! `abcdef)]
+      => bytestring (5, 171 : 205 : 239 : nilBytes ) </k>                           [specification]
+
+rule <k> [[(con resizeByteString) (con 2)] (con 5 ! `abcdef)]
+      => (error (con (bytestring))) </k>                                            [specification]
+```
+
 ```k
 endmodule
 ```
