@@ -11,9 +11,10 @@ rule kompile
     description     = Kompiling $in ($backend)
     command         = kompile --backend $backend --debug --directory $$(dirname $$(dirname $out)) $in
 
+
 rule krun
     description     = Running $in ($directory)
-    command         = krun --debug --directory $directory $in > $out
+    command         = krun $flags --debug --directory $directory $in > $out
 
 rule kprove
     description     = Checking specification $in
@@ -30,17 +31,82 @@ rule check-test-result
     description = Checking $in
     command = git diff --no-index $in $expected
 
+# OCaml compilation
+# -----------------
+#
+# For compiling K plugins for the OCaml backend, we need a two-stage kompilation process. In the
+# first step, we generate the Constants.ml and other ml files, and use those to in the compilation
+# of the plugin implementation.
+#
+rule kompile-gen-ml
+    description     = kompiling $in: Generating OCaml files
+    command         = kompile --backend ocaml --debug --directory $directory $in $
+                           --gen-ml-only
+
+rule kompile-interpreter
+    description     = kompile $in: Compiling
+    command         = bin/interpreter-from-ml $$(dirname $out) $mlplugins
+
+rule ocamllex
+    description     = ocamllex $in
+    command         = ocamllex $flags $in
+
+rule ocamlyacc
+    description     = ocamlyacc $in
+    command         = ocamlyacc $flags $in
+
+rule ocamlopt
+    description     = ocamlopt $out
+    command         = ocamlfind opt -o $out $flags $in
+
 # Plutus specific infrastructure
 # ==============================
 
 tangleddir = $builddir/tangled/
 
-build $builddir/plutus-core-java/plutus-core-kompiled/timestamp : kompile $tangleddir/plutus-core.k
-    backend = java
-build $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp : kompile $tangleddir/plutus-core.k
-    backend = ocaml
 build $tangleddir/plutus-core.k      : tangle plutus-core.md
 build $tangleddir/plutus-core-spec.k : tangle plutus-core-spec.md
+
+# Java build kompile pipeline
+# ---------------------------
+
+build $builddir/plutus-core-java/plutus-core-kompiled/timestamp : kompile $tangleddir/plutus-core.k
+    backend = java
+
+# OCaml build kompile pipeline
+# ----------------------------
+
+ocamlkompileddir = $builddir/plutus-core-ocaml/plutus-core-kompiled/
+
+build $ocamlkompileddir/lexer.mll      $
+      $ocamlkompileddir/parser.mly     $
+      $ocamlkompileddir/prelude.ml     $
+      $ocamlkompileddir/plugin.ml      $
+      $ocamlkompileddir/parser.mli     $
+      $ocamlkompileddir/run.ml         $
+      $ocamlkompileddir/interpreter.ml $
+      $ocamlkompileddir/realdef.ml     $
+      $ocamlkompileddir/constants.ml : kompile-gen-ml $tangleddir/plutus-core.k
+    directory = $builddir/plutus-core-ocaml/
+
+build $ocamlkompileddir/lexer.ml    : ocamllex $ocamlkompileddir/lexer.mll
+build $ocamlkompileddir/parser.ml   : ocamlyacc $ocamlkompileddir/parser.mly
+build $ocamlkompileddir/interpreter $
+    | $ocamlkompileddir/realdef.cmx : ocamlopt $ocamlkompileddir/constants.ml $
+                                               $ocamlkompileddir/prelude.ml   $
+                                               $ocamlkompileddir/plugin.ml    $
+                                               $ocamlkompileddir/realdef.ml   $
+                                               $ocamlkompileddir/parser.mli   $
+                                               $ocamlkompileddir/parser.ml    $
+                                               $ocamlkompileddir/lexer.ml     $
+                                               $ocamlkompileddir/run.ml       $
+                                               $ocamlkompileddir/interpreter.ml
+    flags = -g -w -11-26 -I $ocamlkompileddir $
+            -package gmp -package dynlink -package zarith -package str -package uuidm -package unix $
+            -linkpkg -linkall -thread -safe-string
+
+build $ocamlkompileddir/realdef.cmxs : ocamlopt $ocamlkompileddir/realdef.cmx
+    flags = -shared
 
 # Testing targets
 # ---------------
@@ -57,8 +123,11 @@ build check-10 : kprove sum-to-10-spec.k $
 
 # t/builtin-app.plc (ocaml)
 #
-build .build/t/builtin-app.plc.ocaml.out : krun t/builtin-app.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
-    directory = $builddir/plutus-core-ocaml
+build .build/t/builtin-app.plc.ocaml.out : krun t/builtin-app.plc $
+                                         | $builddir/plutus-core-ocaml/plutus-core-kompiled/interpreter $
+                                           $ocamlkompileddir/realdef.cmxs
+    directory = $builddir/plutus-core-ocaml/
+    flags     = --interpret
 build .build/t/builtin-app.plc.ocaml.test : check-test-result .build/t/builtin-app.plc.ocaml.out
     expected = t/builtin-app.plc.expected
 
@@ -73,6 +142,7 @@ build .build/t/builtin-app.plc.java.test : check-test-result .build/t/builtin-ap
 #
 build .build/t/bytestring.plc.ocaml.out : krun t/bytestring.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
     directory = $builddir/plutus-core-ocaml
+    flags     = --interpret
 build .build/t/bytestring.plc.ocaml.test : check-test-result .build/t/bytestring.plc.ocaml.out
     expected = t/bytestring.plc.ocaml.expected
 
@@ -87,6 +157,7 @@ build .build/t/bytestring.plc.java.test : check-test-result .build/t/bytestring.
 #
 build .build/t/sum-to-10.plc.ocaml.out : krun t/sum-to-10.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
     directory = $builddir/plutus-core-ocaml
+    flags     = --interpret
 build .build/t/sum-to-10.plc.ocaml.test : check-test-result .build/t/sum-to-10.plc.ocaml.out
     expected = t/sum-to-10.plc.ocaml.expected
 
@@ -101,6 +172,7 @@ build .build/t/sum-to-10.plc.java.test : check-test-result .build/t/sum-to-10.pl
 #
 build .build/t/11-scott-to-int.plc.ocaml.out : krun t/11-scott-to-int.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
     directory = $builddir/plutus-core-ocaml
+    flags     = --interpret
 build .build/t/11-scott-to-int.plc.ocaml.test : check-test-result .build/t/11-scott-to-int.plc.ocaml.out
     expected = t/11-scott-to-int.plc.ocaml.expected
 
@@ -115,6 +187,7 @@ build .build/t/11-scott-to-int.plc.java.test : check-test-result .build/t/11-sco
 #
 build .build/t/if-then-else.plc.ocaml.out : krun t/if-then-else.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
     directory = $builddir/plutus-core-ocaml
+    flags     = --interpret
 build .build/t/if-then-else.plc.ocaml.test : check-test-result .build/t/if-then-else.plc.ocaml.out
     expected = t/if-then-else.plc.ocaml.expected
 
@@ -129,6 +202,7 @@ build .build/t/if-then-else.plc.java.test : check-test-result .build/t/if-then-e
 #
 build .build/t/sum-list.plc.ocaml.out : krun t/sum-list.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
     directory = $builddir/plutus-core-ocaml
+    flags     = --interpret
 build .build/t/sum-list.plc.ocaml.test : check-test-result .build/t/sum-list.plc.ocaml.out
     expected = t/sum-list.plc.ocaml.expected
 
@@ -142,5 +216,5 @@ build .build/t/sum-list.plc.java.test : check-test-result .build/t/sum-list.plc.
 # Aliases
 # -------
 
-build spec-ocaml : phony $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+build spec-ocaml : phony $builddir/plutus-core-ocaml/plutus-core-kompiled/interpreter
 build spec-java  : phony $builddir/plutus-core-java/plutus-core-kompiled/timestamp
