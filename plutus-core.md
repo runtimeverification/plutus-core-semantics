@@ -318,7 +318,7 @@ Bytestring builtins:
       => (error (con (bytestring)))
       requires S1 <Int lengthBytes(B2)
 
-    rule [curriedArg(equalsByteString, bytestring(S1, B1)) bytestring(S1, B1)] => #true
+    rule [curriedArg(equalsByteString, bytestring(S, B1)) bytestring(S, B1)] => #true
     rule [curriedArg(equalsByteString, bytestring(S, B1)) bytestring(S, B2)] => #false
       requires B1 =/=K B2
 ```
