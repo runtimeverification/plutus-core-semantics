@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+# Usage
+# =====
+# 
+# Execute ninja:
+#
+#   ./build <arguments-to-ninja>
+#
+# Execute arbitary command in fully set up environment
+#
+#   ./build -- <arbitary-command>
+
 set -eu     # Fail on non-zero exit code, undefined variable
 
 base="$(cd "$(dirname "$0")"; pwd)"
@@ -53,4 +64,5 @@ init_env
 [[ -f "$k_submodule/.git"  ]]                   || download_k
 [[ -x "$k_bin_dir/kompile" ]]                   || build_k
 [[ -x "$build_dir/opam/4.03.0+k/bin/ocamlc" ]]  || build_ocamlc
-ninja "$@"
+[[ $# -lt 1 ]] || [[ -- != $1 ]]                || { shift ; exec "$@" ; }
+exec ninja "$@"
