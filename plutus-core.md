@@ -43,7 +43,7 @@ module PLUTUS-CORE-COMMON
                            | "resizeByteString"   | "equalsByteString"
 
     syntax Size          ::= Int // TODO: This should not allow negative integers
-    syntax Version       ::= r"[0-9]+(.[0-9]+)*"                                            [token]
+    syntax Version       ::= r"[0-9]+(\\.[0-9]+)*"                                          [token]
     syntax Constant      ::= Size "!" Int
                            | Size "!" ByteString
                            | BuiltinName
@@ -90,7 +90,7 @@ module PLUTUS-CORE-COMMON
                   | "(" "fun" Kind Kind ")"
                   | "(" "size" ")"
 
-    syntax Program ::= "(" "version" Version Term ")"
+    syntax Program ::= "(" "program" Version Term ")"
 endmodule
 ```
 
@@ -106,9 +106,15 @@ module PLUTUS-CORE-CONFIGURATION
     imports PLUTUS-CORE-ABBREVIATIONS
     imports DOMAINS
 
-    configuration <k> $PGM:Term </k>
+    configuration <k> $PGM:Program </k>
                   <env> .Map </env>
                   <store> .Map </store>
+```
+
+Program version has no semantic meaning
+
+```k
+rule (program V TM) => TM
 ```
 
 Since our concept of `KResult` differs slightly from the specifications notion of `Value`s (e.g.
