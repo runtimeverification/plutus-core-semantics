@@ -1,3 +1,7 @@
+```k
+requires "krypto.k"
+```
+
 Syntax
 ======
 
@@ -71,7 +75,8 @@ module PLUTUS-CORE-SYNTAX-BASE
 
     syntax ByteString ::= r"\\#[a-fA-F0-9][a-fA-F0-9]*" [notInRules, token, autoReject]
 
-    syntax BuiltinName   ::= BinaryBuiltin
+    syntax BuiltinName   ::= BinaryBuiltin | UnaryBuiltin
+    syntax UnaryBuiltin  ::= "sha2_256" | "sha3_256"
     syntax BinaryBuiltin ::= "addInteger"         | "subtractInteger"
                            | "multiplyInteger"    | "divideInteger"
                            | "remainderInteger"
@@ -181,7 +186,8 @@ module PLUTUS-CORE-BUILTINS
 
     syntax KResult ::= Error
 
-    rule isResultTerm( (con B:BinaryBuiltin)    ) => true
+    rule isResultTerm((con B:BinaryBuiltin)) => true
+    rule isResultTerm((con B:UnaryBuiltin )) => true
     rule isResultTerm([(con B:BinaryBuiltin) TM:ResultTerm]) => true
 
     syntax Size ::= size(Int) [klabel(sizeConstant)] /* klabel prevents conflict with size(Set) */
@@ -191,6 +197,7 @@ module PLUTUS-CORE-BUILTINS
     // BinaryBuiltins
     rule [[(con B:BinaryBuiltin) (error TY)] TM] => (error TY)
     rule [[(con B:BinaryBuiltin) TM] (error TY)] => (error TY)
+    rule  [(con U:UnaryBuiltin)  (error TY)]     => (error TY)
 endmodule
 ```
 
@@ -343,6 +350,18 @@ Bytestring builtins:
 endmodule
 ```
 
+Cryptographic Builtins
+----------------------
+
+```k
+module PLUTUS-CORE-CRYPTOGRAPHY
+    imports PLUTUS-CORE-BYTESTRINGS
+    imports HASH
+    rule [(con sha2_256) bytestring(S, B)] => #bytestringSizeBytes(256, Sha2_256(B))
+    rule [(con sha3_256) bytestring(S, B)] => #bytestringSizeBytes(256, Sha3_256(B))
+endmodule
+```
+
 Type Erasure
 ------------
 
@@ -402,6 +421,7 @@ module PLUTUS-CORE
     imports PLUTUS-CORE-LAMBDA-CALCULUS
     imports PLUTUS-CORE-BOUNDED-INTEGER-ARITHMETIC
     imports PLUTUS-CORE-BYTESTRINGS
+    imports PLUTUS-CORE-CRYPTOGRAPHY
     imports PLUTUS-CORE-TYPE-ERASURE
 endmodule
 ```

@@ -303,6 +303,21 @@ rule <k> [[(con equalsByteString) (con 2 ! #token("abcd", "ByteString"))]
 
 ```
 
+Cryptographic constructs
+------------------------
+
+```todo
+rule <k> [(con sha2_256) (con 8 ! `0123456789abcdef)]
+      // TODO: Verify that this is the correct SHA2
+      => bytestring ( 256 , 85   : 197 : 63  : 93  : 73  : 2
+                          : 151  : 144 : 12  : 239 : 168 : 37
+                          : 208  : 200 : 232 : 233 : 83  : 46
+                          : 232  : 161 : 24  : 171 : 231 : 216
+                          : 87   : 7   : 98  : 205 : 56  : 190
+                          : 152  : 24  : nilBytes)
+    </k>                                                                            [specification]
+```
+
 ```k
 endmodule
 ```
