@@ -58,3 +58,9 @@ build .build/t/builtin-app.plc.ocaml.test : check-test-result .build/t/builtin-a
     expected = t/builtin-app.plc.expected
 build .build/t/builtin-app.plc.java.test : check-test-result .build/t/builtin-app.plc.java.out
     expected = t/builtin-app.plc.expected
+
+# Aliases
+# -------
+
+build spec-ocaml : phony $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+build spec-java  : phony $builddir/plutus-core-java/plutus-core-kompiled/timestamp
