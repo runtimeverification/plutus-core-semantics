@@ -112,20 +112,17 @@ build $ocamlkompileddir/realdef.cmxs : ocamlopt $ocamlkompileddir/realdef.cmx
 # ---------------
 
 build test : phony check-spec
-build check-spec : kprove $tangleddir/plutus-core-spec.k $
-                 | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+build check-spec : kprove $tangleddir/plutus-core-spec.k | spec-java
     directory = $builddir/plutus-core-java
 
 
 build check-10 : kprove sum-to-10-spec.k $
-                 | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+                 | spec-java
     directory = $builddir/plutus-core-java
 
 # t/builtin-app.plc (ocaml)
 #
-build .build/t/builtin-app.plc.ocaml.out : krun t/builtin-app.plc $
-                                         | $builddir/plutus-core-ocaml/plutus-core-kompiled/interpreter $
-                                           $ocamlkompileddir/realdef.cmxs
+build .build/t/builtin-app.plc.ocaml.out : krun t/builtin-app.plc | spec-ocaml
     directory = $builddir/plutus-core-ocaml/
     flags     = --interpret
 build .build/t/builtin-app.plc.ocaml.test : check-test-result .build/t/builtin-app.plc.ocaml.out
@@ -133,14 +130,14 @@ build .build/t/builtin-app.plc.ocaml.test : check-test-result .build/t/builtin-a
 
 # t/builtin-app.plc (java)
 #
-build .build/t/builtin-app.plc.java.out  : krun t/builtin-app.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+build .build/t/builtin-app.plc.java.out  : krun t/builtin-app.plc | spec-java
     directory = $builddir/plutus-core-java
 build .build/t/builtin-app.plc.java.test : check-test-result .build/t/builtin-app.plc.java.out
     expected = t/builtin-app.plc.expected
 
 # t/bytestring.plc (ocaml)
 #
-build .build/t/bytestring.plc.ocaml.out : krun t/bytestring.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+build .build/t/bytestring.plc.ocaml.out : krun t/bytestring.plc | spec-ocaml
     directory = $builddir/plutus-core-ocaml
     flags     = --interpret
 build .build/t/bytestring.plc.ocaml.test : check-test-result .build/t/bytestring.plc.ocaml.out
@@ -148,14 +145,14 @@ build .build/t/bytestring.plc.ocaml.test : check-test-result .build/t/bytestring
 
 # t/bytestring.plc (java)
 #
-build .build/t/bytestring.plc.java.out  : krun t/bytestring.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+build .build/t/bytestring.plc.java.out  : krun t/bytestring.plc | spec-java
     directory = $builddir/plutus-core-java
 build .build/t/bytestring.plc.java.test : check-test-result .build/t/bytestring.plc.java.out
     expected = t/bytestring.plc.java.expected
 
 # t/sum-to-10.plc (ocaml)
 #
-build .build/t/sum-to-10.plc.ocaml.out : krun t/sum-to-10.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+build .build/t/sum-to-10.plc.ocaml.out : krun t/sum-to-10.plc | spec-ocaml
     directory = $builddir/plutus-core-ocaml
     flags     = --interpret
 build .build/t/sum-to-10.plc.ocaml.test : check-test-result .build/t/sum-to-10.plc.ocaml.out
@@ -163,14 +160,14 @@ build .build/t/sum-to-10.plc.ocaml.test : check-test-result .build/t/sum-to-10.p
 
 # t/sum-to-10.plc (java)
 #
-build .build/t/sum-to-10.plc.java.out  : krun t/sum-to-10.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+build .build/t/sum-to-10.plc.java.out  : krun t/sum-to-10.plc | spec-java
     directory = $builddir/plutus-core-java
 build .build/t/sum-to-10.plc.java.test : check-test-result .build/t/sum-to-10.plc.java.out
     expected = t/sum-to-10.plc.java.expected
 
 # t/11-scott-to-int.plc (ocaml)
 #
-build .build/t/11-scott-to-int.plc.ocaml.out : krun t/11-scott-to-int.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+build .build/t/11-scott-to-int.plc.ocaml.out : krun t/11-scott-to-int.plc | spec-ocaml
     directory = $builddir/plutus-core-ocaml
     flags     = --interpret
 build .build/t/11-scott-to-int.plc.ocaml.test : check-test-result .build/t/11-scott-to-int.plc.ocaml.out
@@ -178,14 +175,14 @@ build .build/t/11-scott-to-int.plc.ocaml.test : check-test-result .build/t/11-sc
 
 # t/11-scott-to-int.plc (java)
 #
-build .build/t/11-scott-to-int.plc.java.out  : krun t/11-scott-to-int.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+build .build/t/11-scott-to-int.plc.java.out  : krun t/11-scott-to-int.plc | spec-java
     directory = $builddir/plutus-core-java
 build .build/t/11-scott-to-int.plc.java.test : check-test-result .build/t/11-scott-to-int.plc.java.out
     expected = t/11-scott-to-int.plc.java.expected
 
 # t/if-then-else.plc (ocaml)
 #
-build .build/t/if-then-else.plc.ocaml.out : krun t/if-then-else.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+build .build/t/if-then-else.plc.ocaml.out : krun t/if-then-else.plc | spec-ocaml
     directory = $builddir/plutus-core-ocaml
     flags     = --interpret
 build .build/t/if-then-else.plc.ocaml.test : check-test-result .build/t/if-then-else.plc.ocaml.out
@@ -193,14 +190,14 @@ build .build/t/if-then-else.plc.ocaml.test : check-test-result .build/t/if-then-
 
 # t/if-then-else.plc (java)
 #
-build .build/t/if-then-else.plc.java.out  : krun t/if-then-else.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+build .build/t/if-then-else.plc.java.out  : krun t/if-then-else.plc | spec-java
     directory = $builddir/plutus-core-java
 build .build/t/if-then-else.plc.java.test : check-test-result .build/t/if-then-else.plc.java.out
     expected = t/if-then-else.plc.java.expected
 
 # t/sum-list.plc (ocaml)
 #
-build .build/t/sum-list.plc.ocaml.out : krun t/sum-list.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+build .build/t/sum-list.plc.ocaml.out : krun t/sum-list.plc | spec-ocaml
     directory = $builddir/plutus-core-ocaml
     flags     = --interpret
 build .build/t/sum-list.plc.ocaml.test : check-test-result .build/t/sum-list.plc.ocaml.out
@@ -208,7 +205,7 @@ build .build/t/sum-list.plc.ocaml.test : check-test-result .build/t/sum-list.plc
 
 # t/sum-list.plc (java)
 #
-build .build/t/sum-list.plc.java.out  : krun t/sum-list.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+build .build/t/sum-list.plc.java.out  : krun t/sum-list.plc | spec-java
     directory = $builddir/plutus-core-java
 build .build/t/sum-list.plc.java.test : check-test-result .build/t/sum-list.plc.java.out
     expected = t/sum-list.plc.java.expected
@@ -216,5 +213,5 @@ build .build/t/sum-list.plc.java.test : check-test-result .build/t/sum-list.plc.
 # Aliases
 # -------
 
-build spec-ocaml : phony $builddir/plutus-core-ocaml/plutus-core-kompiled/interpreter
+build spec-ocaml : phony $builddir/plutus-core-ocaml/plutus-core-kompiled/interpreter $ocamlkompileddir/realdef.cmxs
 build spec-java  : phony $builddir/plutus-core-java/plutus-core-kompiled/timestamp
