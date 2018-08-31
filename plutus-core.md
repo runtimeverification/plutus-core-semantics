@@ -55,6 +55,7 @@ module PLUTUS-CORE-COMMON
     syntax Term ::= Var
                   | "(" "run" Term ")"
                   | "{" Term TyValue "}"
+                  | "(" "unwrap" Term ")"
                   | "[" Term Term "]"                                                      [strict]
                   | Error
                   | Value
@@ -338,6 +339,7 @@ module PLUTUS-CORE-TYPE-ERASURE
     imports PLUTUS-CORE-CONFIGURATION
 
     rule (abs TY KI TM) => TM
+    rule (unwrap TM)    => TM
 endmodule
 ```
 
