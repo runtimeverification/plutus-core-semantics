@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    bytestring ( 8 , b"\n\x0b\x0c\r\x01\x02\x03" )
+  </k>
+  <env>
+    .Map
+  </env>
+  <store>
+    .Map
+  </store>
+</generatedTop>

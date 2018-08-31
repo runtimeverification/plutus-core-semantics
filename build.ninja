@@ -64,6 +64,20 @@ build .build/t/builtin-app.plc.java.out  : krun t/builtin-app.plc | $builddir/pl
 build .build/t/builtin-app.plc.java.test : check-test-result .build/t/builtin-app.plc.java.out
     expected = t/builtin-app.plc.expected
 
+# t/bytestring.plc (ocaml)
+#
+build .build/t/bytestring.plc.ocaml.out : krun t/bytestring.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+    directory = $builddir/plutus-core-ocaml
+build .build/t/bytestring.plc.ocaml.test : check-test-result .build/t/bytestring.plc.ocaml.out
+    expected = t/bytestring.plc.ocaml.expected
+
+# t/bytestring.plc (java)
+#
+build .build/t/bytestring.plc.java.out  : krun t/bytestring.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+    directory = $builddir/plutus-core-java
+build .build/t/bytestring.plc.java.test : check-test-result .build/t/bytestring.plc.java.out
+    expected = t/bytestring.plc.java.expected
+
 # Aliases
 # -------
 
