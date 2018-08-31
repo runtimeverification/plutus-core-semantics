@@ -139,8 +139,9 @@ module PLUTUS-CORE-LAMBDA-CALCULUS
     rule <k> (lam X _:TyValue M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
     rule <k> [closure(RHO, X, M) V] => M ~> RHO' ... </k>
-         <env> RHO' => RHO[X <- !N] </env>
-         <store> ...  .Map => (!N:Int |-> V) ... </store>
+         <env> RHO' => RHO[X <- size(STORE)] </env>
+         <store> STORE => STORE (size(STORE) |-> V) </store>
+
     rule <k> X:Var => V ... </k>
          <env> ... X |-> N ... </env>
          <store> ... N |-> V ... </store>
