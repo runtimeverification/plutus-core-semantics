@@ -346,8 +346,10 @@ erase certain type constructs.
 module PLUTUS-CORE-TYPE-ERASURE
     imports PLUTUS-CORE-CONFIGURATION
 
-    rule (abs TY KI TM) => TM
-    rule (unwrap TM)    => TM
+    rule (abs TY KI TM)    => TM
+    rule (unwrap TM)       => TM
+    rule { TM TY }         => TM
+    rule (wrap TVAR TY TM) => TM
 endmodule
 ```
 
