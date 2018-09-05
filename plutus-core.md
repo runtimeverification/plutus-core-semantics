@@ -7,6 +7,7 @@ defining rules:
 ```k
 module PLUTUS-CORE-SYNTAX
     imports PLUTUS-CORE-COMMON
+    imports PLUTUS-CORE-ABBREVIATIONS
     syntax LowerName     ::= #LowerId [token, autoreject]
     syntax UpperName     ::= #UpperId [token, autoReject]
 endmodule
