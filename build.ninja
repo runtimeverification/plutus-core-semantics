@@ -1,63 +1,11 @@
 # This ninja-build file requires pandoc-tangle, kompile, etc to be in PATH. As such it is not meant
 # to be run directly, but through the ./build script.
 
-# Infrastructure generic to all K Projects
-# ========================================
-
-builddir = .build
-testdir  = $builddir/test
-
-rule kompile
-    description     = Kompiling $in ($backend)
-    command         = kompile --backend $backend --debug --directory $$(dirname $$(dirname $out)) $in
-
-
-rule krun
-    description     = Running $in ($directory)
-    command         = krun $flags --debug --directory $directory $in > $out
-
-rule kprove
-    description     = Checking specification $in
-    command         = kprove $flags --directory $directory $in
-
-tangle_selector = .k
+builddir          = .build
+testdir           = $builddir/test
 tangle_repository = $builddir/pandoc-tangle
-rule tangle
-    description = Tangling $in
-    command     = LUA_PATH=$tangle_repository/?.lua    $
-                  pandoc $in -o $out --metadata=code:$tangle_selector --to "$tangle_repository/tangle.lua"
 
-rule check-test-result
-    description = Checking $in
-    command = git diff --no-index $in $expected
-
-# OCaml compilation
-# -----------------
-#
-# For compiling K plugins for the OCaml backend, we need a two-stage kompilation process. In the
-# first step, we generate the Constants.ml and other ml files, and use those to in the compilation
-# of the plugin implementation.
-#
-rule kompile-gen-ml
-    description     = kompiling $in: Generating OCaml files
-    command         = kompile $flags --backend ocaml --debug --directory $directory $in $
-                           --gen-ml-only
-
-rule kompile-interpreter
-    description     = kompile $in: Compiling
-    command         = bin/interpreter-from-ml $$(dirname $out) $mlplugins
-
-rule ocamllex
-    description     = ocamllex $in
-    command         = ocamllex $flags $in
-
-rule ocamlyacc
-    description     = ocamlyacc $in
-    command         = ocamlyacc $flags $in
-
-rule ocamlopt
-    description     = ocamlopt $out
-    command         = ocamlfind opt -o $out $flags $in
+include ext/kninja/prelude.ninja
 
 # Plutus (Compilation)
 # ====================
