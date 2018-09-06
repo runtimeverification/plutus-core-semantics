@@ -5,11 +5,8 @@
 # 
 # Execute ninja:
 #
-#   ./build <arguments-to-ninja>
+#   ./build [<arguments-to-ninja>] [-- command-to-run]
 #
-# Execute arbitary command in fully set up environment
-#
-#   ./build -- <arbitary-command>
 
 set -eu     # Fail on non-zero exit code, undefined variable
 
@@ -57,6 +54,9 @@ init_env() {
     export PATH="$PATH:$k_bin_dir"
 }
 
+have_user_specified_command() { [[ ${#command[@]}    -gt 0 ]] ; }
+have_ninja_args()             { [[ ${#ninja_args[@]} -gt 0 ]] ; }
+
 # Main
 # ====
 
@@ -64,5 +64,15 @@ init_env
 [[ -f "$k_submodule/.git"  ]]                   || download_k
 [[ -x "$k_bin_dir/kompile" ]]                   || build_k
 [[ -x "$build_dir/opam/4.03.0+k/bin/ocamlc" ]]  || build_ocamlc
-[[ $# -lt 1 ]] || [[ -- != $1 ]]                || { shift ; exec "$@" ; }
-exec ninja "$@"
+ninja_args=( )
+while [[ $# -gt 0 ]] ; do
+    [[ "$1" != "--" ]] || { shift ; break ; }
+    ninja_args+=( $1 ) ; shift
+done
+command=( "$@" )
+if ! have_user_specified_command || have_ninja_args ; then
+   ninja "${ninja_args[@]}"
+fi
+if have_user_specified_command ; then
+   exec "${command[@]}"
+fi
