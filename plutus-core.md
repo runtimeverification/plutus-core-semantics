@@ -6,7 +6,7 @@ defining rules:
 
 ```k
 module PLUTUS-CORE-SYNTAX
-    imports PLUTUS-CORE-COMMON
+    imports PLUTUS-CORE-TYPED
     imports PLUTUS-CORE-ABBREVIATIONS
     syntax LowerName     ::= #LowerId [token, autoreject]
     syntax UpperName     ::= #UpperId [token, autoReject]
@@ -24,13 +24,10 @@ module PLUTUS-CORE-COMMON
     // TODO: make Name have same regex as in spec
     syntax Name          ::= LowerName | UpperName
     syntax Var           ::= Name
-    syntax TyVar         ::= Name
-    syntax TyBuiltinName ::= Name
     syntax BuiltinName   ::= Name
 
     syntax ByteString ::= r"\\#[a-fA-F0-9][a-fA-F0-9]*"               [notInRules, token, autoReject]
 
-    syntax TyBuiltinName ::= "(" "integer" ")" | "(" "bytestring" ")"
     syntax BuiltinName   ::= BinaryBuiltin
     syntax BinaryBuiltin ::= "addInteger"         | "subtractInteger"
                            | "multiplyInteger"    | "divideInteger"
@@ -50,22 +47,37 @@ module PLUTUS-CORE-COMMON
                            | BuiltinName
                            | Size
 
-    syntax TyConstant    ::= Size
-                           | TyBuiltinName
-
     syntax Term ::= Var
                   | "(" "run" Term ")"
-                  | "{" Term TyValue "}"
-                  | "(" "unwrap" Term ")"
                   | "[" Term Term "]"                                                      [strict]
                   | Error
                   | Value
-    syntax Error ::= "(" "error" Type ")"
+    syntax Error
+
+    syntax Value ::= "(" "con" Constant ")"
+
+    syntax Program ::= "(" "program" Version Term ")"
+endmodule
+```
+
+```k
+module PLUTUS-CORE-SYNTAX-TYPED
+    imports PLUTUS-CORE-COMMON
+
+    syntax TyVar         ::= Name
+    syntax TyBuiltinName ::= Name
+
+    syntax TyBuiltinName ::= "(" "integer" ")" | "(" "bytestring" ")"
+
+    syntax TyConstant ::= Size
+                        | TyBuiltinName
+
+    syntax Term ::= "{" Term TyValue "}"
+                  | "(" "unwrap" Term ")"
 
     syntax Value ::= "(" "abs" TyVar Kind Value ")"
                    | "(" "wrap" TyVar TyValue Value ")"
                    | "(" "lam" Var TyValue Term ")"
-                   | "(" "con" Constant ")"
 
     syntax Type ::= TyVar
                   | "(" "rec" Type ")"
@@ -90,7 +102,36 @@ module PLUTUS-CORE-COMMON
                   | "(" "fun" Kind Kind ")"
                   | "(" "size" ")"
 
-    syntax Program ::= "(" "program" Version Term ")"
+    syntax ErrorTy ::= "(" "error" Type ")"
+endmodule
+```
+
+```k
+module PLUTUS-CORE-SYNTAX-UNTYPED
+    imports PLUTUS-CORE-COMMON
+
+    syntax Value ::= "(" "lam" Var Term ")"
+
+    syntax Error ::= "(" "error" ")"
+endmodule
+```
+
+Type Erasure
+------------
+
+In this specification, we ignore types and assume that the program is well typed. We must therefore
+erase certain type constructs.
+
+```k
+module PLUTUS-CORE-TYPE-ERASURE
+    imports PLUTUS-CORE-TYPED
+    imports PLUTUS-CORE-UNTYPED
+
+    rule (lam VAR TY TM)   => (lam VAR TM)
+    rule (abs TY KI TM)    => TM
+    rule { TM TY }         => TM
+    rule (unwrap TM)       => TM
+    rule (wrap TVAR TY TM) => TM
 endmodule
 ```
 
@@ -137,11 +178,12 @@ that works for both symbolic exectution, and for both the Java and OCaml backend
 ```k
 module PLUTUS-CORE-LAMBDA-CALCULUS
     imports PLUTUS-CORE-CONFIGURATION
+    imports PLUTUS-CORE-SYNTAX-UNTYPED
 
     syntax Closure    ::= closure(Map, Var, Term)
     syntax ResultTerm ::= Closure
 
-    rule <k> (lam X _:TyValue M:Term) => closure(RHO, X, M) ... </k>
+    rule <k> (lam X M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
     rule <k> [closure(RHO, X, M) V] => M ~> RHO' ... </k>
          <env> RHO' => RHO[X <- size(STORE)] </env>
@@ -162,7 +204,7 @@ Common infrastructure for handling builtins.
 
 ```k
 module PLUTUS-CORE-BUILTINS
-    imports PLUTUS-CORE-CONFIGURATION
+    imports PLUTUS-CORE-SYNTAX-UNTYPED
 
     syntax KResult ::= Error
 
@@ -331,23 +373,6 @@ Bytestring builtins:
 ```
 
 ```k
-endmodule
-```
-
-Type Erasure
-------------
-
-In this specification, we ignore types and assume that the program is well typed. We must therefore
-erase certain type constructs.
-
-```k
-module PLUTUS-CORE-TYPE-ERASURE
-    imports PLUTUS-CORE-CONFIGURATION
-
-    rule (abs TY KI TM)    => TM
-    rule { TM TY }         => TM
-    rule (unwrap TM)       => TM
-    rule (wrap TVAR TY TM) => TM
 endmodule
 ```
 
