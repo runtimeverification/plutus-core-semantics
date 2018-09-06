@@ -72,13 +72,16 @@ build $ocamlkompileddir/realdef.cmxs : ocamlopt $ocamlkompileddir/realdef.cmx
 
 build check-unit-tests : kprove $tangleddir/unit-tests-spec.k | spec-java
     directory = $builddir/plutus-core-java
+default check-unit-tests
 
 build check-10 : kprove sum-to-10-spec.k $
                  | spec-java
     directory = $builddir/plutus-core-java
+default check-10
 
 build check-verification : kprove $tangleddir/verification-spec.k | spec-java
     directory = $builddir/plutus-core-java
+default check-verification
 
 # Integration tests
 # -----------------
@@ -93,6 +96,7 @@ build .build/t/builtin-app.plc.ocaml.out : krun t/builtin-app.plc | spec-ocaml
     flags     = --interpret
 build .build/t/builtin-app.plc.ocaml.test : check-test-result .build/t/builtin-app.plc.ocaml.out
     expected = t/builtin-app.plc.expected
+default .build/t/builtin-app.plc.ocaml.test
 
 # t/builtin-app.plc (java)
 #
@@ -100,6 +104,7 @@ build .build/t/builtin-app.plc.java.out  : krun t/builtin-app.plc | spec-java
     directory = $builddir/plutus-core-java
 build .build/t/builtin-app.plc.java.test : check-test-result .build/t/builtin-app.plc.java.out
     expected = t/builtin-app.plc.expected
+default .build/t/builtin-app.plc.java.test
 
 # t/bytestring.plc (ocaml)
 #
@@ -126,6 +131,7 @@ build .build/t/sha2.plc.ocaml.out : krun t/sha2.plc | spec-ocaml
     flags     = --interpret
 build .build/t/sha2.plc.ocaml.test : check-test-result .build/t/sha2.plc.ocaml.out
     expected = t/sha2.plc.ocaml.expected
+default .build/t/sha2.plc.ocaml.test
 
 # # t/sha2.plc (java)
 # #
@@ -133,6 +139,7 @@ build .build/t/sha2.plc.ocaml.test : check-test-result .build/t/sha2.plc.ocaml.o
 #     directory = $builddir/plutus-core-java
 # build .build/t/sha2.plc.java.test : check-test-result .build/t/sha2.plc.java.out
 #     expected = t/sha2.plc.java.expected
+# default .build/t/sha2.plc.java.test
 
 # t/sha3.plc (ocaml)
 #
@@ -141,6 +148,7 @@ build .build/t/sha3.plc.ocaml.out : krun t/sha3.plc | spec-ocaml
     flags     = --interpret
 build .build/t/sha3.plc.ocaml.test : check-test-result .build/t/sha3.plc.ocaml.out
     expected = t/sha3.plc.ocaml.expected
+default .build/t/sha3.plc.ocaml.test
 
 # # t/sha3.plc (java)
 # #
@@ -148,6 +156,7 @@ build .build/t/sha3.plc.ocaml.test : check-test-result .build/t/sha3.plc.ocaml.o
 #     directory = $builddir/plutus-core-java
 # build .build/t/sha3.plc.java.test : check-test-result .build/t/sha3.plc.java.out
 #     expected = t/sha3.plc.java.expected
+# default .build/t/sha3.plc.java.test
 
 # Complex tests
 # -------------
