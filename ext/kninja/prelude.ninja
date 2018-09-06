@@ -7,20 +7,31 @@ rule tangle
     command     = LUA_PATH=$tangle_repository/?.lua    $
                   pandoc $in -o $out --metadata=code:$tangle_selector --to "$tangle_repository/tangle.lua"
 
+# Initializing submodules
+# -----------------------
+
+rule git-submodule-init
+    description     = Initializing $out
+    command         = git submodule update --init $$(dirname $out)
+
+rule build-k
+    description     = Building K
+    command         = cd $k_repository && mvn package -q -DskipTests
+
 # Basic K Toolchain
 # -----------------
 
 rule kompile
     description     = Kompiling $in ($backend)
-    command         = kompile --backend $backend --debug --directory $$(dirname $$(dirname $out)) $in
-
+    command         = $k_bindir/kompile --backend $backend --debug $
+                                        --directory $$(dirname $$(dirname $out)) $in
 rule krun
     description     = Running $in ($directory)
-    command         = krun $flags --debug --directory $directory $in > $out
+    command         = $k_bindir/krun $flags --debug --directory $directory $in > $out
 
 rule kprove
     description     = Checking specification $in
-    command         = kprove $flags --directory $directory $in
+    command         = $k_bindir/kprove $flags --directory $directory $in
 
 # Testing
 # -------
@@ -38,11 +49,11 @@ rule check-test-result
 #
 rule kompile-gen-ml
     description     = kompiling $in: Generating OCaml files
-    command         = kompile $flags --backend ocaml --debug --directory $directory $in $
+    command         = $k_bindir/kompile $flags --backend ocaml --debug --directory $directory $in $
                            --gen-ml-only
 
 rule kompile-interpreter
-    description     = kompile $in: Compiling
+    description     = $k_bindir/kompile $in: Compiling
     command         = bin/interpreter-from-ml $$(dirname $out) $mlplugins
 
 rule ocamllex

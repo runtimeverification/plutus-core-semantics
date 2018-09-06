@@ -23,7 +23,8 @@ build $tangleddir/verification-spec.k : tangle verification.md
 # ---------------------------
 
 build $builddir/plutus-core-java/plutus-core-kompiled/timestamp : kompile $tangleddir/plutus-core.k $
-                                                                | $tangleddir/krypto.k
+                                                                | $tangleddir/krypto.k              $
+                                                                  $k_bindir/kompile
     backend = java
 
 # OCaml build kompile pipeline
