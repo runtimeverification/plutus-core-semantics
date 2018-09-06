@@ -1,20 +1,42 @@
 # This ninja-build file requires pandoc-tangle, kompile, etc to be in PATH. As such it is not meant
 # to be run directly, but through the ./build script.
 
-builddir          = .build
-testdir           = $builddir/test
-tangle_repository = $builddir/pandoc-tangle
+# Configuration & Repository Layout
+# =================================
+
+builddir            = .build
+testdir             = $builddir/test
+tangle_repository   = $builddir/pandoc-tangle
+opam_root           = $builddir/opam
+tangleddir          = $builddir/tangled/
+k_repository        = $builddir/k
+k_bindir            = $k_repository/k-distribution/target/release/k/bin
+blockchainplugindir = ext/blockchain-k-plugin/plugin/
 
 include ext/kninja/prelude.ninja
+
+# Dependencies
+# ============
+
+build $builddir/k/.git  : git-submodule-init
+build $k_bindir/kompile : build-k $builddir/k/.git
+
+# TODO: This should depend on the repository configuration instead of kompile
+build $opam_root/4.03.0+k/bin/ocamlc : opam-build-ocamlc-k $k_bindir/kompile
+
+build $opam_root/4.03.0+k/lib/cryptokit/opam.config : opam-install
+    package = cryptokit
+build $opam_root/4.03.0+k/lib/mlgmp/opam.config : opam-install
+    package = mlgmp
+build $opam_root/4.03.0+k/lib/uuidm/opam.config : opam-install
+    package = uuidm
 
 # Plutus (Compilation)
 # ====================
 
-tangleddir = $builddir/tangled/
-blockchainplugindir = ext/blockchain-k-plugin/plugin/
-
-build $tangleddir/plutus-core.k       : tangle plutus-core.md
-build $tangleddir/krypto.k            : tangle $blockchainplugindir/krypto.md
+build $tangleddir/plutus-core.k      : tangle plutus-core.md
+build $tangleddir/plutus-core-spec.k : tangle plutus-core-spec.md
+build $tangleddir/krypto.k           : tangle $blockchainplugindir/krypto.md
     tangle_selector = .cryptography-hashes
 build $tangleddir/unit-tests-spec.k   : tangle unit-tests.md
 build $tangleddir/verification-spec.k : tangle verification.md
@@ -57,7 +79,11 @@ build $ocamlkompileddir/interpreter $
                                                $ocamlkompileddir/parser.ml    $
                                                $ocamlkompileddir/lexer.ml     $
                                                $ocamlkompileddir/run.ml       $
-                                               $ocamlkompileddir/interpreter.ml
+                                               $ocamlkompileddir/interpreter.ml $
+                                             | $opam_root/4.03.0+k/bin/ocamlc $
+                                               $opam_root/4.03.0+k/lib/cryptokit/opam.config $
+                                               $opam_root/4.03.0+k/lib/mlgmp/opam.config        $
+                                               $opam_root/4.03.0+k/lib/uuidm/opam.config
     flags = -g -w -11-26 -I $ocamlkompileddir -I $blockchainplugindir $
             -package gmp -package dynlink -package zarith -package str -package uuidm -package unix -package cryptokit $
             -linkpkg -linkall -thread -safe-string

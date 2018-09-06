@@ -14,32 +14,19 @@ base="$(cd "$(dirname "$0")"; pwd)"
 build_dir="$base/.build"
 k_submodule="$build_dir/k"
 
-# Basic Utility functions
-# =======================
+# Helpers
+# =======
 
 log()  { echo >&2 "=== " $@ ; }
 fail() { log "$@"; exit 1   ; }
 
-# Dependencies
-# ============
-
-
-# Since K needs a modified ocaml compiler, use a opam root directory private to
-# this project so as not to intefere with other opam packages such as coq.
-#
-export OPAMROOT="$build_dir/opam"
-build_ocamlc() {
-    log "Setting up OCaml"
-    opam init --quiet --no-setup --yes
-    opam repository add k "$k_submodule/k-distribution/target/release/k/lib/opam" \
-        || opam repository set-url k "$k_submodule/k-distribution/target/release/k/lib/opam"
-    opam update
-    opam switch -v 4.03.0+k
-    opam install --yes mlgmp zarith uuidm
-}
-
 init_env() {
     type -t ninja > /dev/null || fail "ninja-build not available. Giving up."
+
+    # Since K needs a modified ocaml compiler, use a opam root directory private to
+    # this project so as not to intefere with other opam packages such as coq.
+    #
+    export OPAMROOT="$build_dir/opam"
     eval $(opam config env)
 }
 
@@ -50,7 +37,6 @@ have_ninja_args()             { [[ ${#ninja_args[@]} -gt 0 ]] ; }
 # ====
 
 init_env
-[[ -x "$build_dir/opam/4.03.0+k/bin/ocamlc" ]]  || build_ocamlc
 ninja_args=( )
 while [[ $# -gt 0 ]] ; do
     [[ "$1" != "--" ]] || { shift ; break ; }
