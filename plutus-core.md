@@ -62,8 +62,7 @@ module PLUTUS-CORE-COMMON
                   | Value
     syntax Error ::= "(" "error" Type ")"
 
-    syntax Value ::= "(" "fix" Var TyValue Term ")"
-                   | "(" "abs" TyVar Kind Value ")"
+    syntax Value ::= "(" "abs" TyVar Kind Value ")"
                    | "(" "wrap" TyVar TyValue Value ")"
                    | "(" "lam" Var TyValue Term ")"
                    | "(" "con" Constant ")"
