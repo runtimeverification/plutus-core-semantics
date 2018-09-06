@@ -177,12 +177,12 @@ build .build/t/sha2.plc.ocaml.out : krun t/sha2.plc | spec-ocaml
 build .build/t/sha2.plc.ocaml.test : check-test-result .build/t/sha2.plc.ocaml.out
     expected = t/sha2.plc.ocaml.expected
 
-# t/sha2.plc (java)
-#
-build .build/t/sha2.plc.java.out  : krun t/sha2.plc | spec-java
-    directory = $builddir/plutus-core-java
-build .build/t/sha2.plc.java.test : check-test-result .build/t/sha2.plc.java.out
-    expected = t/sha2.plc.java.expected
+# # t/sha2.plc (java)
+# #
+# build .build/t/sha2.plc.java.out  : krun t/sha2.plc | spec-java
+#     directory = $builddir/plutus-core-java
+# build .build/t/sha2.plc.java.test : check-test-result .build/t/sha2.plc.java.out
+#     expected = t/sha2.plc.java.expected
 
 # t/sha3.plc (ocaml)
 #
@@ -192,12 +192,12 @@ build .build/t/sha3.plc.ocaml.out : krun t/sha3.plc | spec-ocaml
 build .build/t/sha3.plc.ocaml.test : check-test-result .build/t/sha3.plc.ocaml.out
     expected = t/sha3.plc.ocaml.expected
 
-# t/sha3.plc (java)
-#
-build .build/t/sha3.plc.java.out  : krun t/sha3.plc | spec-java
-    directory = $builddir/plutus-core-java
-build .build/t/sha3.plc.java.test : check-test-result .build/t/sha3.plc.java.out
-    expected = t/sha3.plc.java.expected
+# # t/sha3.plc (java)
+# #
+# build .build/t/sha3.plc.java.out  : krun t/sha3.plc | spec-java
+#     directory = $builddir/plutus-core-java
+# build .build/t/sha3.plc.java.test : check-test-result .build/t/sha3.plc.java.out
+#     expected = t/sha3.plc.java.expected
 
 # Complex tests
 # -------------
