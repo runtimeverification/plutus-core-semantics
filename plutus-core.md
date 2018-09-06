@@ -103,7 +103,6 @@ Configuration
 ```k
 module PLUTUS-CORE-CONFIGURATION
     imports PLUTUS-CORE-COMMON
-    imports PLUTUS-CORE-ABBREVIATIONS
     imports DOMAINS
 
     configuration <k> $PGM:Program </k>
