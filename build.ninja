@@ -26,11 +26,11 @@ build $k_bindir/kompile : build-k $builddir/k/.git
 # TODO: This should depend on the repository configuration instead of kompile
 build $opam_root/4.03.0+k/bin/ocamlc : opam-build-ocamlc-k $k_bindir/kompile
 
-build $opam_root/4.03.0+k/lib/cryptokit/opam.config : opam-install
+build $opam_root/4.03.0+k/lib/cryptokit/opam.config : opam-install $opam_root/4.03.0+k/bin/ocamlc
     package = cryptokit
-build $opam_root/4.03.0+k/lib/mlgmp/opam.config : opam-install
+build $opam_root/4.03.0+k/lib/mlgmp/opam.config : opam-install $opam_root/4.03.0+k/bin/ocamlc
     package = mlgmp
-build $opam_root/4.03.0+k/lib/uuidm/opam.config : opam-install
+build $opam_root/4.03.0+k/lib/uuidm/opam.config : opam-install $opam_root/4.03.0+k/bin/ocamlc
     package = uuidm
 
 # Plutus (Compilation)
