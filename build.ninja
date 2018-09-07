@@ -18,6 +18,8 @@ include ext/kninja/prelude.ninja
 # Dependencies
 # ============
 
+build $tangle_repository/.git : git-submodule-init
+
 build $builddir/k/.git  : git-submodule-init
 build $k_bindir/kompile : build-k $builddir/k/.git
 
@@ -34,9 +36,12 @@ build $opam_root/4.03.0+k/lib/uuidm/opam.config : opam-install
 # Plutus (Compilation)
 # ====================
 
-build $tangleddir/plutus-core.k      : tangle plutus-core.md
-build $tangleddir/plutus-core-spec.k : tangle plutus-core-spec.md
-build $tangleddir/krypto.k           : tangle $blockchainplugindir/krypto.md
+build $tangleddir/plutus-core.k      : tangle plutus-core.md $
+                                     | $tangle_repository/.git
+build $tangleddir/plutus-core-spec.k : tangle plutus-core-spec.md $
+                                     | $tangle_repository/.git
+build $tangleddir/krypto.k           : tangle $blockchainplugindir/krypto.md $
+                                     | $tangle_repository/.git
     tangle_selector = .cryptography-hashes
 build $tangleddir/unit-tests-spec.k   : tangle unit-tests.md
 build $tangleddir/verification-spec.k : tangle verification.md
