@@ -57,7 +57,7 @@ module PLUTUS-CORE-COMMON
                   | "(" "run" Term ")"
                   | "{" Term TyValue "}"
                   | "(" "unwrap" Term ")"
-                  | "[" Term Term "]"                                                      [strict]
+                  | "[" Term Term "]"                                                   [seqstrict]
                   | Error
                   | Value
     syntax Error ::= "(" "error" Type ")"
