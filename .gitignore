@@ -7,8 +7,11 @@
 !/.build/k
 !/.build/pandoc-tangle
 
-# Build products for Crypto / Hash
+# from Crypto / Hash
 
 /ext/blockchain-k-plugin/plugin/*.cmi
 /ext/blockchain-k-plugin/plugin/*.cmx
 /ext/blockchain-k-plugin/plugin/*.o
+
+# from KNinja
+/ext/kninja/__pycache__
