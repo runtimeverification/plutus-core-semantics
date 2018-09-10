@@ -28,7 +28,10 @@ init_env() {
     #
     export OPAMROOT="$build_dir/opam"
     eval $(opam config env)
+
+    export PYTHONPATH="$base/ext/"
 }
+
 
 have_user_specified_command() { [[ ${#command[@]}    -gt 0 ]] ; }
 have_ninja_args()             { [[ ${#ninja_args[@]} -gt 0 ]] ; }
@@ -37,6 +40,7 @@ have_ninja_args()             { [[ ${#ninja_args[@]} -gt 0 ]] ; }
 # ====
 
 init_env
+[[ -f $build_dir/generated.ninja ]] || python3 lib/build.py
 ninja_args=( )
 while [[ $# -gt 0 ]] ; do
     [[ "$1" != "--" ]] || { shift ; break ; }
@@ -44,7 +48,7 @@ while [[ $# -gt 0 ]] ; do
 done
 command=( "$@" )
 if ! have_user_specified_command || have_ninja_args ; then
-   ninja "${ninja_args[@]}"
+   ninja -f $build_dir/generated.ninja "${ninja_args[@]}"
 fi
 if have_user_specified_command ; then
    exec "${command[@]}"

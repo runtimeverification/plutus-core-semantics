@@ -1,3 +1,11 @@
+# For use with python generators
+# ------------------------------
+
+rule python3-generator
+    description = Configuring $in
+    command     = python3 $in > $out
+    generator   = true
+
 # Literate programming
 # --------------------
 
@@ -14,6 +22,9 @@ rule git-submodule-init
     description     = Initializing $out
     command         = git submodule update --init $$(dirname $out)
 
+# Building K
+# ----------
+
 rule build-k
     description     = Building K
     command         = cd $k_repository && mvn package -q -DskipTests
@@ -26,12 +37,13 @@ rule opam-build-ocamlc-k
         opam repository set-url k "$k_repository/k-distribution/target/release/k/lib/opam" )  && $
       opam update                                                                             && $
       (opam switch remove 4.03.0+k || true)                                                   && $
-      opam switch -v 4.03.0+k
+      opam switch -v 4.03.0+k                                                                 && $
+      touch --no-create $out
     pool            = opam
 
 rule opam-install
     description     = opam install $out
-    command         = opam install --yes $package
+    command         = opam install --yes $package && touch --no-create $out
     pool            = opam
 
 pool opam
