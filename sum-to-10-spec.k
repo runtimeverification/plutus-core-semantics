@@ -1,34 +1,35 @@
-module SUM-TO-10-SPEC
-    imports PLUTUS-CORE
+module RECURSION-HELPERS
     imports PLUTUS-CORE-SYNTAX
 
-rule <k>
-[ [ [ { { (abs a (type) (abs b (type) (lam f (fun (fun a b) (fun a b)) [ { (abs a (type) (lam s (fix self (fun self a)) [ (unwrap s) s ])) (fun a b) } (wrap self (fun self (fun a b)) (lam s (fix self (fun self (fun a b))) (lam x a [ [ f [ { (abs a (type) (lam s (fix self (fun self a)) [ (unwrap s) s ])) (fun a b) } s ] ] x ]))) ]))) r } (fun (fix nat (all r (type) (fun r (fun (fun nat r) r)))) r) }
-(lam recur (fun r (fun (fix nat (all r (type) (fun r (fun (fun nat r) r)))) r))
-  (lam z r
-    (lam n (fix nat (all r (type) (fun r (fun (fun nat r) r))))
+    syntax Term ::= "#combinator"
+    rule #combinator => { { (abs a (type) (abs b (type) (lam f (fun (fun a b) (fun a b)) [ { (abs a (type) (lam s (fix self (fun self a)) [ (unwrap s) s ])) (fun a b) } (wrap self (fun self (fun a b)) (lam s (fix self (fun self (fun a b))) (lam x a [ [ f [ { (abs a (type) (lam s (fix self (fun self a)) [ (unwrap s) s ])) (fun a b) } s ] ] x ]))) ]))) r } (fun (fix nat (all r (type) (fun r (fun (fun nat r) r)))) r) }
+           [macro]
+endmodule
 
-[[[[ { (abs a (type) (lam b boolean (lam t a (lam f a
-  [[ {b a}
-    (lam x #unit t)]
-    (lam x #unit f)
-  ] ))))
-  #unit }
+module SUM-TO-10-SPEC
+    imports PLUTUS-CORE
+    imports RECURSION-HELPERS
 
-[[ (con equalsInteger) (con 5 ! 0)] n ]]
-
-(lam f #unit z)]
-
-[ recur [[ (con addInteger) z] n ] ]] [ [(con subtractInteger) n] (con 5 ! 1) ]
-
-]))) ]
-
-(con 5 ! 0) ]
-
-(con 5 ! 10) ]
-=>
-int(5, 55)
-</k>
-<env> .Map => .Map </env>
-<store> .Map => _ </store>
+    rule <k>
+      [ [ [ #combinator
+            (lam recur (fun r (fun (fix nat (all r (type) (fun r (fun (fun nat r) r)))) r))
+                 (lam z r
+                      (lam n (fix nat (all r (type) (fun r (fun (fun nat r) r))))
+                           [ [ [ [ { #case #unit }
+                                   [[(con equalsInteger) (con 5 ! 0)] n ]
+                                 ]
+                                 (lam f #unit z)
+                               ]
+                               [ recur [[ (con addInteger) z] n ] ]
+                             ]
+                             [ [(con subtractInteger) n] (con 5 ! 1) ]
+                           ]
+            )    )    )
+          ] 
+          (con 5 ! 0)
+        ]
+        (con 5 ! 10)
+      ] => int(5, 55) </k>
+      <env> .Map => .Map </env>
+      <store> .Map => _ </store>
 endmodule
