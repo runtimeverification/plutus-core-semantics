@@ -123,7 +123,7 @@ Since our concept of `KResult` differs slightly from the specifications notion o
 
 ```k
     syntax ResultTerm
-    syntax Term    ::= ResultTerm
+    syntax Value   ::= ResultTerm
     syntax KResult ::= ResultTerm
 
     syntax ResultTerm ::= Error
@@ -168,22 +168,16 @@ module PLUTUS-CORE-BUILTINS
 
     syntax KResult ::= Error
 
-    syntax CurriedBuiltinResult ::= curried(BinaryBuiltin)
-                                  | curriedArg(BinaryBuiltin, ResultTerm)
-    syntax ResultTerm     ::= CurriedBuiltinResult
-    syntax CurriedBuiltin ::= CurriedBuiltinResult
-                            | curriedArg(BinaryBuiltin, Term)                    [strict(2)]
-    syntax Term           ::= CurriedBuiltin
+    rule isResultTerm( (con B:BinaryBuiltin)    ) => true
+    rule isResultTerm([(con B:BinaryBuiltin) TM:ResultTerm]) => true
 
     syntax Size ::= size(Int) [klabel(sizeConstant)] /* klabel prevents conflict with size(Set) */
     syntax ResultTerm ::= Size
     rule (con S:Int) => size(S)
 
     // BinaryBuiltins
-    rule (con B:BinaryBuiltin)                        => curried(B)
-    rule [curried(B:BinaryBuiltin) TM]                => curriedArg(B, TM)
-    rule [curriedArg(B:BinaryBuiltin, (error TY)) TM] => (error TY)
-    rule [curriedArg(B:BinaryBuiltin, TM) (error TY)] => (error TY)
+    rule [[(con B:BinaryBuiltin) (error TY)] TM] => (error TY)
+    rule [[(con B:BinaryBuiltin) TM] (error TY)] => (error TY)
 endmodule
 ```
 
@@ -208,55 +202,55 @@ module PLUTUS-CORE-BOUNDED-INTEGER-ARITHMETIC
     imports PLUTUS-CORE-BUILTINS
 
     // addInteger builtin
-    rule [curriedArg(addInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 +Int V2))
+    rule [[(con addInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 +Int V2))
 
     // subtractInteger builtin
-    rule [curriedArg(subtractInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 -Int V2))
+    rule [[(con subtractInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 -Int V2))
 
     // multiplyInteger builtin
-    rule [curriedArg(multiplyInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 *Int V2))
+    rule [[(con multiplyInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 *Int V2))
 
     // divideInteger builtin
-    rule [curriedArg(divideInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 /Int V2))
+    rule [[(con divideInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 /Int V2))
       requires V2 =/=Int 0
-    rule [curriedArg(divideInteger, int(S, V1)) int(S, 0)] => (error (con (integer)))
+    rule [[(con divideInteger) int(S, V1)] int(S, 0)] => (error (con (integer)))
 
     // remainderInteger builtin
-    rule [curriedArg(remainderInteger, int(S, V1)) int(S, V2)] => (con S ! (V1 %Int V2))
+    rule [[(con remainderInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 %Int V2))
       requires V2 =/=Int 0
-    rule [curriedArg(remainderInteger, int(S, V1)) int(S, 0)] => (error (con (integer)))
+    rule [[(con remainderInteger) int(S, V1)] int(S, 0)] => (error (con (integer)))
 
     // lessThanInteger builtin
-    rule [curriedArg(lessThanInteger, int(S, V1)) int(S, V2)] => #true
+    rule [[(con lessThanInteger) int(S, V1)] int(S, V2)] => #true
       requires V1 <Int V2
-    rule [curriedArg(lessThanInteger, int(S, V1)) int(S, V2)] => #false
+    rule [[(con lessThanInteger) int(S, V1)] int(S, V2)] => #false
       requires V1 >=Int V2
 
     // lessThanEqualsInteger builtin
-    rule [curriedArg(lessThanEqualsInteger, int(S, V1)) int(S, V2)] => #true
+    rule [[(con lessThanEqualsInteger) int(S, V1)] int(S, V2)] => #true
       requires V1 <=Int V2
-    rule [curriedArg(lessThanEqualsInteger, int(S, V1)) int(S, V2)] => #false
+    rule [[(con lessThanEqualsInteger) int(S, V1)] int(S, V2)] => #false
       requires V1 >Int V2
 
     // greaterThanInteger builtin
-    rule [curriedArg(greaterThanInteger, int(S, V1)) int(S, V2)] => #true
+    rule [[(con greaterThanInteger) int(S, V1)] int(S, V2)] => #true
       requires V1 >Int V2
-    rule [curriedArg(greaterThanInteger, int(S, V1)) int(S, V2)] => #false
+    rule [[(con greaterThanInteger) int(S, V1)] int(S, V2)] => #false
       requires V1 <=Int V2
 
     // greaterThanEqualsInteger builtin
-    rule [curriedArg(greaterThanEqualsInteger, int(S, V1)) int(S, V2)] => #true
+    rule [[(con greaterThanEqualsInteger) int(S, V1)] int(S, V2)] => #true
       requires V1 >=Int V2
-    rule [curriedArg(greaterThanEqualsInteger, int(S, V1)) int(S, V2)] => #false
+    rule [[(con greaterThanEqualsInteger) int(S, V1)] int(S, V2)] => #false
       requires V1 <Int V2
 
     // equalsInteger builtin
-    rule [curriedArg(equalsInteger, int(S, V1)) int(S, V1)] => #true
-    rule [curriedArg(equalsInteger, int(S, V1)) int(S, V2)] => #false
+    rule [[(con equalsInteger) int(S, V1)] int(S, V1)] => #true
+    rule [[(con equalsInteger) int(S, V1)] int(S, V2)] => #false
       requires V1 =/=Int V2
 
     // resizeInteger builtin
-    rule [curriedArg(resizeInteger, size(S1)) int(S2, V)] => (con S1 ! V)
+    rule [[(con resizeInteger) size(S1)] int(S2, V)] => (con S1 ! V)
 endmodule
 ```
 
@@ -303,32 +297,32 @@ Convert bytestring literals into their internal representation:
 Bytestring builtins:
 
 ```k
-    rule [curriedArg(intToByteString, size(S1:Int)) int(S2, V:Int)]
+    rule [[(con intToByteString) size(S1:Int)] int(S2, V:Int)]
       => #bytestringSizeLengthInt(S1, S1, V)
 
-    rule [curriedArg(concatenate, bytestring(S1, V1)) bytestring(S1, V2)]
+    rule [[(con concatenate) bytestring(S1, V1)] bytestring(S1, V2)]
       => #bytestringSizeBytes(S1, V1 +Bytes V2)
 
-    rule [curriedArg(takeByteString, int(S1, I1)) bytestring(S2, B2)]
+    rule [[(con takeByteString) int(S1, I1)] bytestring(S2, B2)]
       => bytestring(S2, substrBytes(B2, 0, I1))
       requires I1 >Int 0 andBool I1 <=Int lengthBytes(B2)
-    rule [curriedArg(takeByteString, int(S1, I1)) bytestring(S2, B2)]
+    rule [[(con takeByteString) int(S1, I1)] bytestring(S2, B2)]
       => bytestring(S2, .Bytes)
       requires I1 <=Int 0
-    rule [curriedArg(takeByteString, int(S1, I1)) bytestring(S2, B2)]
+    rule [[(con takeByteString) int(S1, I1)] bytestring(S2, B2)]
       => bytestring(S2, B2)
       requires I1 >Int lengthBytes(B2)
 
-    rule [curriedArg(resizeByteString, size(S1:Int)) bytestring(S2, B2)]
+    rule [[(con resizeByteString) size(S1:Int)] bytestring(S2, B2)]
       => bytestring(S1, B2)
       requires S1 >=Int lengthBytes(B2)
 
-    rule [curriedArg(resizeByteString, size(S1:Int)) bytestring(S2, B2)]
+    rule [[(con resizeByteString) size(S1:Int)] bytestring(S2, B2)]
       => (error (con (bytestring)))
       requires S1 <Int lengthBytes(B2)
 
-    rule [curriedArg(equalsByteString, bytestring(S, B1)) bytestring(S, B1)] => #true
-    rule [curriedArg(equalsByteString, bytestring(S, B1)) bytestring(S, B2)] => #false
+    rule [[(con equalsByteString) bytestring(S, B1)] bytestring(S, B1)] => #true
+    rule [[(con equalsByteString) bytestring(S, B1)] bytestring(S, B2)] => #false
       requires B1 =/=K B2
 ```
 
