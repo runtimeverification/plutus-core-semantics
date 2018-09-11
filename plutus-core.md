@@ -363,7 +363,7 @@ module PLUTUS-CORE-ABBREVIATIONS
     imports PLUTUS-CORE-COMMON
 
     syntax TyVar ::= "alpha"
-    syntax Var ::= "t" | "f" | "x"
+    syntax Var ::= "t" | "f" | "x" | "bv"
 
     syntax TyValue ::= "#unit" [macro]
     rule #unit => (all alpha (type) (fun alpha alpha))
@@ -375,6 +375,15 @@ module PLUTUS-CORE-ABBREVIATIONS
                   | "#false" [macro]
     rule #true => (abs alpha (type) (lam t (fun #unit alpha) (lam f (fun #unit alpha) [t #unitval])))
     rule #false => (abs alpha (type) (lam t (fun #unit alpha) (lam f (fun #unit alpha) [f #unitval])))
+
+    syntax TyValue ::= "#boolean"
+
+    syntax Term ::= "#case"  [macro]
+    rule #case => (abs alpha (type) (lam bv #boolean (lam t alpha (lam f alpha
+           [[ {bv alpha}
+             (lam x #unit t)]
+             (lam x #unit f)
+           ] ))))
 endmodule
 ```
 
