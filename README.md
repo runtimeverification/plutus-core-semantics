@@ -14,15 +14,25 @@ The file `plutus-core.md` defines the Plutus Core language, and the file
 [pandoc]:      https://pandoc.org
 [ninja-build]: https://ninja-build.org
 
-Percieved mistakes / shortcommings in the specification
-=======================================================
+Errors identified in specification / reference implementation
+=============================================================
 
-- Are sizes supposed to be both Constants and TyConstants, or should they only be TyConstants
+Reference implementation
+------------------------
+
+- Integers builtins overflow too quickly in the specification. [integer-overflow](Github issue)
+
+[integer-overflow]: https://github.com/input-output-hk/plutus-prototype/issues/96
+
+Specification:
+--------------
+
+- In syntax, (Fig. 2), lambdas and other constructs take in Type Values, but in the semantics
+  (Fig. 9), they take in any Type. [lambda-should-take-types-not-tyvalues](Commit that fixes this.)
 
 - Underspecified grammar, for example [ Term TermList ] doesn't parse
-- `addInteger` test has no size
+
 - `(fix ...)` rule changes type (Fig. 9)
-- In syntax, (Fig. 2), lambda terms take in Type Values, but in the semantics (Fig. 9), they take in any Type
 
 - Is there a reason `(error ...)` is not a value? It seems to make more sense within the context of the rest of the semantics.
 
@@ -30,3 +40,6 @@ Percieved mistakes / shortcommings in the specification
 
 - `intToByteString`: Behaviour for negative integers is not specified. Which binary representation
   should we use?
+
+[lambda-should-take-types-not-tyvalues]: https://github.com/psygnisfive/Plutus-Core-Spec/commit/1dcc2fdf330b685e39157ec8a159701b68952227
+
