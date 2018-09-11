@@ -97,6 +97,48 @@ build .build/t/sum-to-10.plc.java.out  : krun t/sum-to-10.plc | $builddir/plutus
 build .build/t/sum-to-10.plc.java.test : check-test-result .build/t/sum-to-10.plc.java.out
     expected = t/sum-to-10.plc.java.expected
 
+# t/11-scott-to-int.plc (ocaml)
+#
+build .build/t/11-scott-to-int.plc.ocaml.out : krun t/11-scott-to-int.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+    directory = $builddir/plutus-core-ocaml
+build .build/t/11-scott-to-int.plc.ocaml.test : check-test-result .build/t/11-scott-to-int.plc.ocaml.out
+    expected = t/11-scott-to-int.plc.ocaml.expected
+
+# t/11-scott-to-int.plc (java)
+#
+build .build/t/11-scott-to-int.plc.java.out  : krun t/11-scott-to-int.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+    directory = $builddir/plutus-core-java
+build .build/t/11-scott-to-int.plc.java.test : check-test-result .build/t/11-scott-to-int.plc.java.out
+    expected = t/11-scott-to-int.plc.java.expected
+
+# t/if-then-else.plc (ocaml)
+#
+build .build/t/if-then-else.plc.ocaml.out : krun t/if-then-else.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+    directory = $builddir/plutus-core-ocaml
+build .build/t/if-then-else.plc.ocaml.test : check-test-result .build/t/if-then-else.plc.ocaml.out
+    expected = t/if-then-else.plc.ocaml.expected
+
+# t/if-then-else.plc (java)
+#
+build .build/t/if-then-else.plc.java.out  : krun t/if-then-else.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+    directory = $builddir/plutus-core-java
+build .build/t/if-then-else.plc.java.test : check-test-result .build/t/if-then-else.plc.java.out
+    expected = t/if-then-else.plc.java.expected
+
+# t/sum-list.plc (ocaml)
+#
+build .build/t/sum-list.plc.ocaml.out : krun t/sum-list.plc | $builddir/plutus-core-ocaml/plutus-core-kompiled/timestamp
+    directory = $builddir/plutus-core-ocaml
+build .build/t/sum-list.plc.ocaml.test : check-test-result .build/t/sum-list.plc.ocaml.out
+    expected = t/sum-list.plc.ocaml.expected
+
+# t/sum-list.plc (java)
+#
+build .build/t/sum-list.plc.java.out  : krun t/sum-list.plc | $builddir/plutus-core-java/plutus-core-kompiled/timestamp
+    directory = $builddir/plutus-core-java
+build .build/t/sum-list.plc.java.test : check-test-result .build/t/sum-list.plc.java.out
+    expected = t/sum-list.plc.java.expected
+
 # Aliases
 # -------
 

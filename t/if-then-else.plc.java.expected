@@ -1,0 +1,28 @@
+<generatedTop>
+  <k>
+    int ( 2 , -95 )
+  </k>
+  <env>
+    .Map
+  </env>
+  <store>
+    0 |-> closure ( .Map , t , ( lam f ( fun #unit alpha ) [ f #unitval ] ) )
+    1 |-> closure ( .Map , t , ( lam f ( fun #unit alpha ) [ f #unitval ] ) )
+    2 |-> closure ( x_0 |-> 0 , t , ( lam f ( fun #unit alpha ) [ f #unitval ] ) )
+    3 |-> size ( 2 )
+    4 |-> size ( 2 )
+    5 |-> int ( 2 , -28 )
+    6 |-> closure ( x_6 |-> 5 , t , ( lam f ( fun #unit alpha ) [ f #unitval ] ) )
+    7 |-> int ( 2 , -112 )
+    8 |-> closure ( x |-> 7 , y , x )
+    9 |-> closure ( .Map , t , ( lam f ( fun #unit alpha ) [ t #unitval ] ) )
+    10 |-> closure ( x_12 |-> 9 , t , ( lam f ( fun #unit alpha ) [ t #unitval ] ) )
+    11 |-> int ( 2 , -95 )
+    12 |-> closure ( x |-> 11 , y , x )
+    13 |-> closure ( x |-> 7 , y , x )
+    14 |-> closure ( x |-> 11 , y , x )
+    15 |-> closure ( f |-> 14
+    t |-> 13
+    x_0 |-> 0 , x , x )
+  </store>
+</generatedTop>

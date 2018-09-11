@@ -1,0 +1,59 @@
+<generatedTop>
+  <k>
+    int ( 2 , 99 )
+  </k>
+  <env>
+    .Map
+  </env>
+  <store>
+    0 |-> ( con addInteger )
+    1 |-> closure ( f |-> 0 , rec , ( lam z r ( lam xs [ ( lam a ( type ) ( fix list ( all r ( type ) ( fun r ( fun ( fun a ( fun list r ) ) r ) ) ) ) ) a ] [ [ { ( unwrap xs ) r } z ] ( lam x a [ rec [ [ f z ] x ] ] ) ] ) ) )
+    2 |-> closure ( f |-> 1 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
+    3 |-> closure ( f |-> 1 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
+    4 |-> int ( 2 , 0 )
+    5 |-> closure ( f |-> 1 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
+    6 |-> closure ( f |-> 1 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
+    7 |-> closure ( f |-> 1
+    s |-> 6 , x , [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
+    8 |-> int ( 2 , 0 )
+    9 |-> int ( 2 , 51 )
+    10 |-> int ( 2 , 48 )
+    11 |-> closure ( .Map , z , ( lam f ( fun a ( fun [ ( lam a ( type ) ( fix list ( all r ( type ) ( fun r ( fun ( fun a ( fun list r ) ) r ) ) ) ) ) a ] r ) ) z ) )
+    12 |-> closure ( x |-> 10
+    xs |-> 11 , z , ( lam f ( fun a ( fun [ ( lam a ( type ) ( fix list ( all r ( type ) ( fun r ( fun ( fun a ( fun list r ) ) r ) ) ) ) ) a ] r ) ) [ [ f x ] xs ] ) )
+    13 |-> closure ( x |-> 9
+    xs |-> 12 , z , ( lam f ( fun a ( fun [ ( lam a ( type ) ( fix list ( all r ( type ) ( fun r ( fun ( fun a ( fun list r ) ) r ) ) ) ) ) a ] r ) ) [ [ f x ] xs ] ) )
+    14 |-> int ( 2 , 0 )
+    15 |-> closure ( f |-> 0
+    rec |-> 7
+    xs |-> 13
+    z |-> 8 , x , [ rec [ [ f z ] x ] ] )
+    16 |-> int ( 2 , 51 )
+    17 |-> int ( 2 , 51 )
+    18 |-> closure ( f |-> 1 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
+    19 |-> closure ( f |-> 1 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
+    20 |-> closure ( f |-> 1
+    s |-> 19 , x , [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
+    21 |-> int ( 2 , 51 )
+    22 |-> closure ( x |-> 10
+    xs |-> 11 , z , ( lam f ( fun a ( fun [ ( lam a ( type ) ( fix list ( all r ( type ) ( fun r ( fun ( fun a ( fun list r ) ) r ) ) ) ) ) a ] r ) ) [ [ f x ] xs ] ) )
+    23 |-> int ( 2 , 51 )
+    24 |-> closure ( f |-> 0
+    rec |-> 20
+    xs |-> 22
+    z |-> 21 , x , [ rec [ [ f z ] x ] ] )
+    25 |-> int ( 2 , 48 )
+    26 |-> int ( 2 , 99 )
+    27 |-> closure ( f |-> 1 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
+    28 |-> closure ( f |-> 1 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
+    29 |-> closure ( f |-> 1
+    s |-> 28 , x , [ [ f [ { ( abs a ( type ) ( lam s [ ( lam a ( type ) ( fix self ( fun self a ) ) ) a ] [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
+    30 |-> int ( 2 , 99 )
+    31 |-> closure ( .Map , z , ( lam f ( fun a ( fun [ ( lam a ( type ) ( fix list ( all r ( type ) ( fun r ( fun ( fun a ( fun list r ) ) r ) ) ) ) ) a ] r ) ) z ) )
+    32 |-> int ( 2 , 99 )
+    33 |-> closure ( f |-> 0
+    rec |-> 29
+    xs |-> 31
+    z |-> 30 , x , [ rec [ [ f z ] x ] ] )
+  </store>
+</generatedTop>
