@@ -55,7 +55,7 @@ module PLUTUS-CORE-COMMON
 
     syntax Term ::= Var
                   | "(" "run" Term ")"
-                  | "{" Term TyValue "}"
+                  | "{" Term Type "}"
                   | "(" "unwrap" Term ")"
                   | "[" Term Term "]"                                                   [seqstrict]
                   | Error
@@ -63,8 +63,8 @@ module PLUTUS-CORE-COMMON
     syntax Error ::= "(" "error" Type ")"
 
     syntax Value ::= "(" "abs" TyVar Kind Value ")"
-                   | "(" "wrap" TyVar TyValue Value ")"
-                   | "(" "lam" Var TyValue Term ")"
+                   | "(" "wrap" TyVar Type Value ")"
+                   | "(" "lam" Var Type Term ")"
                    | "(" "con" Constant ")"
 
     syntax Type ::= TyVar
