@@ -8,8 +8,10 @@ defining rules:
 module PLUTUS-CORE-SYNTAX
     imports PLUTUS-CORE-SYNTAX-BASE
     imports PLUTUS-CORE-ABBREVIATIONS
-    syntax LowerName ::= #LowerId [token, autoreject]
-    syntax UpperName ::= #UpperId [token, autoReject]
+
+    syntax Name ::= r"[a-zA-Z][a-zA-Z0-9_']*" [notInRules, token, autoReject]
+                  | #LowerId                  [notInRules, token, autoReject]
+                  | #UpperId                  [notInRules, token, autoReject]
 endmodule
 ```
 
@@ -18,11 +20,7 @@ module PLUTUS-CORE-COMMON
     imports INT
     imports BUILTIN-ID-TOKENS
 
-    syntax LowerName
-    syntax UpperName
-
-    // TODO: make Name have same regex as in spec
-    syntax Name ::= LowerName | UpperName
+    syntax Name
 
     // TODO: This should not allow negative integers
     syntax Size ::= Int

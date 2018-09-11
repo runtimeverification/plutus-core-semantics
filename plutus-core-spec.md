@@ -1,9 +1,17 @@
 Here, we define unit tests as reachability claims.
 
 ```k
+module SPEC-IDS
+    imports BUILTIN-ID-TOKENS
+    syntax Name ::= #LowerId [token, autoReject]
+                  | #UpperId [token, autoReject]
+endmodule
+```
+
+```k
 module PLUTUS-CORE-SPEC
     imports PLUTUS-CORE
-    imports PLUTUS-CORE-SYNTAX
+    imports SPEC-IDS
 ```
 
 Lambda Calculus
