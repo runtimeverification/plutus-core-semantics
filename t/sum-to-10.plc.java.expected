@@ -6,7 +6,7 @@
     .Map
   </env>
   <store>
-    0 |-> closure ( .Map , recur , ( lam z r ( lam n ( fix nat ( all r ( type ) ( fun r ( fun ( fun nat r ) r ) ) ) ) [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] ) ) )
+    0 |-> closure ( .Map , recur , ( lam z r ( lam n dummyTyVar [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] ) ) )
     1 |-> closure ( f |-> 0 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
     2 |-> closure ( f |-> 0 , s , ( lam x a [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] ) )
     3 |-> int ( 5 , 0 )
@@ -29,14 +29,14 @@
     s |-> 13 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     15 |-> int ( 5 , 10 )
     16 |-> closure ( recur |-> 14
-    z |-> 15 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    17 |-> closure ( b |-> 9
+    z |-> 15 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    17 |-> closure ( bv |-> 9
     f |-> 16
     n |-> 8
     recur |-> 6
     t |-> 10
     z |-> 7 , x , t )
-    18 |-> closure ( b |-> 9
+    18 |-> closure ( bv |-> 9
     f |-> 16
     n |-> 8
     recur |-> 6
@@ -61,14 +61,14 @@
     s |-> 25 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     27 |-> int ( 5 , 19 )
     28 |-> closure ( recur |-> 26
-    z |-> 27 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    29 |-> closure ( b |-> 21
+    z |-> 27 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    29 |-> closure ( bv |-> 21
     f |-> 28
     n |-> 20
     recur |-> 14
     t |-> 22
     z |-> 15 , x , t )
-    30 |-> closure ( b |-> 21
+    30 |-> closure ( bv |-> 21
     f |-> 28
     n |-> 20
     recur |-> 14
@@ -93,14 +93,14 @@
     s |-> 37 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     39 |-> int ( 5 , 27 )
     40 |-> closure ( recur |-> 38
-    z |-> 39 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    41 |-> closure ( b |-> 33
+    z |-> 39 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    41 |-> closure ( bv |-> 33
     f |-> 40
     n |-> 32
     recur |-> 26
     t |-> 34
     z |-> 27 , x , t )
-    42 |-> closure ( b |-> 33
+    42 |-> closure ( bv |-> 33
     f |-> 40
     n |-> 32
     recur |-> 26
@@ -125,14 +125,14 @@
     s |-> 49 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     51 |-> int ( 5 , 34 )
     52 |-> closure ( recur |-> 50
-    z |-> 51 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    53 |-> closure ( b |-> 45
+    z |-> 51 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    53 |-> closure ( bv |-> 45
     f |-> 52
     n |-> 44
     recur |-> 38
     t |-> 46
     z |-> 39 , x , t )
-    54 |-> closure ( b |-> 45
+    54 |-> closure ( bv |-> 45
     f |-> 52
     n |-> 44
     recur |-> 38
@@ -157,14 +157,14 @@
     s |-> 61 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     63 |-> int ( 5 , 40 )
     64 |-> closure ( recur |-> 62
-    z |-> 63 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    65 |-> closure ( b |-> 57
+    z |-> 63 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    65 |-> closure ( bv |-> 57
     f |-> 64
     n |-> 56
     recur |-> 50
     t |-> 58
     z |-> 51 , x , t )
-    66 |-> closure ( b |-> 57
+    66 |-> closure ( bv |-> 57
     f |-> 64
     n |-> 56
     recur |-> 50
@@ -189,14 +189,14 @@
     s |-> 73 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     75 |-> int ( 5 , 45 )
     76 |-> closure ( recur |-> 74
-    z |-> 75 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    77 |-> closure ( b |-> 69
+    z |-> 75 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    77 |-> closure ( bv |-> 69
     f |-> 76
     n |-> 68
     recur |-> 62
     t |-> 70
     z |-> 63 , x , t )
-    78 |-> closure ( b |-> 69
+    78 |-> closure ( bv |-> 69
     f |-> 76
     n |-> 68
     recur |-> 62
@@ -221,14 +221,14 @@
     s |-> 85 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     87 |-> int ( 5 , 49 )
     88 |-> closure ( recur |-> 86
-    z |-> 87 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    89 |-> closure ( b |-> 81
+    z |-> 87 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    89 |-> closure ( bv |-> 81
     f |-> 88
     n |-> 80
     recur |-> 74
     t |-> 82
     z |-> 75 , x , t )
-    90 |-> closure ( b |-> 81
+    90 |-> closure ( bv |-> 81
     f |-> 88
     n |-> 80
     recur |-> 74
@@ -253,14 +253,14 @@
     s |-> 97 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     99 |-> int ( 5 , 52 )
     100 |-> closure ( recur |-> 98
-    z |-> 99 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    101 |-> closure ( b |-> 93
+    z |-> 99 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    101 |-> closure ( bv |-> 93
     f |-> 100
     n |-> 92
     recur |-> 86
     t |-> 94
     z |-> 87 , x , t )
-    102 |-> closure ( b |-> 93
+    102 |-> closure ( bv |-> 93
     f |-> 100
     n |-> 92
     recur |-> 86
@@ -285,14 +285,14 @@
     s |-> 109 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     111 |-> int ( 5 , 54 )
     112 |-> closure ( recur |-> 110
-    z |-> 111 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    113 |-> closure ( b |-> 105
+    z |-> 111 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    113 |-> closure ( bv |-> 105
     f |-> 112
     n |-> 104
     recur |-> 98
     t |-> 106
     z |-> 99 , x , t )
-    114 |-> closure ( b |-> 105
+    114 |-> closure ( bv |-> 105
     f |-> 112
     n |-> 104
     recur |-> 98
@@ -317,14 +317,14 @@
     s |-> 121 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     123 |-> int ( 5 , 55 )
     124 |-> closure ( recur |-> 122
-    z |-> 123 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    125 |-> closure ( b |-> 117
+    z |-> 123 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    125 |-> closure ( bv |-> 117
     f |-> 124
     n |-> 116
     recur |-> 110
     t |-> 118
     z |-> 111 , x , t )
-    126 |-> closure ( b |-> 117
+    126 |-> closure ( bv |-> 117
     f |-> 124
     n |-> 116
     recur |-> 110
@@ -349,14 +349,14 @@
     s |-> 133 , x , [ [ f [ { ( abs a ( type ) ( lam s ( fix self ( fun self a ) ) [ ( unwrap s ) s ] ) ) ( fun a b ) } s ] ] x ] )
     135 |-> int ( 5 , 55 )
     136 |-> closure ( recur |-> 134
-    z |-> 135 , n , [ [ [ [ { ( abs a ( type ) ( lam b boolean ( lam t a ( lam f a [ [ { b a } ( lam x #unit t ) ] ( lam x #unit f ) ] ) ) ) ) #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
-    137 |-> closure ( b |-> 129
+    z |-> 135 , n , [ [ [ [ { #case #unit } [ [ ( con equalsInteger ) ( con 5 ! 0 ) ] n ] ] ( lam f #unit z ) ] [ recur [ [ ( con addInteger ) z ] n ] ] ] [ [ ( con subtractInteger ) n ] ( con 5 ! 1 ) ] ] )
+    137 |-> closure ( bv |-> 129
     f |-> 136
     n |-> 128
     recur |-> 122
     t |-> 130
     z |-> 123 , x , t )
-    138 |-> closure ( b |-> 129
+    138 |-> closure ( bv |-> 129
     f |-> 136
     n |-> 128
     recur |-> 122

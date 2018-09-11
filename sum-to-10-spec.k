@@ -12,9 +12,9 @@ module SUM-TO-10-SPEC
 
     rule <k>
       [ [ [ #combinator
-            (lam recur (dummyType)
+            (lam recur dummyTyVar
                  (lam z r
-                      (lam n (dummyType)
+                      (lam n dummyTyVar
                            [ [ [ [ { #case #unit }
                                    [[(con equalsInteger) (con 5 ! 0)] n ]
                                  ]

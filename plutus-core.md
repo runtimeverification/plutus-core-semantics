@@ -6,10 +6,10 @@ defining rules:
 
 ```k
 module PLUTUS-CORE-SYNTAX
-    imports PLUTUS-CORE-COMMON
+    imports PLUTUS-CORE-SYNTAX-BASE
     imports PLUTUS-CORE-ABBREVIATIONS
-    syntax LowerName     ::= #LowerId [token, autoreject]
-    syntax UpperName     ::= #UpperId [token, autoReject]
+    syntax LowerName ::= #LowerId [token, autoreject]
+    syntax UpperName ::= #UpperId [token, autoReject]
 endmodule
 ```
 
@@ -22,15 +22,57 @@ module PLUTUS-CORE-COMMON
     syntax UpperName
 
     // TODO: make Name have same regex as in spec
-    syntax Name          ::= LowerName | UpperName
-    syntax Var           ::= Name
-    syntax TyVar         ::= Name
+    syntax Name ::= LowerName | UpperName
+
+    // TODO: This should not allow negative integers
+    syntax Size ::= Int
+endmodule
+```
+
+```k
+module PLUTUS-CORE-SYNTAX-TYPES
+    imports PLUTUS-CORE-COMMON
+
+    syntax TyVar ::= Name
+
     syntax TyBuiltinName ::= Name
+                           | "integer" | "bytestring" | "size"
+
+    syntax TyConstant ::= Size
+                        | TyBuiltinName
+
+    syntax Type ::= TyVar
+                  | "(" "fun" Type Type ")"
+                  | "(" "all" TyVar Kind Type ")"
+                  | "(" "fix" TyVar Type ")"
+                  | "[" Type Type "]"
+                  | TyValue
+
+    syntax TyValue ::= "(" "fun" TyValue TyValue ")"
+                     | "(" "all" TyVar Kind TyValue ")"
+                     | "(" "fix" TyVar TyValue ")"
+                     | "(" "lam" TyVar Kind Type ")"
+                     | "(" "con" TyConstant ")"
+                     | NeutralTy
+
+    syntax NeutralTy ::= TyVar
+                       | "[" NeutralTy TyValue "]"
+
+    syntax Kind ::= "(" "type" ")"
+                  | "(" "fun" Kind Kind ")"
+                  | "(" "size" ")"
+endmodule
+```
+
+```k
+module PLUTUS-CORE-SYNTAX-BASE
+    imports PLUTUS-CORE-SYNTAX-TYPES
+
+    syntax Var           ::= Name
     syntax BuiltinName   ::= Name
 
-    syntax ByteString ::= r"\\#[a-fA-F0-9][a-fA-F0-9]*"               [notInRules, token, autoReject]
+    syntax ByteString ::= r"\\#[a-fA-F0-9][a-fA-F0-9]*" [notInRules, token, autoReject]
 
-    syntax TyBuiltinName ::= "(" "integer" ")" | "(" "bytestring" ")"
     syntax BuiltinName   ::= BinaryBuiltin
     syntax BinaryBuiltin ::= "addInteger"         | "subtractInteger"
                            | "multiplyInteger"    | "divideInteger"
@@ -43,21 +85,18 @@ module PLUTUS-CORE-COMMON
                            | "concatenate"        | "takeByteString"
                            | "resizeByteString"   | "equalsByteString"
 
-    syntax Size          ::= Int // TODO: This should not allow negative integers
-    syntax Version       ::= r"[0-9]+(\\.[0-9]+)*"                                          [token]
-    syntax Constant      ::= Size "!" Int
-                           | Size "!" ByteString
-                           | BuiltinName
-                           | Size
+    syntax Version ::= r"[0-9]+(\\.[0-9]+)*" [token]
 
-    syntax TyConstant    ::= Size
-                           | TyBuiltinName
+    syntax Constant ::= Size "!" Int
+                      | Size "!" ByteString
+                      | BuiltinName
+                      | Size
 
     syntax Term ::= Var
                   | "(" "run" Term ")"
                   | "{" Term Type "}"
                   | "(" "unwrap" Term ")"
-                  | "[" Term Term "]"                                                   [seqstrict]
+                  | "[" Term Term "]" [seqstrict]
                   | Error
                   | Value
     syntax Error ::= "(" "error" Type ")"
@@ -66,29 +105,6 @@ module PLUTUS-CORE-COMMON
                    | "(" "wrap" TyVar Type Value ")"
                    | "(" "lam" Var Type Term ")"
                    | "(" "con" Constant ")"
-
-    syntax Type ::= TyVar
-                  | "(" "rec" Type ")"
-                  | "(" "fun" Type Type ")"
-                  | "(" "all" TyVar Kind Type ")"
-                  | "(" "fix" TyVar Type ")"
-                  | "[" Type Type "]"
-                  | TyValue
-
-    syntax TyValue ::= "(" "rec" TyValue ")"
-                     | "(" "fun" TyValue TyValue ")"
-                     | "(" "all" TyVar Kind TyValue ")"
-                     | "(" "fix" TyVar TyValue ")"
-                     | "(" "lam" TyVar Kind Type ")"
-                     | "(" "con" TyBuiltinName ")"
-                     | NeutralTy
-
-    syntax NeutralTy ::= TyVar
-                       | "[" NeutralTy TyValue "]"
-
-    syntax Kind ::= "(" "type" ")"
-                  | "(" "fun" Kind Kind ")"
-                  | "(" "size" ")"
 
     syntax Program ::= "(" "program" Version Term ")"
 endmodule
@@ -102,7 +118,7 @@ Configuration
 
 ```k
 module PLUTUS-CORE-CONFIGURATION
-    imports PLUTUS-CORE-COMMON
+    imports PLUTUS-CORE-SYNTAX-BASE
     imports PLUTUS-CORE-ABBREVIATIONS
     imports DOMAINS
 
@@ -142,7 +158,7 @@ module PLUTUS-CORE-LAMBDA-CALCULUS
     syntax Closure    ::= closure(Map, Var, Term)
     syntax ResultTerm ::= Closure
 
-    rule <k> (lam X _:TyValue M:Term) => closure(RHO, X, M) ... </k>
+    rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
     rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> RHO' ... </k>
          <env> RHO' => RHO[X <- size(STORE)] </env>
@@ -172,7 +188,7 @@ module PLUTUS-CORE-BUILTINS
 
     syntax Size ::= size(Int) [klabel(sizeConstant)] /* klabel prevents conflict with size(Set) */
     syntax ResultTerm ::= Size
-    rule (con S:Int) => size(S)
+    rule (con S:Int):Value => size(S)
 
     // BinaryBuiltins
     rule [[(con B:BinaryBuiltin) (error TY)] TM] => (error TY)
@@ -353,7 +369,7 @@ The Plutus Core specification defines some abbreviations:
 
 ```k
 module PLUTUS-CORE-ABBREVIATIONS
-    imports PLUTUS-CORE-COMMON
+    imports PLUTUS-CORE-SYNTAX-BASE
 
     syntax TyVar ::= "alpha"
     syntax Var ::= "t" | "f" | "x" | "bv"
