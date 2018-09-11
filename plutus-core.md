@@ -365,20 +365,20 @@ module PLUTUS-CORE-ABBREVIATIONS
     syntax TyVar ::= "alpha"
     syntax Var ::= "t" | "f" | "x" | "bv"
 
-    syntax TyValue ::= "#unit" [macro]
+    syntax TyValue ::= "#unit"
     rule #unit => (all alpha (type) (fun alpha alpha))
 
-    syntax Term ::= "#unitval" [macro]
+    syntax Term ::= "#unitval"
     rule #unitval => (abs alpha (type) (lam x alpha x))
 
-    syntax Term ::= "#true"  [macro]
-                  | "#false" [macro]
+    syntax Term ::= "#true"
+                  | "#false"
     rule #true => (abs alpha (type) (lam t (fun #unit alpha) (lam f (fun #unit alpha) [t #unitval])))
     rule #false => (abs alpha (type) (lam t (fun #unit alpha) (lam f (fun #unit alpha) [f #unitval])))
 
     syntax TyValue ::= "#boolean"
 
-    syntax Term ::= "#case"  [macro]
+    syntax Term ::= "#case"
     rule #case => (abs alpha (type) (lam bv #boolean (lam t alpha (lam f alpha
            [[ {bv alpha}
              (lam x #unit t)]
