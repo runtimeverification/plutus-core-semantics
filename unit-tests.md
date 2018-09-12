@@ -25,7 +25,7 @@ rule <k> [ (lam x a x) (con 1 ! 1) ] => int(1, 1) </k>
 
 rule <k> [ (lam x a x) (con 1 ! 128) ] => (error (con (integer))) </k>
      <env> .Map => .Map </env>
- 
+
 rule <k> [ (lam y a x) (con 1 ! 1) ] => x ~> .Map </k>
      <env> .Map => _ </env>
 ```
@@ -48,22 +48,14 @@ Integers & Integer arithmetic
 -----------------------------
 
 ```k
-rule <k> (con 1 ! 1     ) => int(1, 1)               </k>
-rule <k> (con 1 ! 128   ) => (error (con (integer))) </k>
-rule <k> (con 1 ! -128  ) => int(1, -128)            </k>
-rule <k> (con 1 ! -129  ) => (error (con (integer))) </k>
+rule (con 1 ! 1     ) => int(1, 1)
+rule (con 1 ! 128   ) => (error (con (integer)))
+rule (con 1 ! -128  ) => int(1, -128)
+rule (con 1 ! -129  ) => (error (con (integer)))
 
-rule <k> (con 2 !  32768) => (error (con (integer))) </k>
-rule <k> (con 2 ! -32768) => int(2, -32768)          </k>
-rule <k> (con 2 ! -32769) => (error (con (integer))) </k>
-```
-
-TODO: Could we used a specification of this form to show that this term must always
-reduce completely (ideally we would be able to say "it must reduce to either a `BoundedInt` term
-or an `Error` term).
-
-```
-rule <k> (con S ! V:Int) => C:KValue  </k>
+rule (con 2 !  32768) => (error (con (integer)))
+rule (con 2 ! -32768) => int(2, -32768)
+rule (con 2 ! -32769) => (error (con (integer)))
 ```
 
 ### Integer arithmetic
@@ -71,106 +63,106 @@ rule <k> (con S ! V:Int) => C:KValue  </k>
 Addition:
 
 ```k
-rule <k> [[(con addInteger) (con 1 ! 1) ] (con 1 ! 1) ] => int(1, 2) </k>
-rule <k> [[(con addInteger) (con 1 ! 66)] (con 1 ! 66)] => (error (con (integer))) </k>
+rule [[(con addInteger) (con 1 ! 1) ] (con 1 ! 1) ] => int(1, 2)
+rule [[(con addInteger) (con 1 ! 66)] (con 1 ! 66)] => (error (con (integer)))
 ```
 
 Subtraction:
 
 ```k
-rule <k> [[(con subtractInteger) (con 3 ! 10)] (con 3 ! 8) ] => int(3, 2) </k>
-rule <k> [[(con subtractInteger) (con 3 ! 7)] (con 3 ! 10) ] => int(3, -3) </k>
-rule <k> [[(con subtractInteger) (con 1 ! 66)] (con 1 ! -66) ] => (error (con (integer))) </k>
+rule [[(con subtractInteger) (con 3 ! 10)] (con 3 ! 8) ] => int(3, 2)
+rule [[(con subtractInteger) (con 3 ! 7)] (con 3 ! 10) ] => int(3, -3)
+rule [[(con subtractInteger) (con 1 ! 66)] (con 1 ! -66) ] => (error (con (integer)))
 ```
 
 Multiplication:
 
 ```k
-rule <k> [[(con multiplyInteger) (con 3 ! 10)] (con 3 ! 8) ] => int(3, 80) </k>
-rule <k> [[(con multiplyInteger) (con 1 ! 12)] (con 1 ! 11)] => (error (con (integer))) </k>
+rule [[(con multiplyInteger) (con 3 ! 10)] (con 3 ! 8) ] => int(3, 80)
+rule [[(con multiplyInteger) (con 1 ! 12)] (con 1 ! 11)] => (error (con (integer)))
 ```
 
 Division:
 
 ```k
-rule <k> [[(con divideInteger) (con 3 ! 10)] (con 3 ! 3) ] => int(3, 3) </k>
-rule <k> [[(con divideInteger) (con 3 ! 0)] (con 3 ! 10) ] => int(3, 0) </k>
-rule <k> [[(con divideInteger) (con 2 ! 66)] (con 2 ! 0) ] => (error (con (integer))) </k>
+rule [[(con divideInteger) (con 3 ! 10)] (con 3 ! 3) ] => int(3, 3)
+rule [[(con divideInteger) (con 3 ! 0)] (con 3 ! 10) ] => int(3, 0)
+rule [[(con divideInteger) (con 2 ! 66)] (con 2 ! 0) ] => (error (con (integer)))
 ```
 
 Remainder:
 
 ```k
-rule <k> [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)] => int(3, 1) </k>
-rule <k> [[(con remainderInteger) (con 3 ! 0)]  (con 3 ! 10)] => int(3, 0) </k>
-rule <k> [[(con remainderInteger) (con 2 ! 66)] (con 2 ! 0) ] => (error (con (integer))) </k>
+rule [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)] => int(3, 1)
+rule [[(con remainderInteger) (con 3 ! 0)]  (con 3 ! 10)] => int(3, 0)
+rule [[(con remainderInteger) (con 2 ! 66)] (con 2 ! 0) ] => (error (con (integer)))
 ```
 
 Complex nested expressions:
 
 ```k
-rule <k> [[(con addInteger) [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)]]
+rule [[(con addInteger) [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)]]
                             [[(con multiplyInteger ) (con 3 ! 2 )] (con 3 ! 2)]
          ]
       => int(3, 5)
-    </k>
-rule <k> [[(con addInteger) [[(con remainderInteger) (con 1 ! 10)] (con 1 ! 3)]]
+
+rule [[(con addInteger) [[(con remainderInteger) (con 1 ! 10)] (con 1 ! 3)]]
                             [[(con multiplyInteger ) (con 1 ! 15 )] (con 1 ! 16)]
          ]
       => (error (con (integer)))
-    </k>
-rule <k> [[(con addInteger) [[(con remainderInteger) (con 3 ! 66)] (con 3 ! 0)]]
+
+rule [[(con addInteger) [[(con remainderInteger) (con 3 ! 66)] (con 3 ! 0)]]
                             [[(con multiplyInteger ) (con 3 ! 2 )] (con 3 ! 2)]
          ]
       => (error (con (integer)))
-    </k>
+
 ```
 
 Less than:
 
 ```k
-rule <k> [[(con lessThanInteger) (con 3 ! 10)] (con 3 ! 3)]  => #false </k>
-rule <k> [[(con lessThanInteger) (con 3 ! 3)] (con 3 ! 10)]  => #true </k>
-rule <k> [[(con lessThanInteger) (con 3 ! 10)] (con 3 ! 10)] => #false </k>
+rule [[(con lessThanInteger) (con 3 ! 10)] (con 3 ! 3)]  => #false
+rule [[(con lessThanInteger) (con 3 ! 3)] (con 3 ! 10)]  => #true
+rule [[(con lessThanInteger) (con 3 ! 10)] (con 3 ! 10)] => #false
 ```
 
 Less than or equal to:
 
 ```k
-rule <k> [[(con lessThanEqualsInteger) (con 3 ! 10)] (con 3 ! 3)]  => #false </k>
-rule <k> [[(con lessThanEqualsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #true </k>
-rule <k> [[(con lessThanEqualsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true </k>
+rule [[(con lessThanEqualsInteger) (con 3 ! 10)] (con 3 ! 3)]  => #false
+rule [[(con lessThanEqualsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #true
+rule [[(con lessThanEqualsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true
 ```
 
 Greater than:
 
 ```k
-rule <k> [[(con greaterThanInteger) (con 3 ! 10)] (con 3 ! 3)]  => #true </k>
-rule <k> [[(con greaterThanInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false </k>
-rule <k> [[(con greaterThanInteger) (con 3 ! 10)] (con 3 ! 10)] => #false </k>
+rule [[(con greaterThanInteger) (con 3 ! 10)] (con 3 ! 3)]  => #true
+rule [[(con greaterThanInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false
+rule [[(con greaterThanInteger) (con 3 ! 10)] (con 3 ! 10)] => #false
 ```
 
 Greater than or equal to:
 
 ```k
-rule <k> [[(con greaterThanEqualsInteger) (con 3 ! 10)] (con 3 ! 3)]  => #true </k>
-rule <k> [[(con greaterThanEqualsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false </k>
-rule <k> [[(con greaterThanEqualsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true </k>
+rule [[(con greaterThanEqualsInteger) (con 3 ! 10)] (con 3 ! 3)]  => #true
+rule [[(con greaterThanEqualsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false
+rule [[(con greaterThanEqualsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true
 ```
 
 Equal to
 
 ```k
-rule <k> [[(con equalsInteger) (con 3 ! 10)] (con 3 ! 3)]  => #false </k>
-rule <k> [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false </k>
-rule <k> [[(con equalsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true </k>
+rule [[(con equalsInteger) (con 3 ! 10)] (con 3 ! 3)]  => #false
+rule [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 10)]  => #false
+rule [[(con equalsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true
 ```
 
 Resize integer
 
 ```k
-rule <k> [[(con resizeInteger) (con 1)] (con 2 ! 100)] => int(1, 100)           </k>
-rule <k> [[(con resizeInteger) (con 1)] (con 2 ! 128)] => (error (con (integer))) </k>
+rule [[(con resizeInteger) (con 1)] (con 2 ! 100)] => int(1, 100)
+rule [[(con resizeInteger) (con 1)] (con 2 ! 128)] => (error (con (integer)))
 ```
 
 Booleans & Unit
@@ -200,25 +192,25 @@ Bytestrings
 -----------
 
 ```k
-rule <k> (con 2 ! #token("0",                "ByteString")) => bytestring(2,      0 : nilBytes) </k>
-rule <k> (con 2 ! #token("00",               "ByteString")) => bytestring(2,      0 : nilBytes) </k>
-rule <k> (con 2 ! #token("0000",             "ByteString")) => bytestring(2, 0  : 0 : nilBytes) </k>
-rule <k> (con 2 ! #token("1000",             "ByteString")) => bytestring(2, 16 : 0 : nilBytes) </k>
-rule <k> (con 2 ! #token("00000",            "ByteString")) => (error (con (bytestring))) </k>
-rule <k> (con 8 ! #token("0123456789abcdef", "ByteString")) => bytestring(8, 1 : 35 : 69 : 103 : 137 : 171 : 205 : 239 : nilBytes) </k>
+rule (con 2 ! #token("0",                "ByteString")) => bytestring(2,      0 : nilBytes)
+rule (con 2 ! #token("00",               "ByteString")) => bytestring(2,      0 : nilBytes)
+rule (con 2 ! #token("0000",             "ByteString")) => bytestring(2, 0  : 0 : nilBytes)
+rule (con 2 ! #token("1000",             "ByteString")) => bytestring(2, 16 : 0 : nilBytes)
+rule (con 2 ! #token("00000",            "ByteString")) => (error (con (bytestring)))
+rule (con 8 ! #token("0123456789abcdef", "ByteString")) => bytestring(8, 1 : 35 : 69 : 103 : 137 : 171 : 205 : 239 : nilBytes)
 ```
 
 Integer to ByteString
 
 ```k
-rule <k> [[(con intToByteString) (con 1 )] (con 2 ! 100)]
-      => bytestring(1 , 100 : nilBytes) </k>
-rule <k> [[(con intToByteString) (con 3)] (con 2 ! 100)]
-      => bytestring(3, 0 : 0 : 100 : nilBytes) </k>
-rule <k> [[(con intToByteString) (con 5)] (con 2 ! 100)]
-      => bytestring(5, 0 : 0 : 0 : 0 : 100 : nilBytes) </k>
-rule <k> [[(con intToByteString) (con 1 )] (con 2 ! 999)]
-      => (error (con (bytestring))) </k>
+rule [[(con intToByteString) (con 1 )] (con 2 ! 100)]
+  => bytestring(1 , 100 : nilBytes)
+rule [[(con intToByteString) (con 3)] (con 2 ! 100)]
+  => bytestring(3, 0 : 0 : 100 : nilBytes)
+rule [[(con intToByteString) (con 5)] (con 2 ! 100)]
+  => bytestring(5, 0 : 0 : 0 : 0 : 100 : nilBytes)
+rule [[(con intToByteString) (con 1 )] (con 2 ! 999)]
+  => (error (con (bytestring)))
 ```
 
 TODO: The behaviour of converting negative integers to bytestrings is not specified:
@@ -231,68 +223,64 @@ TODO: The behaviour of converting negative integers to bytestrings is not specif
 Concatentate:
 
 ```k
-rule <k> [ [ (con concatenate) (con 2 ! #token("01",   "ByteString")) ]
-                               (con 2 ! #token("03",   "ByteString")) ]
-      => bytestring(2, 01 : 03 : nilBytes) </k>
-rule <k> [ [ (con concatenate) (con 2 ! #token("0102", "ByteString")) ]
-                               (con 2 ! #token("0304", "ByteString")) ]
-      => (error (con (bytestring))) </k>
+rule [ [ (con concatenate) (con 2 ! #token("01",   "ByteString")) ]
+                           (con 2 ! #token("03",   "ByteString")) ]
+  => bytestring(2, 01 : 03 : nilBytes)
+rule [ [ (con concatenate) (con 2 ! #token("0102", "ByteString")) ]
+                           (con 2 ! #token("0304", "ByteString")) ]
+  => (error (con (bytestring)))
 ```
 
 `takeByteString`
 : returns the prefix of `xs` of length `n`, or `xs` itself if `n > length xs`.
 
 ```k
-rule <k> [[(con takeByteString) (con 1 ! 2)] (con 8 ! #token("0123456789abcdef", "ByteString"))]
-      => bytestring(8, 1 : 35 : nilBytes)
-     </k>
-rule <k> [[(con takeByteString) (con 1 ! 31)] (con 8 ! #token("0123456789abcdef", "ByteString"))]
-      => bytestring(8, 1 : 35 : 69 : 103 : 137 : 171 : 205 : 239 : nilBytes)
-     </k>
-rule <k> [[(con takeByteString) (con 1 ! 0)] (con 8 ! #token("0123456789abcdef", "ByteString"))]
-      => bytestring(8, nilBytes)
-     </k>
+rule [[(con takeByteString) (con 1 ! 2)] (con 8 ! #token("0123456789abcdef", "ByteString"))]
+  => bytestring(8, 1 : 35 : nilBytes)
+rule [[(con takeByteString) (con 1 ! 31)] (con 8 ! #token("0123456789abcdef", "ByteString"))]
+  => bytestring(8, 1 : 35 : 69 : 103 : 137 : 171 : 205 : 239 : nilBytes)
+rule [[(con takeByteString) (con 1 ! 0)] (con 8 ! #token("0123456789abcdef", "ByteString"))]
+  => bytestring(8, nilBytes)
 // This is the observed Haskell behaviour for negative lengths.
-rule <k> [[(con takeByteString) (con 1 ! -1)] (con 8 ! #token("0123456789abcdef", "ByteString"))]
-      => bytestring(8, nilBytes)
-     </k>
+rule [[(con takeByteString) (con 1 ! -1)] (con 8 ! #token("0123456789abcdef", "ByteString"))]
+  => bytestring(8, nilBytes)
 ```
 
 Resize ByteString
 
 ```k
-rule <k> [[(con resizeByteString) (con 3)] (con 5 ! #token("abcdef", "ByteString"))]
-      => bytestring (3, 171 : 205 : 239 : nilBytes ) </k>
+rule [[(con resizeByteString) (con 3)] (con 5 ! #token("abcdef", "ByteString"))]
+  => bytestring (3, 171 : 205 : 239 : nilBytes )
 
-rule <k> [[(con resizeByteString) (con 5)] (con 3 ! #token("abcdef", "ByteString"))]
-      => bytestring (5, 171 : 205 : 239 : nilBytes ) </k>
+rule [[(con resizeByteString) (con 5)] (con 3 ! #token("abcdef", "ByteString"))]
+  => bytestring (5, 171 : 205 : 239 : nilBytes )
 
-rule <k> [[(con resizeByteString) (con 2)] (con 5 ! #token("abcdef", "ByteString"))]
-      => (error (con (bytestring))) </k>
+rule [[(con resizeByteString) (con 2)] (con 5 ! #token("abcdef", "ByteString"))]
+  => (error (con (bytestring)))
 ```
 
 Equals (ByteStrings)
 
 ```k
-rule <k> [[(con equalsByteString) (con 3 ! #token("abcd", "ByteString"))]
-                                  (con 3 ! #token("abcde", "ByteString"))]
-      => #false </k>
+rule [[(con equalsByteString) (con 3 ! #token("abcd", "ByteString"))]
+                              (con 3 ! #token("abcde", "ByteString"))]
+  => #false
 
-rule <k> [[(con equalsByteString) (con 3 ! #token("abcde", "ByteString"))]
-                                  (con 3 ! #token("abcd", "ByteString"))]
-      => #false </k>
+rule [[(con equalsByteString) (con 3 ! #token("abcde", "ByteString"))]
+                              (con 3 ! #token("abcd", "ByteString"))]
+  => #false
 
-rule <k> [[(con equalsByteString) (con 2 ! #token("0001", "ByteString"))]
-                                  (con 2 ! #token("01", "ByteString"))]
-      => #false </k>
+rule [[(con equalsByteString) (con 2 ! #token("0001", "ByteString"))]
+                              (con 2 ! #token("01", "ByteString"))]
+  => #false
 
-rule <k> [[(con equalsByteString) (con 3 ! #token("abcd", "ByteString"))]
-                                  (con 3 ! #token("abcd", "ByteString"))]
-      => #true </k>
+rule [[(con equalsByteString) (con 3 ! #token("abcd", "ByteString"))]
+                              (con 3 ! #token("abcd", "ByteString"))]
+  => #true
 
-rule <k> [[(con equalsByteString) (con 2 ! #token("abcd", "ByteString"))]
-                                  (con 1 ! #token("abcd", "ByteString"))]
-      => (error (con (bytestring))) </k>
+rule [[(con equalsByteString) (con 2 ! #token("abcd", "ByteString"))]
+                              (con 1 ! #token("abcd", "ByteString"))]
+  => (error (con (bytestring)))
 
 ```
 
