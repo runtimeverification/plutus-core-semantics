@@ -119,8 +119,6 @@ build $ocamlkompileddir/realdef.cmxs : ocamlopt $ocamlkompileddir/realdef.cmx
 # Testing
 # =======
 
-build test : phony check-spec
-
 # Unit Tests as reachability claims
 # ---------------------------------
 
