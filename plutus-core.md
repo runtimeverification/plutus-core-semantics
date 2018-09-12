@@ -150,8 +150,7 @@ endmodule
 Lambda Calculus
 ---------------
 
-While this implementation of Lambda Calculus leaks storage, it looks like the most reasonable option
-that works for both symbolic exectution, and for both the Java and OCaml backend.
+We use implement application via closures / environment:
 
 ```k
 module PLUTUS-CORE-LAMBDA-CALCULUS
