@@ -127,7 +127,6 @@ module PLUTUS-CORE-CONFIGURATION
 
     configuration <k> $PGM:Program </k>
                   <env> .Map </env>
-                  <store> .Map </store>
 ```
 
 Program version has no semantic meaning
@@ -164,12 +163,11 @@ module PLUTUS-CORE-LAMBDA-CALCULUS
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
     rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> RHO' ... </k>
-         <env> RHO' => RHO[X <- size(STORE)] </env>
-         <store> STORE => STORE (size(STORE) |-> V) </store>
+         <env> RHO' => RHO[X <- V] </env>
 
     rule <k> X:Var => V ... </k>
-         <env> ... X |-> N ... </env>
-         <store> ... N |-> V ... </store>
+         <env> ... X |-> V ... </env>
+
     rule <k> _:KResult ~> (RHO:Map => .) ... </k>
          <env> _ => RHO </env>
 endmodule

@@ -31,5 +31,4 @@ module SUM-TO-10-SPEC
         (con 5 ! 10)
       ] => int(5, 55) </k>
       <env> .Map => .Map </env>
-      <store> .Map => _ </store>
 endmodule
