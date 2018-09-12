@@ -9,7 +9,7 @@ endmodule
 ```
 
 ```k
-module PLUTUS-CORE-SPEC
+module UNIT-TESTS-SPEC
     imports PLUTUS-CORE
     imports SPEC-IDS
 ```

@@ -65,10 +65,11 @@ rule ocamlopt
 tangleddir = $builddir/tangled/
 blockchainplugindir = ext/blockchain-k-plugin/plugin/
 
-build $tangleddir/plutus-core.k      : tangle plutus-core.md
-build $tangleddir/plutus-core-spec.k : tangle plutus-core-spec.md
-build $tangleddir/krypto.k           : tangle $blockchainplugindir/krypto.md
+build $tangleddir/plutus-core.k       : tangle plutus-core.md
+build $tangleddir/krypto.k            : tangle $blockchainplugindir/krypto.md
     tangle_selector = .cryptography-hashes
+build $tangleddir/unit-tests-spec.k   : tangle unit-tests.md
+build $tangleddir/verification-spec.k : tangle verification.md
 
 # Java build kompile pipeline
 # ---------------------------
@@ -123,11 +124,14 @@ build test : phony check-spec
 # Unit Tests as reachability claims
 # ---------------------------------
 
-build check-spec : kprove $tangleddir/plutus-core-spec.k | spec-java
+build check-unit-tests : kprove $tangleddir/unit-tests-spec.k | spec-java
     directory = $builddir/plutus-core-java
 
 build check-10 : kprove sum-to-10-spec.k $
                  | spec-java
+    directory = $builddir/plutus-core-java
+
+build check-verification : kprove $tangleddir/verification-spec.k | spec-java
     directory = $builddir/plutus-core-java
 
 # Integration tests
