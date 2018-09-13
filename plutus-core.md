@@ -350,6 +350,18 @@ module PLUTUS-CORE-CRYPTOGRAPHY
 endmodule
 ```
 
+Error Terms
+-----------
+
+Error terms get propogated up immediately, throwing away all remaining evaluation.
+
+```k
+module PLUTUS-CORE-ERRORS
+    rule <k> (error _) ~> (REST => .K) </k>
+      requires REST =/=K .K
+endmodule
+```
+
 Type Erasure
 ------------
 

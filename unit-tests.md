@@ -42,7 +42,7 @@ rule <k> [ (lam x a (lam x b x)) (con 1 ! 1) ] => closure(_, x, x) </k>
 ```
 
 Integer arithmetic
------------------------------
+------------------
 
 Addition:
 
@@ -281,6 +281,15 @@ rule <k> [(con sha2_256) (con 8 ! `0123456789abcdef)]
                           : 87   : 7   : 98  : 205 : 56  : 190
                           : 152  : 24  : nilBytes)
     </k>                                                                            [specification]
+```
+
+Error Terms
+-----------
+
+```k
+rule <k> [[(con addInteger) (con 1 ! 66)] (error (con integer))]     => (error (con integer))    </k>
+rule <k> [[(con addInteger) (error (con integer))] (con 1 ! 66)]     => (error (con integer))    </k>
+rule <k> [[(con resizeByteString) (con 3)] (error (con bytestring))] => (error (con bytestring)) </k>
 ```
 
 ```k
