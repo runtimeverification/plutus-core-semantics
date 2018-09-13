@@ -155,7 +155,7 @@ Booleans & Unit
 `#true`:
 
 ```k
-rule  <k>[[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 3)]
+rule <k> [[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 3)]
               (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
        => (con 3 ! 1)
      </k>
@@ -165,7 +165,7 @@ rule  <k>[[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 3)]
 `#false`:
 
 ```k
-rule  <k> [[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 2)]
+rule <k> [[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 2)]
              (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
        => (con 3 ! 2)
      </k>
