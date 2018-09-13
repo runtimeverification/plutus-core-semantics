@@ -132,7 +132,7 @@ module PLUTUS-CORE-CONFIGURATION
 Program version has no semantic meaning
 
 ```k
-rule (program V TM) => TM
+    rule (program V TM) => TM
 ```
 
 Since our concept of `KResult` differs slightly from the specifications notion of `Value`s (e.g.
