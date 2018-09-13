@@ -48,7 +48,7 @@ Addition:
 
 ```k
 rule [[(con addInteger) (con 1 ! 1) ] (con 1 ! 1) ] => (con 1 ! 2)
-rule <k> [[(con addInteger) (con 1 ! 66)] (con 1 ! 66)] => #failure ~> _ </k>
+rule [[(con addInteger) (con 1 ! 66)] (con 1 ! 66)] => #failure
 ```
 
 Subtraction:
@@ -56,14 +56,14 @@ Subtraction:
 ```k
 rule [[(con subtractInteger) (con 3 ! 10)] (con 3 ! 8) ] => (con 3 ! 2)
 rule [[(con subtractInteger) (con 3 ! 7)] (con 3 ! 10) ] => (con 3 ! -3)
-rule <k> [[(con subtractInteger) (con 1 ! 66)] (con 1 ! -66) ] => #failure ~> _ </k>
+rule [[(con subtractInteger) (con 1 ! 66)] (con 1 ! -66) ] => #failure
 ```
 
 Multiplication:
 
 ```k
 rule [[(con multiplyInteger) (con 3 ! 10)] (con 3 ! 8) ] => (con 3 ! 80)
-rule <k> [[(con multiplyInteger) (con 1 ! 12)] (con 1 ! 11)] => #failure ... </k>
+rule [[(con multiplyInteger) (con 1 ! 12)] (con 1 ! 11)] => #failure
 ```
 
 Division:
@@ -71,7 +71,7 @@ Division:
 ```k
 rule [[(con divideInteger) (con 3 ! 10)] (con 3 ! 3) ] => (con 3 ! 3)
 rule [[(con divideInteger) (con 3 ! 0)] (con 3 ! 10) ] => (con 3 ! 0)
-rule <k> [[(con divideInteger) (con 2 ! 66)] (con 2 ! 0) ] => #failure ... </k>
+rule [[(con divideInteger) (con 2 ! 66)] (con 2 ! 0) ] => #failure
 ```
 
 Remainder:
@@ -79,7 +79,7 @@ Remainder:
 ```k
 rule [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)] => (con 3 ! 1)
 rule [[(con remainderInteger) (con 3 ! 0)]  (con 3 ! 10)] => (con 3 ! 0)
-rule <k> [[(con remainderInteger) (con 2 ! 66)] (con 2 ! 0) ] => #failure ... </k>
+rule [[(con remainderInteger) (con 2 ! 66)] (con 2 ! 0) ] => #failure
 ```
 
 Complex nested expressions:
@@ -146,7 +146,7 @@ Resize integer
 
 ```k
 rule [[(con resizeInteger) (con 1)] (con 2 ! 100)] => (con 1 ! 100)
-rule <k> [[(con resizeInteger) (con 1)] (con 2 ! 128)] => #failure ~> _ </k>
+rule [[(con resizeInteger) (con 1)] (con 2 ! 128)] => #failure
 ```
 
 Booleans & Unit
