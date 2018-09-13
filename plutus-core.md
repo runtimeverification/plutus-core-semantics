@@ -135,8 +135,9 @@ Program version has no semantic meaning
     rule (program V TM) => TM
 ```
 
-Since our concept of `KResult` differs slightly from the specifications notion of `Value`s (e.g.
-`(con (1 ! 999))` is not fully executed) we define a sort of "fully executed" terms.
+As some Plutus builtins need to be converted to our internal representation (lambdas to closures,
+bytestring tokens to the `Bytes` sort in K), our concept of `KResult`, which defines a sort of
+"fully reduced" terms, differs slightly from the specification's notion of `Value`s.
 
 ```k
     syntax ResultTerm
@@ -150,7 +151,7 @@ endmodule
 Lambda Calculus
 ---------------
 
-We use implement application via closures / environment:
+We implement application via closures / environments:
 
 ```k
 module PLUTUS-CORE-LAMBDA-CALCULUS
