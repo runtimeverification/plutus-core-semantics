@@ -29,6 +29,6 @@ module SUM-TO-10-SPEC
           (con 5 ! 0)
         ]
         (con 5 ! 10)
-      ] => int(5, 55) </k>
+      ] => (con 5 ! 55) </k>
       <env> .Map => .Map </env>
 endmodule

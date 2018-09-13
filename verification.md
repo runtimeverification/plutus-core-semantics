@@ -20,17 +20,15 @@ module VERIFICATION-SPEC
 -------------------
 
 ```k
-rule <k> [[(con addInteger) (con S ! V1) ] (con S ! V2) ] => int(S, (V1 +Int V2)) </k>
+rule <k> [[(con addInteger) (con S ! V1) ] (con S ! V2)] => (con S ! (V1 +Int V2)) </k>
   requires isInBounds(S, V1 +Int V2)
    andBool isInBounds(S, V1)
    andBool isInBounds(S, V2)
 ```
 
 ```k
-rule <k> [[(con addInteger) (con S ! V1) ] (con S ! V2) ] => (error (con integer)) </k>
-  requires notBool(isInBounds(S, V1 +Int V2)
-                   andBool isInBounds(S, V1)
-                   andBool isInBounds(S, V2))
+rule <k> [[(con addInteger) (con S ! V1) ] (con S ! V2)] => #failure ... </k>
+  requires notBool(isInBounds(S, V1 +Int V2))
 ```
 
 ```k

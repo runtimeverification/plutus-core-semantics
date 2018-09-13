@@ -20,10 +20,7 @@ Lambda Calculus
 Basic application:
 
 ```k
-rule <k> [ (lam x a x) (con 1 ! 1) ] => int(1, 1) </k>
-     <env> .Map => .Map </env>
-
-rule <k> [ (lam x a x) (con 1 ! 128) ] => (error (con (integer))) </k>
+rule <k> [ (lam x a x) (con 1 ! 1) ] => (con 1 ! 1) </k>
      <env> .Map => .Map </env>
 
 rule <k> [ (lam y a x) (con 1 ! 1) ] => x ~> .Map </k>
@@ -33,7 +30,7 @@ rule <k> [ (lam y a x) (con 1 ! 1) ] => x ~> .Map </k>
 Nested application:
 
 ```k
-rule <k> [[(lam x a (lam y b x)) (con 1 ! 0)] (con 2 ! 123)] => int(1, 0) </k>
+rule <k> [[(lam x a (lam y b x)) (con 1 ! 0)] (con 2 ! 123)] => (con 1 ! 0) </k>
      <env> .Map => .Map </env>
 ```
 
@@ -44,58 +41,45 @@ rule <k> [ (lam x a (lam x b x)) (con 1 ! 1) ] => closure(_, x, x) </k>
      <env> .Map => .Map </env>
 ```
 
-Integers & Integer arithmetic
+Integer arithmetic
 -----------------------------
-
-```k
-rule (con 1 ! 1     ) => int(1, 1)
-rule (con 1 ! 128   ) => (error (con (integer)))
-rule (con 1 ! -128  ) => int(1, -128)
-rule (con 1 ! -129  ) => (error (con (integer)))
-
-rule (con 2 !  32768) => (error (con (integer)))
-rule (con 2 ! -32768) => int(2, -32768)
-rule (con 2 ! -32769) => (error (con (integer)))
-```
-
-### Integer arithmetic
 
 Addition:
 
 ```k
-rule [[(con addInteger) (con 1 ! 1) ] (con 1 ! 1) ] => int(1, 2)
-rule [[(con addInteger) (con 1 ! 66)] (con 1 ! 66)] => (error (con (integer)))
+rule [[(con addInteger) (con 1 ! 1) ] (con 1 ! 1) ] => (con 1 ! 2)
+rule <k> [[(con addInteger) (con 1 ! 66)] (con 1 ! 66)] => #failure ~> _ </k>
 ```
 
 Subtraction:
 
 ```k
-rule [[(con subtractInteger) (con 3 ! 10)] (con 3 ! 8) ] => int(3, 2)
-rule [[(con subtractInteger) (con 3 ! 7)] (con 3 ! 10) ] => int(3, -3)
-rule [[(con subtractInteger) (con 1 ! 66)] (con 1 ! -66) ] => (error (con (integer)))
+rule [[(con subtractInteger) (con 3 ! 10)] (con 3 ! 8) ] => (con 3 ! 2)
+rule [[(con subtractInteger) (con 3 ! 7)] (con 3 ! 10) ] => (con 3 ! -3)
+rule <k> [[(con subtractInteger) (con 1 ! 66)] (con 1 ! -66) ] => #failure ~> _ </k>
 ```
 
 Multiplication:
 
 ```k
-rule [[(con multiplyInteger) (con 3 ! 10)] (con 3 ! 8) ] => int(3, 80)
-rule [[(con multiplyInteger) (con 1 ! 12)] (con 1 ! 11)] => (error (con (integer)))
+rule [[(con multiplyInteger) (con 3 ! 10)] (con 3 ! 8) ] => (con 3 ! 80)
+rule <k> [[(con multiplyInteger) (con 1 ! 12)] (con 1 ! 11)] => #failure ... </k>
 ```
 
 Division:
 
 ```k
-rule [[(con divideInteger) (con 3 ! 10)] (con 3 ! 3) ] => int(3, 3)
-rule [[(con divideInteger) (con 3 ! 0)] (con 3 ! 10) ] => int(3, 0)
-rule [[(con divideInteger) (con 2 ! 66)] (con 2 ! 0) ] => (error (con (integer)))
+rule [[(con divideInteger) (con 3 ! 10)] (con 3 ! 3) ] => (con 3 ! 3)
+rule [[(con divideInteger) (con 3 ! 0)] (con 3 ! 10) ] => (con 3 ! 0)
+rule <k> [[(con divideInteger) (con 2 ! 66)] (con 2 ! 0) ] => #failure ... </k>
 ```
 
 Remainder:
 
 ```k
-rule [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)] => int(3, 1)
-rule [[(con remainderInteger) (con 3 ! 0)]  (con 3 ! 10)] => int(3, 0)
-rule [[(con remainderInteger) (con 2 ! 66)] (con 2 ! 0) ] => (error (con (integer)))
+rule [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)] => (con 3 ! 1)
+rule [[(con remainderInteger) (con 3 ! 0)]  (con 3 ! 10)] => (con 3 ! 0)
+rule <k> [[(con remainderInteger) (con 2 ! 66)] (con 2 ! 0) ] => #failure ... </k>
 ```
 
 Complex nested expressions:
@@ -104,17 +88,17 @@ Complex nested expressions:
 rule [[(con addInteger) [[(con remainderInteger) (con 3 ! 10)] (con 3 ! 3)]]
                             [[(con multiplyInteger ) (con 3 ! 2 )] (con 3 ! 2)]
          ]
-      => int(3, 5)
+      => (con 3 ! 5)
 
-rule [[(con addInteger) [[(con remainderInteger) (con 1 ! 10)] (con 1 ! 3)]]
+rule <k> [[(con addInteger) [[(con remainderInteger) (con 1 ! 10)] (con 1 ! 3)]]
                             [[(con multiplyInteger ) (con 1 ! 15 )] (con 1 ! 16)]
          ]
-      => (error (con (integer)))
+      => #failure ~> _ </k>
 
-rule [[(con addInteger) [[(con remainderInteger) (con 3 ! 66)] (con 3 ! 0)]]
+rule <k> [[(con addInteger) [[(con remainderInteger) (con 3 ! 66)] (con 3 ! 0)]]
                             [[(con multiplyInteger ) (con 3 ! 2 )] (con 3 ! 2)]
          ]
-      => (error (con (integer)))
+      => #failure ~> _ </k>
 
 ```
 
@@ -161,8 +145,8 @@ rule [[(con equalsInteger) (con 3 ! 10)] (con 3 ! 10)] => #true
 Resize integer
 
 ```k
-rule [[(con resizeInteger) (con 1)] (con 2 ! 100)] => int(1, 100)
-rule [[(con resizeInteger) (con 1)] (con 2 ! 128)] => (error (con (integer)))
+rule [[(con resizeInteger) (con 1)] (con 2 ! 100)] => (con 1 ! 100)
+rule <k> [[(con resizeInteger) (con 1)] (con 2 ! 128)] => #failure ~> _ </k>
 ```
 
 Booleans & Unit
@@ -173,7 +157,7 @@ Booleans & Unit
 ```k
 rule  <k>[[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 3)]
               (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
-       => int(3, 1)
+       => (con 3 ! 1)
      </k>
      <env> .Map => .Map </env>
 ```
@@ -183,7 +167,7 @@ rule  <k>[[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 3)]
 ```k
 rule  <k> [[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 2)]
              (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
-       => int(3, 2)
+       => (con 3 ! 2)
      </k>
      <env> .Map => .Map </env>
 ```

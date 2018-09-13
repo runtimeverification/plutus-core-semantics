@@ -182,6 +182,7 @@ module PLUTUS-CORE-BUILTINS
     imports PLUTUS-CORE-CONFIGURATION
 
     syntax KResult ::= Error
+    syntax KItem   ::= "#failure"
 
     rule isResultTerm((con B:BinaryBuiltin)) => true
     rule isResultTerm((con B:UnaryBuiltin )) => true
@@ -204,70 +205,66 @@ Bounded Integer Arithmetic
 ```k
 module PLUTUS-CORE-BOUNDED-INTEGERS
     imports PLUTUS-CORE-CONFIGURATION
-
-    syntax BoundedInt ::= int(Int , Int)
-    syntax ResultTerm ::= BoundedInt
-
-    rule (con S:Int ! V:Int) => int(S, V)
-      requires -2 ^Int(8 *Int S:Int -Int 1) <=Int V andBool V  <Int 2 ^Int(8 *Int S:Int -Int 1)
-    rule (con S:Int ! V:Int) => (error (con (integer)))
-      requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
-endmodule
-
-module PLUTUS-CORE-BOUNDED-INTEGER-ARITHMETIC
-    imports PLUTUS-CORE-BOUNDED-INTEGERS
     imports PLUTUS-CORE-BUILTINS
 
+    rule isResultTerm((con S ! I:Int)) => true
+
+    syntax KItem ::= #mkInt(Size, Int) [function]
+    rule #mkInt(S, V) => (con S ! V)
+      requires -2 ^Int(8 *Int S:Int -Int 1) <=Int V andBool V  <Int 2 ^Int(8 *Int S:Int -Int 1)
+    rule #mkInt(S, V) => #failure
+      requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
+
     // addInteger builtin
-    rule [[(con addInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 +Int V2))
+    rule [[(con addInteger) (con S ! I1)] (con S ! I2)] => #mkInt(S, I1 +Int I2)
 
     // subtractInteger builtin
-    rule [[(con subtractInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 -Int V2))
+    rule [[(con subtractInteger) (con S ! I1)] (con S ! I2)] => #mkInt(S, I1 -Int I2)
 
     // multiplyInteger builtin
-    rule [[(con multiplyInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 *Int V2))
+    rule [[(con multiplyInteger) (con S ! I1)] (con S ! I2)] => #mkInt(S, I1 *Int I2)
 
     // divideInteger builtin
-    rule [[(con divideInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 /Int V2))
-      requires V2 =/=Int 0
-    rule [[(con divideInteger) int(S, V1)] int(S, 0)] => (error (con (integer)))
+    rule [[(con divideInteger) (con S ! I1:Int)] (con S ! I2:Int)] => (con S ! (I1 /Int I2))
+      requires I2 =/=Int 0
+    rule [[(con divideInteger) (con S ! I:Int)] (con S ! 0)] => #failure
 
     // remainderInteger builtin
-    rule [[(con remainderInteger) int(S, V1)] int(S, V2)] => (con S ! (V1 %Int V2))
-      requires V2 =/=Int 0
-    rule [[(con remainderInteger) int(S, V1)] int(S, 0)] => (error (con (integer)))
+    rule [[(con remainderInteger) (con S ! I1:Int)] (con S ! I2:Int)] => (con S ! (I1 %Int I2))
+      requires I2 =/=Int 0
+    rule [[(con remainderInteger) (con S ! I1:Int)] (con S ! 0)] => #failure
 
     // lessThanInteger builtin
-    rule [[(con lessThanInteger) int(S, V1)] int(S, V2)] => #true
-      requires V1 <Int V2
-    rule [[(con lessThanInteger) int(S, V1)] int(S, V2)] => #false
-      requires V1 >=Int V2
+    rule [[(con lessThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #true
+      requires I1 <Int I2
+    rule [[(con lessThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
+      requires I1 >=Int I2
 
     // lessThanEqualsInteger builtin
-    rule [[(con lessThanEqualsInteger) int(S, V1)] int(S, V2)] => #true
-      requires V1 <=Int V2
-    rule [[(con lessThanEqualsInteger) int(S, V1)] int(S, V2)] => #false
-      requires V1 >Int V2
+    rule [[(con lessThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #true
+      requires I1 <=Int I2
+    rule [[(con lessThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
+      requires I1 >Int I2
 
     // greaterThanInteger builtin
-    rule [[(con greaterThanInteger) int(S, V1)] int(S, V2)] => #true
-      requires V1 >Int V2
-    rule [[(con greaterThanInteger) int(S, V1)] int(S, V2)] => #false
-      requires V1 <=Int V2
+    rule [[(con greaterThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #true
+      requires I1 >Int I2
+    rule [[(con greaterThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
+      requires I1 <=Int I2
 
     // greaterThanEqualsInteger builtin
-    rule [[(con greaterThanEqualsInteger) int(S, V1)] int(S, V2)] => #true
-      requires V1 >=Int V2
-    rule [[(con greaterThanEqualsInteger) int(S, V1)] int(S, V2)] => #false
-      requires V1 <Int V2
+    rule [[(con greaterThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #true
+      requires I1 >=Int I2
+    rule [[(con greaterThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
+      requires I1 <Int I2
 
     // equalsInteger builtin
-    rule [[(con equalsInteger) int(S, V1)] int(S, V1)] => #true
-    rule [[(con equalsInteger) int(S, V1)] int(S, V2)] => #false
-      requires V1 =/=Int V2
+    rule [[(con equalsInteger) (con S ! I1:Int)] (con S ! I1:Int)] => #true
+    rule [[(con equalsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
+      requires I1 =/=Int I2
 
     // resizeInteger builtin
-    rule [[(con resizeInteger) size(S1)] int(S2, V)] => (con S1 ! V)
+    rule [[(con resizeInteger) size(S1:Int)] (con S2 ! I:Int)] => #mkInt(S1, I)
 endmodule
 ```
 
@@ -314,19 +311,19 @@ Convert bytestring literals into their internal representation:
 Bytestring builtins:
 
 ```k
-    rule [[(con intToByteString) size(S1:Int)] int(S2, V:Int)]
+    rule [[(con intToByteString) size(S1:Int)] (con S2 ! V:Int)]
       => #bytestringSizeLengthInt(S1, S1, V)
 
     rule [[(con concatenate) bytestring(S1, V1)] bytestring(S1, V2)]
       => #bytestringSizeBytes(S1, V1 +Bytes V2)
 
-    rule [[(con takeByteString) int(S1, I1)] bytestring(S2, B2)]
+    rule [[(con takeByteString) (con S1 ! I1)] bytestring(S2, B2)]
       => bytestring(S2, substrBytes(B2, 0, I1))
       requires I1 >Int 0 andBool I1 <=Int lengthBytes(B2)
-    rule [[(con takeByteString) int(S1, I1)] bytestring(S2, B2)]
+    rule [[(con takeByteString) (con S1 ! I1)] bytestring(S2, B2)]
       => bytestring(S2, .Bytes)
       requires I1 <=Int 0
-    rule [[(con takeByteString) int(S1, I1)] bytestring(S2, B2)]
+    rule [[(con takeByteString) (con S1 ! I1)] bytestring(S2, B2)]
       => bytestring(S2, B2)
       requires I1 >Int lengthBytes(B2)
 
@@ -416,7 +413,7 @@ Main Module
 ```k
 module PLUTUS-CORE
     imports PLUTUS-CORE-LAMBDA-CALCULUS
-    imports PLUTUS-CORE-BOUNDED-INTEGER-ARITHMETIC
+    imports PLUTUS-CORE-BOUNDED-INTEGERS
     imports PLUTUS-CORE-BYTESTRINGS
     imports PLUTUS-CORE-CRYPTOGRAPHY
     imports PLUTUS-CORE-TYPE-ERASURE
