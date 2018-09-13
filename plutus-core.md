@@ -229,42 +229,37 @@ module PLUTUS-CORE-BOUNDED-INTEGERS
       requires I2 =/=Int 0
     rule [[(con divideInteger) (con S ! I:Int)] (con S ! 0)] => #failure
 
+    // resizeInteger builtin
+    rule [[(con resizeInteger) size(S1:Int)] (con S2 ! I:Int)] => #mkInt(S1, I)
+```
+
+### Boolean expressions
+
+
+```k
+    syntax KItem ::= #mkBool(Bool) [function]
+    rule #mkBool(true) => #true
+    rule #mkBool(false) => #false
+
     // remainderInteger builtin
     rule [[(con remainderInteger) (con S ! I1:Int)] (con S ! I2:Int)] => (con S ! (I1 %Int I2))
       requires I2 =/=Int 0
     rule [[(con remainderInteger) (con S ! I1:Int)] (con S ! 0)] => #failure
 
     // lessThanInteger builtin
-    rule [[(con lessThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #true
-      requires I1 <Int I2
-    rule [[(con lessThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
-      requires I1 >=Int I2
+    rule [[(con lessThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 <Int I2)
 
     // lessThanEqualsInteger builtin
-    rule [[(con lessThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #true
-      requires I1 <=Int I2
-    rule [[(con lessThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
-      requires I1 >Int I2
+    rule [[(con lessThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 <=Int I2)
 
     // greaterThanInteger builtin
-    rule [[(con greaterThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #true
-      requires I1 >Int I2
-    rule [[(con greaterThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
-      requires I1 <=Int I2
+    rule [[(con greaterThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 >Int I2)
 
     // greaterThanEqualsInteger builtin
-    rule [[(con greaterThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #true
-      requires I1 >=Int I2
-    rule [[(con greaterThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
-      requires I1 <Int I2
+    rule [[(con greaterThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 >=Int I2)
 
     // equalsInteger builtin
-    rule [[(con equalsInteger) (con S ! I1:Int)] (con S ! I1:Int)] => #true
-    rule [[(con equalsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #false
-      requires I1 =/=Int I2
-
-    // resizeInteger builtin
-    rule [[(con resizeInteger) size(S1:Int)] (con S2 ! I:Int)] => #mkInt(S1, I)
+    rule [[(con equalsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 ==Int I2)
 endmodule
 ```
 
@@ -335,9 +330,7 @@ Bytestring builtins:
       => (error (con (bytestring)))
       requires S1 <Int lengthBytes(B2)
 
-    rule [[(con equalsByteString) bytestring(S, B1)] bytestring(S, B1)] => #true
-    rule [[(con equalsByteString) bytestring(S, B1)] bytestring(S, B2)] => #false
-      requires B1 =/=K B2
+    rule [[(con equalsByteString) bytestring(S, B1)] bytestring(S, B2)] => #mkBool(B1 ==K B2)
 ```
 
 ```k
