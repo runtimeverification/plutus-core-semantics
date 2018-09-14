@@ -22,8 +22,6 @@ module VERIFICATION-SPEC
 ```k
 rule <k> [[(con addInteger) (con S ! V1) ] (con S ! V2)] => (con S ! (V1 +Int V2)) </k>
   requires isInBounds(S, V1 +Int V2)
-   andBool isInBounds(S, V1)
-   andBool isInBounds(S, V2)
 ```
 
 ```k
