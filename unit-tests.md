@@ -186,13 +186,13 @@ rule (con 8 ! #token("0123456789abcdef", "ByteString"):ByteString) => (con 8 ! 1
 Integer to ByteString
 
 ```k
-rule [[(con intToByteString) (con 1 )] (con 2 ! 100)]
+rule [[(con intToByteString) (con 1)] (con 2 ! 100)]
   => (con 1 ! 100 : nilBytes)
 rule [[(con intToByteString) (con 3)] (con 2 ! 100)]
   => (con 3 ! 0 : 0 : 100 : nilBytes)
 rule [[(con intToByteString) (con 5)] (con 2 ! 100)]
   => (con 5 ! 0 : 0 : 0 : 0 : 100 : nilBytes)
-rule [[(con intToByteString) (con 1 )] (con 2 ! 999)]
+rule [[(con intToByteString) (con 1)] (con 2 ! 999)]
   => #failure
 ```
 
