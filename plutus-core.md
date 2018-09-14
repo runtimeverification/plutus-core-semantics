@@ -189,10 +189,6 @@ module PLUTUS-CORE-BUILTINS
     rule isResultTerm((con B:UnaryBuiltin )) => true
     rule isResultTerm([(con B:BinaryBuiltin) TM:ResultTerm]) => true
 
-    syntax Size ::= size(Int) [klabel(sizeConstant)] /* klabel prevents conflict with size(Set) */
-    syntax ResultTerm ::= Size
-    rule (con S:Int):Value => size(S)
-
     // BinaryBuiltins
     rule [[(con B:BinaryBuiltin) (error TY)] TM] => (error TY)
     rule [[(con B:BinaryBuiltin) TM] (error TY)] => (error TY)
@@ -209,6 +205,7 @@ module PLUTUS-CORE-BOUNDED-INTEGERS
     imports PLUTUS-CORE-BUILTINS
 
     rule isResultTerm((con S ! I:Int)) => true
+    rule isResultTerm((con (I:Int):Constant)) => true
 
     syntax KItem ::= #mkInt(Size, Int) [function]
     rule #mkInt(S, V) => (con S ! V)
@@ -231,7 +228,7 @@ module PLUTUS-CORE-BOUNDED-INTEGERS
     rule [[(con divideInteger) (con S ! I:Int)] (con S ! 0)] => #failure
 
     // resizeInteger builtin
-    rule [[(con resizeInteger) size(S1:Int)] (con S2 ! I:Int)] => #mkInt(S1, I)
+    rule [[(con resizeInteger) (con S1:Int)] (con S2 ! I:Int)] => #mkInt(S1, I)
 ```
 
 ### Boolean expressions
@@ -307,7 +304,7 @@ Convert bytestring literals into their internal representation:
 Bytestring builtins:
 
 ```k
-    rule [[(con intToByteString) size(S1:Int)] (con S2 ! V:Int)]
+    rule [[(con intToByteString) (con S1:Int):Value] (con S2 ! V:Int)]
       => #bytestringSizeLengthInt(S1, S1, V)
 
     rule [[(con concatenate) bytestring(S1, V1)] bytestring(S1, V2)]
@@ -323,11 +320,11 @@ Bytestring builtins:
       => bytestring(S2, B2)
       requires I1 >Int lengthBytes(B2)
 
-    rule [[(con resizeByteString) size(S1:Int)] bytestring(S2, B2)]
+    rule [[(con resizeByteString) (con S1:Int)] bytestring(S2, B2)]
       => bytestring(S1, B2)
       requires S1 >=Int lengthBytes(B2)
 
-    rule [[(con resizeByteString) size(S1:Int)] bytestring(S2, B2)]
+    rule [[(con resizeByteString) (con S1:Int)] bytestring(S2, B2)]
       => (error (con (bytestring)))
       requires S1 <Int lengthBytes(B2)
 
