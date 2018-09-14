@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    bytestring ( 8 , 10 : 11 : 12 : 13 : 1 : 2 : 3 : nilBytes )
+    ( con 8 ! 10 : 11 : 12 : 13 : 1 : 2 : 3 : nilBytes )
   </k>
   <env>
     .Map

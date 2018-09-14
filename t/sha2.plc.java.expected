@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    bytestring ( 256 , Sha2_256 ( 1 : 35 : 69 : 103 : 137 : 171 : 205 : 239 : nilBytes ) )
+    ( con 256 ! Sha2_256 ( 1 : 35 : 69 : 103 : 137 : 171 : 205 : 239 : nilBytes ) )
   </k>
   <env>
     .Map
