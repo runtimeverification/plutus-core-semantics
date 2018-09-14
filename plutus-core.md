@@ -100,9 +100,8 @@ module PLUTUS-CORE-SYNTAX-BASE
                   | "{" Term Type "}"
                   | "(" "unwrap" Term ")"
                   | "[" Term Term "]" [seqstrict]
-                  | Error
+                  | "(" "error" Type ")"
                   | Value
-    syntax Error ::= "(" "error" Type ")"
 
     syntax Value ::= "(" "abs" TyVar Kind Value ")"
                    | "(" "wrap" TyVar Type Value ")"
@@ -143,8 +142,6 @@ bytestring tokens to the `Bytes` sort in K), our concept of `KResult`, which def
     syntax ResultTerm
     syntax Value   ::= ResultTerm
     syntax KResult ::= ResultTerm
-
-    syntax ResultTerm ::= Error
 endmodule
 ```
 
@@ -182,17 +179,11 @@ Common infrastructure for handling builtins.
 module PLUTUS-CORE-BUILTINS
     imports PLUTUS-CORE-CONFIGURATION
 
-    syntax KResult ::= Error
-    syntax KItem   ::= "#failure"
+    syntax KItem ::= "#failure"
 
     rule isResultTerm((con B:BinaryBuiltin)) => true
     rule isResultTerm((con B:UnaryBuiltin )) => true
     rule isResultTerm([(con B:BinaryBuiltin) TM:ResultTerm]) => true
-
-    // BinaryBuiltins
-    rule [[(con B:BinaryBuiltin) (error TY)] TM] => (error TY)
-    rule [[(con B:BinaryBuiltin) TM] (error TY)] => (error TY)
-    rule  [(con U:UnaryBuiltin)  (error TY)]     => (error TY)
 endmodule
 ```
 
@@ -352,6 +343,8 @@ Error terms get propogated up immediately, throwing away all remaining evaluatio
 
 ```k
 module PLUTUS-CORE-ERRORS
+    imports PLUTUS-CORE-CONFIGURATION
+
     rule <k> (error _) ~> (REST => .K) </k>
       requires REST =/=K .K
 endmodule
@@ -417,6 +410,7 @@ module PLUTUS-CORE
     imports PLUTUS-CORE-BOUNDED-INTEGERS
     imports PLUTUS-CORE-BYTESTRINGS
     imports PLUTUS-CORE-CRYPTOGRAPHY
+    imports PLUTUS-CORE-ERRORS
     imports PLUTUS-CORE-TYPE-ERASURE
 endmodule
 ```
