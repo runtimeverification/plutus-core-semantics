@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from kninja import *
-import ninja.ninja_syntax
 import sys
 
 # Helpers

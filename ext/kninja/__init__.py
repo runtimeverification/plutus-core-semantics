@@ -1,4 +1,4 @@
-import ninja.ninja_syntax
+import kninja.ninja.ninja_syntax
 import os
 
 def basename_no_ext(path):
