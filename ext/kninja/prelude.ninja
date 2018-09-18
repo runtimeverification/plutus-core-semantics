@@ -81,7 +81,7 @@ rule check-test-result
 rule kompile-gen-ml
     description     = kompiling $in: Generating OCaml files
     command         = $k_bindir/kompile $flags --backend ocaml --debug --directory $directory $in $
-                           --gen-ml-only
+                           --gen-ml-only && touch --no-create $out
 
 rule kompile-interpreter
     description     = $k_bindir/kompile $in: Compiling
