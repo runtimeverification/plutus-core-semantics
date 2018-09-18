@@ -5,8 +5,11 @@
 # 
 # Execute ninja:
 #
-#   ./build [<arguments-to-ninja>] [-- command-to-run]
+#   ./build <arguments-to-ninja>
 #
+# Execute arbitary command in fully set up environment
+#
+#   ./build -- <arbitary-command>
 
 set -eu     # Fail on non-zero exit code, undefined variable
 
@@ -32,24 +35,10 @@ init_env() {
     export PYTHONPATH="$base/ext/"
 }
 
-
-have_user_specified_command() { [[ ${#command[@]}    -gt 0 ]] ; }
-have_ninja_args()             { [[ ${#ninja_args[@]} -gt 0 ]] ; }
-
 # Main
 # ====
 
 init_env
 python3 lib/build.py
-ninja_args=( )
-while [[ $# -gt 0 ]] ; do
-    [[ "$1" != "--" ]] || { shift ; break ; }
-    ninja_args+=( $1 ) ; shift
-done
-command=( "$@" )
-if ! have_user_specified_command || have_ninja_args ; then
-   ninja -f $build_dir/generated.ninja "${ninja_args[@]}"
-fi
-if have_user_specified_command ; then
-   exec "${command[@]}"
-fi
+[[ $# -lt 1 ]] || [[ -- != $1 ]] || { shift ; exec "$@" ; }
+exec ninja -f .build/generated.ninja "$@"
