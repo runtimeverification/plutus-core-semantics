@@ -38,12 +38,12 @@ rule opam-build-ocamlc-k
       opam update                                                                             && $
       (opam switch remove 4.03.0+k || true)                                                   && $
       opam switch -v 4.03.0+k                                                                 && $
-      touch --no-create $out
+      touch -c $out
     pool            = opam
 
 rule opam-install
     description     = opam install $out
-    command         = opam install --yes $package && touch --no-create $out
+    command         = opam install --yes $package && touch -c $out
     pool            = opam
 
 pool opam
@@ -81,7 +81,7 @@ rule check-test-result
 rule kompile-gen-ml
     description     = kompiling $in: Generating OCaml files
     command         = $k_bindir/kompile $flags --backend ocaml --debug --directory $directory $in $
-                           --gen-ml-only && touch --no-create $out
+                           --gen-ml-only && touch -c $out
 
 rule kompile-interpreter
     description     = $k_bindir/kompile $in: Compiling
