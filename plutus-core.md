@@ -124,8 +124,10 @@ module PLUTUS-CORE-CONFIGURATION
     imports PLUTUS-CORE-ABBREVIATIONS
     imports DOMAINS
 
+    syntax K ::= #env(Map)
+
     configuration <k> $PGM:Program </k>
-                  <env> .Map </env>
+                  <envStack> #env(.Map) </envStack>
 ```
 
 Program version has no semantic meaning
@@ -157,16 +159,18 @@ module PLUTUS-CORE-LAMBDA-CALCULUS
     syntax Closure    ::= closure(Map, Var, Term)
     syntax ResultTerm ::= Closure
 
+    syntax KItem ::= "#popEnv"
+
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
-         <env> RHO </env>
-    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> RHO' ... </k>
-         <env> RHO' => RHO[X <- V] </env>
+         <envStack> #env(RHO) ... </envStack>
+    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> #popEnv ... </k>
+         <envStack> (. => #env(RHO[X <- V])) ... </envStack>
 
     rule <k> X:Var => V ... </k>
-         <env> ... X |-> V ... </env>
+         <envStack> #env(X |-> V RHO:Map) ... </envStack>
 
-    rule <k> _:KResult ~> (RHO:Map => .) ... </k>
-         <env> _ => RHO </env>
+    rule <k> _:KResult ~> (#popEnv => .) ... </k>
+         <envStack> (#env(RHO) => .) ... </envStack>
 endmodule
 ```
 

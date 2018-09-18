@@ -21,24 +21,24 @@ Basic application:
 
 ```k
 rule <k> [ (lam x a x) (con 1 ! 1) ] => (con 1 ! 1) </k>
-     <env> .Map => .Map </env>
+     <envStack> #env(.Map) => #env(.Map) </envStack>
 
-rule <k> [ (lam y a x) (con 1 ! 1) ] => x ~> .Map </k>
-     <env> .Map => _ </env>
+rule <k> [ (lam y a x) (con 1 ! 1) ] => x ~> #popEnv </k>
+     <envStack> #env(.Map) => _ </envStack>
 ```
 
 Nested application:
 
 ```k
 rule <k> [[(lam x a (lam y b x)) (con 1 ! 0)] (con 2 ! 123)] => (con 1 ! 0) </k>
-     <env> .Map => .Map </env>
+     <envStack> #env(.Map) => #env(.Map) </envStack>
 ```
 
 Application uses capture-free substitution:
 
 ```k
 rule <k> [ (lam x a (lam x b x)) (con 1 ! 1) ] => closure(_, x, x) </k>
-     <env> .Map => .Map </env>
+     <envStack> #env(.Map) => #env(.Map) </envStack>
 ```
 
 Integer arithmetic
@@ -159,7 +159,7 @@ rule <k> [[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 3)]
               (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
        => (con 3 ! 1)
      </k>
-     <env> .Map => .Map </env>
+     <envStack> #env(.Map) => #env(.Map) </envStack>
 ```
 
 `#false`:
@@ -169,7 +169,7 @@ rule <k> [[ [[(con equalsInteger) (con 3 ! 3)] (con 3 ! 2)]
              (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
        => (con 3 ! 2)
      </k>
-     <env> .Map => .Map </env>
+     <envStack> #env(.Map) => #env(.Map) </envStack>
 ```
 
 Bytestrings
