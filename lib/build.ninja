@@ -62,8 +62,8 @@ build $builddir/plutus-core-java/plutus-core-kompiled/timestamp : kompile $tangl
 
 ocamlkompileddir = $builddir/plutus-core-ocaml/plutus-core-kompiled/
 
-build $ocamlkompileddir/lexer.mll      $
-      $ocamlkompileddir/parser.mly     $
+build $ocamlkompileddir/lexer.ml       $
+      $ocamlkompileddir/parser.ml      $
       $ocamlkompileddir/prelude.ml     $
       $ocamlkompileddir/plugin.ml      $
       $ocamlkompileddir/parser.mli     $
@@ -75,8 +75,6 @@ build $ocamlkompileddir/lexer.mll      $
     directory = $builddir/plutus-core-ocaml/
     flags = --hook-namespaces HASH
 
-build $ocamlkompileddir/lexer.ml    : ocamllex $ocamlkompileddir/lexer.mll
-build $ocamlkompileddir/parser.ml   : ocamlyacc $ocamlkompileddir/parser.mly
 build $ocamlkompileddir/interpreter $
     | $ocamlkompileddir/realdef.cmx : ocamlopt $ocamlkompileddir/constants.ml $
                                                $ocamlkompileddir/prelude.ml   $
