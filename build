@@ -40,7 +40,7 @@ have_ninja_args()             { [[ ${#ninja_args[@]} -gt 0 ]] ; }
 # ====
 
 init_env
-[[ -f $build_dir/generated.ninja ]] || python3 lib/build.py
+python3 lib/build.py
 ninja_args=( )
 while [[ $# -gt 0 ]] ; do
     [[ "$1" != "--" ]] || { shift ; break ; }
