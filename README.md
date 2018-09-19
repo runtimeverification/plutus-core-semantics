@@ -5,8 +5,9 @@ At the moment we target version `v1.0 (RC5.3)`.
 Installation
 ============
 
-After installing [pandoc] and [ninja-build] as dependencies, simply run `./build`
-to setup OCaml, K, compile the semantics and run the tests. 
+After installing `python3`, [pandoc] and [ninja-build] as dependencies and
+placing them in `$PATH`, simply run `./build` to setup OCaml, K, compile
+the semantics and run the tests. 
 
 The file `plutus-core.md` defines the Plutus Core language, and the file
 `plutus-core-spec.md` defines unit tests as a reachability specification.
