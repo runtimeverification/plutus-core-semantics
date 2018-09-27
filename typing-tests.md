@@ -17,7 +17,7 @@ module TYPING-TESTS-SPEC
     rule (lam x [(con integer) (con 1)] x)
       => (fun [ (con integer) (con 1) ] [ (con integer) (con 1) ]) @ (type)
       
-    rule (con addInteger) => (type)
+    rule (con addInteger) => (all s (size) (fun [ (con integer) s ] (fun [ (con integer) s ] [ (con integer) s ]))) @ (type)
 endmodule
 ```
 
