@@ -44,7 +44,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
                   | "(" "fun" Type Type ")" [seqstrict]
                   | "(" "all" TyVar Kind Type ")"
                   | "(" "fix" TyVar Type ")"
-                  | "[" Type Type "]" [seqstrict]
+                  | "[[" Type Type "]]" [seqstrict]
                   | TyValue
 
     syntax TyValue ::= "(" "fun" TyValue TyValue ")"
@@ -92,6 +92,7 @@ module PLUTUS-CORE-SYNTAX-BASE
                       | BuiltinName
                       | Size
 
+    // TODO: binders for substitution
     syntax Term ::= Var
                   | "(" "run" Term ")"
                   | "{" Term Type "}"
@@ -126,6 +127,10 @@ Program version has no semantic meaning:
 ```
 
 ```k
+    // `Term`s evaluate to their `Type`
+    syntax Term ::= Type
+
+    // `Type`s evaluate to `Type` with their `Kind`
     syntax KindedType ::= Type "@" Kind
     syntax Type       ::= KindedType 
     syntax KResult    ::= KindedType
@@ -137,25 +142,14 @@ module PLUTUS-CORE-TYPING-BUILTINS
     imports PLUTUS-CORE-TYPING-CONFIGURATION
     imports SUBSTITUTION
     
-    rule (con S ! _:Int) => [ (con integer) (con S) ] 
+    rule (con S ! _:Int) => [[ (con integer) (con S) ]]
     rule (con integer) => (con integer) @ (fun (size) (type))
     rule (con S:Size):Type => (con S) @ (size)
-    rule [ T1@(fun K1 K2) T2@K1 ] => [ T1 T2 ] @ K2
-
-    syntax KVariable ::= Var
-    rule (lam X:Var TY TM)
-      => (fun TY TM[TY/X])
-    rule (fun TY1@(type) TY2@(type)) => (fun TY1 TY2) @ (type)
-
-    syntax KVariable ::= TyVar
-    syntax K ::= #allWithHole(TyVar, Kind)
-    rule (all ALPHA:TyVar K:Kind TY:Type)
-      => TY[ALPHA @ K / ALPHA] ~> #allWithHole(ALPHA, K)
-    rule (TY@(type)):KResult ~> #allWithHole(ALPHA:TyVar, K:Kind)
-      => (all ALPHA K TY) @ (type)
 
     syntax TyVar ::= "s"
-    rule (con addInteger) => (all s (size) (fun [(con integer) s] (fun [(con integer) s] [(con integer) s])))
+    rule (con addInteger)
+      => (all s (size)
+           (fun [[(con integer) s]] (fun [[(con integer) s]] [[(con integer) s]])))
 endmodule
 ```
 
@@ -163,5 +157,33 @@ endmodule
 module PLUTUS-CORE-TYPING
     imports PLUTUS-CORE-TYPING-CONFIGURATION
     imports PLUTUS-CORE-TYPING-BUILTINS
+
+    // For K's builtin substitution to work properly
+    syntax KVariable ::= TyVar
+
+    // tyall
+    // Need to have explicit heating and cooling as the `TY` in `all` needs to be reduced to a
+    // kind after substituting in the kind of `ALPHA`
+    syntax K ::= #allWithHole(TyVar, Kind)
+    rule (all ALPHA K TY)
+      => TY[ALPHA @ K / ALPHA] ~> #allWithHole(ALPHA, K)
+    rule TY@(type)             ~> #allWithHole(ALPHA, K)
+      => (all ALPHA K TY) @ (type)
+
+    // tyfun
+    rule (fun (TY1@(type)):Type (TY2@(type)):Type) => (fun TY1 TY2) @ (type)
+
+    // tyapp
+    rule [[ T1@(fun K1 K2) T2@K1 ]] => [[ T1 T2 ]] @ K2
+
+    // app
+    rule [ (fun T1:Type T2:Type)@K1 T1@K2 ] => T2
+
+    // For K's builtin substitution to work properly
+    syntax KVariable ::= Var
+
+    // lam
+    rule (lam X:Var TY TM) => (fun TY TM[TY/X])
+
 endmodule
 ```
