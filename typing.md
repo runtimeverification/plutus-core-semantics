@@ -54,6 +54,9 @@ module PLUTUS-CORE-SYNTAX-TYPES
                      | "(" "con" TyConstant ")"
                      | NeutralTy
 
+    syntax Term ::= "(" "fun" Term Term ")" [seqstrict]
+//                  | "(" "all" TyVar Kind Term ")"
+
     syntax NeutralTy ::= TyVar
                        | "[" NeutralTy TyValue "]"
 
@@ -176,6 +179,9 @@ module PLUTUS-CORE-TYPING
     // tyapp
     rule [[ T1@(fun K1 K2) T2@K1 ]] => [[ T1 T2 ]] @ K2
 
+    // abs
+    // rule (abs ALPHA K TM) => (all ALPHA K TM[ALPHA @ K/ALPHA])
+
     // app
     rule [ (fun T1:Type T2:Type)@K1 T1@K2 ] => T2
 
@@ -183,7 +189,7 @@ module PLUTUS-CORE-TYPING
     syntax KVariable ::= Var
 
     // lam
-    rule (lam X:Var TY TM) => (fun TY TM[TY/X])
+    rule (lam X:Var TY:Type TM:Term) => (fun TY TM[TY/X])
 
 endmodule
 ```
