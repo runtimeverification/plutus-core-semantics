@@ -2,7 +2,7 @@ module RECURSION-HELPERS
     imports PLUTUS-CORE-SYNTAX
 
     syntax Term ::= "#combinator"
-    rule #combinator => { { (abs a (type) (abs b (type) (lam f (fun (fun a b) (fun a b)) [ { (abs a (type) (lam s (fix self (fun self a)) [ (unwrap s) s ])) (fun a b) } (wrap self (fun self (fun a b)) (lam s (fix self (fun self (fun a b))) (lam x a [ [ f [ { (abs a (type) (lam s (fix self (fun self a)) [ (unwrap s) s ])) (fun a b) } s ] ] x ]))) ]))) r } (fun (fix nat (all r (type) (fun r (fun (fun nat r) r)))) r) }
+    rule #combinator => #fix
            [macro]
 endmodule
 

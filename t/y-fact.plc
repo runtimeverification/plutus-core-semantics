@@ -1,5 +1,5 @@
 (program 0.1.0
-    [ [ [ #Y
+    [ [ [ #fix
           (lam recur dummyTyVar
                (lam z r
                     (lam n dummyTyVar

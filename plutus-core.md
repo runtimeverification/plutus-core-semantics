@@ -391,34 +391,49 @@ The Plutus Core specification defines some abbreviations:
 module PLUTUS-CORE-ABBREVIATIONS
     imports PLUTUS-CORE-SYNTAX-BASE
 
-    syntax TyVar ::= "alpha"
-    syntax Var ::= "t" | "f" | "x" | "bv"
+    syntax TyVar ::= "$alpha" | "$a" | "$b" | "$self" | "$nat" | "$r"
+    syntax Var ::= "$t" | "$f" | "$x" | "$bv" | "$s"
 
     syntax TyValue ::= "#unit"
-    rule #unit => (all alpha (type) (fun alpha alpha))
+    rule #unit => (all $alpha (type) (fun $alpha $alpha))
 
     syntax Term ::= "#unitval"
-    rule #unitval => (abs alpha (type) (lam x alpha x))
+    rule #unitval => (abs $alpha (type) (lam $x $alpha $x))
 
     syntax Term ::= "#true"
                   | "#false"
-    rule #true => (abs alpha (type) (lam t (fun #unit alpha) (lam f (fun #unit alpha) [t #unitval])))
-    rule #false => (abs alpha (type) (lam t (fun #unit alpha) (lam f (fun #unit alpha) [f #unitval])))
+    rule #true => (abs $alpha (type) (lam $t (fun #unit $alpha) (lam $f (fun #unit $alpha) [$t #unitval])))
+    rule #false => (abs $alpha (type) (lam $t (fun #unit $alpha) (lam $f (fun #unit $alpha) [$f #unitval])))
 
     syntax TyValue ::= "#boolean"
 
     syntax Term ::= "#case"
-    rule #case => (abs alpha (type) (lam bv #boolean (lam t alpha (lam f alpha
-           [[ {bv alpha}
-             (lam x #unit t)]
-             (lam x #unit f)
+    rule #case => (abs $alpha (type) (lam $bv #boolean (lam $t $alpha (lam $f $alpha
+           [[ {$bv $alpha}
+             (lam $x #unit $t)]
+             (lam $x #unit $f)
            ] ))))
 
-    syntax Term ::= "#Y"
-    rule #Y => (lam f alpha [ (lam x alpha [f [x x]]) 
-                              (lam x alpha [f [x x]])
-                            ] )
+    syntax Term ::= "#strict-combinator" | "#Y-combinator" | "#fix"
+
+    rule #strict-combinator => { { (abs $a (type) (abs $b (type) (lam $f (fun (fun $a $b) (fun $a $b)) [ { (abs $a (type) (lam $s (fix $self (fun $self $a)) [ (unwrap $s) $s ])) (fun $a $b) } (wrap $self (fun $self (fun $a $b)) (lam $s (fix $self (fun $self (fun $a $b))) (lam $x $a [ [ $f [ { (abs $a (type) (lam $s (fix $self (fun $self $a)) [ (unwrap $s) $s ])) (fun $a $b) } $s ] ] $x ]))) ]))) $r } (fun (fix $nat (all $r (type) (fun $r (fun (fun $nat $r) $r)))) $r) }
     
+    rule #Y-combinator => (lam $f $alpha [ (lam $x $alpha [$f [$x $x]])
+                                           (lam $x $alpha [$f [$x $x]])
+                                       ] )
+
+endmodule
+```
+
+```k
+module PLUTUS-CORE-FIX-STRICT
+    imports PLUTUS-CORE-ABBREVIATIONS
+    rule #fix => #strict-combinator
+endmodule
+
+module PLUTUS-CORE-FIX-LAZY
+    imports PLUTUS-CORE-ABBREVIATIONS
+    rule #fix => #Y-combinator
 endmodule
 ```
 
@@ -433,5 +448,6 @@ module PLUTUS-CORE
     imports PLUTUS-CORE-CRYPTOGRAPHY
     imports PLUTUS-CORE-ERRORS
     imports PLUTUS-CORE-TYPE-ERASURE
+    imports PLUTUS-CORE-FIX-LAZY
 endmodule
 ```
