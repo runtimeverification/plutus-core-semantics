@@ -1,0 +1,23 @@
+(program 0.1.0
+    [ [ [ #Y
+          (lam recur dummyTyVar
+               (lam z r
+                    (lam n dummyTyVar
+                         [ [ [ [ { #case #unit }
+                                 [[(con equalsInteger) (con 5 ! 0)] n ]
+                               ]
+                               (lam f #unit z)
+                             ]
+                             [ recur [[ (con addInteger) z] n ] ]
+                           ]
+                           [ [(con subtractInteger) n] (con 5 ! 1) ]
+                         ]
+          )    )    )
+        ]
+        (con 5 ! 0)
+      ]
+      (con 5 ! 4)
+    ]
+)
+
+// λ rec n. if n == 0 then 1 else n * rec (n - 1)

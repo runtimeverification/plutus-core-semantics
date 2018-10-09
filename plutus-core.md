@@ -99,7 +99,7 @@ module PLUTUS-CORE-SYNTAX-BASE
                   | "(" "run" Term ")"
                   | "{" Term Type "}"
                   | "(" "unwrap" Term ")"
-                  | "[" Term Term "]" [seqstrict]
+                  | "[" Term Term "]" [strict(1)]
                   | "(" "error" Type ")"
                   | Value
 
@@ -157,13 +157,19 @@ module PLUTUS-CORE-LAMBDA-CALCULUS
     syntax Closure    ::= closure(Map, Var, Term)
     syntax ResultTerm ::= Closure
 
+    // Holder for term to be evaluated in a particular map
+    syntax K ::= #thunk(Term, Map)
+
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
-    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> RHO' ... </k>
-         <env> RHO' => RHO[X <- V] </env>
+    rule <k> [closure(RHO, X, M) V] => M ~> RHO' ... </k>
+         <env> RHO' => RHO[X <- #thunk(V, RHO')] </env>
 
     rule <k> X:Var => V ... </k>
          <env> ... X |-> V ... </env>
+
+    rule <k> #thunk(TM, RHO) => TM ~> RHO' ... </k>
+         <env> RHO' => RHO </env>
 
     rule <k> _:KResult ~> (RHO:Map => .) ... </k>
          <env> _ => RHO </env>
@@ -184,6 +190,15 @@ module PLUTUS-CORE-BUILTINS
     rule isResultTerm((con B:BinaryBuiltin)) => true
     rule isResultTerm((con B:UnaryBuiltin )) => true
     rule isResultTerm([(con B:BinaryBuiltin) TM:ResultTerm]) => true
+
+    syntax Term ::= "#hole"
+    rule [(con B:BinaryBuiltin) TM:Term]
+      => TM ~> [(con B:BinaryBuiltin) #hole]
+      requires notBool(isResultTerm(TM))
+    rule [[(con B:BinaryBuiltin) TM1:ResultTerm] TM2]
+      => TM2 ~> [[(con B:BinaryBuiltin) TM1] #hole]
+      requires notBool(isResultTerm(TM2))
+    rule TM2:ResultTerm ~> [TM1 #hole] =>  [TM1 TM2]
 endmodule
 ```
 
@@ -398,6 +413,12 @@ module PLUTUS-CORE-ABBREVIATIONS
              (lam x #unit t)]
              (lam x #unit f)
            ] ))))
+
+    syntax Term ::= "#Y"
+    rule #Y => (lam f alpha [ (lam x alpha [f [x x]]) 
+                              (lam x alpha [f [x x]])
+                            ] )
+    
 endmodule
 ```
 
