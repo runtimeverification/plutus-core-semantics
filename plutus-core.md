@@ -173,7 +173,7 @@ need to manually implement strictness in the second argument:
 
 ```k
     syntax Term ::= "#hole"
-    rule [TM1:ResultTerm TM2:Term] => TM1 ~> [TM1 #hole]
+    rule [TM1:ResultTerm TM2:Term] => TM2 ~> [TM1 #hole]
       requires notBool(isResultTerm(TM2))
     rule TM2:ResultTerm ~> [TM1 #hole] => [TM1 TM2]
 endmodule
