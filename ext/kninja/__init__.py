@@ -45,22 +45,22 @@ class KDefinition:
         self.writer.build(alias, 'phony', self.get_timestamp_file())
 
     def krun(self, output, input, krun_flags = None):
-        self.writer.build( outputs  = [output]
-                         , rule     = 'krun'
-                         , inputs   = [input]
-                         , implicit = [self.alias]
-                         , variables = { 'directory' : self.directory
-                                       , 'flags'     : krun_flags
-                                       }
-                         )
+        return self.writer.build( outputs  = [output]
+                                , rule     = 'krun'
+                                , inputs   = [input]
+                                , implicit = [self.alias]
+                                , variables = { 'directory' : self.directory
+                                              , 'flags'     : krun_flags
+                                              }
+                                )
 
     def check_actual_expected(self, name, actual, expected):
-        self.writer.build( outputs   = [name]
-                         , rule      = 'check-test-result'
-                         , inputs    = [actual]
-                         , implicit  = [expected]
-                         , variables = { 'expected' : expected }
-                         )
+        return self.writer.build( outputs   = [name]
+                                , rule      = 'check-test-result'
+                                , inputs    = [actual]
+                                , implicit  = [expected]
+                                , variables = { 'expected' : expected }
+                                )
 
     def krun_and_check(self, output_dir, input, expected, krun_flags = None):
         basename  = os.path.basename(input)
@@ -71,11 +71,11 @@ class KDefinition:
                  , input  = input
                  , krun_flags = krun_flags
                  )
-
-        self.check_actual_expected( name     = test_name
+        test = self.check_actual_expected( name     = test_name
                                   , actual   = actual
                                   , expected = expected
                                   )
         self.writer.default(test_name)
         self.writer.newline()
+        return test
 

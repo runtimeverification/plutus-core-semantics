@@ -52,7 +52,14 @@ build $tangleddir/verification-spec.k : tangle verification.md
 # Java build kompile pipeline
 # ---------------------------
 
-build $builddir/plutus-core-java/plutus-core-kompiled/timestamp : kompile $tangleddir/plutus-core.k $
+build $builddir/lazy/plutus-core-kompiled/timestamp : kompile $tangleddir/plutus-core.k $
+                                                                | $tangleddir/krypto.k              $
+                                                                  $k_bindir/kompile
+    backend = java
+    flags = --main-module PLUTUS-CORE-LAZY $
+            --syntax-module PLUTUS-CORE-SYNTAX
+
+build $builddir/strict/plutus-core-kompiled/timestamp : kompile $tangleddir/plutus-core.k $
                                                                 | $tangleddir/krypto.k              $
                                                                   $k_bindir/kompile
     backend = java
@@ -62,7 +69,7 @@ build $builddir/plutus-core-java/plutus-core-kompiled/timestamp : kompile $tangl
 # OCaml build kompile pipeline
 # ----------------------------
 
-ocamlkompileddir = $builddir/plutus-core-ocaml/plutus-core-kompiled/
+ocamlkompileddir = $builddir/ocaml/plutus-core-kompiled/
 
 build $ocamlkompileddir/lexer.ml       $
       $ocamlkompileddir/parser.ml      $
@@ -74,7 +81,7 @@ build $ocamlkompileddir/lexer.ml       $
       $ocamlkompileddir/realdef.ml     $
       $ocamlkompileddir/constants.ml : kompile-gen-ml $tangleddir/plutus-core.k $
                                      | $tangleddir/krypto.k
-    directory = $builddir/plutus-core-ocaml/
+    directory = $builddir/ocaml/
     flags = --hook-namespaces HASH $
             --main-module PLUTUS-CORE-STRICT $
             --syntax-module PLUTUS-CORE-SYNTAX
@@ -107,17 +114,17 @@ build $ocamlkompileddir/realdef.cmxs : ocamlopt $ocamlkompileddir/realdef.cmx
 # Unit Tests as reachability claims
 # ---------------------------------
 
-build check-unit-tests : kprove $tangleddir/unit-tests-spec.k | spec-java
-    directory = $builddir/plutus-core-java
+build check-unit-tests : kprove $tangleddir/unit-tests-spec.k | lazy
+    directory = $builddir/lazy
 default check-unit-tests
 
 build check-10 : kprove sum-to-10-spec.k $
-                 | spec-java
-    directory = $builddir/plutus-core-java
+                 | lazy
+    directory = $builddir/lazy
 default check-10
 
-build check-verification : kprove $tangleddir/verification-spec.k | spec-java
-    directory = $builddir/plutus-core-java
+build check-verification : kprove $tangleddir/verification-spec.k | lazy
+    directory = $builddir/lazy
 default check-verification
 
 # Integration tests
@@ -128,4 +135,4 @@ default check-verification
 # Aliases
 # -------
 
-build spec-ocaml : phony $builddir/plutus-core-ocaml/plutus-core-kompiled/interpreter $ocamlkompileddir/realdef.cmxs
+build spec-ocaml : phony $builddir/ocaml/plutus-core-kompiled/interpreter $ocamlkompileddir/realdef.cmxs

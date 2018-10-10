@@ -9,29 +9,44 @@ class Plutus(KProject):
     def __init__(self):
         super().__init__(builddir = '.build')
         self.include('lib/build.ninja')
-        self.java    = self.kdefinition( name    = 'plutus-core-java'
-                                       , main    = self.tangleddir('plutus-core.k')
-                                       , backend = 'java'
-                                       , alias   = 'spec-java'
-                                       )
-        self.ocaml   = self.kdefinition_no_build( name             = 'plutus-core-ocaml'
-                                                , kompiled_dirname = 'plutus-core-kompiled'
-                                                , alias            = 'spec-ocaml'
-                                                )
+        self.lazy   = self.kdefinition( name    = 'lazy'
+                                      , main    = self.tangleddir('plutus-core.k')
+                                      , backend = 'java'
+                                      , alias   = 'lazy'
+                                      )
+        self.strict = self.kdefinition( name    = 'strict'
+                                      , main    = self.tangleddir('plutus-core.k')
+                                      , backend = 'java'
+                                      , alias   = 'strict'
+                                      )
+        self.ocaml = self.kdefinition_no_build( name             = 'ocaml'
+                                              , kompiled_dirname = 'plutus-core-kompiled'
+                                              , alias            = 'spec-ocaml'
+                                              )
         self.testdir = '$builddir/t/'
+        self.lazy_tests = []
+        self.strict_tests = []
+        self.ocaml_tests = []
+
+    def write_aliases(self):
+        self.build('t/lazy', 'phony', inputs = self.lazy_tests) 
+        self.build('t/strict', 'phony', inputs = self.strict_tests) 
+        self.build('t/ocaml', 'phony', inputs = self.ocaml_tests) 
 
     def test(self, input):
         expected = input + '.expected'
-        self.java.krun_and_check ('$builddir/t/', input, expected)
-        self.ocaml.krun_and_check('$builddir/t/', input, expected, krun_flags = '--interpret')
+        self.lazy_tests += self.lazy.krun_and_check ('$builddir/t/', input, expected)
+        self.strict_tests += self.strict.krun_and_check('$builddir/t/', input, expected)
+        self.ocaml_tests += self.ocaml.krun_and_check('$builddir/t/', input, expected, krun_flags = '--interpret')
 
     def test_ocaml(self, input):
         expected = input + '.ocaml.expected'
-        self.ocaml.krun_and_check('$builddir/t/', input, expected, krun_flags = '--interpret')
+        self.ocaml_tests += self.ocaml.krun_and_check('$builddir/t/', input, expected, krun_flags = '--interpret')
 
     def test_java(self, input):
         expected = input + '.java.expected'
-        self.java.krun_and_check('$builddir/t/', input, expected)
+        self.lazy_tests   += self.lazy.krun_and_check('$builddir/t/', input, expected)
+        self.strict_tests += self.strict.krun_and_check('$builddir/t/', input, expected)
 
 plutus = Plutus()
 
@@ -70,3 +85,5 @@ plutus.test('t/if-then-else.plc')
 plutus.test('t/sum-list.plc')
 plutus.test_java('t/y-sum.plc')
 plutus.test_java('t/y-fact.plc')
+
+plutus.write_aliases()
