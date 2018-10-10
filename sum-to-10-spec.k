@@ -7,7 +7,7 @@ module RECURSION-HELPERS
 endmodule
 
 module SUM-TO-10-SPEC
-    imports PLUTUS-CORE
+    imports PLUTUS-CORE-LAZY
     imports RECURSION-HELPERS
 
     rule <k>
