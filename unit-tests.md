@@ -10,7 +10,7 @@ endmodule
 
 ```k
 module UNIT-TESTS-SPEC
-    imports PLUTUS-CORE
+    imports PLUTUS-CORE-LAZY
     imports SPEC-IDS
 ```
 
