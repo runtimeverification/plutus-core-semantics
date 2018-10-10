@@ -12,7 +12,7 @@ endmodule
 
 ```k
 module VERIFICATION-SPEC
-    imports PLUTUS-CORE
+    imports PLUTUS-CORE-LAZY
     imports VERIFICATION-HELPERS
 ```
 
