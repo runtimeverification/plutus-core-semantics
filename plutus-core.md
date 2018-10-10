@@ -148,10 +148,39 @@ endmodule
 Lambda Calculus
 ---------------
 
-We implement application via closures / environments:
+We allow two different strategeies for Lambda Calculus, strict and lazy, and
+implement application via closures and envirnoments.
 
 ```k
-module PLUTUS-CORE-LAMBDA-CALCULUS
+module PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
+    imports PLUTUS-CORE-CONFIGURATION
+
+    syntax Closure    ::= closure(Map, Var, Term)
+    syntax ResultTerm ::= Closure
+
+    rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
+         <env> RHO </env>
+    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> RHO' ... </k>
+         <env> RHO' => RHO[X <- V] </env>
+    rule <k> X:Var => V ... </k>
+         <env> ... X |-> V ... </env>
+    rule <k> _:KResult ~> (RHO:Map => .) ... </k>
+         <env> _ => RHO </env>
+```
+
+Since we are sharing the syntax module for the strict and lazy semantics, we
+need to manually implement strictness in the second argument:
+
+```k
+    syntax Term ::= "#hole"
+    rule [TM1:ResultTerm TM2:Term] => TM1 ~> [TM1 #hole]
+      requires notBool(isResultTerm(TM2))
+    rule TM2:ResultTerm ~> [TM1 #hole] => [TM1 TM2]
+endmodule
+```
+
+```k
+module PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
     imports PLUTUS-CORE-CONFIGURATION
 
     syntax Closure    ::= closure(Map, Var, Term)
@@ -164,15 +193,25 @@ module PLUTUS-CORE-LAMBDA-CALCULUS
          <env> RHO </env>
     rule <k> [closure(RHO, X, M) V] => M ~> RHO' ... </k>
          <env> RHO' => RHO[X <- #thunk(V, RHO')] </env>
-
     rule <k> X:Var => V ... </k>
          <env> ... X |-> V ... </env>
-
     rule <k> #thunk(TM, RHO) => TM ~> RHO' ... </k>
          <env> RHO' => RHO </env>
-
     rule <k> _:KResult ~> (RHO:Map => .) ... </k>
          <env> _ => RHO </env>
+```
+
+In the lazy semantics, even though we are not strict in general, builtins need
+their arguments to be evaluated fully.
+
+```k
+    syntax Term ::= "#hole"
+    rule [(con B:BuiltinName) TM1:Term] => TM1 ~> [(con B:BuiltinName) #hole]
+      requires notBool(isResultTerm(TM1))
+    rule [[(con B:BinaryBuiltin) TM1:ResultTerm] TM2]
+      => TM2 ~> [[(con B:BinaryBuiltin) TM1] #hole]
+      requires notBool(isResultTerm(TM2))
+    rule TM2:ResultTerm ~> [TM1 #hole] =>  [TM1 TM2]
 endmodule
 ```
 
@@ -190,15 +229,6 @@ module PLUTUS-CORE-BUILTINS
     rule isResultTerm((con B:BinaryBuiltin)) => true
     rule isResultTerm((con B:UnaryBuiltin )) => true
     rule isResultTerm([(con B:BinaryBuiltin) TM:ResultTerm]) => true
-
-    syntax Term ::= "#hole"
-    rule [(con B:BinaryBuiltin) TM:Term]
-      => TM ~> [(con B:BinaryBuiltin) #hole]
-      requires notBool(isResultTerm(TM))
-    rule [[(con B:BinaryBuiltin) TM1:ResultTerm] TM2]
-      => TM2 ~> [[(con B:BinaryBuiltin) TM1] #hole]
-      requires notBool(isResultTerm(TM2))
-    rule TM2:ResultTerm ~> [TM1 #hole] =>  [TM1 TM2]
 endmodule
 ```
 
@@ -441,13 +471,22 @@ Main Module
 -----------
 
 ```k
-module PLUTUS-CORE
-    imports PLUTUS-CORE-LAMBDA-CALCULUS
+module PLUTUS-CORE-BASE
     imports PLUTUS-CORE-BOUNDED-INTEGERS
     imports PLUTUS-CORE-BYTESTRINGS
     imports PLUTUS-CORE-CRYPTOGRAPHY
     imports PLUTUS-CORE-ERRORS
     imports PLUTUS-CORE-TYPE-ERASURE
     imports PLUTUS-CORE-FIX-LAZY
+endmodule
+
+module PLUTUS-CORE-LAZY
+    imports PLUTUS-CORE-BASE
+    imports PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
+endmodule
+
+module PLUTUS-CORE-STRICT
+    imports PLUTUS-CORE-BASE
+    imports PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
 endmodule
 ```

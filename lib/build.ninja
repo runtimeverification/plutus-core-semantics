@@ -56,6 +56,8 @@ build $builddir/plutus-core-java/plutus-core-kompiled/timestamp : kompile $tangl
                                                                 | $tangleddir/krypto.k              $
                                                                   $k_bindir/kompile
     backend = java
+    flags = --main-module PLUTUS-CORE-LAZY $
+            --syntax-module PLUTUS-CORE-SYNTAX
 
 # OCaml build kompile pipeline
 # ----------------------------
@@ -73,7 +75,9 @@ build $ocamlkompileddir/lexer.ml       $
       $ocamlkompileddir/constants.ml : kompile-gen-ml $tangleddir/plutus-core.k $
                                      | $tangleddir/krypto.k
     directory = $builddir/plutus-core-ocaml/
-    flags = --hook-namespaces HASH
+    flags = --hook-namespaces HASH $
+            --main-module PLUTUS-CORE-STRICT $
+            --syntax-module PLUTUS-CORE-SYNTAX
 
 build $ocamlkompileddir/interpreter $
     | $ocamlkompileddir/realdef.cmx : ocamlopt $ocamlkompileddir/constants.ml $
