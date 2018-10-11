@@ -477,16 +477,17 @@ module PLUTUS-CORE-BASE
     imports PLUTUS-CORE-CRYPTOGRAPHY
     imports PLUTUS-CORE-ERRORS
     imports PLUTUS-CORE-TYPE-ERASURE
-    imports PLUTUS-CORE-FIX-LAZY
 endmodule
 
 module PLUTUS-CORE-LAZY
     imports PLUTUS-CORE-BASE
     imports PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
+    imports PLUTUS-CORE-FIX-LAZY
 endmodule
 
 module PLUTUS-CORE-STRICT
     imports PLUTUS-CORE-BASE
     imports PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
+    imports PLUTUS-CORE-FIX-STRICT
 endmodule
 ```
