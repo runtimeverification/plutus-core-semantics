@@ -79,11 +79,10 @@ plutus.test_ocaml('t/sha3.plc')
 # These are tests involving recursion, and other tests from the Roman and the
 # IOHK Plutus team.
 #
-# plutus.test('t/sum-to-10.plc')
 # plutus.test('t/11-scott-to-int.plc')
 plutus.test('t/if-then-else.plc')
 plutus.test('t/sum-list.plc')
-plutus.test_java('t/y-sum.plc')
-plutus.test_java('t/y-fact.plc')
+plutus.test('t/sum.plc')
+plutus.test('t/fact.plc')
 
 plutus.write_aliases()
