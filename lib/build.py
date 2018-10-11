@@ -48,6 +48,10 @@ class Plutus(KProject):
         self.lazy_tests   += self.lazy.krun_and_check('$builddir/t/', input, expected)
         self.strict_tests += self.strict.krun_and_check('$builddir/t/', input, expected)
 
+    def test_strict(self, input):
+        expected = input + '.expected'
+        self.strict_tests += self.strict.krun_and_check('$builddir/t/', input, expected)
+
 plutus = Plutus()
 
 # Basic tests
@@ -79,7 +83,7 @@ plutus.test_ocaml('t/sha3.plc')
 # These are tests involving recursion, and other tests from the Roman and the
 # IOHK Plutus team.
 #
-# plutus.test('t/11-scott-to-int.plc')
+plutus.test_strict('t/11-scott-to-int.plc')
 plutus.test('t/if-then-else.plc')
 plutus.test('t/sum-list.plc')
 plutus.test('t/sum.plc')
