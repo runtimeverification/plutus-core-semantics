@@ -191,10 +191,10 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
 
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
-    rule <k> [closure(RHO, X, M) V] => M ~> RHO' ... </k>
-         <env> RHO' => RHO[X <- #thunk(V, RHO')] </env>
-    rule <k> X:Var => V ... </k>
-         <env> ... X |-> V ... </env>
+    rule <k> [closure(RHO, X, M) TM] => M ~> RHO' ... </k>
+         <env> RHO' => RHO[X <- #thunk(TM, RHO')] </env>
+    rule <k> X:Var => THK ... </k>
+         <env> ... X |-> THK ... </env>
     rule <k> #thunk(TM, RHO) => TM ~> RHO' ... </k>
          <env> RHO' => RHO </env>
     rule <k> _:KResult ~> (RHO:Map => .) ... </k>
