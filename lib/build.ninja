@@ -63,7 +63,7 @@ build $builddir/strict/plutus-core-kompiled/timestamp : kompile $tangleddir/plut
                                                                 | $tangleddir/krypto.k              $
                                                                   $k_bindir/kompile
     backend = java
-    flags = --main-module PLUTUS-CORE-LAZY $
+    flags = --main-module PLUTUS-CORE-STRICT $
             --syntax-module PLUTUS-CORE-SYNTAX
 
 # OCaml build kompile pipeline
