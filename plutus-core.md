@@ -99,6 +99,8 @@ module PLUTUS-CORE-SYNTAX-BASE
                   | "(" "run" Term ")"
                   | "{" Term Type "}"
                   | "(" "unwrap" Term ")"
+                  // strictness application differs in strict and lazy semantics,
+                  // but both are strict in the first argument
                   | "[" Term Term "]" [strict(1)]
                   | "(" "error" Type ")"
                   | Value
@@ -148,11 +150,11 @@ endmodule
 Lambda Calculus
 ---------------
 
-We allow two different strategeies for Lambda Calculus, strict and lazy, and
-implement application via closures and envirnoments.
+Closure syntax and desugaring a lambda into a closure, as well as lookup and 
+restoring environments, are common in both lazy and strict semantics
 
 ```k
-module PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
+module PLUTUS-CORE-LAMBDA-CALCULUS-COMMON
     imports PLUTUS-CORE-CONFIGURATION
 
     syntax Closure    ::= closure(Map, Var, Term)
@@ -160,43 +162,57 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
 
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
-    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> RHO' ... </k>
-         <env> RHO' => RHO[X <- V] </env>
-    rule <k> X:Var => V ... </k>
-         <env> ... X |-> V ... </env>
+
+    // In strict semantics TM will be a value upon lookup
+    // In the lazy semantics, TM will be a thunk upon lookup
+    rule <k> X:Var => TM ... </k>
+         <env> ... X |-> TM ... </env>
+
     rule <k> _:KResult ~> (RHO:Map => .) ... </k>
          <env> _ => RHO </env>
+endmodule
 ```
 
 Since we are sharing the syntax module for the strict and lazy semantics, we
 need to manually implement strictness in the second argument:
 
 ```k
-    syntax Term ::= "#hole"
-    rule [TM1:ResultTerm TM2:Term] => TM2 ~> [TM1 #hole]
-      requires notBool(isResultTerm(TM2))
-    rule TM2:ResultTerm ~> [TM1 #hole] => [TM1 TM2]
+module PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
+    imports PLUTUS-CORE-LAMBDA-CALCULUS-COMMON
+    context [ V:ResultTerm HOLE ]
+```
+
+We allow two different strategeies for Lambda Calculus, strict and lazy, and
+implement application via closures and envirnoments.
+
+In the strict semantics, applying a closure ensures the second argument is
+already fully evaluated.
+
+```k
+    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> RHO' ... </k>
+         <env> RHO' => RHO[X <- V] </env>
 endmodule
 ```
 
+Lazy semantics have new construct `#thunk`, holding a term to be evaluated and
+the environment it should be evaluated in. Applying a closure no longer ensures
+the second argument is fully evaluated, as application is only strict in the
+first argument for lazy semantics. As such, it is stored as a thunk in the
+environment.
+
 ```k
 module PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
-    imports PLUTUS-CORE-CONFIGURATION
-
-    syntax Closure    ::= closure(Map, Var, Term)
-    syntax ResultTerm ::= Closure
+    imports PLUTUS-CORE-LAMBDA-CALCULUS-COMMON
 
     // Holder for term to be evaluated in a particular map
     syntax K ::= #thunk(Term, Map)
 
-    rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
-         <env> RHO </env>
     rule <k> [closure(RHO, X, M) TM] => M ~> RHO' ... </k>
          <env> RHO' => RHO[X <- #thunk(TM, RHO')] </env>
-    rule <k> X:Var => THK ... </k>
-         <env> ... X |-> THK ... </env>
+
     rule <k> #thunk(TM, RHO) => TM ~> RHO' ... </k>
          <env> RHO' => RHO </env>
+
     rule <k> _:KResult ~> (RHO:Map => .) ... </k>
          <env> _ => RHO </env>
 ```
