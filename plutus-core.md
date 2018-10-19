@@ -215,9 +215,6 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
 
     rule <k> #thunk(TM, RHO) => TM ~> RHO' ... </k>
          <env> RHO' => RHO </env>
-
-    rule <k> _:KResult ~> (RHO:Map => .) ... </k>
-         <env> _ => RHO </env>
 ```
 
 In the lazy semantics, even though we are not strict in general, builtins need
