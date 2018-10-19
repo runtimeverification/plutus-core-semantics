@@ -186,9 +186,9 @@ need to manually implement strictness in the second argument:
 ```
 
 We allow two different strategeies for Lambda Calculus, strict and lazy, and
-implement application via closures and envirnoments.
+implement application via closures and environments.
 
-In the strict semantics, applying a closure ensures the second argument is
+In the strict semantics, applying a closure requires the second argument is
 already fully evaluated.
 
 ```k
@@ -198,7 +198,7 @@ endmodule
 ```
 
 Lazy semantics have new construct `#thunk`, holding a term to be evaluated and
-the environment it should be evaluated in. Applying a closure no longer ensures
+the environment it should be evaluated in. Applying a closure no longer requires
 the second argument is fully evaluated, as application is only strict in the
 first argument for lazy semantics. As such, it is stored as a thunk in the
 environment.
