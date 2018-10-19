@@ -217,17 +217,12 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
          <env> RHO' => RHO </env>
 ```
 
-In the lazy semantics, even though we are not strict in general, builtins need
+However, even though we are not strict in general, builtins need
 their arguments to be evaluated fully.
 
 ```k
-    syntax Term ::= "#hole"
-    rule [(con B:BuiltinName) TM1:Term] => TM1 ~> [(con B:BuiltinName) #hole]
-      requires notBool(isResultTerm(TM1))
-    rule [[(con B:BinaryBuiltin) TM1:ResultTerm] TM2]
-      => TM2 ~> [[(con B:BinaryBuiltin) TM1] #hole]
-      requires notBool(isResultTerm(TM2))
-    rule TM2:ResultTerm ~> [TM1 #hole] =>  [TM1 TM2]
+    context [ (con B:BuiltinName) HOLE ]
+    context [ [ (con B:BinaryBuiltin) V:ResultTerm ] HOLE ]
 endmodule
 ```
 
