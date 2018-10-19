@@ -154,7 +154,7 @@ Closure syntax and desugaring a lambda into a closure, as well as lookup and
 restoring environments, are common in both lazy and strict semantics
 
 ```k
-module PLUTUS-CORE-LAMBDA-CALCULUS-COMMON
+module PLUTUS-CORE-LAMBDA-CALCULUS-BASE
     imports PLUTUS-CORE-CONFIGURATION
 
     syntax Closure    ::= closure(Map, Var, Term)
@@ -173,12 +173,15 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-COMMON
 endmodule
 ```
 
+```k
+module PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
+    imports PLUTUS-CORE-LAMBDA-CALCULUS-BASE
+```
+
 Since we are sharing the syntax module for the strict and lazy semantics, we
 need to manually implement strictness in the second argument:
 
 ```k
-module PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
-    imports PLUTUS-CORE-LAMBDA-CALCULUS-COMMON
     context [ V:ResultTerm HOLE ]
 ```
 
@@ -202,7 +205,7 @@ environment.
 
 ```k
 module PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
-    imports PLUTUS-CORE-LAMBDA-CALCULUS-COMMON
+    imports PLUTUS-CORE-LAMBDA-CALCULUS-BASE
 
     // Holder for term to be evaluated in a particular map
     syntax K ::= #thunk(Term, Map)
