@@ -150,8 +150,10 @@ endmodule
 Lambda Calculus
 ---------------
 
-Closure syntax and desugaring a lambda into a closure, as well as lookup and 
-restoring environments, are common in both lazy and strict semantics
+We allow two different strategeies for Lambda Calculus, strict and lazy, and
+implement application via closures and environments. Closure syntax and
+desugaring a lambda into a closure, as well as lookup and restoring
+environments, are common in both lazy and strict semantics.
 
 ```k
 module PLUTUS-CORE-LAMBDA-CALCULUS-BASE
@@ -173,6 +175,8 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-BASE
 endmodule
 ```
 
+### Strict
+
 ```k
 module PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
     imports PLUTUS-CORE-LAMBDA-CALCULUS-BASE
@@ -185,9 +189,6 @@ need to manually implement strictness in the second argument:
     context [ V:ResultTerm HOLE ]
 ```
 
-We allow two different strategeies for Lambda Calculus, strict and lazy, and
-implement application via closures and environments.
-
 In the strict semantics, applying a closure requires the second argument is
 already fully evaluated.
 
@@ -196,6 +197,8 @@ already fully evaluated.
          <env> RHO' => RHO[X <- V] </env>
 endmodule
 ```
+
+### Lazy
 
 Lazy semantics have new construct `#thunk`, holding a term to be evaluated and
 the environment it should be evaluated in. Applying a closure no longer requires
