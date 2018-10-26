@@ -55,7 +55,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
                      | NeutralTy
 
     syntax Term ::= "(" "fun" Term Term ")" [seqstrict]
-//                  | "(" "all" TyVar Kind Term ")"
+                  | "(" "allTM" TyVar Kind Term ")" [strict(3)]
 
     syntax NeutralTy ::= TyVar
                        | "[" NeutralTy TyValue "]"
@@ -165,13 +165,10 @@ module PLUTUS-CORE-TYPING
     syntax KVariable ::= TyVar
 
     // tyall
-    // Need to have explicit heating and cooling as the `TY` in `all` needs to be reduced to a
-    // kind after substituting in the kind of `ALPHA`
-    syntax K ::= #allWithHole(TyVar, Kind)
-    rule (all ALPHA K TY)
-      => TY[ALPHA @ K / ALPHA] ~> #allWithHole(ALPHA, K)
-    rule TY@(type)             ~> #allWithHole(ALPHA, K)
-      => (all ALPHA K TY) @ (type)
+    rule (allTM ALPHA K1 (TY @ K2)) => (all ALPHA K1 TY) @ K2
+
+    // this rule is needed if we have an `all` that does not come originally from typing an `abs`
+    rule (all ALPHA K TY:Type) => (allTM ALPHA K TY[ALPHA @ K/ALPHA])
 
     // tyfun
     rule (fun (TY1@(type)):Type (TY2@(type)):Type) => (fun TY1 TY2) @ (type)
@@ -180,7 +177,7 @@ module PLUTUS-CORE-TYPING
     rule [[ T1@(fun K1 K2) T2@K1 ]] => [[ T1 T2 ]] @ K2
 
     // abs
-    // rule (abs ALPHA K TM) => (all ALPHA K TM[ALPHA @ K/ALPHA])
+    rule (abs ALPHA K TM) => (allTM ALPHA K TM[ALPHA @ K/ALPHA])
 
     // app
     rule [ (fun T1:Type T2:Type)@K1 T1@K2 ] => T2

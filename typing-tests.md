@@ -26,6 +26,9 @@ module TYPING-TESTS-SPEC
     // app
     rule [ (lam x [[(con integer) (con 1)]] x) (con 1 ! 5) ]
       => [[ (con integer) (con 1) ]] @ (type)
+
+    // abs
+    rule (abs s (size) (lam x [[ (con integer) s ]] x)) => (all s (size) (fun [[ (con integer) s ]] [[ (con integer) s ]])) @ (type)
 endmodule
 ```
 
