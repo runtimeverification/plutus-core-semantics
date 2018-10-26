@@ -33,6 +33,10 @@ Reference implementation
 Specification
 -------------
 
+- Type synthesis (Fig. 5), inst rule - should S be A?
+
+- What is floor syntax?
+
 - `(fix ...)` as a term construct is still present. See pgs 12, 13, 15.
 
 - What does `V` refer to in the second to last case in Figure 12?
