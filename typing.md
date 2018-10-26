@@ -98,10 +98,10 @@ module PLUTUS-CORE-SYNTAX-BASE
     // TODO: binders for substitution
     syntax Term ::= Var
                   | "(" "run" Term ")"
-                  | "{" Term Type "}"
+                  | "{" Term Type "}" [seqstrict]
                   | "(" "unwrap" Term ")"
                   | "[" Term Term "]" [seqstrict]
-                  | "(" "error" Type ")"
+                  | "(" "error" Type ")" [strict]
                   | Value
 
     syntax Value ::= "(" "abs" TyVar Kind Value ")"
@@ -179,14 +179,20 @@ module PLUTUS-CORE-TYPING
     // abs
     rule (abs ALPHA K TM) => (allTM ALPHA K TM[ALPHA @ K/ALPHA])
 
-    // app
-    rule [ (fun T1:Type T2:Type)@K1 T1@K2 ] => T2
+    // inst
+    rule { ((all ALPHA K T) @ (type)) (A @ K) } => T[A / ALPHA]
 
     // For K's builtin substitution to work properly
     syntax KVariable ::= Var
 
     // lam
     rule (lam X:Var TY:Type TM:Term) => (fun TY TM[TY/X])
+
+    // app
+    rule [ (fun T1:Type T2:Type)@K1 T1@K2 ] => T2
+
+    // error
+    rule (error A @ (type)) => A @ (type)
 
 endmodule
 ```
