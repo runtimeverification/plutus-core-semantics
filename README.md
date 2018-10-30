@@ -7,7 +7,8 @@ Installation
 
 After installing `python3`, [pandoc] and [ninja-build] as dependencies and
 placing them in `$PATH`, simply run `./build` to setup OCaml, K, compile
-the semantics and run the tests. 
+the semantics and run the tests. TODO: All reachability-based tests (unit-tests etc)
+are not run against the lazy semantics yet (though they should pass).
 
 The file `plutus-core.md` defines the Plutus Core language, and the file
 `plutus-core-spec.md` defines unit tests as a reachability specification.
