@@ -128,6 +128,7 @@ module PLUTUS-CORE-CONFIGURATION
 
     configuration <k> $PGM:Program </k>
                   <env> .Map </env>
+                  <store> .Map </store>
 ```
 
 Program version has no semantic meaning
@@ -165,10 +166,9 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-BASE
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
 
-    // In strict semantics TM will be a value upon lookup
-    // In the lazy semantics, TM will be a thunk upon lookup
-    rule <k> X:Var => TM ... </k>
-         <env> ... X |-> TM ... </env>
+    rule <k> X:Var => V ... </k>
+         <env> ... X |-> N ... </env>
+         <store> ... N |-> V:ResultTerm ... </store>
 
     rule <k> _:KResult ~> (RHO:Map => .) ... </k>
          <env> _ => RHO </env>
@@ -194,30 +194,43 @@ already fully evaluated.
 
 ```k
     rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> RHO' ... </k>
-         <env> RHO' => RHO[X <- V] </env>
+         <env> RHO' => RHO[X <- !N] </env>
+         <store> ... .Map => (!N:Int |-> V) ... </store>
 endmodule
 ```
 
 ### Lazy
 
-Lazy semantics have new construct `#thunk`, holding a term to be evaluated and
-the environment it should be evaluated in. Applying a closure no longer requires
-the second argument is fully evaluated, as application is only strict in the
-first argument for lazy semantics. As such, it is stored as a thunk in the
-environment.
+Lazy semantics have new construct `#unevaluated`, holding a term to be evaluated
+and the environment it should be evaluated in. Applying a closure no longer
+requires the second argument is fully evaluated, as application is only strict
+in the first argument for lazy semantics. As such, it is stored as a thunk in
+the environment.
 
 ```k
 module PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
     imports PLUTUS-CORE-LAMBDA-CALCULUS-BASE
 
     // Holder for term to be evaluated in a particular map
-    syntax K ::= #thunk(Term, Map)
+    syntax K ::= #unevaluated(Term, Map)
+               | "(" "update" Int ")"
 
     rule <k> [closure(RHO, X, M) TM] => M ~> RHO' ... </k>
-         <env> RHO' => RHO[X <- #thunk(TM, RHO')] </env>
+         <env> RHO' => RHO[X <- !N] </env>
+         <store> ... .Map => (!N:Int |-> #unevaluated(TM, RHO')) ... </store>
 
-    rule <k> #thunk(TM, RHO) => TM ~> RHO' ... </k>
+    rule <k> X:Var => #unevaluated(TM, RHO) ~> (update N) ... </k>
+         <env> ... X |-> N ... </env>
+         <store> ... N |-> #unevaluated(TM, RHO) ... </store>
+
+    rule <k> #unevaluated(TM, RHO) ~> (update N)
+          => TM ~> (update N) ~> RHO'
+         ...
+         </k>
          <env> RHO' => RHO </env>
+
+    rule <k> V:ResultTerm ~> ((update N) => .) ... </k>
+         <store> ... N |-> (_ => V) ... </store>
 ```
 
 However, even though we are not strict in general, builtins need
@@ -461,7 +474,7 @@ module PLUTUS-CORE-ABBREVIATIONS
     syntax Term ::= "#strict-combinator" | "#Y-combinator" | "#fix"
 
     rule #strict-combinator => { { (abs $a (type) (abs $b (type) (lam $f (fun (fun $a $b) (fun $a $b)) [ { (abs $a (type) (lam $s (fix $self (fun $self $a)) [ (unwrap $s) $s ])) (fun $a $b) } (wrap $self (fun $self (fun $a $b)) (lam $s (fix $self (fun $self (fun $a $b))) (lam $x $a [ [ $f [ { (abs $a (type) (lam $s (fix $self (fun $self $a)) [ (unwrap $s) $s ])) (fun $a $b) } $s ] ] $x ]))) ]))) $r } (fun (fix $nat (all $r (type) (fun $r (fun (fun $nat $r) $r)))) $r) }
-    
+
     rule #Y-combinator => (lam $f $alpha [ (lam $x $alpha [$f [$x $x]])
                                            (lam $x $alpha [$f [$x $x]])
                                        ] )
