@@ -54,7 +54,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
                      | "(" "con" TyConstant ")"
                      | NeutralTy
 
-    syntax Term ::= "(" "fun" Term Term ")" [seqstrict]
+    syntax Term ::= "(" "funTM" Term Term ")" [seqstrict]
                   | "(" "allTM" TyVar Kind Term ")" [binder, strict(3)]
 
     syntax NeutralTy ::= TyVar
@@ -171,7 +171,9 @@ module PLUTUS-CORE-TYPING
     rule (all ALPHA K TY:Type) => (allTM ALPHA K TY[ALPHA @ K/ALPHA])
 
     // tyfun
-    rule (fun (TY1@(type)):Type (TY2@(type)):Type) => (fun TY1 TY2) @ (type)
+    // TODO: remove one of these rules if possible
+    rule (funTM (TY1@(type)):Type (TY2@(type)):Type) => (fun TY1 TY2) @ (type)
+    rule (fun   (TY1@(type)):Type (TY2@(type)):Type) => (fun TY1 TY2) @ (type)
 
     // tyapp
     rule [[ T1@(fun K1 K2) T2@K1 ]] => [[ T1 T2 ]] @ K2
@@ -182,6 +184,11 @@ module PLUTUS-CORE-TYPING
     // inst
     rule { ((all ALPHA K T) @ (type)) (A @ K) } => T[A / ALPHA]
 
+    syntax KResult ::= #econtext(Type)
+
+    // wrap
+    rule ( fix ALPHA A ) => #econtext( (fix ALPHA A) )
+
     // unwrap
     rule (unwrap ((fix ALPHA A) @ (type))) => A[(fix ALPHA A) / ALPHA]
 
@@ -189,7 +196,7 @@ module PLUTUS-CORE-TYPING
     syntax KVariable ::= Var
 
     // lam
-    rule (lam X:Var TY:Type TM:Term) => (fun TY TM[TY/X])
+    rule (lam X:Var TY:Type TM:Term) => (funTM TY TM[TY/X])
 
     // app
     rule [ (fun T1:Type T2:Type)@K1 T1@K2 ] => T2
