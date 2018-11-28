@@ -42,7 +42,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
 
     syntax Type ::= TyVar
                   | "(" "fun" Type Type ")" [seqstrict]
-                  | "(" "all" TyVar Kind Type ")"
+                  | "(" "all" TyVar Kind Type ")" [binder]
                   | "(" "fix" TyVar Type ")"
                   | "[[" Type Type "]]" [seqstrict]
                   | TyValue
@@ -55,7 +55,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
                      | NeutralTy
 
     syntax Term ::= "(" "fun" Term Term ")" [seqstrict]
-                  | "(" "allTM" TyVar Kind Term ")" [strict(3)]
+                  | "(" "allTM" TyVar Kind Term ")" [binder, strict(3)]
 
     syntax NeutralTy ::= TyVar
                        | "[" NeutralTy TyValue "]"
@@ -104,9 +104,9 @@ module PLUTUS-CORE-SYNTAX-BASE
                   | "(" "error" Type ")" [strict]
                   | Value
 
-    syntax Value ::= "(" "abs" TyVar Kind Value ")"
-                   | "(" "wrap" TyVar Type Value ")" [strict(3)]
-                   | "(" "lam" Var Type Term ")"
+    syntax Value ::= "(" "abs" TyVar Kind Value ")" [binder]
+                   | "(" "wrap" TyVar Type Value ")" [binder, strict(3)]
+                   | "(" "lam" Var Type Term ")" [binder]
                    | "(" "con" Constant ")"
 
     syntax Program ::= "(" "program" Version Term ")"
