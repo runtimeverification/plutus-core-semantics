@@ -99,7 +99,7 @@ module PLUTUS-CORE-SYNTAX-BASE
     syntax Term ::= Var
                   | "(" "run" Term ")"
                   | "{" Term Type "}" [seqstrict]
-                  | "(" "unwrap" Term ")"
+                  | "(" "unwrap" Term ")" [strict]
                   | "[" Term Term "]" [seqstrict]
                   | "(" "error" Type ")" [strict]
                   | Value
@@ -181,6 +181,9 @@ module PLUTUS-CORE-TYPING
 
     // inst
     rule { ((all ALPHA K T) @ (type)) (A @ K) } => T[A / ALPHA]
+
+    // unwrap
+    rule (unwrap ((fix ALPHA A) @ (type))) => A[(fix ALPHA A) / ALPHA]
 
     // For K's builtin substitution to work properly
     syntax KVariable ::= Var
