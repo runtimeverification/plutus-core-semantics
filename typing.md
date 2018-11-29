@@ -121,6 +121,7 @@ module PLUTUS-CORE-TYPING-CONFIGURATION
     imports PLUTUS-CORE-SYNTAX-BASE
 
     configuration <k> $PGM:Program </k>
+                  <kenv> .K </kenv>
 ```
 
 Program version has no semantic meaning:
@@ -160,15 +161,34 @@ endmodule
 module PLUTUS-CORE-TYPING
     imports PLUTUS-CORE-TYPING-CONFIGURATION
     imports PLUTUS-CORE-TYPING-BUILTINS
+    imports LIST
 
     // For K's builtin substitution to work properly
     syntax KVariable ::= TyVar
 
-    // tyall
-    rule (allTM ALPHA K1 (TY @ K2)) => (all ALPHA K1 TY) @ K2
+    // For strictness
+    syntax KindedType ::= "#HOLE"
 
-    // this rule is needed if we have an `all` that does not come originally from typing an `abs`
-    rule (all ALPHA K TY:Type) => (allTM ALPHA K TY[ALPHA @ K/ALPHA])
+    syntax K ::= #lookup(K, TyVar)
+    rule #lookup((ALPHA @ K) ~> REST:K, ALPHA) => ALPHA @ K
+    rule #lookup((ALPHA @ K) ~> REST:K, BETA ) => #lookup(REST, BETA)
+      requires ALPHA =/=K BETA
+
+    // tyvar
+    rule <k> ALPHA:TyVar => #lookup(GAMMA, ALPHA) ... </k>
+         <kenv> GAMMA </kenv>
+
+    // abs heating
+    rule <k> (abs ALPHA K TM) => TM ~> (all ALPHA K #HOLE) ... </k>
+         <kenv> (. => (ALPHA @ K)) ~> GAMMA </kenv>
+
+    // tyall heating
+    rule <k> (all ALPHA K TY) => TY ~> (all ALPHA K #HOLE) ... </k>
+         <kenv> (. => (ALPHA @ K)) ~> GAMMA </kenv>
+
+    // abs cooling, tyall cooling
+    rule <k> TY:Type @ (type) ~> (all ALPHA K #HOLE) => (all ALPHA K TY) @ (type) ... </k>
+         <kenv> ((ALPHA @ K) => .) ... </kenv>
 
     // tyfun
     // TODO: remove one of these rules if possible
@@ -177,9 +197,6 @@ module PLUTUS-CORE-TYPING
 
     // tyapp
     rule [[ T1@(fun K1 K2) T2@K1 ]] => [[ T1 T2 ]] @ K2
-
-    // abs
-    rule (abs ALPHA K TM) => (allTM ALPHA K TM[ALPHA @ K/ALPHA])
 
     // inst
     rule { ((all ALPHA K T) @ (type)) (A @ K) } => T[A / ALPHA]
