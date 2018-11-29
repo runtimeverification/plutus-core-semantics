@@ -54,9 +54,6 @@ module PLUTUS-CORE-SYNTAX-TYPES
                      | "(" "con" TyConstant ")"
                      | NeutralTy
 
-    syntax Term ::= "(" "funTM" Term Term ")" [seqstrict]
-                  | "(" "allTM" TyVar Kind Term ")" [binder, strict(3)]
-
     syntax NeutralTy ::= TyVar
                        | "[" NeutralTy TyValue "]"
 
@@ -106,7 +103,7 @@ module PLUTUS-CORE-SYNTAX-BASE
 
     syntax Value ::= "(" "abs" TyVar Kind Value ")" [binder]
                    | "(" "wrap" TyVar Type Value ")" [binder, strict(3)]
-                   | "(" "lam" Var Type Term ")" [binder]
+                   | "(" "lam" Var Type Term ")" [binder, strict(2)]
                    | "(" "con" Constant ")"
 
     syntax Program ::= "(" "program" Version Term ")"
@@ -121,6 +118,7 @@ module PLUTUS-CORE-TYPING-CONFIGURATION
     imports PLUTUS-CORE-SYNTAX-BASE
 
     configuration <k> $PGM:Program </k>
+                  <tenv> .K </tenv>
                   <kenv> .K </kenv>
 ```
 
@@ -169,14 +167,27 @@ module PLUTUS-CORE-TYPING
     // For strictness
     syntax KindedType ::= "#HOLE"
 
-    syntax K ::= #lookup(K, TyVar)
-    rule #lookup((ALPHA @ K) ~> REST:K, ALPHA) => ALPHA @ K
-    rule #lookup((ALPHA @ K) ~> REST:K, BETA ) => #lookup(REST, BETA)
+    syntax K ::= #lookupKind(K, TyVar)
+               | #lookupType(K, Var)
+
+    rule #lookupKind((ALPHA @ K) ~> REST:K, ALPHA) => ALPHA @ K
+    rule #lookupKind((ALPHA @ K) ~> REST:K, BETA ) => #lookupKind(REST, BETA)
       requires ALPHA =/=K BETA
 
+    syntax K ::= Var "!" Type
+
+    rule #lookupType((X:Var ! T) ~> REST:K, X) => T
+    rule #lookupType((X:Var ! T) ~> REST:K, Y) => #lookupType(REST, Y)
+      requires X =/=K Y
+
+    // var
+    rule <k> X:Var => #lookupType(GAMMA, X) ... </k>
+         <tenv> GAMMA </tenv>
+
     // tyvar
-    rule <k> ALPHA:TyVar => #lookup(GAMMA, ALPHA) ... </k>
+    rule <k> ALPHA:TyVar => #lookupKind(GAMMA, ALPHA) ... </k>
          <kenv> GAMMA </kenv>
+       requires notBool isVar(ALPHA)
 
     // abs heating
     rule <k> (abs ALPHA K TM) => TM ~> (all ALPHA K #HOLE) ... </k>
@@ -189,11 +200,6 @@ module PLUTUS-CORE-TYPING
     // abs cooling, tyall cooling
     rule <k> TY:Type @ (type) ~> (all ALPHA K #HOLE) => (all ALPHA K TY) @ (type) ... </k>
          <kenv> ((ALPHA @ K) => .) ... </kenv>
-
-    // tyfun
-    // TODO: remove one of these rules if possible
-    rule (funTM (TY1@(type)):Type (TY2@(type)):Type) => (fun TY1 TY2) @ (type)
-    rule (fun   (TY1@(type)):Type (TY2@(type)):Type) => (fun TY1 TY2) @ (type)
 
     // tyapp
     rule [[ T1@(fun K1 K2) T2@K1 ]] => [[ T1 T2 ]] @ K2
@@ -212,8 +218,16 @@ module PLUTUS-CORE-TYPING
     // For K's builtin substitution to work properly
     syntax KVariable ::= Var
 
-    // lam
-    rule (lam X:Var TY:Type TM:Term) => (funTM TY TM[TY/X])
+    // lam heating
+    rule <k> (lam X:Var (TY:Type @ (type)) TM:Term) => TM ~> (fun (TY @ (type)) #HOLE) ... </k>
+         <tenv> (. => (X ! TY)) ... </tenv>
+
+    // lam cooling
+    rule <k> TY2 @ K ~> (fun (TY1 @ (type)) #HOLE) => (fun (TY1 @ (type)) (TY2 @ K)) ... </k>
+         <tenv> ((X ! TY1) => .) ... </tenv>
+
+    // tyfun
+    rule (fun (TY1 @ (type)) (TY2 @ (type))) => (fun TY1 TY2) @ (type)
 
     // app
     rule [ (fun T1:Type T2:Type)@K1 T1@K2 ] => T2
