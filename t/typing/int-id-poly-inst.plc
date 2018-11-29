@@ -1,0 +1,1 @@
+(program 1.0.0 { (abs s (size) (lam x [[ (con integer) s ]] x)) (con 3) })

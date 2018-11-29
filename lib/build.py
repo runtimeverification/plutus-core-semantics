@@ -144,6 +144,14 @@ test('t/fact.plc')
 
 test_typing('t/typing/builtin-app.plc')
 
+test_typing('t/typing/add-integer.plc')
+test_typing('t/typing/error.plc')
+test_typing('t/typing/int-id-app.plc')
+test_typing('t/typing/int-id-poly-inst.plc')
+test_typing('t/typing/int-id-poly.plc')
+test_typing('t/typing/int-id.plc')
+test_typing('t/typing/int.plc')
+
 # Reachability based tests
 # ------------------------
 
@@ -179,3 +187,4 @@ proj.build('t/lazy',   'phony', inputs = Target.to_paths(lazy_tests))
 proj.build('t/strict', 'phony', inputs = Target.to_paths(strict_tests))
 proj.build('t/ocaml',  'phony', inputs = Target.to_paths(ocaml_tests))
 proj.build('t/typing', 'phony', inputs = Target.to_paths(typing_tests))
+
