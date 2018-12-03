@@ -35,6 +35,10 @@ module TYPING-TESTS-SPEC
 
     // error
     rule (error (fun [[ (con integer) (con 1) ]] [[ (con integer) (con 1) ]])) => (fun [[ (con integer) (con 1) ]] [[ (con integer) (con 1) ]]) @ (type)
+
+    // false
+    // rule (abs a (type) (lam x a (lam y a y))) => (all a (type) (fun a (fun a a))) @ (type)
+
 endmodule
 ```
 
