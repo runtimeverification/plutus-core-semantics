@@ -148,7 +148,9 @@ module PLUTUS-CORE-TYPING-BUILTINS
     rule (con integer) => (con integer) @ (fun (size) (type))
     rule (con S:Size):Type => (con S) @ (size)
 
-    syntax Type ::= "#IntIntInt" | "IntIntBool" | "#bool"
+    syntax Type ::= "#IntIntInt"  [function]
+                  | "#IntIntBool" [function]
+                  | "#bool"       [function]
 
     rule (con addInteger)       => #IntIntInt
     rule (con subtractInteger)  => #IntIntInt
@@ -165,6 +167,13 @@ module PLUTUS-CORE-TYPING-BUILTINS
     rule #IntIntInt
       => (all s (size)
            (fun [[(con integer) s]] (fun [[(con integer) s]] [[(con integer) s]])))
+
+//    rule (con resizeInteger)
+//      => (all s0 (size) (all s1 (size)
+//           (fun [[(con size) s1]] (fun [[(con integer) s0]] [[(con integer) s1]]))))
+
+//    rule (con sizeOfInteger)
+//      => (all s (size) (fun [[(con integer) s]] [[con (size) s]]))
 
 endmodule
 ```
@@ -185,15 +194,7 @@ module PLUTUS-CORE-TYPING
                | #lookupType(K, Var)
                | #lookup(K, K)
 
-    rule #lookupKind((ALPHA @ K) ~> REST:K, ALPHA) => ALPHA @ K
-    rule #lookupKind((ALPHA @ K) ~> REST:K, BETA ) => #lookupKind(REST, BETA)
-      requires ALPHA =/=K BETA
-
     syntax K ::= Var "!!" Type
-
-    rule #lookupType((X:Var !! T) ~> REST:K, X) => T
-    rule #lookupType((X:Var !! T) ~> REST:K, Y) => #lookupType(REST, Y)
-      requires X =/=K Y
 
     rule #lookup((ALPHA @ K) ~> REST:K, ALPHA) => ALPHA @ K
     rule #lookup((ALPHA @ K) ~> REST:K, V    ) => #lookup(REST, V)
@@ -203,13 +204,9 @@ module PLUTUS-CORE-TYPING
       requires X =/=K V
 
     // var
-    rule <k> X => #lookup(GAMMA1, X) ... </k>
-         <env> GAMMA1 </env>
+    rule <k> X => #lookup(GAMMA, X) ... </k>
+         <env> GAMMA </env>
       requires isVar(X) orBool isTyVar(X)
-
-    // tyvar
-    // rule <k> ALPHA:TyVar => #lookupKind(GAMMA, ALPHA) ... </k>
-    //      <env> GAMMA </env>
 
     // abs heating
     rule <k> (abs ALPHA K TM) => TM ~> (all ALPHA K #HOLE) ... </k>
