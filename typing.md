@@ -118,8 +118,7 @@ module PLUTUS-CORE-TYPING-CONFIGURATION
     imports PLUTUS-CORE-SYNTAX-BASE
 
     configuration <k> $PGM:Program </k>
-                  <tenv> .K </tenv>
-                  <kenv> .K </kenv>
+                  <env> .K </env>
 ```
 
 Program version has no semantic meaning:
@@ -169,37 +168,45 @@ module PLUTUS-CORE-TYPING
 
     syntax K ::= #lookupKind(K, TyVar)
                | #lookupType(K, Var)
+               | #lookup(K, K)
 
     rule #lookupKind((ALPHA @ K) ~> REST:K, ALPHA) => ALPHA @ K
     rule #lookupKind((ALPHA @ K) ~> REST:K, BETA ) => #lookupKind(REST, BETA)
       requires ALPHA =/=K BETA
 
-    syntax K ::= Var "!" Type
+    syntax K ::= Var "!!" Type
 
-    rule #lookupType((X:Var ! T) ~> REST:K, X) => T
-    rule #lookupType((X:Var ! T) ~> REST:K, Y) => #lookupType(REST, Y)
+    rule #lookupType((X:Var !! T) ~> REST:K, X) => T
+    rule #lookupType((X:Var !! T) ~> REST:K, Y) => #lookupType(REST, Y)
       requires X =/=K Y
 
+    rule #lookup((ALPHA @ K) ~> REST:K, ALPHA) => ALPHA @ K
+    rule #lookup((ALPHA @ K) ~> REST:K, V    ) => #lookup(REST, V)
+      requires ALPHA =/=K V
+    rule #lookup((X:Var !! T) ~> REST:K, X) => T
+    rule #lookup((X:Var !! T) ~> REST:K, V) => #lookup(REST, V)
+      requires X =/=K V
+
     // var
-    rule <k> X:Var => #lookupType(GAMMA, X) ... </k>
-         <tenv> GAMMA </tenv>
+    rule <k> X => #lookup(GAMMA1, X) ... </k>
+         <env> GAMMA1 </env>
+      requires isVar(X) orBool isTyVar(X)
 
     // tyvar
-    rule <k> ALPHA:TyVar => #lookupKind(GAMMA, ALPHA) ... </k>
-         <kenv> GAMMA </kenv>
-       requires notBool isVar(ALPHA)
+    // rule <k> ALPHA:TyVar => #lookupKind(GAMMA, ALPHA) ... </k>
+    //      <env> GAMMA </env>
 
     // abs heating
     rule <k> (abs ALPHA K TM) => TM ~> (all ALPHA K #HOLE) ... </k>
-         <kenv> (. => (ALPHA @ K)) ~> GAMMA </kenv>
+         <env> (. => (ALPHA @ K)) ~> GAMMA </env>
 
     // tyall heating
     rule <k> (all ALPHA K TY) => TY ~> (all ALPHA K #HOLE) ... </k>
-         <kenv> (. => (ALPHA @ K)) ~> GAMMA </kenv>
+         <env> (. => (ALPHA @ K)) ~> GAMMA </env>
 
     // abs cooling, tyall cooling
     rule <k> TY:Type @ (type) ~> (all ALPHA K #HOLE) => (all ALPHA K TY) @ (type) ... </k>
-         <kenv> ((ALPHA @ K) => .) ... </kenv>
+         <env> ((ALPHA @ K) => .) ... </env>
 
     // tyapp
     rule [[ T1@(fun K1 K2) T2@K1 ]] => [[ T1 T2 ]] @ K2
@@ -220,11 +227,11 @@ module PLUTUS-CORE-TYPING
 
     // lam heating
     rule <k> (lam X:Var (TY:Type @ (type)) TM:Term) => TM ~> (fun (TY @ (type)) #HOLE) ... </k>
-         <tenv> (. => (X ! TY)) ... </tenv>
+         <env> (. => (X !! TY)) ... </env>
 
     // lam cooling
     rule <k> TY2 @ K ~> (fun (TY1 @ (type)) #HOLE) => (fun (TY1 @ (type)) (TY2 @ K)) ... </k>
-         <tenv> ((X ! TY1) => .) ... </tenv>
+         <env> ((X !! TY1) => .) ... </env>
 
     // tyfun
     rule (fun (TY1 @ (type)) (TY2 @ (type))) => (fun TY1 TY2) @ (type)
