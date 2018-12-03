@@ -105,7 +105,7 @@ module PLUTUS-CORE-SYNTAX-BASE
     syntax Value ::= "(" "abs" TyVar Kind Value ")" [binder]
                    | "(" "wrap" TyVar Type Value ")" [binder, strict(3)]
                    | "(" "lam" Var Type Term ")" [binder, strict(2)]
-                   | "(" "con" Constant ")"
+                   | "(" "builtin" Constant ")"
 
     syntax Program ::= "(" "program" Version Term ")"
 endmodule
@@ -144,20 +144,20 @@ module PLUTUS-CORE-TYPING-BUILTINS
     imports PLUTUS-CORE-TYPING-CONFIGURATION
     imports SUBSTITUTION
     
-    rule (con S ! _:Int) => [[ (con integer) (con S) ]]
+    rule (builtin S ! _:Int) => [[ (con integer) (con S) ]]
     rule (con integer) => (con integer) @ (fun (size) (type))
-    rule (con S:Size):Type => (con S) @ (size)
+    rule (con S:Size) => (con S) @ (size)
 
     syntax Type ::= "#IntIntInt"  [function]
                   | "#IntIntBool" [function]
                   | "#bool"       [function]
 
-    rule (con addInteger)       => #IntIntInt
-    rule (con subtractInteger)  => #IntIntInt
-    rule (con multiplyInteger)  => #IntIntInt
-    rule (con divideInteger)    => #IntIntInt
-    rule (con quotientInteger)  => #IntIntInt
-    rule (con remainderInteger) => #IntIntInt
+    rule (builtin addInteger)       => #IntIntInt
+    rule (builtin subtractInteger)  => #IntIntInt
+    rule (builtin multiplyInteger)  => #IntIntInt
+    rule (builtin divideInteger)    => #IntIntInt
+    rule (builtin quotientInteger)  => #IntIntInt
+    rule (builtin remainderInteger) => #IntIntInt
 
     syntax TyVar ::= "s" | "alpha"
     rule #bool
