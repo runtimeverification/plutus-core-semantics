@@ -1,0 +1,20 @@
+(program 1.0.0
+  (abs
+    s
+    (size)
+    (lam
+      i
+      [[(con integer) s]]
+      [
+        [ { (builtin addInteger) s } i ]
+        [
+          [
+            { { (builtin resizeInteger) (con 1) } s }
+            [ { (builtin sizeOfInteger) s } i ]
+          ]
+          (builtin 1 ! 1)
+        ]
+      ]
+    )
+  )
+)
