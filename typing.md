@@ -76,7 +76,8 @@ module PLUTUS-CORE-SYNTAX-BASE
     syntax UnaryBuiltin  ::= "sha2_256" | "sha3_256"
     syntax BinaryBuiltin ::= "addInteger"         | "subtractInteger"
                            | "multiplyInteger"    | "divideInteger"
-                           | "remainderInteger"
+                           | "quotientInteger"    | "remainderInteger"
+                           | "modInteger"
                            | "lessThanInteger"    | "lessThanEqualsInteger"
                            | "greaterThanInteger" | "greaterThanEqualsInteger"
                            | "equalsInteger"
@@ -147,10 +148,24 @@ module PLUTUS-CORE-TYPING-BUILTINS
     rule (con integer) => (con integer) @ (fun (size) (type))
     rule (con S:Size):Type => (con S) @ (size)
 
-    syntax TyVar ::= "s"
-    rule (con addInteger)
+    syntax Type ::= "#IntIntInt" | "IntIntBool" | "#bool"
+
+    rule (con addInteger)       => #IntIntInt
+    rule (con subtractInteger)  => #IntIntInt
+    rule (con multiplyInteger)  => #IntIntInt
+    rule (con divideInteger)    => #IntIntInt
+    rule (con quotientInteger)  => #IntIntInt
+    rule (con remainderInteger) => #IntIntInt
+
+    syntax TyVar ::= "s" | "alpha"
+    rule #bool
+      => (all alpha (type)
+           (fun alpha (fun alpha alpha)))
+
+    rule #IntIntInt
       => (all s (size)
            (fun [[(con integer) s]] (fun [[(con integer) s]] [[(con integer) s]])))
+
 endmodule
 ```
 
