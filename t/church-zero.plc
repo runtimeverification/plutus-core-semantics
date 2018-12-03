@@ -1,0 +1,3 @@
+(program 1.0.0
+  (abs r (type) (lam z r (lam f (fun r r) z)))
+)

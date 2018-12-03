@@ -1,0 +1,7 @@
+(program 1.0.0
+  (lam
+    n
+    (all r (type) (fun r (fun (fun r r) r)))
+    (abs r (type) (lam z r (lam f (fun r r) [ f [ [ { n r } z ] f ] ])))
+  )
+)
