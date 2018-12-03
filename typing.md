@@ -81,7 +81,7 @@ module PLUTUS-CORE-SYNTAX-BASE
                            | "lessThanInteger"    | "lessThanEqualsInteger"
                            | "greaterThanInteger" | "greaterThanEqualsInteger"
                            | "equalsInteger"
-                           | "resizeInteger"
+                           | "resizeInteger"      | "sizeOfInteger"
                            | "intToByteString"
                            | "concatenate"        | "takeByteString"
                            | "resizeByteString"   | "equalsByteString"
@@ -146,6 +146,7 @@ module PLUTUS-CORE-TYPING-BUILTINS
     
     rule (builtin S ! _:Int) => [[ (con integer) (con S) ]]
     rule (con integer) => (con integer) @ (fun (size) (type))
+    rule (con size)    => (con size)    @ (fun (size) (type))
     rule (con S:Size) => (con S) @ (size)
 
     syntax Type ::= "#IntIntInt"  [function]
@@ -159,21 +160,21 @@ module PLUTUS-CORE-TYPING-BUILTINS
     rule (builtin quotientInteger)  => #IntIntInt
     rule (builtin remainderInteger) => #IntIntInt
 
-    syntax TyVar ::= "s" | "alpha"
+    syntax TyVar ::= "$s" | "$s0" | "$s1" | "$a"
     rule #bool
-      => (all alpha (type)
-           (fun alpha (fun alpha alpha)))
+      => (all $a (type)
+           (fun $a (fun $a $a)))
 
     rule #IntIntInt
-      => (all s (size)
-           (fun [[(con integer) s]] (fun [[(con integer) s]] [[(con integer) s]])))
+      => (all $s (size)
+           (fun [[(con integer) $s]] (fun [[(con integer) $s]] [[(con integer) $s]])))
 
-//    rule (con resizeInteger)
-//      => (all s0 (size) (all s1 (size)
-//           (fun [[(con size) s1]] (fun [[(con integer) s0]] [[(con integer) s1]]))))
+    rule (builtin resizeInteger)
+      => (all $s0 (size) (all $s1 (size)
+           (fun [[(con size) $s1]] (fun [[(con integer) $s0]] [[(con integer) $s1]]))))
 
-//    rule (con sizeOfInteger)
-//      => (all s (size) (fun [[(con integer) s]] [[con (size) s]]))
+    rule (builtin sizeOfInteger)
+      => (all $s (size) (fun [[(con integer) $s]] [[(con size) $s]]))
 
 endmodule
 ```
