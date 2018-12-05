@@ -138,7 +138,7 @@ Program version has no semantic meaning:
     syntax Term ::= Type
 
     // `Type`s evaluate to `Type` with their `Kind`
-    syntax KindedType ::= Type "@" Kind
+    syntax KindedType ::= Type "::" Kind
     syntax Type       ::= KindedType 
     syntax KResult    ::= KindedType
 endmodule
@@ -150,9 +150,9 @@ module PLUTUS-CORE-TYPING-BUILTINS
     imports SUBSTITUTION
     
     rule (con S ! _:Int) => #int((con S))
-    rule (con integer) => (con integer) @ (fun (size) (type))
-    rule (con size)    => (con size)    @ (fun (size) (type))
-    rule (con S:Size):Type => (con S) @ (size)
+    rule (con integer) => (con integer) :: (fun (size) (type))
+    rule (con size)    => (con size)    :: (fun (size) (type))
+    rule (con S:Size):Type => (con S) :: (size)
 
     syntax Type ::= #int(Type)     [function]
                   | #size(Type)    [function]
@@ -262,8 +262,8 @@ module PLUTUS-CORE-TYPING
 
     syntax K ::= Var "!!" Type
 
-    rule #lookup((ALPHA @ K) ~> REST:K, ALPHA) => ALPHA @ K
-    rule #lookup((ALPHA @ K) ~> REST:K, V    ) => #lookup(REST, V)
+    rule #lookup((ALPHA :: K) ~> REST:K, ALPHA) => ALPHA :: K
+    rule #lookup((ALPHA :: K) ~> REST:K, V    ) => #lookup(REST, V)
       requires ALPHA =/=K V
     rule #lookup((X:Var !! T) ~> REST:K, X) => T
     rule #lookup((X:Var !! T) ~> REST:K, V) => #lookup(REST, V)
@@ -276,49 +276,41 @@ module PLUTUS-CORE-TYPING
 
     // abs heating
     rule <k> (abs ALPHA K TM) => TM ~> (all ALPHA K #HOLE) ... </k>
-         <env> (. => (ALPHA @ K)) ~> GAMMA </env>
+         <env> (. => (ALPHA :: K)) ~> GAMMA </env>
 
     // tyall heating
     rule <k> (all ALPHA K TY) => TY ~> (all ALPHA K #HOLE) ... </k>
-         <env> (. => (ALPHA @ K)) ~> GAMMA </env>
+         <env> (. => (ALPHA :: K)) ~> GAMMA </env>
 
     // abs cooling, tyall cooling
-    rule <k> TY:Type @ (type) ~> (all ALPHA K #HOLE) => (all ALPHA K TY) @ (type) ... </k>
-         <env> ((ALPHA @ K) => .) ... </env>
+    rule <k> TY:Type :: (type) ~> (all ALPHA K #HOLE) => (all ALPHA K TY) :: (type) ... </k>
+         <env> ((ALPHA :: K) => .) ... </env>
 
     // tyapp
-    rule tyapp(T1@(fun K1 K2), T2@K1)  => tyapp(T1, T2) @ K2
+    rule tyapp(T1 :: (fun K1 K2), T2 :: K1)  => tyapp(T1, T2) :: K2
 
     // inst
-    rule { ((all ALPHA K T) @ (type)) (A @ K) } => T[A / ALPHA]
-
-    syntax KResult ::= #econtext(Type)
-
-    // wrap
-    rule ( fix ALPHA A ) => #econtext( (fix ALPHA A) )
-
-    // unwrap
-    rule (unwrap ((fix ALPHA A) @ (type))) => A[(fix ALPHA A) / ALPHA]
+    rule { ((all ALPHA K T) :: (type)) (A :: K) } => T[A / ALPHA]
 
     // For K's builtin substitution to work properly
     syntax KVariable ::= Var
 
     // lam heating
-    rule <k> (lam X:Var (TY:Type @ (type)) TM:Term) => TM ~> (fun (TY @ (type)) #HOLE) ... </k>
+    rule <k> (lam X:Var (TY:Type :: (type)) TM:Term) => TM ~> (fun (TY :: (type)) #HOLE) ... </k>
          <env> (. => (X !! TY)) ... </env>
 
     // lam cooling
-    rule <k> TY2 @ K ~> (fun (TY1 @ (type)) #HOLE) => (fun (TY1 @ (type)) (TY2 @ K)) ... </k>
+    rule <k> TY2 :: K ~> (fun (TY1 :: (type)) #HOLE) => (fun (TY1 :: (type)) (TY2 :: K)) ... </k>
          <env> ((X !! TY1) => .) ... </env>
 
     // tyfun
-    rule (fun (TY1 @ (type)) (TY2 @ (type))) => (fun TY1 TY2) @ (type)
+    rule (fun (TY1 :: (type)) (TY2 :: (type))) => (fun TY1 TY2) :: (type)
 
     // app
-    rule termapp((fun T1:Type T2:Type)@K1, T1@K2) => T2
+    rule termapp((fun T1:Type T2:Type) :: K1, T1 :: K2) => T2
 
     // error
-    rule (error A @ (type)) => A @ (type)
+    rule (error A :: (type)) => A :: (type)
 
 endmodule
 ```
