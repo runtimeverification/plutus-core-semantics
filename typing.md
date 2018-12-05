@@ -87,6 +87,7 @@ module PLUTUS-CORE-SYNTAX-BASE
                            |  "resizeInteger"      | "sizeOfInteger"
                            |  "intToByteString"
                            |  "concatenate"        | "takeByteString"
+                           |  "dropByteString"
                            |  "resizeByteString"   | "equalsByteString"
     syntax TernaryBuiltin ::= "verifySignature"
 
@@ -101,7 +102,7 @@ module PLUTUS-CORE-SYNTAX-BASE
                   | "(" "run" Term ")"
                   | "{" Term Type "}" [seqstrict]
                   | "(" "unwrap" Term ")" [strict]
-                  | "[" Term Term "]" [seqstrict]
+                  | "[" Term Term "]" [klabel(termapp), seqstrict]
                   | "(" "error" Type ")" [strict]
                   | Value
 
@@ -151,7 +152,7 @@ module PLUTUS-CORE-TYPING-BUILTINS
     rule (con S ! _:Int) => #int((con S))
     rule (con integer) => (con integer) @ (fun (size) (type))
     rule (con size)    => (con size)    @ (fun (size) (type))
-    rule (con S:Size) => (con S) @ (size)
+    rule (con S:Size):Type => (con S) @ (size)
 
     syntax Type ::= #int(Type)     [function]
                   | #size(Type)    [function]
@@ -184,9 +185,9 @@ module PLUTUS-CORE-TYPING-BUILTINS
       => (all $s0 (size) (all $s1 (size)
            (fun #int($s0) (fun #bystr($s1) #bystr($s1)))))
 
-    rule #sha =>
+    rule #sha
       => (all $s (size)
-           (fun #bytstr($s) #bystr((con 32))))
+           (fun #bystr($s) #bystr((con 32))))
 
     rule (builtin addInteger)       => #IntIntInt
     rule (builtin subtractInteger)  => #IntIntInt
@@ -203,14 +204,14 @@ module PLUTUS-CORE-TYPING-BUILTINS
 
     rule (builtin resizeInteger)
       => (all $s0 (size) (all $s1 (size)
-           (fun #size(s1) (fun #int(s0) #int(s1)))))
+           (fun #size($s1) (fun #int($s0) #int($s1)))))
 
     rule (builtin sizeOfInteger)
-      => (all $s (size) (fun #int(s) #size(s)))
+      => (all $s (size) (fun #int($s) #size($s)))
 
     rule (builtin intToByteString)
       => (all $s0 (size) (all $s1 (size)
-           (fun #size(s1) (fun #int($s0) #bystr($s1)))))
+           (fun #size($s1) (fun #int($s0) #bystr($s1)))))
 
     rule (builtin concatenate)
       => (all $s (size)
@@ -238,7 +239,7 @@ module PLUTUS-CORE-TYPING-BUILTINS
 
     rule (builtin blocknum)
       => (all $s (size)
-           (fun #size(s) #int(s)))
+           (fun #size($s) #int($s)))
 
 endmodule
 ```
@@ -314,7 +315,7 @@ module PLUTUS-CORE-TYPING
     rule (fun (TY1 @ (type)) (TY2 @ (type))) => (fun TY1 TY2) @ (type)
 
     // app
-    rule [ (fun T1:Type T2:Type)@K1 T1@K2 ] => T2
+    rule termapp((fun T1:Type T2:Type)@K1, T1@K2) => T2
 
     // error
     rule (error A @ (type)) => A @ (type)
