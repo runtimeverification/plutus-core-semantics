@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    [ ( con integer ) ( con 1 ) ] @ ( type )
+    [ ( con integer ) ( con 1 ) ] :: ( type )
   </k>
   <env>
     .
