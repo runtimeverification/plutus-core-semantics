@@ -150,9 +150,12 @@ module PLUTUS-CORE-TYPING-BUILTINS
     imports SUBSTITUTION
     
     rule (con S ! _:Int) => #int((con S))
-    rule (con integer) => (con integer) :: (fun (size) (type))
-    rule (con size)    => (con size)    :: (fun (size) (type))
+    rule (con S ! _:ByteString) => #bystr((con S))
+    rule (con integer)    => (con integer)    :: (fun (size) (type))
+    rule (con bytestring) => (con bytestring) :: (fun (size) (type))
+    rule (con size)       => (con size)       :: (fun (size) (type))
     rule (con S:Size):Type => (con S) :: (size)
+    rule (con (S:Size):Constant) => #size((con S))
 
     syntax Type ::= #int(Type)     [function]
                   | #size(Type)    [function]

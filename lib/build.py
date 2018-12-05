@@ -152,6 +152,30 @@ test_typing('t/typing/int-id-poly.plc')
 test_typing('t/typing/int-id.plc')
 test_typing('t/typing/int.plc')
 
+test_typing('t/typing/less-than.plc')
+test_typing('t/typing/resize-integer.plc')
+test_typing('t/typing/size-of-integer.plc')
+test_typing('t/typing/int-to-bytestring.plc')
+test_typing('t/typing/concatenate.plc')
+test_typing('t/typing/take-bytestring.plc')
+test_typing('t/typing/sha.plc')
+test_typing('t/typing/verify-signature.plc')
+test_typing('t/typing/resize-bytestring.plc')
+test_typing('t/typing/equals-bytestring.plc')
+test_typing('t/typing/txhash.plc')
+test_typing('t/typing/blocknum.plc')
+
+test_typing('t/typing/succ-integer.plc')
+test_typing('t/typing/unitval.plc')
+test_typing('t/typing/true.plc')
+test_typing('t/typing/false.plc')
+test_typing('t/typing/church-zero.plc')
+test_typing('t/typing/church-succ.plc')
+
+test_typing('t/typing/one.plc')
+test_typing('t/typing/case.plc')
+test_typing('t/typing/verify-identity.plc')
+
 # Reachability based tests
 # ------------------------
 
