@@ -44,7 +44,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
                   | "(" "fun" Type Type ")" [seqstrict]
                   | "(" "all" TyVar Kind Type ")" [binder]
                   | "(" "fix" TyVar Type ")"
-                  | "[[" Type Type "]]" [seqstrict]
+                  | "[" Type Type "]" [klabel(tyapp), seqstrict]
                   | TyValue
 
     syntax TyValue ::= "(" "fun" TyValue TyValue ")"
@@ -72,25 +72,28 @@ module PLUTUS-CORE-SYNTAX-BASE
 
     syntax ByteString ::= r"\\#[a-fA-F0-9][a-fA-F0-9]*" [notInRules, token, autoReject]
 
-    syntax BuiltinName   ::= BinaryBuiltin | UnaryBuiltin
-    syntax UnaryBuiltin  ::= "sha2_256" | "sha3_256"
-    syntax BinaryBuiltin ::= "addInteger"         | "subtractInteger"
-                           | "multiplyInteger"    | "divideInteger"
-                           | "quotientInteger"    | "remainderInteger"
-                           | "modInteger"
-                           | "lessThanInteger"    | "lessThanEqualsInteger"
-                           | "greaterThanInteger" | "greaterThanEqualsInteger"
-                           | "equalsInteger"
-                           | "resizeInteger"      | "sizeOfInteger"
-                           | "intToByteString"
-                           | "concatenate"        | "takeByteString"
-                           | "resizeByteString"   | "equalsByteString"
+    syntax BuiltinName   ::= NullaryBuiltin | BinaryBuiltin
+                           | UnaryBuiltin | TernaryBuiltin
+    syntax NullaryBuiltin ::= "txhash"
+    syntax UnaryBuiltin   ::= "sha2_256" | "sha3_256"
+                            | "blocknum"
+    syntax BinaryBuiltin  ::= "addInteger"         | "subtractInteger"
+                           |  "multiplyInteger"    | "divideInteger"
+                           |  "quotientInteger"    | "remainderInteger"
+                           |  "modInteger"
+                           |  "lessThanInteger"    | "lessThanEqualsInteger"
+                           |  "greaterThanInteger" | "greaterThanEqualsInteger"
+                           |  "equalsInteger"
+                           |  "resizeInteger"      | "sizeOfInteger"
+                           |  "intToByteString"
+                           |  "concatenate"        | "takeByteString"
+                           |  "resizeByteString"   | "equalsByteString"
+    syntax TernaryBuiltin ::= "verifySignature"
 
     syntax Version ::= r"[0-9]+(\\.[0-9]+)*" [token]
 
     syntax Constant ::= Size "!" Int
                       | Size "!" ByteString
-                      | BuiltinName
                       | Size
 
     // TODO: binders for substitution
@@ -105,7 +108,8 @@ module PLUTUS-CORE-SYNTAX-BASE
     syntax Value ::= "(" "abs" TyVar Kind Value ")" [binder]
                    | "(" "wrap" TyVar Type Value ")" [binder, strict(3)]
                    | "(" "lam" Var Type Term ")" [binder, strict(2)]
-                   | "(" "builtin" Constant ")"
+                   | "(" "con" Constant ")"
+                   | "(" "builtin" BuiltinName ")"
 
     syntax Program ::= "(" "program" Version Term ")"
 endmodule
@@ -144,14 +148,45 @@ module PLUTUS-CORE-TYPING-BUILTINS
     imports PLUTUS-CORE-TYPING-CONFIGURATION
     imports SUBSTITUTION
     
-    rule (builtin S ! _:Int) => [[ (con integer) (con S) ]]
+    rule (con S ! _:Int) => #int((con S))
     rule (con integer) => (con integer) @ (fun (size) (type))
     rule (con size)    => (con size)    @ (fun (size) (type))
     rule (con S:Size) => (con S) @ (size)
 
-    syntax Type ::= "#IntIntInt"  [function]
-                  | "#IntIntBool" [function]
-                  | "#bool"       [function]
+    syntax Type ::= #int(Type)     [function]
+                  | #size(Type)    [function]
+                  | #bystr(Type)   [function]
+                  | "#bool"        [function]
+                  | "#IntIntInt"   [function]
+                  | "#IntIntBool"  [function]
+                  | "#IntIntByStr" [function]
+                  | "#sha"         [function]
+
+    syntax TyVar ::= "$s" | "$s0" | "$s1" | "$s2" | "$a"
+
+    rule #int(T)   => tyapp((con integer), T)
+    rule #size(T)  => tyapp((con size), T)
+    rule #bystr(T) => tyapp((con bytestring), T)
+
+    rule #bool
+      => (all $a (type)
+           (fun $a (fun $a $a)))
+
+    rule #IntIntInt
+      => (all $s (size)
+           (fun #int($s) (fun #int($s) #int($s))))
+
+    rule #IntIntBool
+      => (all $s (size)
+           (fun #int($s) (fun #int($s) #bool)))
+
+    rule #IntIntByStr
+      => (all $s0 (size) (all $s1 (size)
+           (fun #int($s0) (fun #bystr($s1) #bystr($s1)))))
+
+    rule #sha =>
+      => (all $s (size)
+           (fun #bytstr($s) #bystr((con 32))))
 
     rule (builtin addInteger)       => #IntIntInt
     rule (builtin subtractInteger)  => #IntIntInt
@@ -160,21 +195,50 @@ module PLUTUS-CORE-TYPING-BUILTINS
     rule (builtin quotientInteger)  => #IntIntInt
     rule (builtin remainderInteger) => #IntIntInt
 
-    syntax TyVar ::= "$s" | "$s0" | "$s1" | "$a"
-    rule #bool
-      => (all $a (type)
-           (fun $a (fun $a $a)))
-
-    rule #IntIntInt
-      => (all $s (size)
-           (fun [[(con integer) $s]] (fun [[(con integer) $s]] [[(con integer) $s]])))
+    rule (builtin lessThanInteger)          => #IntIntBool
+    rule (builtin lessThanEqualsInteger)    => #IntIntBool
+    rule (builtin greaterThanInteger)       => #IntIntBool
+    rule (builtin greaterThanEqualsInteger) => #IntIntBool
+    rule (builtin equalsInteger)            => #IntIntBool
 
     rule (builtin resizeInteger)
       => (all $s0 (size) (all $s1 (size)
-           (fun [[(con size) $s1]] (fun [[(con integer) $s0]] [[(con integer) $s1]]))))
+           (fun #size(s1) (fun #int(s0) #int(s1)))))
 
     rule (builtin sizeOfInteger)
-      => (all $s (size) (fun [[(con integer) $s]] [[(con size) $s]]))
+      => (all $s (size) (fun #int(s) #size(s)))
+
+    rule (builtin intToByteString)
+      => (all $s0 (size) (all $s1 (size)
+           (fun #size(s1) (fun #int($s0) #bystr($s1)))))
+
+    rule (builtin concatenate)
+      => (all $s (size)
+           (fun #bystr($s) (fun #bystr($s) #bystr($s))))
+
+    rule (builtin takeByteString) => #IntIntByStr
+    rule (builtin dropByteString) => #IntIntByStr
+
+    rule (builtin sha2_256) => #sha
+    rule (builtin sha3_256) => #sha
+
+    rule (builtin verifySignature)
+      => (all $s0 (size) (all $s1 (size) (all $s2 (size)
+           (fun #bystr($s0) (fun #bystr($s1) (fun #bystr($s2) #bool))))))
+
+    rule (builtin resizeByteString)
+      => (all $s0 (size) (all $s1 (size)
+           (fun #size($s1) (fun #bystr($s0) #bystr($s1)))))
+
+    rule (builtin equalsByteString)
+      => (all $s (size)
+           (fun #bystr($s) (fun #bystr($s) #bool)))
+
+    rule (builtin txhash) => #bystr((con 32))
+
+    rule (builtin blocknum)
+      => (all $s (size)
+           (fun #size(s) #int(s)))
 
 endmodule
 ```
@@ -222,7 +286,7 @@ module PLUTUS-CORE-TYPING
          <env> ((ALPHA @ K) => .) ... </env>
 
     // tyapp
-    rule [[ T1@(fun K1 K2) T2@K1 ]] => [[ T1 T2 ]] @ K2
+    rule tyapp(T1@(fun K1 K2), T2@K1)  => tyapp(T1, T2) @ K2
 
     // inst
     rule { ((all ALPHA K T) @ (type)) (A @ K) } => T[A / ALPHA]
