@@ -138,7 +138,7 @@ Program version has no semantic meaning:
     syntax Term ::= Type
 
     // `Type`s evaluate to `Type` with their `Kind`
-    syntax KindedType ::= Type "::" Kind
+    syntax KindedType ::= Type "::" Kind [klabel(kindedType)]
     syntax Type       ::= KindedType 
     syntax KResult    ::= KindedType
 endmodule
