@@ -41,25 +41,20 @@ module PLUTUS-CORE-SYNTAX-TYPES
                         | TyBuiltinName
 
     syntax Type ::= TyVar
-                  | "(" "fun" Type Type ")" [seqstrict]
+                  | "(" "fun" Type Type ")"       [seqstrict]
                   | "(" "all" TyVar Kind Type ")" [binder]
-                  | "(" "fix" TyVar Type ")"
-                  | "[" Type Type "]" [klabel(tyapp), seqstrict]
+                  | "[" Type Type "]"             [klabel(tyapp), seqstrict]
                   | TyValue
 
-    syntax TyValue ::= "(" "fun" TyValue TyValue ")"
-//                     | "(" "all" TyVar Kind TyValue ")"
-//                     | "(" "fix" TyVar TyValue ")"
-//                     | "(" "lam" TyVar Kind Type ")"
-                     | "(" "con" TyConstant ")"
+    syntax TyValue ::= "(" "con" TyConstant ")"
                      | NeutralTy
 
     syntax NeutralTy ::= TyVar
                        | "[" NeutralTy TyValue "]"
 
     syntax Kind ::= "(" "type" ")"
-                  | "(" "fun" Kind Kind ")"
                   | "(" "size" ")"
+                  | "(" "fun" Kind Kind ")"
 endmodule
 ```
 
@@ -97,18 +92,14 @@ module PLUTUS-CORE-SYNTAX-BASE
                       | Size "!" ByteString
                       | Size
 
-    // TODO: binders for substitution
     syntax Term ::= Var
-                  | "(" "run" Term ")"
-                  | "{" Term Type "}" [seqstrict]
-                  | "(" "unwrap" Term ")" [strict]
-                  | "[" Term Term "]" [klabel(termapp), seqstrict]
+                  | "{" Term Type "}"    [seqstrict]
+                  | "[" Term Term "]"    [klabel(termapp), seqstrict]
                   | "(" "error" Type ")" [strict]
                   | Value
 
     syntax Value ::= "(" "abs" TyVar Kind Value ")" [binder]
-                   | "(" "wrap" TyVar Type Value ")" [binder, strict(3)]
-                   | "(" "lam" Var Type Term ")" [binder, strict(2)]
+                   | "(" "lam" Var Type Term ")"    [strict(2)]
                    | "(" "con" Constant ")"
                    | "(" "builtin" BuiltinName ")"
 
@@ -118,6 +109,9 @@ endmodule
 
 Typing
 ======
+
+The configuration has the K cell, and an environment cell. The environment cell
+holds the types and kinds of variables.
 
 ```k
 module PLUTUS-CORE-TYPING-CONFIGURATION
@@ -144,33 +138,43 @@ Program version has no semantic meaning:
 endmodule
 ```
 
+Typing and kinding basic plutus constructs and builtins.
+
 ```k
 module PLUTUS-CORE-TYPING-BUILTINS
     imports PLUTUS-CORE-TYPING-CONFIGURATION
     imports SUBSTITUTION
-    
+
+    // types of integer, bytestring, and size terms
     rule (con S ! _:Int) => #int((con S))
     rule (con S ! _:ByteString) => #bystr((con S))
-    rule (con integer)    => (con integer)    :: (fun (size) (type))
-    rule (con bytestring) => (con bytestring) :: (fun (size) (type))
-    rule (con size)       => (con size)       :: (fun (size) (type))
-    rule (con S:Size):Type => (con S) :: (size)
     rule (con (S:Size):Constant) => #size((con S))
 
+    // macros for basic types
     syntax Type ::= #int(Type)     [function]
                   | #size(Type)    [function]
                   | #bystr(Type)   [function]
-                  | "#bool"        [function]
+
+    rule #int(T)   => tyapp((con integer), T)
+    rule #size(T)  => tyapp((con size), T)
+    rule #bystr(T) => tyapp((con bytestring), T)
+
+    // kind of integer, bytestring and size
+    rule (con integer)    => (con integer)    :: (fun (size) (type))
+    rule (con bytestring) => (con bytestring) :: (fun (size) (type))
+    rule (con size)       => (con size)       :: (fun (size) (type))
+
+    // kind of size type
+    rule (con S:Size):Type => (con S) :: (size)
+
+    // macros for complex types
+    syntax Type ::= "#bool"        [function]
                   | "#IntIntInt"   [function]
                   | "#IntIntBool"  [function]
                   | "#IntIntByStr" [function]
                   | "#sha"         [function]
 
     syntax TyVar ::= "$s" | "$s0" | "$s1" | "$s2" | "$a"
-
-    rule #int(T)   => tyapp((con integer), T)
-    rule #size(T)  => tyapp((con size), T)
-    rule #bystr(T) => tyapp((con bytestring), T)
 
     rule #bool
       => (all $a (type)
@@ -192,6 +196,7 @@ module PLUTUS-CORE-TYPING-BUILTINS
       => (all $s (size)
            (fun #bystr($s) #bystr((con 32))))
 
+    // builtins
     rule (builtin addInteger)       => #IntIntInt
     rule (builtin subtractInteger)  => #IntIntInt
     rule (builtin multiplyInteger)  => #IntIntInt
@@ -247,11 +252,15 @@ module PLUTUS-CORE-TYPING-BUILTINS
 endmodule
 ```
 
+Typing and kinding all constructs according to Figures 4 and 5
+
 ```k
 module PLUTUS-CORE-TYPING
     imports PLUTUS-CORE-TYPING-CONFIGURATION
     imports PLUTUS-CORE-TYPING-BUILTINS
     imports LIST
+    imports STRING
+    imports ID
 
     // For K's builtin substitution to work properly
     syntax KVariable ::= TyVar
@@ -259,31 +268,31 @@ module PLUTUS-CORE-TYPING
     // For strictness
     syntax KindedType ::= "#HOLE"
 
-    syntax K ::= #lookupKind(K, TyVar)
-               | #lookupType(K, Var)
-               | #lookup(K, K)
+    // We use this notation in the environment to state a variable has a
+    // certain type
+    syntax KItem ::= Var "!!" Type
 
-    syntax K ::= Var "!!" Type
-
+    // Lookup first occurrence variable in typing/kinding environment
+    syntax K ::= #lookup(K, K)
     rule #lookup((ALPHA :: K) ~> REST:K, ALPHA) => ALPHA :: K
+    rule #lookup((X:Var !! T) ~> REST:K, X    ) => T
     rule #lookup((ALPHA :: K) ~> REST:K, V    ) => #lookup(REST, V)
       requires ALPHA =/=K V
-    rule #lookup((X:Var !! T) ~> REST:K, X) => T
-    rule #lookup((X:Var !! T) ~> REST:K, V) => #lookup(REST, V)
+    rule #lookup((X:Var !! T) ~> REST:K, V    ) => #lookup(REST, V)
       requires X =/=K V
 
-    // var
+    // var, tyvar
     rule <k> X => #lookup(GAMMA, X) ... </k>
          <env> GAMMA </env>
       requires isVar(X) orBool isTyVar(X)
 
     // abs heating
     rule <k> (abs ALPHA K TM) => TM ~> (all ALPHA K #HOLE) ... </k>
-         <env> (. => (ALPHA :: K)) ~> GAMMA </env>
+         <env> (. => (ALPHA :: K)) ... </env>
 
     // tyall heating
     rule <k> (all ALPHA K TY) => TY ~> (all ALPHA K #HOLE) ... </k>
-         <env> (. => (ALPHA :: K)) ~> GAMMA </env>
+         <env> (. => (ALPHA :: K)) ... </env>
 
     // abs cooling, tyall cooling
     rule <k> TY:Type :: (type) ~> (all ALPHA K #HOLE) => (all ALPHA K TY) :: (type) ... </k>
@@ -310,10 +319,32 @@ module PLUTUS-CORE-TYPING
     rule (fun (TY1 :: (type)) (TY2 :: (type))) => (fun TY1 TY2) :: (type)
 
     // app
-    rule termapp((fun T1:Type T2:Type) :: K1, T1 :: K2) => T2
+    rule termapp((fun T1:Type T2:Type) :: K1, T3 :: K2) => T2
+      requires #alphaEquiv(T1, T3)
 
     // error
     rule (error A :: (type)) => A :: (type)
 
+    // Alpha equivalence of types. K's matching does not know about alpha
+    // equivalence, so we must do it manually (for now).
+    syntax Bool ::= #alphaEquiv(Type, Type) [function]
+    rule #alphaEquiv(ALPHA:TyVar, BETA:TyVar)  => true
+    rule #alphaEquiv(T, T)                     => true
+    rule #alphaEquiv([T1 T2], [T3 T4])         => #alphaEquiv(T1, T3) andBool #alphaEquiv(T2, T4)
+    rule #alphaEquiv((fun T1 T2), (fun T3 T4)) => #alphaEquiv(T1, T3) andBool #alphaEquiv(T2, T4)
+    rule #alphaEquiv((all ALPHA (type) T1), (all BETA (type) T2)) => #alphaEquiv(T1, T2)
+    rule #alphaEquiv(T1, T2) => false [owise]
+
+    syntax Name ::= freshName(Int)    [freshGenerator, function, functional]
+    rule freshName(I:Int) => #parseToken("Name", "_" +String Int2String(I))
+
 endmodule
 ```
+
+Auxiliary functions
+
+```
+module PLUTUS-CORE-TYPING-AUX
+
+
+endmodule
