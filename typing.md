@@ -256,35 +256,17 @@ Typing and kinding all constructs according to Figures 4 and 5
 
 ```k
 module PLUTUS-CORE-TYPING
-    imports PLUTUS-CORE-TYPING-CONFIGURATION
-    imports PLUTUS-CORE-TYPING-BUILTINS
-    imports LIST
-    imports STRING
-    imports ID
-
-    // For K's builtin substitution to work properly
-    syntax KVariable ::= TyVar
-
-    // For strictness
-    syntax KindedType ::= "#HOLE"
-
-    // We use this notation in the environment to state a variable has a
-    // certain type
-    syntax KItem ::= Var "!!" Type
-
-    // Lookup first occurrence variable in typing/kinding environment
-    syntax K ::= #lookup(K, K)
-    rule #lookup((ALPHA :: K) ~> REST:K, ALPHA) => ALPHA :: K
-    rule #lookup((X:Var !! T) ~> REST:K, X    ) => T
-    rule #lookup((ALPHA :: K) ~> REST:K, V    ) => #lookup(REST, V)
-      requires ALPHA =/=K V
-    rule #lookup((X:Var !! T) ~> REST:K, V    ) => #lookup(REST, V)
-      requires X =/=K V
+    imports PLUTUS-CORE-TYPING-AUX
 
     // var, tyvar
     rule <k> X => #lookup(GAMMA, X) ... </k>
          <env> GAMMA </env>
       requires isVar(X) orBool isTyVar(X)
+
+    // Used for manual heating and cooling.
+    syntax Hole ::= "#HOLE"
+    syntax Type ::= Hole
+    syntax KResult ::= Hole
 
     // abs heating
     rule <k> (abs ALPHA K TM) => TM ~> (all ALPHA K #HOLE) ... </k>
@@ -301,11 +283,11 @@ module PLUTUS-CORE-TYPING
     // tyapp
     rule tyapp(T1 :: (fun K1 K2), T2 :: K1)  => tyapp(T1, T2) :: K2
 
+    // For K's builtin substitution to work properly
+    syntax KVariable ::= TyVar
+
     // inst
     rule { ((all ALPHA K T) :: (type)) (A :: K) } => T[A / ALPHA]
-
-    // For K's builtin substitution to work properly
-    syntax KVariable ::= Var
 
     // lam heating
     rule <k> (lam X:Var (TY:Type :: (type)) TM:Term) => TM ~> (fun (TY :: (type)) #HOLE) ... </k>
@@ -325,6 +307,32 @@ module PLUTUS-CORE-TYPING
     // error
     rule (error A :: (type)) => A :: (type)
 
+endmodule
+```
+
+Auxiliary functions.
+
+```k
+module PLUTUS-CORE-TYPING-AUX
+    imports PLUTUS-CORE-TYPING-CONFIGURATION
+    imports PLUTUS-CORE-TYPING-BUILTINS
+    imports LIST
+    imports STRING
+    imports ID
+
+    // We use this notation in the environment to state a variable has a
+    // certain type
+    syntax KItem ::= Var "!!" Type
+
+    // Lookup first occurrence variable in typing/kinding environment
+    syntax K ::= #lookup(K, K)
+    rule #lookup((ALPHA :: K) ~> REST:K, ALPHA) => ALPHA :: K
+    rule #lookup((X:Var !! T) ~> REST:K, X    ) => T
+    rule #lookup((ALPHA :: K) ~> REST:K, V    ) => #lookup(REST, V)
+      requires ALPHA =/=K V
+    rule #lookup((X:Var !! T) ~> REST:K, V    ) => #lookup(REST, V)
+      requires X =/=K V
+
     // Alpha equivalence of types. K's matching does not know about alpha
     // equivalence, so we must do it manually (for now).
     syntax Bool ::= #alphaEquiv(Type, Type) [function]
@@ -340,11 +348,3 @@ module PLUTUS-CORE-TYPING
 
 endmodule
 ```
-
-Auxiliary functions
-
-```
-module PLUTUS-CORE-TYPING-AUX
-
-
-endmodule
