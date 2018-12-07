@@ -49,7 +49,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
 
     syntax TyValue ::= "(" "fun" TyValue TyValue ")"
 //                     | "(" "all" TyVar Kind TyValue ")"
-                     | "(" "fix" TyVar TyValue ")"
+//                     | "(" "fix" TyVar TyValue ")"
 //                     | "(" "lam" TyVar Kind Type ")"
                      | "(" "con" TyConstant ")"
                      | NeutralTy
