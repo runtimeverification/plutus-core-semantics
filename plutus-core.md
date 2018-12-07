@@ -92,7 +92,6 @@ module PLUTUS-CORE-SYNTAX-BASE
 
     syntax Constant ::= Size "!" Int
                       | Size "!" ByteString
-                      | BuiltinName
                       | Size
 
     syntax Term ::= Var
@@ -109,6 +108,7 @@ module PLUTUS-CORE-SYNTAX-BASE
                    | "(" "wrap" TyVar Type Value ")"
                    | "(" "lam" Var Type Term ")"
                    | "(" "con" Constant ")"
+                   | "(" "builtin" BuiltinName ")"
 
     syntax Program ::= "(" "program" Version Term ")"
 endmodule
@@ -237,8 +237,8 @@ However, even though we are not strict in general, builtins need
 their arguments to be evaluated fully.
 
 ```k
-    context [ (con B:BuiltinName) HOLE ]
-    context [ [ (con B:BinaryBuiltin) V:ResultTerm ] HOLE ]
+    context [ (builtin B:BuiltinName) HOLE ]
+    context [ [ (builtin B:BinaryBuiltin) V:ResultTerm ] HOLE ]
 endmodule
 ```
 
@@ -253,9 +253,9 @@ module PLUTUS-CORE-BUILTINS
 
     syntax KItem ::= "#failure"
 
-    rule isResultTerm((con B:BinaryBuiltin)) => true
-    rule isResultTerm((con B:UnaryBuiltin )) => true
-    rule isResultTerm([(con B:BinaryBuiltin) TM:ResultTerm]) => true
+    rule isResultTerm((builtin B:BinaryBuiltin)) => true
+    rule isResultTerm((builtin B:UnaryBuiltin )) => true
+    rule isResultTerm([(builtin B:BinaryBuiltin) TM:ResultTerm]) => true
 endmodule
 ```
 
@@ -277,21 +277,24 @@ module PLUTUS-CORE-BOUNDED-INTEGERS
       requires -2 ^Int(8 *Int S:Int -Int 1)  >Int V orBool  V >=Int 2 ^Int(8 *Int S:Int -Int 1)
 
     // addInteger builtin
-    rule [[(con addInteger) (con S ! I1)] (con S ! I2)] => #mkInt(S, I1 +Int I2)
+    rule [[(builtin addInteger) (con S ! I1)] (con S ! I2)] => #mkInt(S, I1 +Int I2)
 
     // subtractInteger builtin
-    rule [[(con subtractInteger) (con S ! I1)] (con S ! I2)] => #mkInt(S, I1 -Int I2)
+    rule [[(builtin subtractInteger) (con S ! I1)] (con S ! I2)] => #mkInt(S, I1 -Int I2)
 
     // multiplyInteger builtin
-    rule [[(con multiplyInteger) (con S ! I1)] (con S ! I2)] => #mkInt(S, I1 *Int I2)
+    rule [[(builtin multiplyInteger) (con S ! I1)] (con S ! I2)] => #mkInt(S, I1 *Int I2)
 
     // divideInteger builtin
-    rule [[(con divideInteger) (con S ! I1:Int)] (con S ! I2:Int)] => (con S ! (I1 /Int I2))
+    rule [[(builtin divideInteger) (con S ! I1:Int)] (con S ! I2:Int)] => (con S ! (I1 /Int I2))
       requires I2 =/=Int 0
-    rule [[(con divideInteger) (con S ! I:Int)] (con S ! 0)] => #failure
+    rule [[(builtin divideInteger) (con S ! I:Int)] (con S ! 0)] => #failure
 
     // resizeInteger builtin
-    rule [[(con resizeInteger) (con S1:Int)] (con S2 ! I:Int)] => #mkInt(S1, I)
+    rule [[(builtin resizeInteger) (con S1:Int)] (con S2 ! I:Int)] => #mkInt(S1, I)
+
+    // sizeOfInteger builtin
+    rule [(builtin sizeOfInteger) (con S1 ! I:Int)] => ((con S1:Int)):Term
 ```
 
 ### Boolean expressions
@@ -303,24 +306,24 @@ module PLUTUS-CORE-BOUNDED-INTEGERS
     rule #mkBool(false) => #false
 
     // remainderInteger builtin
-    rule [[(con remainderInteger) (con S ! I1:Int)] (con S ! I2:Int)] => (con S ! (I1 %Int I2))
+    rule [[(builtin remainderInteger) (con S ! I1:Int)] (con S ! I2:Int)] => (con S ! (I1 %Int I2))
       requires I2 =/=Int 0
-    rule [[(con remainderInteger) (con S ! I1:Int)] (con S ! 0)] => #failure
+    rule [[(builtin remainderInteger) (con S ! I1:Int)] (con S ! 0)] => #failure
 
     // lessThanInteger builtin
-    rule [[(con lessThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 <Int I2)
+    rule [[(builtin lessThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 <Int I2)
 
     // lessThanEqualsInteger builtin
-    rule [[(con lessThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 <=Int I2)
+    rule [[(builtin lessThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 <=Int I2)
 
     // greaterThanInteger builtin
-    rule [[(con greaterThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 >Int I2)
+    rule [[(builtin greaterThanInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 >Int I2)
 
     // greaterThanEqualsInteger builtin
-    rule [[(con greaterThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 >=Int I2)
+    rule [[(builtin greaterThanEqualsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 >=Int I2)
 
     // equalsInteger builtin
-    rule [[(con equalsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 ==Int I2)
+    rule [[(builtin equalsInteger) (con S ! I1:Int)] (con S ! I2:Int)] => #mkBool(I1 ==Int I2)
 endmodule
 ```
 
@@ -345,7 +348,8 @@ We:
 ```k
     syntax Constant ::= Size "!" Bytes
     rule isResultTerm((con S:Size ! B:Bytes)) => true
-        syntax String ::= ByteString2String(ByteString) [function, hook(STRING.token2string)]
+
+    syntax String ::= ByteString2String(ByteString) [function, hook(STRING.token2string)]
     rule (con S ! BS:ByteString)
       => (con S ! padLeftBytes( Int2Bytes( String2Base( replaceFirst(ByteString2String(BS), "#", "")
                                                       , 16)
@@ -358,38 +362,38 @@ We:
 
 ```k
     syntax KItem ::= #mkByteString(Int, Bytes) [function]
-    rule #mkByteString(S, B) => (con S ! B)                requires lengthBytes(B) <=Int S
-    rule #mkByteString(S, B) => #failure                   requires lengthBytes(B)  >Int S
+    rule #mkByteString(S, B) => (con S ! B)            requires lengthBytes(B) <=Int S
+    rule #mkByteString(S, B) => #failure               requires lengthBytes(B)  >Int S
 ```
 
 
 Bytestring builtins:
 
 ```k
-    rule [[(con intToByteString) (con S1:Int):Value] (con S2 ! I:Int)]
+    rule [[(builtin intToByteString) (con S1:Int):Value] (con S2 ! I:Int)]
       => #mkByteString(S1, padLeftBytes(Int2Bytes(I, BE, Unsigned), S1, 0))
 
-    rule [[(con concatenate) (con S1 ! B1:Bytes)] (con S1 ! B2:Bytes)]
+    rule [[(builtin concatenate) (con S1 ! B1:Bytes)] (con S1 ! B2:Bytes)]
       => #mkByteString(S1, B1:Bytes +Bytes B2:Bytes)
 
-    rule [[(con takeByteString) (con S1 ! I1)] (con S2 ! B2:Bytes)]
+    rule [[(builtin takeByteString) (con S1 ! I1)] (con S2 ! B2:Bytes)]
       => (con S2 ! substrBytes(B2, 0, I1))
       requires I1 >Int 0 andBool I1 <=Int lengthBytes(B2)
-    rule [[(con takeByteString) (con S1 ! I1)] (con S2 ! B2:Bytes)]
+    rule [[(builtin takeByteString) (con S1 ! I1)] (con S2 ! B2:Bytes)]
       => (con S2 ! .Bytes)
       requires I1 <=Int 0
-    rule [[(con takeByteString) (con S1 ! I1)] (con S2 ! B2:Bytes)]
+    rule [[(builtin takeByteString) (con S1 ! I1)] (con S2 ! B2:Bytes)]
       => (con S2 ! B2)
       requires I1 >Int lengthBytes(B2)
 
-    rule [[(con resizeByteString) (con S1:Int)] (con S2 ! B2:Bytes)]
+    rule [[(builtin resizeByteString) (con S1:Int)] (con S2 ! B2:Bytes)]
       => (con S1 ! B2)
       requires S1 >=Int lengthBytes(B2)
 
-    rule [[(con resizeByteString) (con S1:Int)] (con S2 ! B2:Bytes)]
+    rule [[(builtin resizeByteString) (con S1:Int)] (con S2 ! B2:Bytes)]
       => #mkByteString(S1, B2)
 
-    rule [[(con equalsByteString) (con S ! B1:Bytes)] (con S ! B2:Bytes)] => #mkBool(B1 ==K B2)
+    rule [[(builtin equalsByteString) (con S ! B1:Bytes)] (con S ! B2:Bytes)] => #mkBool(B1 ==K B2)
 ```
 
 ```k
@@ -403,8 +407,8 @@ Cryptographic Builtins
 module PLUTUS-CORE-CRYPTOGRAPHY
     imports PLUTUS-CORE-BYTESTRINGS
     imports HASH
-    rule [(con sha2_256) (con S ! B:Bytes)] => #mkByteString(256, Sha2_256(B))
-    rule [(con sha3_256) (con S ! B:Bytes)] => #mkByteString(256, Sha3_256(B))
+    rule [(builtin sha2_256) (con S ! B:Bytes)] => #mkByteString(256, Sha2_256(B))
+    rule [(builtin sha3_256) (con S ! B:Bytes)] => #mkByteString(256, Sha3_256(B))
 endmodule
 ```
 

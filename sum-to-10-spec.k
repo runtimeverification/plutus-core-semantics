@@ -16,13 +16,13 @@ module SUM-TO-10-SPEC
                  (lam z r
                       (lam n dummyTyVar
                            [ [ [ [ { #case #unit }
-                                   [[(con equalsInteger) (con 5 ! 0)] n ]
+                                   [[(builtin equalsInteger) (con 5 ! 0)] n ]
                                  ]
                                  (lam f #unit z)
                                ]
-                               [ recur [[ (con addInteger) z] n ] ]
+                               [ recur [[ (builtin addInteger) z] n ] ]
                              ]
-                             [ [(con subtractInteger) n] (con 5 ! 1) ]
+                             [ [(builtin subtractInteger) n] (con 5 ! 1) ]
                            ]
             )    )    )
           ] 
