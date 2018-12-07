@@ -47,7 +47,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
                   | "(" "fun" Type Type ")"
                   | "(" "all" TyVar Kind Type ")"
                   | "(" "fix" TyVar Type ")"
-                  | "[" Type Type "]"
+                  | "[" Type Type "]" [klabel(tyapp)]
                   | TyValue
 
     syntax TyValue ::= "(" "fun" TyValue TyValue ")"
@@ -58,7 +58,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
                      | NeutralTy
 
     syntax NeutralTy ::= TyVar
-                       | "[" NeutralTy TyValue "]"
+                       | "[" NeutralTy TyValue "]" [klabel(tyapp)]
 
     syntax Kind ::= "(" "type" ")"
                   | "(" "fun" Kind Kind ")"
@@ -101,7 +101,7 @@ module PLUTUS-CORE-SYNTAX-BASE
                   | "(" "unwrap" Term ")"
                   // strictness application differs in strict and lazy semantics,
                   // but both are strict in the first argument
-                  | "[" Term Term "]" [strict(1)]
+                  | "[" Term Term "]" [strict(1), klabel(termapp)]
                   | "(" "error" Type ")"
                   | Value
 
