@@ -77,6 +77,7 @@ module PLUTUS-CORE-SYNTAX-BASE
 
     syntax BuiltinName   ::= BinaryBuiltin | UnaryBuiltin
     syntax UnaryBuiltin  ::= "sha2_256" | "sha3_256"
+                           | "sizeOfInteger"
     syntax BinaryBuiltin ::= "addInteger"         | "subtractInteger"
                            | "multiplyInteger"    | "divideInteger"
                            | "remainderInteger"

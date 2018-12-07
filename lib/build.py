@@ -138,6 +138,7 @@ test('t/if-then-else.plc')
 test('t/sum-list.plc')
 test('t/sum.plc')
 test('t/fact.plc')
+test('t/succ-integer.plc')
 
 # Typing tests
 # ------------
