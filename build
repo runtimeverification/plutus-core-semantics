@@ -27,7 +27,7 @@ fail() { log "$@"; exit 1   ; }
 
 generate_ninja() {
     export PYTHONPATH="$base/ext/"
-    [ -x "$base/ext/kninja/.git" ] || git submodule init "$base/ext/kninja/"
+    [ -x "$base/ext/kninja/.git" ] || git submodule update --init "$base/ext/kninja/"
     python3 "$base/lib/build.py"
 }
 
