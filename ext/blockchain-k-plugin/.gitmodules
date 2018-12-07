@@ -1,3 +1,0 @@
-[submodule "plugin/proto"]
-	path = plugin/proto
-	url = https://github.com/input-output-hk/mantis-extvm-pb

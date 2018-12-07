@@ -1,58 +1,94 @@
 #!/usr/bin/env python3
 
 from kninja import *
-import sys
 
-# Helpers
-#
-class Plutus(KProject):
-    def __init__(self):
-        super().__init__(builddir = '.build')
-        self.include('lib/build.ninja')
-        self.lazy   = self.kdefinition( name    = 'lazy'
-                                      , main    = self.tangleddir('plutus-core.k')
-                                      , backend = 'java'
-                                      , alias   = 'lazy'
-                                      )
-        self.strict = self.kdefinition( name    = 'strict'
-                                      , main    = self.tangleddir('plutus-core.k')
-                                      , backend = 'java'
-                                      , alias   = 'strict'
-                                      )
-        self.ocaml = self.kdefinition_no_build( name             = 'ocaml'
-                                              , kompiled_dirname = 'plutus-core-kompiled'
-                                              , alias            = 'spec-ocaml'
-                                              )
-        self.testdir = '$builddir/t/'
-        self.lazy_tests = []
-        self.strict_tests = []
-        self.ocaml_tests = []
+proj = KProject()
 
-    def write_aliases(self):
-        self.build('t/lazy', 'phony', inputs = self.lazy_tests) 
-        self.build('t/strict', 'phony', inputs = self.strict_tests) 
-        self.build('t/ocaml', 'phony', inputs = self.ocaml_tests) 
+plutus_core = proj.source('plutus-core.md') \
+                  .then(proj.tangle().output(proj.builddir('plutus-core.k')))
+krypto = proj.source('ext/blockchain-k-plugin/plugin/krypto.md') \
+             .then(proj.tangle().output(proj.builddir('krypto.k')))
 
-    def test(self, input):
-        expected = input + '.expected'
-        self.lazy_tests += self.lazy.krun_and_check ('$builddir/t/', input, expected)
-        self.strict_tests += self.strict.krun_and_check('$builddir/t/', input, expected)
-        self.ocaml_tests += self.ocaml.krun_and_check('$builddir/t/', input, expected, krun_flags = '--interpret')
+def build_def(name, main_file, backend, main_module = None, syntax_module = None, flags = ""):
+    if main_module   is not None: flags += ' --main-module '   + main_module
+    if syntax_module is not None: flags += ' --syntax-module ' + syntax_module
+    return main_file \
+           .then(proj.kompile(backend = backend)
+                     .variables(     flags = flags
+                               , directory = proj.builddir(name)
+                               )
+                     .implicit([krypto])
+                ) \
+           .alias(name)
 
-    def test_ocaml(self, input):
-        expected = input + '.ocaml.expected'
-        self.ocaml_tests += self.ocaml.krun_and_check('$builddir/t/', input, expected, krun_flags = '--interpret')
+def build_ocaml_with_interpreter( name, main_file
+                                , main_module = None, syntax_module = None
+                                , kompile_flags = ''
+                                , packages = []
+                                ):
+    directory = proj.builddir(name)
+    if main_module   is not None: kompile_flags += ' --main-module '   + main_module
+    if syntax_module is not None: kompile_flags += ' --syntax-module ' + syntax_module
+    return proj.kompile_interpreter( main_file, directory
+                                   , additional_ml_sources = [proj.source('ext/blockchain-k-plugin/plugin/HASH.ml')]
+                                   , kompile_flags = kompile_flags
+                                   , packages = packages
+                                   )
 
-    def test_java(self, input):
-        expected = input + '.java.expected'
-        self.lazy_tests   += self.lazy.krun_and_check('$builddir/t/', input, expected)
-        self.strict_tests += self.strict.krun_and_check('$builddir/t/', input, expected)
+lazy   = build_def( 'lazy'
+                  , plutus_core
+                  , backend = 'java'
+                  , main_module = 'PLUTUS-CORE-LAZY'
+                  , syntax_module = 'PLUTUS-CORE-SYNTAX'
+                  )
+strict = build_def( 'strict'
+                  , plutus_core
+                  , backend = 'java'
+                  , main_module = 'PLUTUS-CORE-STRICT'
+                  , syntax_module = 'PLUTUS-CORE-SYNTAX'
+                  )
+ocaml  = build_ocaml_with_interpreter( 'ocaml'
+                                     , plutus_core
+                                     , main_module = 'PLUTUS-CORE-STRICT'
+                                     , syntax_module = 'PLUTUS-CORE-SYNTAX'
+                                     , kompile_flags = '--hook-namespaces HASH'
+                                     , packages = [ 'gmp', 'dynlink', 'zarith', 'str'
+                                                  , 'uuidm', 'unix', 'cryptokit'
+                                                  ]
+                                     )
 
-    def test_strict(self, input):
-        expected = input + '.expected'
-        self.strict_tests += self.strict.krun_and_check('$builddir/t/', input, expected)
+def do_test(defn, input, expected):
+    return proj.source(input) \
+               .then(defn.krun()) \
+               .then(proj.check(proj.source(expected))) \
+               .default()
 
-plutus = Plutus()
+lazy_tests = []
+strict_tests = []
+ocaml_tests = []
+
+def test(input):
+    global lazy_tests, strict_tests, ocaml_tests
+    expected = input + '.expected'
+    lazy_tests += [ do_test(lazy, input, expected) ]
+    strict_tests += [ do_test(strict, input, expected) ]
+    ocaml_tests += [ do_test(ocaml, input, expected) ]
+
+def test_ocaml(input):
+    global ocaml_tests
+    expected = input + '.ocaml.expected'
+    ocaml_tests += [ do_test(ocaml, input, expected) ]
+
+def test_java(input):
+    global lazy_tests, strict_tests
+    expected = input + '.java.expected'
+    lazy_tests += [ do_test(lazy, input, expected) ]
+    strict_tests += [ do_test(strict, input, expected) ]
+
+def test_strict(input):
+    global strict_tests
+    expected = input + '.expected'
+    strict_tests += [ do_test(strict, input, expected) ]
 
 # Basic tests
 # -----------
@@ -60,11 +96,11 @@ plutus = Plutus()
 # Since the OCaml does not support reachability claims (even
 # concrete ones) these also function as smoke tests for the OCaml backend)
 #
-plutus.test('t/builtin-app.plc')
+test('t/builtin-app.plc')
 
 # We need distinct exptected and actual files for these.
-plutus.test_ocaml('t/bytestring.plc')
-plutus.test_java('t/bytestring.plc')
+test_ocaml('t/bytestring.plc')
+test_java('t/bytestring.plc')
 
 # Cryptography
 # ------------
@@ -72,10 +108,10 @@ plutus.test_java('t/bytestring.plc')
 # We do not yet support hashing on the Java backend since the SHA3 hook does
 # not exist, and the SHA2 hook is missing an alias into the HASH namespace.
 #
-plutus.test_ocaml('t/sha2.plc')
-# plutus.test_java('t/sha2.plc')
-plutus.test_ocaml('t/sha3.plc')
-# plutus.test_java('t/sha3.plc')
+test_ocaml('t/sha2.plc')
+# test_java('t/sha2.plc')
+test_ocaml('t/sha3.plc')
+# test_java('t/sha3.plc')
 
 # Complex tests
 # -------------
@@ -83,10 +119,32 @@ plutus.test_ocaml('t/sha3.plc')
 # These are tests involving recursion, and other tests from the Roman and the
 # IOHK Plutus team.
 #
-plutus.test_strict('t/11-scott-to-int.plc')
-plutus.test('t/if-then-else.plc')
-plutus.test('t/sum-list.plc')
-plutus.test('t/sum.plc')
-plutus.test('t/fact.plc')
+test_strict('t/11-scott-to-int.plc')
+test('t/if-then-else.plc')
+test('t/sum-list.plc')
+test('t/sum.plc')
+test('t/fact.plc')
 
-plutus.write_aliases()
+# Reachability based tests
+# ------------------------
+
+unit_tests  = proj.source('unit-tests.md') \
+                  .then(proj.tangle().output(proj.builddir('unit-tests-spec.k'))) \
+                  .alias('unit-tests')
+lazy_unit   = unit_tests.then(lazy.kprove().ext('lazy')).default()
+
+sum_to_10_spec = proj.source('sum-to-10-spec.k') \
+                     .then(lazy.kprove().ext('lazy')) \
+                     .default()
+
+# TODO: Needs tangle preprocessing
+# strict_unit = unit_tests.then(strict.kprove().ext('strict'))
+
+# sum-to-10-spec.k $tangleddir/verification-spec.k
+
+# Alias' used for convenience
+# ---------------------------
+
+proj.build('t/lazy',   'phony', inputs = Target.to_paths(lazy_tests))
+proj.build('t/strict', 'phony', inputs = Target.to_paths(strict_tests))
+proj.build('t/ocaml',  'phony', inputs = Target.to_paths(ocaml_tests))

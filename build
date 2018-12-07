@@ -2,7 +2,7 @@
 
 # Usage
 # =====
-# 
+#
 # Execute ninja:
 #
 #   ./build <arguments-to-ninja>
@@ -15,7 +15,6 @@ set -eu     # Fail on non-zero exit code, undefined variable
 
 base="$(cd "$(dirname "$0")"; pwd)"
 build_dir="$base/.build"
-k_submodule="$build_dir/k"
 
 # Helpers
 # =======
@@ -23,22 +22,40 @@ k_submodule="$build_dir/k"
 log()  { echo >&2 "=== " $@ ; }
 fail() { log "$@"; exit 1   ; }
 
-init_env() {
-    type -t ninja > /dev/null || fail "ninja-build not available. Giving up."
+# Generate Ninja build file
+# =========================
 
-    # Since K needs a modified ocaml compiler, use a opam root directory private to
-    # this project so as not to intefere with other opam packages such as coq.
-    #
-    export OPAMROOT="$build_dir/opam"
-    eval $(opam config env)
-
+generate_ninja() {
     export PYTHONPATH="$base/ext/"
+    [ -x "$base/ext/kninja/.git" ] || git submodule init "$base/ext/kninja/"
+    python3 "$base/lib/build.py"
+}
+
+# Begin Opam setup
+# ================
+#
+# Since K needs a modified ocaml compiler, use a opam root directory private to
+# this project so as not to intefere with other opam packages such as coq.
+#
+# TODO: This script should really be part of the ninja infrastructure.
+#
+init_opam() {
+    export OPAMROOT="$build_dir/opam"
+    type -t opam  > /dev/null \
+      || fail "opam not installed: OCaml based targets will fail"
+    case "$(opam --version)" in
+    1.2.*) ;;
+        *) fail "unsupported opam version '$(opam --version)': Only version 1.2 supported" ;;
+    esac
+    [ -f "$OPAMROOT/config" ] || opam init --quiet --no-setup --yes
+    eval $(opam config env)
 }
 
 # Main
 # ====
 
-init_env
-python3 lib/build.py
+type -t ninja > /dev/null || fail "ninja-build not available. Giving up."
+generate_ninja
+init_opam
 [[ $# -lt 1 ]] || [[ -- != $1 ]] || { shift ; exec "$@" ; }
-exec ninja -f .build/generated.ninja "$@"
+exec ninja -f "$base/.build/generated.ninja" "$@"

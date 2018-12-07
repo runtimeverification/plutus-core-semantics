@@ -3,9 +3,7 @@
 # Build products
 # --------------
 
-/.build/*
-!/.build/k
-!/.build/pandoc-tangle
+/.build/
 
 # from Crypto / Hash
 
