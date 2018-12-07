@@ -10,3 +10,5 @@
 [submodule "ext/blockchain-k-plugin"]
 	path = ext/blockchain-k-plugin
 	url = https://github.com/runtimeverification/blockchain-k-plugin
+    # Ignore .cmo files etc produced by ocaml compilation process
+    ignore = untracked
