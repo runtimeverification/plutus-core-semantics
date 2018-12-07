@@ -5,4 +5,7 @@
   <env>
     .Map
   </env>
+  <store>
+    .Map
+  </store>
 </generatedTop>
