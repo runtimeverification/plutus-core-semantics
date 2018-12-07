@@ -105,7 +105,7 @@ module PLUTUS-CORE-SYNTAX-BASE
                   | Value
 
     syntax Value ::= "(" "abs" TyVar Kind Value ")"
-                   | "(" "wrap" TyVar Type Value ")"
+                   | "(" "wrap" TyVar Type Value ")" [strict(3)]
                    | "(" "lam" Var Type Term ")"
                    | "(" "con" Constant ")"
 
