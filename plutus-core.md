@@ -508,6 +508,16 @@ module PLUTUS-CORE-BASE
     imports PLUTUS-CORE-CRYPTOGRAPHY
     imports PLUTUS-CORE-ERRORS
     imports PLUTUS-CORE-TYPE-ERASURE
+```
+
+To make reading test output easier, we clear the contents of the `<store>` cell
+when all there is only a single `K` result on top of the `<k>` cell.
+
+```k
+    rule <k> T:ResultTerm </k>
+         <env> .Map </env>
+         <store> S => .Map </store>
+      requires S =/=K .Map
 endmodule
 
 module PLUTUS-CORE-LAZY
