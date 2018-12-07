@@ -192,7 +192,6 @@ verification  = proj.source('verification.md') \
                     .then(proj.tangle().output(proj.builddir('verification-spec.k'))) \
                     .then(lazy.kprove().ext('lazy')) \
                     .alias('verification') \
-                    .default()
 
 sum_to_10_spec = proj.source('sum-to-10-spec.k') \
                      .then(lazy.kprove().ext('lazy')) \
