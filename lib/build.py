@@ -176,6 +176,7 @@ test_typing('t/typing/church-succ.plc')
 test_typing('t/typing/one.plc')
 test_typing('t/typing/case.plc')
 test_typing('t/typing/verify-identity.plc')
+test_typing('t/typing/verify-identity-alt.plc')
 
 # Reachability based tests
 # ------------------------

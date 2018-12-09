@@ -1,0 +1,8 @@
+<generatedTop>
+  <k>
+    ( fun [ ( con bytestring ) ( con 256 ) ] ( fun [ ( con bytestring ) ( con 32 ) ] ( all a0 ( type ) ( fun a0 a0 ) ) ) ) :: ( type )
+  </k>
+  <env>
+    .
+  </env>
+</generatedTop>
