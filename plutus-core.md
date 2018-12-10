@@ -200,6 +200,22 @@ already fully evaluated.
 endmodule
 ```
 
+Here is how we can implement it using stacks of environments instead of one map.
+
+```stack
+    rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
+         <envStack> #env(RHO) ... </envStack>
+
+    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> #popEnv ... </k>
+         <envStack> (. => #env(RHO[X <- V])) ... </envStack>
+
+    rule <k> X:Var => V ... </k>
+         <envStack> #env(X |-> V RHO:Map) ... </envStack>
+
+    rule <k> _:KResult ~> (#popEnv => .) ... </k>
+         <envStack> (#env(RHO) => .) ... </envStack>
+```
+
 ### Lazy
 
 Lazy semantics have new construct `#unevaluated`, holding a term to be evaluated
