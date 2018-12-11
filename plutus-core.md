@@ -200,7 +200,9 @@ already fully evaluated.
 endmodule
 ```
 
-Here is how we can implement it using stacks of environments instead of one map.
+### Alternatives
+
+Here we show how we can use stacks of environments instead of one map.
 
 ```stack
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
@@ -216,7 +218,7 @@ Here is how we can implement it using stacks of environments instead of one map.
          <envStack> (#env(RHO) => .) ... </envStack>
 ```
 
-Here is how we implement it using substitution instead of environments.
+Here we show how we can use substitution instead of closures (strict).
 
 ```substitution
    rule [ (lam X _ M:Term) V:ResultTerm ] => M[V/X]
