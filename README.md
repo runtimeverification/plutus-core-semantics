@@ -1,6 +1,6 @@
 In this repository we implement the Plutus Core specification defined [here][spec].
 The IOHK Plutus implementation is [here][prototype].
-At the moment we target version `v1.0 (RC5.3)`.
+At the moment we target version `v1.0 (RC5.5)`.
 
 Installation
 ============
@@ -13,7 +13,7 @@ are not run against the lazy semantics yet (though they should pass).
 The file `plutus-core.md` defines the Plutus Core language, and the file
 `plutus-core-spec.md` defines unit tests as a reachability specification.
 
-[spec]:        https://github.com/input-output-hk/plutus/plutus-core-spec
+[spec]:        https://github.com/input-output-hk/plutus/tree/master/plutus-core-spec
 [prototype]:   https://github.com/input-output-hk/plutus
 [pandoc]:      https://pandoc.org
 [ninja-build]: https://ninja-build.org
