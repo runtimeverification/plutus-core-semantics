@@ -216,6 +216,12 @@ Here is how we can implement it using stacks of environments instead of one map.
          <envStack> (#env(RHO) => .) ... </envStack>
 ```
 
+Here is how we implement it using substitution instead of environments.
+
+```substitution
+   rule [ (lam X _ M:Term) V:ResultTerm ] => M[V/X]
+```
+
 ### Lazy
 
 Lazy semantics have new construct `#unevaluated`, holding a term to be evaluated
