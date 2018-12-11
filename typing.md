@@ -47,6 +47,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
                   | TyValue
 
     syntax TyValue ::= "(" "con" TyConstant ")"
+                     | "(" "lam" TyVar Kind Type ")" [kabel(tylam)]
                      | NeutralTy
 
     syntax NeutralTy ::= TyVar
@@ -99,7 +100,7 @@ module PLUTUS-CORE-SYNTAX-BASE
                   | Value
 
     syntax Value ::= "(" "abs" TyVar Kind Value ")" [binder]
-                   | "(" "lam" Var Type Term ")"    [strict(2)]
+                   | "(" "lam" Var Type Term ")"    [kabel(termlam), strict(2)]
                    | "(" "con" Constant ")"
                    | "(" "builtin" BuiltinName ")"
 
@@ -265,6 +266,7 @@ module PLUTUS-CORE-TYPING
 
     // Used for manual heating and cooling.
     syntax Hole ::= "#HOLE"
+    syntax Kind ::= Hole
     syntax Type ::= Hole
     syntax KResult ::= Hole
 
@@ -297,6 +299,14 @@ module PLUTUS-CORE-TYPING
     rule <k> TY2 :: K ~> (fun (TY1 :: (type)) #HOLE) => (fun (TY1 :: (type)) (TY2 :: K)) ... </k>
          <env> ((X !! TY1) => .) ... </env>
 
+    // tylam heating
+    rule <k> (lam ALPHA:TyVar J:Kind TY:Type) => TY ~> (fun J #HOLE) ... </k>
+         <env> (. => (ALPHA :: J)) ... </env>
+
+    // tylam cooling
+    rule <k> TY :: K ~> (fun J:Kind #HOLE) => (fun J K) ... </k>
+         <env> ((ALPHA :: J) => .) ... </env>
+
     // tyfun
     rule (fun (TY1 :: (type)) (TY2 :: (type))) => (fun TY1 TY2) :: (type)
 
@@ -306,7 +316,15 @@ module PLUTUS-CORE-TYPING
 
     // error
     rule (error A :: (type)) => A :: (type)
+```
 
+Reduction at the type level.
+
+```k
+    rule tyapp((lam ALPHA:TyVar J:Kind TY1:Type), TY2:Type) => TY1[TY2/ALPHA]
+```
+
+```k
 endmodule
 ```
 
