@@ -13,8 +13,8 @@ are not run against the lazy semantics yet (though they should pass).
 The file `plutus-core.md` defines the Plutus Core language, and the file
 `plutus-core-spec.md` defines unit tests as a reachability specification.
 
-[spec]:        https://github.com/psygnisfive/Plutus-Core-Spec
-[prototype]:   https://github.com/input-output-hk/plutus-prototype
+[spec]:        https://github.com/input-output-hk/plutus/plutus-core-spec
+[prototype]:   https://github.com/input-output-hk/plutus
 [pandoc]:      https://pandoc.org
 [ninja-build]: https://ninja-build.org
 
@@ -32,6 +32,8 @@ Reference implementation
 
 Specification
 -------------
+
+- Type of integers/bytestrings in syntax does not match with Figure 13.
 
 - Type synthesis (Fig. 5), inst rule - should S be A?
 
