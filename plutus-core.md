@@ -200,30 +200,6 @@ already fully evaluated.
 endmodule
 ```
 
-### Alternatives
-
-Here we show how we can use stacks of environments instead of one map.
-
-```stack
-    rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
-         <envStack> #env(RHO) ... </envStack>
-
-    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> #popEnv ... </k>
-         <envStack> (. => #env(RHO[X <- V])) ... </envStack>
-
-    rule <k> X:Var => V ... </k>
-         <envStack> #env(X |-> V RHO:Map) ... </envStack>
-
-    rule <k> _:KResult ~> (#popEnv => .) ... </k>
-         <envStack> (#env(RHO) => .) ... </envStack>
-```
-
-Here we show how we can use substitution instead of closures (strict).
-
-```substitution
-   rule [ (lam X _ M:Term) V:ResultTerm ] => M[V/X]
-```
-
 ### Lazy
 
 Lazy semantics have new construct `#unevaluated`, holding a term to be evaluated
@@ -265,6 +241,30 @@ their arguments to be evaluated fully.
     context [ (builtin B:BuiltinName) HOLE ]
     context [ [ (builtin B:BinaryBuiltin) V:ResultTerm ] HOLE ]
 endmodule
+```
+
+### Alternatives
+
+Here we show how we can use stacks of environments instead of one map.
+
+```stack
+    rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
+         <envStack> #env(RHO) ... </envStack>
+
+    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> #popEnv ... </k>
+         <envStack> (. => #env(RHO[X <- V])) ... </envStack>
+
+    rule <k> X:Var => V ... </k>
+         <envStack> #env(X |-> V RHO:Map) ... </envStack>
+
+    rule <k> _:KResult ~> (#popEnv => .) ... </k>
+         <envStack> (#env(RHO) => .) ... </envStack>
+```
+
+Here we show how we can use substitution instead of closures (strict).
+
+```substitution
+   rule [ (lam X _ M:Term) V:ResultTerm ] => M[V/X]
 ```
 
 Builtins
