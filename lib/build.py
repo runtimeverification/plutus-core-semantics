@@ -47,15 +47,15 @@ strict = build_def( 'strict'
                   , syntax_module = 'PLUTUS-CORE-SYNTAX'
                   )
 
-ocaml  = build_ocaml_with_interpreter( 'ocaml'
-                                     , plutus_core
-                                     , main_module = 'PLUTUS-CORE-STRICT'
-                                     , syntax_module = 'PLUTUS-CORE-SYNTAX'
-                                     , kompile_flags = '--hook-namespaces HASH'
-                                     , packages = [ 'gmp', 'dynlink', 'zarith', 'str'
-                                                  , 'uuidm', 'unix', 'cryptokit'
-                                                  ]
-                                     )
+ocaml_strict  = build_ocaml_with_interpreter( 'ocaml-strict'
+                                            , plutus_core
+                                            , main_module = 'PLUTUS-CORE-STRICT'
+                                            , syntax_module = 'PLUTUS-CORE-SYNTAX'
+                                            , kompile_flags = '--hook-namespaces HASH'
+                                            , packages = [ 'gmp', 'dynlink', 'zarith', 'str'
+                                                         , 'uuidm', 'unix', 'cryptokit'
+                                                         ]
+                                            )
 
 typing_k = proj.source('typing.md') \
                .then(proj.tangle().output(proj.builddir('typing.k')))
@@ -73,20 +73,20 @@ def do_test(defn, input, expected):
 
 lazy_tests = []
 strict_tests = []
-ocaml_tests = []
+ocaml_strict_tests = []
 typing_tests = []
 
 def test(input):
-    global lazy_tests, strict_tests, ocaml_tests
+    global lazy_tests, strict_tests, ocaml_strict_tests
     expected = input + '.expected'
     lazy_tests += [ do_test(lazy, input, expected) ]
     strict_tests += [ do_test(strict, input, expected) ]
-    ocaml_tests += [ do_test(ocaml, input, expected) ]
+    ocaml_strict_tests += [ do_test(ocaml_strict, input, expected) ]
 
 def test_ocaml(input):
-    global ocaml_tests
+    global ocaml_strict_tests
     expected = input + '.ocaml.expected'
-    ocaml_tests += [ do_test(ocaml, input, expected) ]
+    ocaml_strict_tests += [ do_test(ocaml_strict, input, expected) ]
 
 def test_java(input):
     global lazy_tests, strict_tests
@@ -208,8 +208,8 @@ typing_spec = proj.source('typing-tests.md') \
 # Alias' used for convenience
 # ---------------------------
 
-proj.build('t/lazy',   'phony', inputs = Target.to_paths(lazy_tests))
-proj.build('t/strict', 'phony', inputs = Target.to_paths(strict_tests))
-proj.build('t/ocaml',  'phony', inputs = Target.to_paths(ocaml_tests))
-proj.build('t/typing', 'phony', inputs = Target.to_paths(typing_tests))
+proj.build('t/lazy',          'phony', inputs = Target.to_paths(lazy_tests))
+proj.build('t/strict',        'phony', inputs = Target.to_paths(strict_tests))
+proj.build('t/ocaml-strict',  'phony', inputs = Target.to_paths(ocaml_strict_tests))
+proj.build('t/typing',        'phony', inputs = Target.to_paths(typing_tests))
 
