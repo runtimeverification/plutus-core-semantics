@@ -32,7 +32,7 @@ def build_ocaml_with_interpreter( name, main_file
                                    , additional_ml_sources = [proj.source('ext/blockchain-k-plugin/plugin/HASH.ml')]
                                    , kompile_flags = kompile_flags
                                    , packages = packages
-                                   )
+                                   ).alias(name)
 
 lazy   = build_def( 'lazy'
                   , plutus_core
