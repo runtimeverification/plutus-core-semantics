@@ -343,7 +343,7 @@ module PLUTUS-CORE-TYPING-AUX
     syntax KItem ::= Var "!!" Type
 
     // Lookup first occurrence variable in typing/kinding environment
-    syntax K ::= #lookup(K, K)
+    syntax KItem ::= #lookup(K, K)
     rule #lookup((ALPHA :: K) ~> REST:K, ALPHA) => ALPHA :: K
     rule #lookup((X:Var !! T) ~> REST:K, X    ) => T
     rule #lookup((ALPHA :: K) ~> REST:K, V    ) => #lookup(REST, V)

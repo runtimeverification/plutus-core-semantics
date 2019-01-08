@@ -215,8 +215,8 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
     imports PLUTUS-CORE-LAMBDA-CALCULUS-BASE
 
     // Holder for term to be evaluated in a particular map
-    syntax K ::= #unevaluated(Term, Map)
-               | "(" "update" Int ")"
+    syntax KItem ::= #unevaluated(Term, Map)
+                   | "(" "update" Int ")"
 
     rule <k> [closure(RHO, X, M) TM] => M ~> RHO' ... </k>
          <env> RHO' => RHO[X <- !N] </env>
