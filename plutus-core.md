@@ -145,9 +145,8 @@ bytestring tokens to the `Bytes` sort in K), our concept of `KResult`, which def
 "fully reduced" terms, differs slightly from the specification's notion of `Value`s.
 
 ```k
-    syntax ResultTerm
-    syntax Value   ::= ResultTerm
-    syntax KResult ::= ResultTerm
+    syntax KResult
+    syntax Value   ::= KResult
 endmodule
 ```
 
@@ -164,17 +163,19 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-BASE
     imports PLUTUS-CORE-CONFIGURATION
 
     syntax Closure    ::= closure(Map, Var, Term)
-    syntax ResultTerm ::= Closure
+    syntax KResult ::= Closure
 
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
 
     rule <k> X:Var => V ... </k>
          <env> ... X |-> N ... </env>
-         <store> ... N |-> V:ResultTerm ... </store>
+         <store> ... N |-> V:Term ... </store>
+      requires isKResult(V)
 
-    rule <k> _:KResult ~> (RHO:Map => .) ... </k>
+    rule <k> V:Term ~> (RHO:Map => .) ... </k>
          <env> _ => RHO </env>
+      requires isKResult(V)
 endmodule
 ```
 
@@ -189,16 +190,18 @@ Since we are sharing the syntax module for the strict and lazy semantics, we
 need to manually implement strictness in the second argument:
 
 ```k
-    context [ V:ResultTerm HOLE ]
+    context [ V:Term HOLE ]
+      requires isKResult(V)
 ```
 
 In the strict semantics, applying a closure requires the second argument is
 already fully evaluated.
 
 ```k
-    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> RHO' ... </k>
+    rule <k> [closure(RHO, X, M) V:Term] => M ~> RHO' ... </k>
          <env> RHO' => RHO[X <- !N] </env>
          <store> ... .Map => (!N:Int |-> V) ... </store>
+      requires isKResult(V)
 endmodule
 ```
 
@@ -232,8 +235,9 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-LAZY
          </k>
          <env> RHO' => RHO </env>
 
-    rule <k> V:ResultTerm ~> ((update N) => .) ... </k>
+    rule <k> V:Term ~> ((update N) => .) ... </k>
          <store> ... N |-> (_ => V) ... </store>
+      requires isKResult(V)
 ```
 
 However, even though we are not strict in general, builtins need
@@ -241,7 +245,8 @@ their arguments to be evaluated fully.
 
 ```k
     context [ (builtin B:BuiltinName) HOLE ]
-    context [ [ (builtin B:BinaryBuiltin) V:ResultTerm ] HOLE ]
+    context [ [ (builtin B:BinaryBuiltin) V:Term ] HOLE ]
+      requires isKResult(V)
 endmodule
 ```
 
@@ -253,20 +258,23 @@ Here we show how we can use stacks of environments instead of one map.
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
          <envStack> #env(RHO) ... </envStack>
 
-    rule <k> [closure(RHO, X, M) V:ResultTerm] => M ~> #popEnv ... </k>
+    rule <k> [closure(RHO, X, M) V:Term] => M ~> #popEnv ... </k>
          <envStack> (. => #env(RHO[X <- V])) ... </envStack>
+      requires isKResult(V)
 
     rule <k> X:Var => V ... </k>
          <envStack> #env(X |-> V RHO:Map) ... </envStack>
 
-    rule <k> _:KResult ~> (#popEnv => .) ... </k>
+    rule <k> V:Term ~> (#popEnv => .) ... </k>
          <envStack> (#env(RHO) => .) ... </envStack>
+      requires isKResult(V)
 ```
 
 Here we show how we can use substitution instead of closures (strict).
 
 ```substitution
-   rule [ (lam X _ M:Term) V:ResultTerm ] => M[V/X]
+   rule [ (lam X _ M:Term) V:Term ] => M[V/X]
+     requires isKResult(V)
 ```
 
 Builtins
@@ -280,9 +288,10 @@ module PLUTUS-CORE-BUILTINS
 
     syntax KItem ::= "#failure"
 
-    rule isResultTerm((builtin B:BinaryBuiltin)) => true
-    rule isResultTerm((builtin B:UnaryBuiltin )) => true
-    rule isResultTerm([(builtin B:BinaryBuiltin) TM:ResultTerm]) => true
+    rule isKResult((builtin B:BinaryBuiltin)) => true
+    rule isKResult((builtin B:UnaryBuiltin )) => true
+    rule isKResult([(builtin B:BinaryBuiltin) TM:Term]) => true
+      requires isKResult(TM)
 endmodule
 ```
 
@@ -294,8 +303,8 @@ module PLUTUS-CORE-BOUNDED-INTEGERS
     imports PLUTUS-CORE-CONFIGURATION
     imports PLUTUS-CORE-BUILTINS
 
-    rule isResultTerm((con S ! I:Int)) => true
-    rule isResultTerm((con (I:Int):Constant)) => true
+    rule isKResult((con S ! I:Int)) => true
+    rule isKResult((con (I:Int):Constant)) => true
 
     syntax KItem ::= #mkInt(Size, Int) [function]
     rule #mkInt(S, V) => (con S ! V)
@@ -374,7 +383,7 @@ We:
 
 ```k
     syntax Constant ::= Size "!" Bytes
-    rule isResultTerm((con S:Size ! B:Bytes)) => true
+    rule isKResult((con S:Size ! B:Bytes)) => true
 
     syntax String ::= ByteString2String(ByteString) [function, hook(STRING.token2string)]
     rule (con S ! BS:ByteString)
@@ -544,10 +553,10 @@ To make reading test output easier, we clear the contents of the `<store>` cell
 when all there is only a single `K` result on top of the `<k>` cell.
 
 ```k
-    rule <k> T:ResultTerm </k>
+    rule <k> T:Term </k>
          <env> .Map </env>
          <store> S => .Map </store>
-      requires S =/=K .Map
+      requires S =/=K .Map andBool isKResult(T)
 endmodule
 
 module PLUTUS-CORE-LAZY
