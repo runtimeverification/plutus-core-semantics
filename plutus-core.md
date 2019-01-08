@@ -126,7 +126,8 @@ Configuration
 module PLUTUS-CORE-CONFIGURATION
     imports PLUTUS-CORE-SYNTAX-BASE
     imports PLUTUS-CORE-ABBREVIATIONS
-    imports DOMAINS
+    imports MAP
+    imports STRING
 
     configuration <k> $PGM:Program </k>
                   <env> .Map </env>
