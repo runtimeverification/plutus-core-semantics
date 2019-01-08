@@ -43,7 +43,7 @@ module PLUTUS-CORE-SYNTAX-TYPES
     syntax Type ::= TyVar
                   | "(" "fun" Type Type ")"       [seqstrict]
                   | "(" "all" TyVar Kind Type ")" [binder]
-                  | "[" Type Type "]"             [klabel(tyapp), seqstrict]
+                  | "[" Type Type "]"             [klabel(tyapp), symbol, seqstrict]
                   | TyValue
 
     syntax TyValue ::= "(" "con" TyConstant ")"
@@ -95,7 +95,7 @@ module PLUTUS-CORE-SYNTAX-BASE
 
     syntax Term ::= Var
                   | "{" Term Type "}"    [seqstrict]
-                  | "[" Term Term "]"    [klabel(termapp), seqstrict]
+                  | "[" Term Term "]"    [klabel(termapp), symbol, seqstrict]
                   | "(" "error" Type ")" [strict]
                   | Value
 

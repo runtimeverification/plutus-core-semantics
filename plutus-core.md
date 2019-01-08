@@ -44,15 +44,15 @@ module PLUTUS-CORE-SYNTAX-TYPES
                         | TyBuiltinName
 
     syntax Type ::= TyVar
-                  | "(" "fun" Type Type ")"
-                  | "(" "all" TyVar Kind Type ")"
-                  | "(" "fix" TyVar Type ")"
+                  | "(" "fun" Type Type ")" [klabel(fun)]
+                  | "(" "all" TyVar Kind Type ")" [klabel(all)]
+                  | "(" "fix" TyVar Type ")" [klabel(fix)]
                   | "[" Type Type "]" [klabel(tyapp)]
                   | TyValue
 
-    syntax TyValue ::= "(" "fun" TyValue TyValue ")"
-                     | "(" "all" TyVar Kind TyValue ")"
-                     | "(" "fix" TyVar TyValue ")"
+    syntax TyValue ::= "(" "fun" TyValue TyValue ")" [klabel(fun)]
+                     | "(" "all" TyVar Kind TyValue ")" [klabel(all)]
+                     | "(" "fix" TyVar TyValue ")" [klabel(fix)]
                      | "(" "lam" TyVar Kind Type ")"
                      | "(" "con" TyConstant ")"
                      | NeutralTy
@@ -103,9 +103,10 @@ module PLUTUS-CORE-SYNTAX-BASE
                   // but both are strict in the first argument
                   | "[" Term Term "]" [strict(1), klabel(termapp)]
                   | "(" "error" Type ")"
+                  | "(" "abs" TyVar Kind Term ")" [klabel(abs)]
                   | Value
 
-    syntax Value ::= "(" "abs" TyVar Kind Value ")"
+    syntax Value ::= "(" "abs" TyVar Kind Value ")" [klabel(abs)]
                    | "(" "wrap" TyVar Type Value ")"
                    | "(" "lam" Var Type Term ")"
                    | "(" "con" Constant ")"
