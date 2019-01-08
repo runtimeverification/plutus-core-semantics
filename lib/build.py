@@ -47,23 +47,19 @@ strict = build_def( 'strict'
                   , syntax_module = 'PLUTUS-CORE-SYNTAX'
                   )
 
-ocaml_strict  = build_ocaml_with_interpreter( 'ocaml-strict'
+llvm_strict  = build_def( 'llvm-strict'
                                             , plutus_core
+                  , backend = 'llvm'
                                             , main_module = 'PLUTUS-CORE-STRICT'
                                             , syntax_module = 'PLUTUS-CORE-SYNTAX'
-                                            , kompile_flags = '--hook-namespaces HASH'
-                                            , packages = [ 'gmp', 'dynlink', 'zarith', 'str'
-                                                         , 'uuidm', 'unix', 'cryptokit'
-                                                         ]
+                  , flags = "-ccopt ../../../ext/blockchain-k-plugin/plugin-c/crypto.cpp -ccopt -lcryptopp"
                                             )
-ocaml_lazy = build_ocaml_with_interpreter( 'ocaml-lazy'
+llvm_lazy = build_def( 'llvm-lazy'
                                          , plutus_core
+                  , backend = 'llvm'
                                          , main_module = 'PLUTUS-CORE-LAZY'
                                          , syntax_module = 'PLUTUS-CORE-SYNTAX'
-                                         , kompile_flags = '--hook-namespaces HASH'
-                                         , packages = [ 'gmp', 'dynlink', 'zarith', 'str'
-                                                      , 'uuidm', 'unix', 'cryptokit'
-                                                      ]
+                  , flags = "-ccopt ../../../ext/blockchain-k-plugin/plugin-c/crypto.cpp -ccopt -lcryptopp"
                                          )
 
 typing_k = proj.source('typing.md') \
@@ -82,23 +78,23 @@ def do_test(defn, input, expected):
 
 lazy_tests = []
 strict_tests = []
-ocaml_strict_tests = []
-ocaml_lazy_tests = []
+llvm_strict_tests = []
+llvm_lazy_tests = []
 typing_tests = []
 
 def test(input):
-    global lazy_tests, strict_tests, ocaml_strict_tests, ocaml_lazy_tests
+    global lazy_tests, strict_tests, llvm_strict_tests, llvm_lazy_tests
     expected = input + '.expected'
     lazy_tests += [ do_test(lazy, input, expected) ]
     strict_tests += [ do_test(strict, input, expected) ]
-    ocaml_strict_tests += [ do_test(ocaml_strict, input, expected) ]
-    ocaml_lazy_tests += [ do_test(ocaml_lazy, input, expected) ]
+    llvm_strict_tests += [ do_test(llvm_strict, input, expected) ]
+    llvm_lazy_tests += [ do_test(llvm_lazy, input, expected) ]
 
-def test_ocaml(input):
-    global ocaml_strict_tests, ocaml_lazy_tests
-    expected = input + '.ocaml.expected'
-    ocaml_strict_tests += [ do_test(ocaml_strict, input, expected) ]
-    ocaml_lazy_tests   += [ do_test(ocaml_lazy,   input, expected) ]
+def test_llvm(input):
+    global llvm_strict_tests, llvm_lazy_tests
+    expected = input + '.llvm.expected'
+    llvm_strict_tests += [ do_test(llvm_strict, input, expected) ]
+    llvm_lazy_tests   += [ do_test(llvm_lazy,   input, expected) ]
 
 def test_java(input):
     global lazy_tests, strict_tests
@@ -107,10 +103,10 @@ def test_java(input):
     strict_tests += [ do_test(strict, input, expected) ]
 
 def test_strict(input):
-    global strict_tests, ocaml_strict_tests
+    global strict_tests, llvm_strict_tests
     expected = input + '.expected'
     strict_tests += [ do_test(strict, input, expected) ]
-    ocaml_strict_tests += [ do_test(ocaml_strict, input, expected) ]
+    llvm_strict_tests += [ do_test(llvm_strict, input, expected) ]
 
 def test_typing(input):
     global typing_tests
@@ -127,7 +123,7 @@ test('t/builtin-app.plc')
 
 # We need distinct exptected files for these since bytestrings are
 # pretty printed differently.
-test_ocaml('t/bytestring.plc')
+test_llvm('t/bytestring.plc')
 test_java('t/bytestring.plc')
 
 # Cryptography
@@ -136,9 +132,9 @@ test_java('t/bytestring.plc')
 # We do not yet support hashing on the Java backend since the SHA3 hook does
 # not exist, and the SHA2 hook is missing an alias into the HASH namespace.
 #
-test_ocaml('t/sha2.plc')
+test_llvm('t/sha2.plc')
 # test_java('t/sha2.plc')
-test_ocaml('t/sha3.plc')
+test_llvm('t/sha3.plc')
 # test_java('t/sha3.plc')
 
 # Complex tests
@@ -225,7 +221,7 @@ typing_spec = proj.source('typing-tests.md') \
 
 proj.build('t/lazy',          'phony', inputs = Target.to_paths(lazy_tests))
 proj.build('t/strict',        'phony', inputs = Target.to_paths(strict_tests))
-proj.build('t/ocaml-strict',  'phony', inputs = Target.to_paths(ocaml_strict_tests))
-proj.build('t/ocaml-lazy',    'phony', inputs = Target.to_paths(ocaml_lazy_tests))
+proj.build('t/llvm-strict',  'phony', inputs = Target.to_paths(llvm_strict_tests))
+proj.build('t/llvm-lazy',    'phony', inputs = Target.to_paths(llvm_lazy_tests))
 proj.build('t/typing',        'phony', inputs = Target.to_paths(typing_tests))
 
