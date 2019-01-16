@@ -139,6 +139,7 @@ test('t/sum.plc')
 test('t/fact.plc')
 test('t/succ-integer.plc')
 test('t/factorial.plc')
+test('t/fibonacci.plc')
 
 # Typing tests
 # ------------

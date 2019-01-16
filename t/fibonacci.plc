@@ -1,0 +1,160 @@
+(program 1.0.0 [
+  {
+    (abs
+      s
+      (size)
+      [
+        {
+          {
+            (abs
+              a
+              (type)
+              (abs
+                b
+                (type)
+                (lam
+                  f
+                  (fun (fun a b) (fun a b))
+                  [
+                    {
+                      (abs
+                        a
+                        (type)
+                        (lam
+                          s
+                          [(lam a (type) (fix self (fun self a))) a]
+                          [ (unwrap s) s ]
+                        )
+                      )
+                      (fun a b)
+                    }
+                    (wrap
+                      self
+                      [(lam a (type) (fun self a)) (fun a b)]
+                      (lam
+                        s
+                        [(lam a (type) (fix self (fun self a))) (fun a b)]
+                        (lam
+                          x
+                          a
+                          [
+                            [
+                              f
+                              [
+                                {
+                                  (abs
+                                    a
+                                    (type)
+                                    (lam
+                                      s
+                                      [(lam a (type) (fix self (fun self a))) a]
+                                      [ (unwrap s) s ]
+                                    )
+                                  )
+                                  (fun a b)
+                                }
+                                s
+                              ]
+                            ]
+                            x
+                          ]
+                        )
+                      )
+                    )
+                  ]
+                )
+              )
+            )
+            [(con integer) s]
+          }
+          [(con integer) s]
+        }
+        (lam
+          rec
+          (fun [(con integer) s] [(con integer) s])
+          (lam
+            i
+            [(con integer) s]
+            [
+              [
+                [
+                  {
+                    (abs
+                      a
+                      (type)
+                      (lam
+                        b
+                        (all a (type) (fun a (fun a a)))
+                        (lam
+                          x
+                          (fun (all a (type) (fun a a)) a)
+                          (lam
+                            y
+                            (fun (all a (type) (fun a a)) a)
+                            [
+                              [ [ { b (fun (all a (type) (fun a a)) a) } x ] y ]
+                              (abs a (type) (lam x a x))
+                            ]
+                          )
+                        )
+                      )
+                    )
+                    [(con integer) s]
+                  }
+                  [
+                    [ { (builtin lessThanEqualsInteger) s } i ]
+                    [
+                      [
+                        { { (builtin resizeInteger) (con 1) } s }
+                        [ { (builtin sizeOfInteger) s } i ]
+                      ]
+                      (con 1 ! 1)
+                    ]
+                  ]
+                ]
+                (lam u (all a (type) (fun a a)) i)
+              ]
+              (lam
+                u
+                (all a (type) (fun a a))
+                [
+                  [
+                    { (builtin addInteger) s }
+                    [
+                      rec
+                      [
+                        [ { (builtin subtractInteger) s } i ]
+                        [
+                          [
+                            { { (builtin resizeInteger) (con 1) } s }
+                            [ { (builtin sizeOfInteger) s } i ]
+                          ]
+                          (con 1 ! 1)
+                        ]
+                      ]
+                    ]
+                  ]
+                  [
+                    rec
+                    [
+                      [ { (builtin subtractInteger) s } i ]
+                      [
+                        [
+                          { { (builtin resizeInteger) (con 1) } s }
+                          [ { (builtin sizeOfInteger) s } i ]
+                        ]
+                        (con 1 ! 2)
+                      ]
+                    ]
+                  ]
+                ]
+              )
+            ]
+          )
+        )
+      ]
+    )
+    (con 4)
+  }
+  (con 4 ! 28)
+])
