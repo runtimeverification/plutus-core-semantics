@@ -483,22 +483,25 @@ module PLUTUS-CORE-ABBREVIATIONS
     syntax TyValue ::= "#unit"
     rule #unit => (all $alpha (type) (fun $alpha $alpha))
 
-    syntax Term ::= "#unitval"
-    rule #unitval => (abs $alpha (type) (lam $x $alpha $x))
+    syntax Term ::= "#one"
+    rule #one => (abs $alpha (type) (lam $x $alpha $x))
 
     syntax Term ::= "#true"
                   | "#false"
-    rule #true => (abs $alpha (type) (lam $t (fun #unit $alpha) (lam $f (fun #unit $alpha) [$t #unitval])))
-    rule #false => (abs $alpha (type) (lam $t (fun #unit $alpha) (lam $f (fun #unit $alpha) [$f #unitval])))
+    rule #true  => (abs $alpha (type) (lam $t $alpha (lam $f $alpha $t)))
+    rule #false => (abs $alpha (type) (lam $t $alpha (lam $f $alpha $f)))
 
     syntax TyValue ::= "#boolean"
 
     syntax Term ::= "#case"
-    rule #case => (abs $alpha (type) (lam $bv #boolean (lam $t $alpha (lam $f $alpha
-           [[ {$bv $alpha}
-             (lam $x #unit $t)]
-             (lam $x #unit $f)
-           ] ))))
+    rule #case => (abs $alpha (type)
+                  (lam $bv #boolean
+                  (lam $t (fun #unit $alpha)
+                  (lam $f (fun #unit $alpha)
+                    [
+                      [ [ {$bv (fun #unit $alpha)} $t] $f ]
+                      #one
+                    ] ))))
 
     syntax Term ::= "#strict-combinator" | "#Y-combinator" | "#fix"
 

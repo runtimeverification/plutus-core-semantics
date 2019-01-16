@@ -160,7 +160,7 @@ Booleans & Unit
 
 ```k
 rule <k> [[ [[(builtin equalsInteger) (con 3 ! 3)] (con 3 ! 3)]
-              (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
+              (con 3 ! 1)] (con 3 ! 2)]
        => (con 3 ! 1)
      </k>
      <env> .Map => .Map </env>
@@ -171,7 +171,7 @@ rule <k> [[ [[(builtin equalsInteger) (con 3 ! 3)] (con 3 ! 3)]
 
 ```k
 rule <k> [[ [[(builtin equalsInteger) (con 3 ! 3)] (con 3 ! 2)]
-             (lam x a (con 3 ! 1))] (lam x a (con 3 ! 2))]
+             (con 3 ! 1)] (con 3 ! 2)]
        => (con 3 ! 2)
      </k>
      <env> .Map => .Map </env>
