@@ -134,7 +134,6 @@ test_ocaml('t/sha3.plc')
 # IOHK Plutus team.
 #
 test_strict('t/11-scott-to-int.plc')
-test('t/if-then-else.plc')
 test('t/sum-list.plc')
 test('t/sum.plc')
 test('t/fact.plc')
