@@ -3,7 +3,10 @@
     (abs
       s
       (size)
-      [
+      (lam
+        i0
+        [(con integer) s]
+      [ [
         {
           {
             (abs
@@ -152,7 +155,7 @@
             ]
           )
         )
-      ]
+      ] i0])
     )
     (con 4)
   }
