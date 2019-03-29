@@ -52,7 +52,7 @@ llvm_strict  = build_def( 'llvm-strict'
                   , backend = 'llvm'
                                             , main_module = 'PLUTUS-CORE-STRICT'
                                             , syntax_module = 'PLUTUS-CORE-SYNTAX'
-                  , flags = "-ccopt ../../../ext/blockchain-k-plugin/plugin-c/crypto.cpp -ccopt -lcryptopp"
+                  , flags = '' # "-ccopt ../../../ext/blockchain-k-plugin/plugin-c/crypto.cpp -ccopt -lcryptopp"
                                             )
 llvm_lazy = build_def( 'llvm-lazy'
                                          , plutus_core

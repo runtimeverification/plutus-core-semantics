@@ -443,8 +443,8 @@ Cryptographic Builtins
 module PLUTUS-CORE-CRYPTOGRAPHY
     imports PLUTUS-CORE-BYTESTRINGS
     imports HASH
-    rule [(builtin sha2_256) (con S ! B:Bytes)] => #mkByteString(256, Sha2_256(B))
-    rule [(builtin sha3_256) (con S ! B:Bytes)] => #mkByteString(256, Sha3_256(B))
+//    rule [(builtin sha2_256) (con S ! B:Bytes)] => #mkByteString(256, Sha2_256(B))
+//    rule [(builtin sha3_256) (con S ! B:Bytes)] => #mkByteString(256, Sha3_256(B))
 endmodule
 ```
 
