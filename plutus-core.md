@@ -168,10 +168,10 @@ module PLUTUS-CORE-LAMBDA-CALCULUS-BASE
     rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
          <env> RHO </env>
 
-    rule <k> X:Var => V ... </k>
-         <env> ... X |-> N ... </env>
-         <store> ... N |-> V:Term ... </store>
-      requires isKResult(V)
+    rule <k> X:Var => STORE[ENV[X]] ... </k>
+         <env> ENV:Map </env>
+         <store> STORE:Map </store>
+      requires isKResult(STORE[ENV[X]])
 
     rule <k> V:Term ~> (RHO:Map => .) ... </k>
          <env> _ => RHO </env>
