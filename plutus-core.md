@@ -24,11 +24,15 @@ endmodule
 module PLUTUS-CORE-COMMON
     imports INT
     imports BUILTIN-ID-TOKENS
+    imports ID
 
     syntax Name
 
     // TODO: This should not allow negative integers
     syntax Size ::= Int
+
+    syntax Name ::= freshName(Int)    [freshGenerator, function]
+    rule freshName(I:Int) => { #parseToken("Name", "_" +String Int2String(I)) }:>Name
 endmodule
 ```
 
@@ -72,6 +76,8 @@ module PLUTUS-CORE-SYNTAX-BASE
     imports PLUTUS-CORE-SYNTAX-TYPES
 
     syntax Var           ::= Name
+    syntax KVar          ::= Var
+
     syntax BuiltinName   ::= Name
 
     syntax ByteString ::= r"\\#[a-fA-F0-9][a-fA-F0-9]*" [notInRules, token, autoReject]
@@ -109,7 +115,7 @@ module PLUTUS-CORE-SYNTAX-BASE
 
     syntax Value ::= "(" "abs" TyVar Kind Value ")" [klabel(abs)]
                    | "(" "wrap" TyVar Type Value ")"
-                   | "(" "lam" Var Type Term ")"
+                   | "(" "lam" Var Type Term ")" [binder]
                    | "(" "con" Constant ")"
                    | "(" "builtin" BuiltinName ")"
 
