@@ -1,5 +1,6 @@
 ```k
 requires "krypto.k"
+requires "substitution.k"
 ```
 
 Syntax
@@ -162,20 +163,7 @@ environments, are common in both lazy and strict semantics.
 module PLUTUS-CORE-LAMBDA-CALCULUS-BASE
     imports PLUTUS-CORE-CONFIGURATION
 
-    syntax Closure    ::= closure(Map, Var, Term)
-    syntax KResult ::= Closure
-
-    rule <k> (lam X _ M:Term) => closure(RHO, X, M) ... </k>
-         <env> RHO </env>
-
-    rule <k> X:Var => STORE[ENV[X]] ... </k>
-         <env> ENV:Map </env>
-         <store> STORE:Map </store>
-      requires isKResult(STORE[ENV[X]])
-
-    rule <k> V:Term ~> (RHO:Map => .) ... </k>
-         <env> _ => RHO </env>
-      requires isKResult(V)
+    rule isKResult((lam X TY TM:Term)) => true
 endmodule
 ```
 
@@ -184,6 +172,7 @@ endmodule
 ```k
 module PLUTUS-CORE-LAMBDA-CALCULUS-STRICT
     imports PLUTUS-CORE-LAMBDA-CALCULUS-BASE
+    imports SUBSTITUTION
 ```
 
 Since we are sharing the syntax module for the strict and lazy semantics, we
@@ -198,10 +187,8 @@ In the strict semantics, applying a closure requires the second argument is
 already fully evaluated.
 
 ```k
-    rule <k> [closure(RHO, X, M) V:Term] => M ~> RHO' ... </k>
-         <env> RHO' => RHO[X <- !N] </env>
-         <store> ... .Map => (!N:Int |-> V) ... </store>
-      requires isKResult(V)
+   rule [ (lam X _ M:Term) V:Term ] => M[V/X]
+     requires isKResult(V)
 endmodule
 ```
 

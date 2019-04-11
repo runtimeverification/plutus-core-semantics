@@ -120,6 +120,7 @@ def test_typing(input):
 # concrete ones) these also function as smoke tests for the OCaml backend)
 #
 test('t/builtin-app.plc')
+test('t/lambda-app.plc')
 
 # We need distinct exptected files for these since bytestrings are
 # pretty printed differently.
