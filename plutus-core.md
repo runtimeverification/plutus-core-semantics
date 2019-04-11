@@ -13,10 +13,6 @@ defining rules:
 module PLUTUS-CORE-SYNTAX
     imports PLUTUS-CORE-SYNTAX-BASE
     imports PLUTUS-CORE-ABBREVIATIONS
-
-    syntax Name ::= r"[a-zA-Z][a-zA-Z0-9_']*" [notInRules, token, autoReject]
-                  | #LowerId                  [notInRules, token, autoReject]
-                  | #UpperId                  [notInRules, token, autoReject]
 endmodule
 ```
 
@@ -24,9 +20,9 @@ endmodule
 module PLUTUS-CORE-COMMON
     imports INT
     imports BUILTIN-ID-TOKENS
-    imports ID
+    imports KVAR
 
-    syntax Name
+    syntax Name ::= KVar
 
     // TODO: This should not allow negative integers
     syntax Size ::= Int
@@ -76,8 +72,6 @@ module PLUTUS-CORE-SYNTAX-BASE
     imports PLUTUS-CORE-SYNTAX-TYPES
 
     syntax Var           ::= Name
-    syntax KVar          ::= Var
-
     syntax BuiltinName   ::= Name
 
     syntax ByteString ::= r"\\#[a-fA-F0-9][a-fA-F0-9]*" [notInRules, token, autoReject]
@@ -482,7 +476,11 @@ module PLUTUS-CORE-ABBREVIATIONS
     imports PLUTUS-CORE-SYNTAX-BASE
 
     syntax TyVar ::= "$alpha" | "$a" | "$b" | "$self" | "$nat" | "$r"
-    syntax Var ::= "$t" | "$f" | "$x" | "$bv" | "$s"
+    syntax KVar ::= "$t"  [token]
+                  | "$f"  [token]
+                  | "$x"  [token]
+                  | "$bv"  [token]
+                  | "$s" [token]
 
     syntax TyValue ::= "#unit"
     rule #unit => (all $alpha (type) (fun $alpha $alpha))
