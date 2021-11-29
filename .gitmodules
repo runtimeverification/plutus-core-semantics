@@ -1,14 +1,6 @@
-[submodule "ext/pandoc-tangle"]
-	path = ext/pandoc-tangle
-	url = https://github.com/ehildenb/pandoc-tangle
-[submodule "ext/kninja"]
-	path = ext/kninja
-	url = https://github.com/nishantjr/kninja
-[submodule "ext/k"]
-	path = ext/k
+[submodule "deps/k"]
+	path = deps/k
 	url = https://github.com/kframework/k
-[submodule "ext/blockchain-k-plugin"]
-	path = ext/blockchain-k-plugin
+[submodule "deps/blockchain-k-plugin"]
+	path = deps/blockchain-k-plugin
 	url = https://github.com/runtimeverification/blockchain-k-plugin
-    # Ignore .cmo files etc produced by ocaml compilation process
-    ignore = untracked
