@@ -32,6 +32,7 @@ pipeline {
           options { timeout(time: 20, unit: 'MINUTES') }
           steps {
           sh '''
+            export PATH=$(pwd)/.build/usr/bin:$PATH
             kplutus --help
             kplutus --version
           '''
