@@ -67,14 +67,7 @@ done
 [[ "${#args[@]}" -le 0 ]] || set -- "${args[@]}"
 backend_dir="${backend_dir:-$INSTALL_LIB/$backend}"
 
-# get the run file
 run_file="$1" ; shift
-if [[ "$run_file" == '-' ]]; then
-    tmp_input="$(mktemp)"
-    trap "rm -rf $tmp_input" INT TERM EXIT
-    cat - > "$tmp_input"
-    run_file="$tmp_input"
-fi
 [[ -f "$run_file" ]] || fatal "File does not exist: $run_file"
 
 ! ${debug} || set -x
