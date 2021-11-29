@@ -20,13 +20,22 @@ pipeline {
         }
       }
       stages {
-        stage('Build') { steps { sh 'echo build' } }
+        stage('Build') { steps { sh 'make build' } }
         stage('Test') {
           failFast true
           options { timeout(time: 20, unit: 'MINUTES') }
           parallel {
             stage('Conformance') { steps { sh 'echo test-conformance' } }
           }
+        }
+        stage('Test Interactive') {
+          failFast true
+          options { timeout(time: 20, unit: 'MINUTES') }
+          steps {
+          sh '''
+            kplutus --help
+            kplutus --version
+          '''
         }
       }
     }
