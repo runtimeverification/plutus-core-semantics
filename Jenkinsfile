@@ -29,13 +29,13 @@ pipeline {
           }
         }
         stage('Test Interactive') {
-          failFast true
           options { timeout(time: 20, unit: 'MINUTES') }
           steps {
           sh '''
             kplutus --help
             kplutus --version
           '''
+          }
         }
       }
     }
