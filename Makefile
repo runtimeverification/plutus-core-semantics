@@ -31,17 +31,9 @@ PLUGIN_SUBMODULE := $(abspath $(DEPS_DIR)/blockchain-k-plugin)
 PLUGIN_SOURCE    := $(KPLUTUS_INCLUDE)/kframework/blockchain-k-plugin/krypto.md
 export PLUGIN_SUBMODULE
 
-.PHONY: all clean distclean                                                                                                      \
-        deps k-deps plugin-deps libsecp256k1 libff protobuf                                                                      \
-        build build-haskell build-llvm build-provex build-node build-kplutus                                                        \
-        test test-all test-conformance test-rest-conformance test-all-conformance test-slow-conformance test-failing-conformance \
-        test-vm test-rest-vm test-all-vm test-bchain test-rest-bchain test-all-bchain test-node                                  \
-        test-prove test-failing-prove                                                                                            \
-        test-prove-benchmarks test-prove-functional test-prove-opcodes test-prove-erc20 test-prove-bihu test-prove-examples      \
-        test-prove-mcd test-klab-prove                                                                                           \
-        test-parse test-failure                                                                                                  \
-        test-interactive test-interactive-help test-interactive-run test-interactive-prove test-interactive-search               \
-        media media-pdf metropolis-theme                                                                                         \
+.PHONY: all clean distclean     \
+        deps k-deps plugin-deps \
+        build build-kplutus     \
         install uninstall
 .SECONDARY:
 
@@ -60,13 +52,6 @@ distclean:
 deps: k-deps
 
 K_MVN_ARGS :=
-ifneq ($(SKIP_LLVM),)
-    K_MVN_ARGS += -Dllvm.backend.skip
-endif
-ifneq ($(SKIP_HASKELL),)
-    K_MVN_ARGS += -Dhaskell.backend.skip
-endif
-
 ifneq ($(APPLE_SILICON),)
     K_MVN_ARGS += -Dstack.extra-opts='--compiler ghc-8.10.7 --system-ghc'
 endif

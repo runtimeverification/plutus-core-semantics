@@ -50,10 +50,8 @@ if [[ "$run_command" == 'version' ]] || [[ "$run_command" == '--version' ]]; the
     exit 0
 fi
 
-backend="llvm"
+backend='llvm'
 debug=false
-[[ ! "$run_command" == 'prove' ]] || backend='java'
-[[ ! "$run_command" =~ klab*   ]] || backend='java'
 args=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
