@@ -24,6 +24,7 @@ notif_exec() {
 INSTALL_BIN="$(cd $(dirname $0) && pwd)"
 INSTALL_LIB="$(dirname ${INSTALL_BIN})/lib/kplutus"
 INSTALL_INCLUDE=${INSTALL_LIB}/include
+KPLC=kplc
 
 install_k_bin=${INSTALL_LIB}/kframework/bin
 plugin_include=${INSTALL_LIB}/blockchain-k-plugin/include
@@ -56,14 +57,14 @@ run_command="$1" ; shift
 
 if [[ "$run_command" == 'help' ]] || [[ "$run_command" == '--help' ]] ; then
     echo "
-        usage: $0 kompile <main> <kplc arg>* <kompile arg>*
-               $0 run     <pgm>  <kplc arg>* <krun arg>*
+        usage: ${KPLC} kompile <main> <kplc arg>* <kompile arg>*
+               ${KPLC} run     <pgm>  <kplc arg>* <krun arg>*
 
-               $0 [help|--help|version|--version]
+               ${KPLC} [help|--help|version|--version]
 
-           $0 kompile : Run kompile with arguments setup to include KPlutus semantics.
-           $0 help    : Display this help message.
-           $0 version : Display the versions of KPlutus.
+           ${KPLC} kompile : Run kompile with arguments setup to include KPlutus semantics.
+           ${KPLC} help    : Display this help message.
+           ${KPLC} version : Display the versions of KPlutus.
 
            Arguments:
                       <main>        : Name of main file to kompile.
