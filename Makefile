@@ -119,7 +119,8 @@ $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin
 
 install_bins := kplc
 
-install_libs := release.md \
+install_libs := $(llvm_kompiled) \
+                release.md       \
                 version
 
 build_bins := $(install_bins)
