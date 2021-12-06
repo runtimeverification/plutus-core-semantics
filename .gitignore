@@ -1,3 +1,6 @@
-/tmp
 /.build/
+/.kompile*
+/.kprove*
+/.krun*
 /tests/**/*.out
+/tmp
