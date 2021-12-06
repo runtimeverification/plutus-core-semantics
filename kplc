@@ -3,14 +3,22 @@
 set -euo pipefail
 shopt -s extglob
 
-notif() { echo "== $@" >&2 ; }
-fatal() { echo "[FATAL] $@" ; exit 1 ; }
+debug=false
+verbose=false
 
-check_k_install() {
-    which kast &> /dev/null \
-        || fatal "Must have K installed! See https://github.com/kframework/k/releases."
-    which krun &> /dev/null \
-        || fatal "Must have K installed! See https://github.com/kframework/k/releases."
+notif() {
+    if ${verbose}; then
+        echo "== $0 [$(date)]: $@" >&2
+    else
+        echo "== $0: $@" >&2
+    fi
+}
+
+fatal() { notif "[FATAL] $@" ; exit 1 ; }
+
+notif_exec() {
+    notif "$@"
+    "$@"
 }
 
 INSTALL_BIN="$(cd $(dirname $0) && pwd)"
@@ -27,7 +35,15 @@ export K_OPTS="${K_OPTS:--Xmx16G -Xss512m}"
 # Runners
 # -------
 
-# none yet
+run_kompile() {
+    local kompile_opts
+
+    kompile_opts=( "${run_file}" --directory "${backend_dir}" --backend "${backend}" )
+    kompile_opts+=( -I "${INSTALL_INCLUDE}/kframework" -I "${plugin_include}/kframework" )
+    kompile_opts+=( --emit-json                                                          )
+
+    notif_exec kompile "${kompile_opts[@]}" "$@"
+}
 
 # Main
 # ----
@@ -36,10 +52,24 @@ run_command="$1" ; shift
 
 if [[ "$run_command" == 'help' ]] || [[ "$run_command" == '--help' ]] ; then
     echo "
-        usage: $0 [help|--help|version|--version]
+        usage: $0 kompile <main> <kplc arg>* <kompile arg>*
 
+               $0 [help|--help|version|--version]
+
+           $0 kompile : Run kompile with arguments setup to include KPlutus semantics.
            $0 help    : Display this help message.
            $0 version : Display the versions of KPlutus.
+
+           Arguments:
+                      <main>        : Name of main file to kompile.
+                      <kplc arg>    : Arguments for the kplc script.
+                      <kompile arg> : Arguments for kompile.
+
+           Flags:
+                  --debug
+                  --verbose
+                  --backend
+                  --backend-dir
     "
     exit 0
 fi
@@ -51,14 +81,14 @@ if [[ "$run_command" == 'version' ]] || [[ "$run_command" == '--version' ]]; the
 fi
 
 backend='llvm'
-debug=false
 args=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --debug)       debug=true ; args+=("$1") ; shift   ;;
-        --backend)     backend="$2"              ; shift 2 ;;
-        --backend-dir) backend_dir="$2"          ; shift 2 ;;
-        *)             args+=("$1")              ; shift   ;;
+        --debug)       debug=true       ; args+=("$1") ; shift   ;;
+        --verbose)     verbose=true                    ; shift   ;;
+        --backend)     backend="$2"                    ; shift 2 ;;
+        --backend-dir) backend_dir="$2"                ; shift 2 ;;
+        *)             args+=("$1")                    ; shift   ;;
     esac
 done
 
@@ -71,5 +101,6 @@ run_file="$1" ; shift
 ! ${debug} || set -x
 
 case "$run_command-$backend" in
-    *) $0 help ; fatal "Unknown command on backend: $run_command $backend" ;;
+    kompile-llvm) run_kompile "$@"                                                    ;;
+    *)            $0 help ; fatal "Unknown command on backend: $run_command $backend" ;;
 esac
