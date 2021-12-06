@@ -34,7 +34,8 @@ export PLUGIN_SUBMODULE
 .PHONY: all clean distclean            \
         deps k-deps plugin-deps        \
         build build-kplutus build-llvm \
-        install uninstall
+        install uninstall              \
+        test-simple
 .SECONDARY:
 
 all: build
@@ -165,3 +166,21 @@ $(DESTDIR)$(INSTALL_LIB)/%: $(KPLUTUS_LIB)/%
 uninstall:
 	rm -rf $(DESTDIR)$(INSTALL_BIN)/kplutus
 	rm -rf $(DESTDIR)$(INSTALL_LIB)/kplutus
+
+# Testing
+# -------
+
+CHECK := git --no-pager diff --no-index --ignore-all-space -R
+
+failing_tests := $(shell cat tests/failing)
+
+tests/%.uplc.run: tests/%.uplc
+	$(KPLUTUS) run $< > $<.out
+	$(CHECK) $<.out $<.expected
+
+# Simple Tests
+
+all_simple_tests := $(wildcard tests/simple/*.uplc)
+simple_tests     := $(filter-out $(failing_tests), $(all_simple_tests))
+
+test-simple: $(simple_tests:=.run)

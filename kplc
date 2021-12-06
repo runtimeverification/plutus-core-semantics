@@ -45,6 +45,10 @@ run_kompile() {
     notif_exec kompile "${kompile_opts[@]}" "$@"
 }
 
+run_interpreter() {
+    notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"
+}
+
 # Main
 # ----
 
@@ -53,6 +57,7 @@ run_command="$1" ; shift
 if [[ "$run_command" == 'help' ]] || [[ "$run_command" == '--help' ]] ; then
     echo "
         usage: $0 kompile <main> <kplc arg>* <kompile arg>*
+               $0 run     <pgm>  <kplc arg>* <krun arg>*
 
                $0 [help|--help|version|--version]
 
@@ -64,8 +69,9 @@ if [[ "$run_command" == 'help' ]] || [[ "$run_command" == '--help' ]] ; then
                       <main>        : Name of main file to kompile.
                       <kplc arg>    : Arguments for the kplc script.
                       <kompile arg> : Arguments for kompile.
+                      <kompile arg> : Arguments for krun.
 
-           Flags:
+           Available <kplc arg>:
                   --debug
                   --verbose
                   --backend
@@ -101,6 +107,7 @@ run_file="$1" ; shift
 ! ${debug} || set -x
 
 case "$run_command-$backend" in
-    kompile-llvm) run_kompile "$@"                                                    ;;
+    kompile-llvm) run_kompile     "$@"                                                ;;
+    run-llvm)     run_interpreter "$@"                                                ;;
     *)            $0 help ; fatal "Unknown command on backend: $run_command $backend" ;;
 esac
