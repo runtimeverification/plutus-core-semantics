@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+shopt -s extglob
+
+debug=false
+verbose=false
+
+notif() {
+    if ${verbose}; then
+        echo "== $0 [$(date)]: $@" >&2
+    else
+        echo "== $0: $@" >&2
+    fi
+}
+
+fatal() { notif "[FATAL] $@" ; exit 1 ; }
+
+notif_exec() {
+    notif "$@"
+    "$@"
+}
+
+INSTALL_BIN="$(cd $(dirname $0) && pwd)"
+INSTALL_LIB="$(dirname ${INSTALL_BIN})/lib/kplutus"
+INSTALL_INCLUDE=${INSTALL_LIB}/include
+KPLC=kplc
+
+install_k_bin=${INSTALL_LIB}/kframework/bin
+plugin_include=${INSTALL_LIB}/blockchain-k-plugin/include
+
+export PATH="${INSTALL_BIN}:${INSTALL_LIB}:${install_k_bin}:${PATH}"
+
+export K_OPTS="${K_OPTS:--Xmx16G -Xss512m}"
+
+# Runners
+# -------
+
+run_kompile() {
+    local kompile_opts
+
+    kompile_opts=( "${run_file}" --directory "${backend_dir}" --backend "${backend}" )
+    kompile_opts+=( -I "${INSTALL_INCLUDE}/kframework" -I "${plugin_include}/kframework" )
+    kompile_opts+=( --emit-json                                                          )
+
+    notif_exec kompile "${kompile_opts[@]}" "$@"
+}
+
+run_interpreter() {
+    notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"
+}
+
+# Main
+# ----
+
+run_command="$1" ; shift
+
+if [[ "$run_command" == 'help' ]] || [[ "$run_command" == '--help' ]] ; then
+    echo "
+        usage: ${KPLC} kompile <main> <kplc arg>* <kompile arg>*
+               ${KPLC} run     <pgm>  <kplc arg>* <krun arg>*
+
+               ${KPLC} [help|--help|version|--version]
+
+           ${KPLC} kompile : Run kompile with arguments setup to include KPlutus semantics.
+           ${KPLC} help    : Display this help message.
+           ${KPLC} version : Display the versions of KPlutus.
+
+           Arguments:
+                      <main>        : Name of main file to kompile.
+                      <kplc arg>    : Arguments for the kplc script.
+                      <kompile arg> : Arguments for kompile.
+                      <kompile arg> : Arguments for krun.
+
+           Available <kplc arg>:
+                  --debug
+                  --verbose
+                  --backend
+                  --backend-dir
+    "
+    exit 0
+fi
+
+if [[ "$run_command" == 'version' ]] || [[ "$run_command" == '--version' ]]; then
+    notif 'KPlutus Version'
+    cat $INSTALL_LIB/version
+    exit 0
+fi
+
+backend='llvm'
+args=()
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --debug)       debug=true       ; args+=("$1") ; shift   ;;
+        --verbose)     verbose=true                    ; shift   ;;
+        --backend)     backend="$2"                    ; shift 2 ;;
+        --backend-dir) backend_dir="$2"                ; shift 2 ;;
+        *)             args+=("$1")                    ; shift   ;;
+    esac
+done
+
+[[ "${#args[@]}" -le 0 ]] || set -- "${args[@]}"
+backend_dir="${backend_dir:-$INSTALL_LIB/$backend}"
+
+run_file="$1" ; shift
+[[ -f "$run_file" ]] || fatal "File does not exist: $run_file"
+
+! ${debug} || set -x
+
+case "$run_command-$backend" in
+    kompile-llvm) run_kompile     "$@"                                                ;;
+    run-llvm)     run_interpreter "$@"                                                ;;
+    *)            $0 help ; fatal "Unknown command on backend: $run_command $backend" ;;
+esac

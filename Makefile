@@ -17,7 +17,7 @@ KPLUTUS_BIN     := $(BUILD_DIR)$(INSTALL_BIN)
 KPLUTUS_LIB     := $(BUILD_DIR)$(INSTALL_LIB)
 KPLUTUS_INCLUDE := $(KPLUTUS_LIB)/include
 KPLUTUS_K_BIN   := $(KPLUTUS_LIB)/kframework/bin
-KPLUTUS         := kplutus
+KPLUTUS         := kplc
 
 KPLUTUS_VERSION     ?= 0.1.0
 KPLUTUS_RELEASE_TAG := $(shell git describe --tags --dirty --long)
@@ -31,10 +31,11 @@ PLUGIN_SUBMODULE := $(abspath $(DEPS_DIR)/blockchain-k-plugin)
 PLUGIN_SOURCE    := $(KPLUTUS_INCLUDE)/kframework/blockchain-k-plugin/krypto.md
 export PLUGIN_SUBMODULE
 
-.PHONY: all clean distclean     \
-        deps k-deps plugin-deps \
-        build build-kplutus     \
-        install uninstall
+.PHONY: all clean distclean            \
+        deps k-deps plugin-deps        \
+        build build-kplutus build-llvm \
+        install uninstall              \
+        test-simple
 .SECONDARY:
 
 all: build
@@ -83,19 +84,50 @@ $(plugin_include)/kframework/%: $(PLUGIN_SUBMODULE)/plugin/%
 
 plugin-deps: $(plugin_includes) $(plugin_c_includes)
 
+# Semantics Build
+# ---------------
+
+KOMPILE := $(KPLUTUS) kompile
+
+kplutus_files := uplc.md
+
+kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
+
+$(KPLUTUS_INCLUDE)/kframework/%.md: %.md
+	@mkdir -p $(dir $@)
+	install $< $@
+
+llvm_dir           := llvm
+llvm_main_module   := UPLC
+llvm_syntax_module := $(llvm_main_module)
+llvm_main_file     := uplc.md
+llvm_main_filename := $(basename $(notdir $(llvm_main_file)))
+llvm_kompiled      := $(llvm_dir)/$(llvm_main_filename)-kompiled/interpreter
+
+foo:
+	echo $(kplutus_includes)
+
+$(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(KPLUTUS_BIN)/kplc
+	$(KOMPILE) --backend llvm                 \
+	    $(llvm_main_file)                     \
+	    --main-module $(llvm_main_module)     \
+	    --syntax-module $(llvm_syntax_module) \
+	    $(KOMPILE_OPTS)
+
 # Installing
 # ----------
 
-install_bins := kplutus
+install_bins := kplc
 
-install_libs := release.md \
+install_libs := $(llvm_kompiled) \
+                release.md       \
                 version
 
 build_bins := $(install_bins)
 
 build_libs := $(install_libs)
 
-$(KPLUTUS_BIN)/kplutus: kplutus
+$(KPLUTUS_BIN)/kplc: kplc
 	@mkdir -p $(dir $@)
 	install $< $@
 
@@ -111,7 +143,8 @@ $(KPLUTUS_LIB)/release.md: INSTALL.md
 
 build: $(patsubst %, $(KPLUTUS_BIN)/%, $(install_bins)) $(patsubst %, $(KPLUTUS_LIB)/%, $(install_libs))
 
-build-kplutus: $(KPLUTUS_BIN)/kplutus $(plugin_includes)
+build-kplutus: $(KPLUTUS_BIN)/kplc $(plugin_includes)
+build-llvm:    $(KPLUTUS_LIB)/$(llvm_kompiled)
 
 all_bin_sources := $(shell find $(KPLUTUS_BIN) -type f | sed 's|^$(KPLUTUS_BIN)/||')
 all_lib_sources := $(shell find $(KPLUTUS_LIB) -type f                                            \
@@ -134,3 +167,21 @@ $(DESTDIR)$(INSTALL_LIB)/%: $(KPLUTUS_LIB)/%
 uninstall:
 	rm -rf $(DESTDIR)$(INSTALL_BIN)/kplutus
 	rm -rf $(DESTDIR)$(INSTALL_LIB)/kplutus
+
+# Testing
+# -------
+
+CHECK := git --no-pager diff --no-index --ignore-all-space -R
+
+failing_tests := $(shell cat tests/failing)
+
+tests/%.uplc.run: tests/%.uplc
+	$(KPLUTUS) run $< > $<.out
+	$(CHECK) $<.out $<.expected
+
+# Simple Tests
+
+all_simple_tests := $(wildcard tests/simple/*.uplc)
+simple_tests     := $(filter-out $(failing_tests), $(all_simple_tests))
+
+test-simple: $(simple_tests:=.run)

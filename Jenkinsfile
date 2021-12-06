@@ -20,12 +20,12 @@ pipeline {
         }
       }
       stages {
-        stage('Build') { steps { sh 'make build' } }
+        stage('Build') { steps { sh 'make build -j4' } }
         stage('Test') {
           failFast true
           options { timeout(time: 20, unit: 'MINUTES') }
           parallel {
-            stage('Conformance') { steps { sh 'echo test-conformance' } }
+            stage('Simple') { steps { sh 'make test-simple -j4' } }
           }
         }
         stage('Test Interactive') {
@@ -33,8 +33,8 @@ pipeline {
           steps {
           sh '''
             export PATH=$(pwd)/.build/usr/bin:$PATH
-            kplutus --help
-            kplutus --version
+            kplc --help
+            kplc --version
           '''
           }
         }
