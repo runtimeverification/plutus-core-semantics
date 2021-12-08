@@ -25,7 +25,8 @@ pipeline {
           failFast true
           options { timeout(time: 20, unit: 'MINUTES') }
           parallel {
-            stage('Simple') { steps { sh 'make test-simple -j4' } }
+            stage('Simple')        { steps { sh 'make test-simple -j4'        } }
+            stage('uplc-examples') { steps { sh 'make test-uplc-examples -j4' } }
           }
         }
         stage('Test Interactive') {

@@ -35,7 +35,8 @@ export PLUGIN_SUBMODULE
         deps k-deps plugin-deps        \
         build build-kplutus build-llvm \
         install uninstall              \
-        test-simple
+        test-simple                    \
+        test-uplc-examples
 .SECONDARY:
 
 all: build
@@ -185,3 +186,10 @@ all_simple_tests := $(wildcard tests/simple/*.uplc)
 simple_tests     := $(filter-out $(failing_tests), $(all_simple_tests))
 
 test-simple: $(simple_tests:=.run)
+
+# uplc-example Tests
+
+all_uplc-examples_tests := $(wildcard tests/uplc-examples/*.uplc)
+uplc-examples_tests     := $(filter-out $(failing_tests), $(all_uplc-examples_tests))
+
+test-uplc-examples: $(uplc-examples_tests:=.run)
