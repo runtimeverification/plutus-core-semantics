@@ -35,7 +35,8 @@ export PLUGIN_SUBMODULE
         deps k-deps plugin-deps        \
         build build-kplutus build-llvm \
         install uninstall              \
-        test-simple
+        test-simple                    \
+        test-uplc-examples
 .SECONDARY:
 
 all: build
