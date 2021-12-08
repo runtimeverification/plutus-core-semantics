@@ -1,0 +1,16 @@
+tests/uplc-examples/ApplyAdd1.uplc
+tests/uplc-examples/ApplyAdd2.uplc
+tests/uplc-examples/churchSucc.uplc
+tests/uplc-examples/churchZero.uplc
+tests/uplc-examples/DivideByZeroDrop.uplc
+tests/uplc-examples/DivideByZero.uplc
+tests/uplc-examples/factorial.uplc
+tests/uplc-examples/false.uplc
+tests/uplc-examples/fibonacci.uplc
+tests/uplc-examples/IfIntegers.uplc
+tests/uplc-examples/NatRoundTrip.uplc
+tests/uplc-examples/overapplication.uplc
+tests/uplc-examples/ScottListSum.uplc
+tests/uplc-examples/succInteger.uplc
+tests/uplc-examples/true.uplc
+tests/uplc-examples/unitval.uplc
