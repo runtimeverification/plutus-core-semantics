@@ -50,8 +50,8 @@ module UNTYPED-PLUTUS-CORE-CEK
   imports INT
 
   syntax AClosure ::= Clos(Value, Map)
-  syntax AFrame   ::= "[" "_" Term "]"
-                    | "[" AClosure "_" "]"
+  syntax AFrame   ::= "[_" Term "]"
+                    | "[" AClosure "_]"
                     | BuiltinApp(BuiltinName, List, List, Map)
                     | "Force"
 
