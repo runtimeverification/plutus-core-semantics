@@ -36,7 +36,8 @@ export PLUGIN_SUBMODULE
         build build-kplutus build-llvm \
         install uninstall              \
         test-simple                    \
-        test-uplc-examples
+        test-uplc-examples             \
+        test-benchmark-validation-examples
 .SECONDARY:
 
 all: build
@@ -193,3 +194,10 @@ all_uplc-examples_tests := $(wildcard tests/uplc-examples/*.uplc)
 uplc-examples_tests     := $(filter-out $(failing_tests), $(all_uplc-examples_tests))
 
 test-uplc-examples: $(uplc-examples_tests:=.run)
+
+# benchmark-validation-examples Tests
+
+all_benchmark-validation-examples_tests := $(wildcard tests/benchmark-validation-examples/*.uplc)
+benchmark-validation-examples_tests     := $(filter-out $(failing_tests), $(all_benchmark-validation-examples_tests))
+
+test-benchmark-validation-examples: $(benchmark-validation-examples_tests:=.run)
