@@ -17,28 +17,30 @@ module PLUTUS-CORE-LEXICAL-GRAMMAR
    syntax Version      ::= r"[0-9]+(.[0-9]+)*"           [token] // version
    syntax Constant     ::= "()"                                  // unit constant
                          | "True" | "False"                      // boolean constant
-//			 | Integer                               // integer constant
+//                       | Integer                               // integer constant
+// Todo: We are using builtin Int from UNSIGNED-INT-SYNTAX to avoid and ambiguity
+// probably between Integer and Version.
                          | Int
-			 | ByteString                            // bytestring constant
+                         | ByteString                            // bytestring constant
    syntax TypeConstant ::= Name                                  // type constant
 endmodule
 
 module UNTYPED-PLUTUS-CORE-GRAMMAR
    imports PLUTUS-CORE-LEXICAL-GRAMMAR
    imports LIST
-   
-   syntax Value   ::= "(con" TypeConstant Constant ")"   // constant
-    	   	   |  "(lam" Var Term ")"                // lambda abstraction
-    		   |  "(delay" Term ")"                  // delay execution of a term
+
+   syntax Value ::= "(" "con" TypeConstant Constant ")"   // constant
+                  | "(" "lam" Var Term ")"                // lambda abstraction
+                  | "(" "delay" Term ")"                  // delay execution of a term
 
    syntax Term ::= Var
                  | Value 
-    		 | "[" Term Term "]"                        // function application
-    		 | "(force" Term ")"                     // force execution of a term
-    		 | "(builtin" BuiltinName List ")"   // builtin
-    		 | "<>"                                     // error
+                 | "[" Term Term "]"                        // function application
+                 | "(" "force" Term ")"                     // force execution of a term
+                 | "(" "builtin" BuiltinName List ")"       // builtin
+                 | "(" "error" ")"                          // error
 
-   syntax Program ::= "(program" Version Term ")"        // versioned program
+   syntax Program ::= "(" "program" Version Term ")"        // versioned program
 endmodule
 
 module UNTYPED-PLUTUS-CORE-CEK
@@ -48,12 +50,12 @@ module UNTYPED-PLUTUS-CORE-CEK
   imports INT
 
   syntax AClosure ::= Clos(Value, Map)
-  syntax AFrame ::= "[_" Term "]"
-                  | "[" AClosure "_]" 
-		  | BuiltinApp(BuiltinName, List, List, Map)
-		  | "Force"
+  syntax AFrame   ::= "[" "_" Term "]"
+                    | "[" AClosure "_" "]"
+                    | BuiltinApp(BuiltinName, List, List, Map)
+                    | "Force"
 
-  syntax TypeConstant ::= "int" [token]
+  syntax TypeConstant ::= "integer" [token]
 
   syntax BuiltinName ::= "addInteger" [token]
 

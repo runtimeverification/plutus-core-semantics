@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    (con int 0 ) ~> .
+    (con integer 0 ) ~> .
   </k>
   <env>
     .Map

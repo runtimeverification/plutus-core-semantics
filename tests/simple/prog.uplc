@@ -1,1 +1,1 @@
-(program 1.0.0 (con int 0))
+(program 1.0.0 (con integer 0))
