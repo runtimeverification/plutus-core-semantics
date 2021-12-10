@@ -5,15 +5,12 @@ tests/uplc-examples/churchZero.uplc
 tests/uplc-examples/DivideByZeroDrop.uplc
 tests/uplc-examples/DivideByZero.uplc
 tests/uplc-examples/factorial.uplc
-tests/uplc-examples/false.uplc
 tests/uplc-examples/fibonacci.uplc
 tests/uplc-examples/IfIntegers.uplc
 tests/uplc-examples/NatRoundTrip.uplc
 tests/uplc-examples/overapplication.uplc
 tests/uplc-examples/ScottListSum.uplc
 tests/uplc-examples/succInteger.uplc
-tests/uplc-examples/true.uplc
-tests/uplc-examples/unitval.uplc
 tests/benchmark-validation-examples/auction_1-1.uplc
 tests/benchmark-validation-examples/auction_1-2.uplc
 tests/benchmark-validation-examples/auction_1-3.uplc
