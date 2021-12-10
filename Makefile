@@ -182,10 +182,9 @@ tests/%.uplc.run: tests/%.uplc
 	$(CHECK) $<.out $<.expected
 
 # Compare K output against expected output generated from the uplc tool
-# Do this by extracting the contents of the K cell.
+# Do this by printing the results of the K cell only.
 tests/%.uplc.runConformance: tests/%.uplc
-	$(KPLUTUS) run $< |\
-	tr '\n' ' ' | sed "s/.*<k>\(.*\)~> \. .*/\1/g" > $<.out
+	$(KPLUTUS) run $< --result-only > $<.out
 	$(CHECK) $<.out $<.expected
 
 
