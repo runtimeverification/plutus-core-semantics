@@ -17,7 +17,7 @@ KPLUTUS_BIN     := $(BUILD_DIR)$(INSTALL_BIN)
 KPLUTUS_LIB     := $(BUILD_DIR)$(INSTALL_LIB)
 KPLUTUS_INCLUDE := $(KPLUTUS_LIB)/include
 KPLUTUS_K_BIN   := $(KPLUTUS_LIB)/kframework/bin
-KPLUTUS         := kplc
+KPLUTUS         := ./kplc
 
 KPLUTUS_VERSION     ?= 0.1.0
 KPLUTUS_RELEASE_TAG := $(shell git describe --tags --dirty --long)

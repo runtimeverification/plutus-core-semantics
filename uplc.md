@@ -33,11 +33,13 @@ module UNTYPED-PLUTUS-CORE-GRAMMAR
                   | "(" "lam" Var Term ")"                // lambda abstraction
                   | "(" "delay" Term ")"                  // delay execution of a term
 
+   syntax TermList ::= List{Term, ""}
+
    syntax Term ::= Var
                  | Value 
                  | "[" Term Term "]"                        // function application
                  | "(" "force" Term ")"                     // force execution of a term
-                 | "(" "builtin" BuiltinName List ")"       // builtin
+                 | "(" "builtin" BuiltinName TermList ")"   // builtin
                  | "(" "error" ")"                          // error
 
    syntax Program ::= "(" "program" Version Term ")"        // versioned program
@@ -48,6 +50,14 @@ module UNTYPED-PLUTUS-CORE-CEK
   imports MAP
   imports LIST
   imports INT
+
+  syntax Term ::= BuiltinCall(BuiltinName, List)
+  syntax List ::= mkListFromTermList(TermList) [function]
+
+  rule mkListFromTermList(.TermList) => .List
+  rule mkListFromTermList(T:Term TL) => ListItem(T) mkListFromTermList(TL)
+
+  rule <k> (builtin BN:BuiltinName Ms:TermList) => BuiltinCall(BN, mkListFromTermList(Ms)) ... </k>
 
   syntax AClosure ::= Clos(Value, Map)
   syntax AFrame   ::= "[_" Term "]"
@@ -86,7 +96,7 @@ module UNTYPED-PLUTUS-CORE-CEK
 
   // s ; \rho |> (builtin bn) |-> s ; \rho |> M (bn computes to M)
 
-  rule <k> (builtin BN:BuiltinName ( ListItem( M:Term ) Ms:List ) ) => M ... </k>
+  rule <k> BuiltinCall(BN:BuiltinName, ( ListItem( M:Term ) Ms:List ) ) => M ... </k>
        <env> RHO </env>
        <stack> ... (.List => ListItem(BuiltinApp(BN, .List, Ms, RHO))) </stack>
 
