@@ -5,7 +5,6 @@ shopt -s extglob
 
 debug=false
 verbose=false
-result_only=false
 
 notif() {
     if ${verbose}; then
@@ -89,6 +88,7 @@ if [[ "$run_command" == 'version' ]] || [[ "$run_command" == '--version' ]]; the
     exit 0
 fi
 
+result_only=false
 backend='llvm'
 args=()
 while [[ $# -gt 0 ]]; do
