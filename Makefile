@@ -173,20 +173,14 @@ uninstall:
 # Testing
 # -------
 
+TEST_OPTIONS :=
 CHECK := git --no-pager diff --no-index --ignore-all-space -R
 
 failing_tests := $(shell cat tests/failing)
 
 tests/%.uplc.run: tests/%.uplc
-	$(KPLUTUS) run $< > $<.out
+	$(KPLUTUS) run $< $(TEST_OPTIONS) > $<.out
 	$(CHECK) $<.out $<.expected
-
-# Compare K output against expected output generated from the uplc tool
-# Do this by printing the results of the K cell only.
-tests/%.uplc.runConformance: tests/%.uplc
-	$(KPLUTUS) run $< --result-only > $<.out
-	$(CHECK) $<.out $<.expected
-
 
 # Simple Tests
 
@@ -207,11 +201,13 @@ test-simple: $(simple_tests:=.run)
 all_uplc-examples_tests := $(wildcard tests/uplc-examples/*.uplc)
 uplc-examples_tests     := $(filter-out $(failing_tests), $(all_uplc-examples_tests))
 
-test-uplc-examples: $(uplc-examples_tests:=.runConformance)
+tests/uplc-examples/%: TEST_OPTIONS += --result-only
+test-uplc-examples: $(uplc-examples_tests:=.run)
 
 # benchmark-validation-examples Tests
 
 all_benchmark-validation-examples_tests := $(wildcard tests/benchmark-validation-examples/*.uplc)
 benchmark-validation-examples_tests     := $(filter-out $(failing_tests), $(all_benchmark-validation-examples_tests))
 
-test-benchmark-validation-examples: $(benchmark-validation-examples_tests:=.runConformance)
+tests/benchmark-validation-examples/%: TEST_OPTIONS += --result-only
+test-benchmark-validation-examples: $(benchmark-validation-examples_tests:=.run)
