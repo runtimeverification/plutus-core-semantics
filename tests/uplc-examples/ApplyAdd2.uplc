@@ -10,19 +10,50 @@
         (lam
           x0
           [
-            [ (builtin addInteger) (con integer 0) ]
+            [
+              (builtin multiplyInteger)
+              [
+                [
+                  (builtin subtractInteger)
+                  [
+                    [ (builtin subtractInteger) (con integer 3) ]
+                    (con integer 2)
+                  ]
+                ]
+                [ [ (builtin addInteger) (con integer 2) ] (con integer 0) ]
+              ]
+            ]
             [
               [
-                (builtin multiplyInteger)
-                [ [ (builtin addInteger) (con integer 2) ] (con integer 3) ]
+                (builtin subtractInteger)
+                [
+                  [ (builtin multiplyInteger) (con integer 3) ] (con integer 0)
+                ]
               ]
-              [ [ (builtin multiplyInteger) (con integer 0) ] (con integer 2) ]
+              [ [ (builtin multiplyInteger) (con integer 1) ] (con integer 1) ]
             ]
           ]
         )
         [
-          (builtin sha2_256)
-          [ (builtin sha2_256) [ (builtin sha3_256) (con bytestring #) ] ]
+          [
+            (builtin lessThanEqualsInteger)
+            [
+              [
+                (builtin subtractInteger)
+                [
+                  [ (builtin multiplyInteger) (con integer 3) ] (con integer 3)
+                ]
+              ]
+              [ [ (builtin subtractInteger) (con integer 2) ] (con integer 3) ]
+            ]
+          ]
+          [
+            [
+              (builtin addInteger)
+              [ [ (builtin addInteger) (con integer 2) ] (con integer 3) ]
+            ]
+            [ [ (builtin subtractInteger) (con integer 3) ] (con integer 3) ]
+          ]
         ]
       ]
     ]
@@ -33,18 +64,21 @@
           (lam
             x2
             [
-              (lam
-                x3 [ [ (builtin addInteger) (con integer 3) ] (con integer 3) ]
-              )
-              [ (builtin sha3_256) (con bytestring #7677) ]
+              [
+                (builtin addInteger)
+                [
+                  [ (builtin subtractInteger) (con integer 0) ] (con integer 3)
+                ]
+              ]
+              [ [ (builtin subtractInteger) (con integer 2) ] (con integer 1) ]
             ]
           )
           [
             [
-              (builtin lessThanEqualsInteger)
-              [ [ (builtin multiplyInteger) (con integer 3) ] (con integer 1) ]
+              (builtin subtractInteger)
+              [ [ (builtin addInteger) (con integer 1) ] (con integer 1) ]
             ]
-            [ [ (builtin multiplyInteger) (con integer 2) ] (con integer 1) ]
+            [ [ (builtin subtractInteger) (con integer 2) ] (con integer 0) ]
           ]
         ]
       )
@@ -52,19 +86,19 @@
         (lam
           x1
           [
-            (builtin sha2_256)
             [
-              [ (builtin appendByteString) (con bytestring #7362) ]
-              (con bytestring #6567)
+              (builtin lessThanInteger)
+              [ [ (builtin multiplyInteger) (con integer 0) ] (con integer 3) ]
             ]
+            [ [ (builtin addInteger) (con integer 0) ] (con integer 1) ]
           ]
         )
         [
           [
-            (builtin multiplyInteger)
-            [ [ (builtin multiplyInteger) (con integer 1) ] (con integer 0) ]
+            (builtin equalsInteger)
+            [ [ (builtin multiplyInteger) (con integer 3) ] (con integer 2) ]
           ]
-          [ [ (builtin addInteger) (con integer 1) ] (con integer 0) ]
+          [ [ (builtin subtractInteger) (con integer 2) ] (con integer 0) ]
         ]
       ]
     ]
