@@ -31,13 +31,14 @@ PLUGIN_SUBMODULE := $(abspath $(DEPS_DIR)/blockchain-k-plugin)
 PLUGIN_SOURCE    := $(KPLUTUS_INCLUDE)/kframework/blockchain-k-plugin/krypto.md
 export PLUGIN_SUBMODULE
 
-.PHONY: all clean distclean            \
-        deps k-deps plugin-deps        \
-        build build-kplutus build-llvm \
-        install uninstall              \
-        test-simple                    \
-        test-uplc-examples             \
-        test-benchmark-validation-examples
+.PHONY: all clean distclean                \
+        deps k-deps plugin-deps            \
+        build build-kplutus build-llvm     \
+        install uninstall                  \
+        test-simple                        \
+        test-uplc-examples                 \
+        test-benchmark-validation-examples \
+        test-nofib-exe-examples
 .SECONDARY:
 
 all: build
@@ -211,3 +212,11 @@ benchmark-validation-examples_tests     := $(filter-out $(failing_tests), $(all_
 
 tests/benchmark-validation-examples/%: TEST_OPTIONS += --result-only
 test-benchmark-validation-examples: $(benchmark-validation-examples_tests:=.run)
+
+# nofib-exe-examples Tests
+
+all_nofib-exe-examples_tests := $(wildcard tests/nofib-exe-examples/*.uplc)
+nofib-exe-examples_tests     := $(filter-out $(failing_tests), $(all_nofib-exe-examples_tests))
+
+tests/nofib-exe-examples/%: TEST_OPTIONS += --result-only
+test-nofib-exe-examples: $(nofib-exe-examples_tests:=.run)
