@@ -174,7 +174,7 @@ uninstall:
 # -------
 
 TEST_OPTIONS :=
-CHECK := git --no-pager diff --no-index --ignore-all-space -R
+CHECK        := git --no-pager diff --no-index --ignore-all-space -R
 
 failing_tests := $(shell cat tests/failing)
 
