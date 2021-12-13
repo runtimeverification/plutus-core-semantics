@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# This script assumes that a copy of the nofib-exe executable
+# is in the current directory.
+
+./nofib-exe dumpPLC prime P200 > prime-P200.uplc
+time ./nofib-exe run prime P200 > prime-P200.uplc.expected
+
+./nofib-exe dumpPLC primetest 6700417 > primetest-large.uplc
+time ./nofib-exe run primetest 6700417 > primetest-large.uplc.expected
+
+./nofib-exe dumpPLC queens 6 bt > queens-6-bt.uplc
+time ./nofib-exe run queens 6 bt > queens-6-bt.uplc.expected
+
+./nofib-exe dumpPLC clausify F7 > clausify-F7.uplc
+time ./nofib-exe run clausify F7 > clausify-F7.uplc.expected
+
+./nofib-exe dumpPLC knights 500 500 > knights-500-500.uplc
+time ./nofib-exe run knights 500 500 > knights-500-500.uplc.expected
+
+# The run command doesn't seem to terminate. Needs investigation...
+# ./nofib-exe dumpPLC lastpiece > lastpiece.uplc
+# ./nofib-exe run lastpiece > lastpiece.uplc.expected # doesn't seem to terminate
