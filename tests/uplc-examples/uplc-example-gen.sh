@@ -6,5 +6,5 @@ echo $examples
 for name in `./uplc example -a`
 do
     ./uplc example -s $name > $name.uplc
-    ./uplc evaluate -i $name.uplc > $name.uplc.expected 2>&1
+    ./uplc evaluate --print-mode Classic -i $name.uplc > $name.uplc.expected 2>&1
 done
