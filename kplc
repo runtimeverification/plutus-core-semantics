@@ -47,7 +47,8 @@ run_kompile() {
 }
 
 run_interpreter() {
-    notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"
+    notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"                        \
+        | (${result_only} && ( tr '\n' ' ' | sed "s/.*<k>\(.*\)~> \. .*/\1/g" ) || cat - )
 }
 
 # Main
@@ -87,6 +88,7 @@ if [[ "$run_command" == 'version' ]] || [[ "$run_command" == '--version' ]]; the
     exit 0
 fi
 
+result_only=false
 backend='llvm'
 args=()
 while [[ $# -gt 0 ]]; do
@@ -95,6 +97,7 @@ while [[ $# -gt 0 ]]; do
         --verbose)     verbose=true                    ; shift   ;;
         --backend)     backend="$2"                    ; shift 2 ;;
         --backend-dir) backend_dir="$2"                ; shift 2 ;;
+        --result-only) result_only=true                ; shift   ;;
         *)             args+=("$1")                    ; shift   ;;
     esac
 done
