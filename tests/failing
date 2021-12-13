@@ -1,7 +1,5 @@
 tests/uplc-examples/ApplyAdd1.uplc
 tests/uplc-examples/ApplyAdd2.uplc
-tests/uplc-examples/churchSucc.uplc
-tests/uplc-examples/churchZero.uplc
 tests/uplc-examples/DivideByZeroDrop.uplc
 tests/uplc-examples/DivideByZero.uplc
 tests/uplc-examples/factorial.uplc
