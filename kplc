@@ -19,12 +19,7 @@ fatal() { notif "[FATAL] $@" ; exit 1 ; }
 
 notif_exec() {
     notif "$@"
-
-    if ${result_only}; then
-        "$@" | tr '\n' ' ' | sed "s/.*<k>\(.*\)~> \. .*/\1/g"
-    else
-        "$@"
-    fi
+    "$@"
 }
 
 INSTALL_BIN="$(cd $(dirname $0) && pwd)"
@@ -53,7 +48,12 @@ run_kompile() {
 }
 
 run_interpreter() {
-    notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"
+    if ${result_only}; then
+        notif_exec krun --directory "${backend_dir}" "${run_file}" "$@" |\
+            tr '\n' ' ' | sed "s/.*<k>\(.*\)~> \. .*/\1/g"
+    else
+        notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"
+    fi
 }
 
 # Main
