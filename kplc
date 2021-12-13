@@ -48,8 +48,8 @@ run_kompile() {
 }
 
 run_interpreter() {
-    notif_exec krun --directory "${backend_dir}" "${run_file}" "$@" |\
-        (${result_only} && ( tr '\n' ' ' | sed "s/.*<k>\(.*\)~> \. .*/\1/g" ) || cat - )
+    notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"                        \
+        | (${result_only} && ( tr '\n' ' ' | sed "s/.*<k>\(.*\)~> \. .*/\1/g" ) || cat - )
 }
 
 # Main
