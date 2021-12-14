@@ -15,5 +15,5 @@ do
     # ./uplc evaluate -i $filename > $filename.expected
     # Instead, evaluate the programs using the flat (a.k.a. serialized) format
 
-    ./uplc evaluate --if flat -i $file > $filename.expected
+    ./uplc evaluate --print-mode Classic --if flat -i $file > $filename.expected
 done

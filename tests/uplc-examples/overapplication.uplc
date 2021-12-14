@@ -6,7 +6,7 @@
         [
           [
             (force (builtin ifThenElse))
-            [ [ (builtin lessThanInteger) (con integer 1) ] (con integer 2) ]
+            [ [ (builtin lessThanInteger) (con integer 1) ] (con integer 3) ]
           ]
           (builtin addInteger)
         ]
@@ -14,6 +14,6 @@
       ]
       (con integer 1)
     ]
-    (con integer 2)
+    (con integer 3)
   ]
 )
