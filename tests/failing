@@ -87,3 +87,9 @@ tests/benchmark-validation-examples/uniswap-4.uplc
 tests/benchmark-validation-examples/uniswap-5.uplc
 tests/benchmark-validation-examples/uniswap-6.uplc
 tests/benchmark-validation-examples/vesting-1.uplc
+tests/nofib-exe-examples/clausify-F7.uplc
+tests/nofib-exe-examples/knights-500-500.uplc
+tests/nofib-exe-examples/lastpiece.uplc
+tests/nofib-exe-examples/prime-P200.uplc
+tests/nofib-exe-examples/primetest-large.uplc
+tests/nofib-exe-examples/queens-6-bt.uplc
