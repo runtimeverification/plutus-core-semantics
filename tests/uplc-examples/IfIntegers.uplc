@@ -19,7 +19,30 @@
             )
           )
         )
-        (con bool False)
+        [
+          (lam
+            x0
+            [
+              [
+                (builtin equalsByteString)
+                [
+                  (builtin sha2_256) [ (builtin sha3_256) (con bytestring #64) ]
+                ]
+              ]
+              x0
+            ]
+          )
+          [
+            [
+              (builtin appendByteString)
+              [
+                (lam x1 [ (builtin sha3_256) (con bytestring #78) ])
+                [ (builtin sha3_256) (con bytestring #726e) ]
+              ]
+            ]
+            (con bytestring #6973)
+          ]
+        ]
       ]
       [
         (force (force (delay (delay (lam x (lam y x))))))
@@ -27,103 +50,42 @@
           (lam
             x0
             [
-              [
-                (builtin addInteger)
-                [
-                  [
-                    (builtin multiplyInteger)
-                    [
-                      [ (builtin multiplyInteger) (con integer 2) ]
-                      (con integer 0)
-                    ]
-                  ]
-                  [
-                    [ (builtin multiplyInteger) (con integer 1) ]
-                    (con integer 3)
-                  ]
-                ]
-              ]
-              (con integer 1)
+              (lam x2 x0)
+              [ (builtin sha2_256) [ (builtin sha3_256) (con bytestring #) ] ]
             ]
           )
           [
             [
-              (builtin appendByteString)
-              [
-                (lam x1 [ (builtin sha3_256) (con bytestring #6f6f72) ])
-                [
-                  [ (builtin lessThanEqualsInteger) (con integer 3) ]
-                  (con integer 1)
-                ]
-              ]
-            ]
-            [
-              (builtin sha2_256)
-              [
-                [ (builtin appendByteString) (con bytestring #67) ]
-                (con bytestring #)
-              ]
-            ]
-          ]
-        ]
-      ]
-    ]
-    [
-      (force (force (delay (delay (lam x (lam y x))))))
-      [
-        (lam
-          x0
-          [
-            (lam
-              x2
+              (builtin subtractInteger)
               [
                 [
-                  (builtin multiplyInteger)
+                  (builtin addInteger)
                   [
-                    [ (builtin multiplyInteger) (con integer 3) ]
-                    (con integer 1)
+                    [ (builtin subtractInteger) (con integer 2) ]
+                    (con integer 2)
                   ]
                 ]
                 [
                   [ (builtin subtractInteger) (con integer 1) ] (con integer 3)
                 ]
               ]
-            )
+            ]
             [
+              (lam
+                x1
+                [
+                  [ (builtin subtractInteger) (con integer 3) ] (con integer 3)
+                ]
+              )
               [
-                (builtin equalsByteString)
-                [ (builtin sha3_256) (con bytestring #756c6b) ]
-              ]
-              [
-                [ (builtin appendByteString) (con bytestring #) ]
-                (con bytestring #66)
+                [ (builtin equalsByteString) (con bytestring #6c7a) ]
+                (con bytestring #6673)
               ]
             ]
-          ]
-        )
-        [
-          (lam
-            x1
-            [
-              [
-                (builtin lessThanEqualsInteger)
-                [ [ (builtin addInteger) (con integer 0) ] (con integer 0) ]
-              ]
-              [ [ (builtin subtractInteger) (con integer 2) ] (con integer 0) ]
-            ]
-          )
-          [
-            [
-              (builtin equalsByteString)
-              [
-                [ (builtin appendByteString) (con bytestring #) ]
-                (con bytestring #68)
-              ]
-            ]
-            [ (builtin sha3_256) (con bytestring #6e7177) ]
           ]
         ]
       ]
     ]
+    [ (force (force (delay (delay (lam x (lam y x)))))) (con integer 0) ]
   ]
 )

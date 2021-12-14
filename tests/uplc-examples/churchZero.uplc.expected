@@ -1,1 +1,1 @@
-(delay (lam z_0 (lam f_1 z_0)))
+(delay (lam z (lam f z)))

@@ -59,20 +59,6 @@
       ]
       (con integer 0)
     ]
-    [
-      [
-        (force (delay (lam x (lam xs (delay (lam z (lam f [ [ f x ] xs ])))))))
-        (con integer 2)
-      ]
-      [
-        [
-          (force
-            (delay (lam x (lam xs (delay (lam z (lam f [ [ f x ] xs ]))))))
-          )
-          (con integer 2)
-        ]
-        (force (delay (delay (lam z (lam f z)))))
-      ]
-    ]
+    (force (delay (delay (lam z (lam f z)))))
   ]
 )

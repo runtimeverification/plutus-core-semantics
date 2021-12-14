@@ -6,36 +6,89 @@
       [
         (builtin addInteger)
         [
-          (lam x0 (con integer 2))
+          (lam
+            x0
+            [
+              [
+                (builtin multiplyInteger)
+                [ [ (builtin multiplyInteger) x0 ] x0 ]
+              ]
+              [
+                [
+                  (builtin subtractInteger)
+                  [
+                    [ (builtin subtractInteger) (con integer 0) ]
+                    (con integer 1)
+                  ]
+                ]
+                [
+                  [ (builtin subtractInteger) (con integer 3) ] (con integer 0)
+                ]
+              ]
+            ]
+          )
           [
             (lam
               x1
               [
                 [
-                  (builtin multiplyInteger)
+                  (builtin subtractInteger)
                   [
                     [ (builtin multiplyInteger) (con integer 0) ]
-                    (con integer 0)
+                    (con integer 2)
                   ]
                 ]
-                [
-                  [ (builtin subtractInteger) (con integer 2) ] (con integer 0)
-                ]
+                [ [ (builtin addInteger) (con integer 0) ] (con integer 1) ]
               ]
             )
             [
               (lam
                 x2
                 [
-                  [ (builtin lessThanInteger) (con integer 0) ] (con integer 3)
+                  [ (builtin subtractInteger) (con integer 2) ] (con integer 2)
                 ]
               )
-              [ [ (builtin equalsInteger) (con integer 3) ] (con integer 1) ]
+              [ (builtin sha3_256) (con bytestring #76) ]
             ]
           ]
         ]
       ]
     ]
-    (con integer 1)
+    [
+      (lam
+        x0
+        [
+          [
+            (builtin addInteger)
+            [
+              [
+                (builtin addInteger)
+                [
+                  [ (builtin multiplyInteger) (con integer 2) ] (con integer 1)
+                ]
+              ]
+              [ [ (builtin addInteger) (con integer 2) ] (con integer 3) ]
+            ]
+          ]
+          [
+            [
+              (builtin subtractInteger)
+              [ [ (builtin subtractInteger) (con integer 1) ] (con integer 2) ]
+            ]
+            [ [ (builtin subtractInteger) (con integer 2) ] (con integer 1) ]
+          ]
+        ]
+      )
+      [
+        [ (builtin lessThanInteger) (con integer 3) ]
+        [
+          [
+            (builtin multiplyInteger)
+            [ [ (builtin addInteger) (con integer 2) ] (con integer 1) ]
+          ]
+          [ [ (builtin subtractInteger) (con integer 2) ] (con integer 0) ]
+        ]
+      ]
+    ]
   ]
 )
