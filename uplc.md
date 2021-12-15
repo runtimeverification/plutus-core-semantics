@@ -1,48 +1,75 @@
 K Semantics of UPLC
 ===================
 
-**UNDER CONSTRUCTION**
+This is a draft K implementation of the CEK machine for Untyped (or typed erased)
+Plutus Core (UPLC), following [version
+2.1](https://hydra.iohk.io/build/8205579/download/1/plutus-core-specification.pdf)
+of its specification, which will be henceforth refered as IOG's Plutus
+Core specification or simply IOG's specification.
+
+# Lexical grammar
+
+Module `PLUTUS-CORE-LEXICAL-GRAMMAR` defines the lexical grammar of
+Plutus Core. (Note that there exists lexemes for types.) It is almost
+a literal translation of the lexical grammar in IOG's
+specification. The most important difference at this time is the use
+of K's builtin type `Int` to represent Plutus' `Integer` lexeme.
 
 ```k
 requires "domains.md"
 
 module PLUTUS-CORE-LEXICAL-GRAMMAR
    imports UNSIGNED-INT-SYNTAX
+   
    syntax Name         ::= r"[a-zA-Z][a-zA-Z0-9\\_\\']*" [token] // name
    syntax Var          ::= Name                                  // term variable
    syntax TyVar        ::= Name                                  // type variable
    syntax BuiltinName  ::= Name                                  // builtin term name
-// syntax Integer      ::= r"[+-]?[0-9]+"             [token]    // int
+// syntax Integer      ::= r"[+-]?[0-9]+"                [token] // int
    syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token] // hex string
    syntax Version      ::= r"[0-9]+(.[0-9]+)*"           [token] // version
    syntax Constant     ::= "()"                                  // unit constant
                          | "True" | "False"                      // boolean constant
 //                       | Integer                               // integer constant
-// Todo: We are using builtin Int from UNSIGNED-INT-SYNTAX to avoid and ambiguity
-// probably between Integer and Version.
-                         | Int
+                         | Int                                   // K builtin integer 
                          | ByteString                            // bytestring constant
    syntax TypeConstant ::= Name                                  // type constant
 endmodule
+```
 
+# Syntax grammar
+
+Module `UNTYPED-PLUTUS-CORE-GRAMMAR` is responsible for the
+specification of the syntax of UPLC. An UPLC program is essentially a
+pair formed by a version string together with a term. A term can be
+simply a variable, a value, an application, a `force` expression on a
+delayed term, a call to a builtin operation or an error. Last but not
+least, values can be constants, lambda abstractions or the delaying of
+a given term.
+
+```k
 module UNTYPED-PLUTUS-CORE-GRAMMAR
    imports PLUTUS-CORE-LEXICAL-GRAMMAR
    imports LIST
 
-   syntax Value ::= "(" "con" TypeConstant Constant ")"   // constant
-                  | "(" "lam" Var Term ")"                // lambda abstraction
-                  | "(" "delay" Term ")"                  // delay execution of a term
+   syntax Value ::= "(" "con" TypeConstant Constant ")" // constant
+                  | "(" "lam" Var Term ")"              // lambda abstraction
+                  | "(" "delay" Term ")"                // delay execution of a term
 
    syntax Term ::= Var
                  | Value 
-                 | "[" Term Term "]"                        // function application
-                 | "(" "force" Term ")"                     // force execution of a term
-                 | "(" "builtin" BuiltinName List ")"       // builtin
-                 | "(" "error" ")"                          // error
+                 | "[" Term Term "]"                     // function application
+                 | "(" "force" Term ")"                  // force execution of a term
+                 | "(" "builtin" BuiltinName List ")"    // builtin
+                 | "(" "error" ")"                       // error
 
-   syntax Program ::= "(" "program" Version Term ")"        // versioned program
+   syntax Program ::= "(" "program" Version Term ")"     // versioned program
 endmodule
+```
 
+# CEK machine
+
+```k
 module UNTYPED-PLUTUS-CORE-CEK
   imports UNTYPED-PLUTUS-CORE-GRAMMAR
   imports MAP
