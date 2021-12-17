@@ -15,6 +15,23 @@ a literal translation of the lexical grammar in IOG's
 specification. The most important difference at this time is the use
 of K's builtin type `Int` to represent Plutus' `Integer` lexeme.
 
+Also, the `Version` lexeme has been changed with respect to IOG's
+specification as the `uplc` compiler only accepts tokens of the general form below.
+```
+[0-9]+.[0-9]+.[0-9]+
+```
+Examples are:
+```
+$ echo "(program 1.2.3 (con integer 5))" | ./uplc evaluate
+(con integer 5)
+$ echo "(program 1.2 (con integer 5))" | ./uplc evaluate
+uplc: Unexpected '(' at line 1, column 14
+$ echo "(program 1 (con integer 5))" | ./uplc evaluate
+uplc: Unexpected '(' at line 1, column 12
+$ echo "(program 1.2.3.4 (con integer 5))" | ./uplc evaluate
+uplc: Unexpected '.' at line 1, column 15
+```
+
 ```k
 requires "domains.md"
 
@@ -27,7 +44,8 @@ module PLUTUS-CORE-LEXICAL-GRAMMAR
    syntax BuiltinName  ::= Name                                  // builtin term name
 // syntax Integer      ::= r"[+-]?[0-9]+"                [token] // int
    syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token] // hex string
-   syntax Version      ::= r"[0-9]+(.[0-9]+)*"           [token] // version
+// syntax Version      ::= r"[0-9]+(.[0-9]+)*"           [token] // version
+   syntax Version      ::= r"[0-9]+.[0-9]+.[0-9]+"       [token] // updated version lexeme  
    syntax Constant     ::= "()"                                  // unit constant
                          | "True" | "False"                      // boolean constant
 //                       | Integer                               // integer constant
@@ -56,18 +74,26 @@ module UNTYPED-PLUTUS-CORE-GRAMMAR
                   | "(" "lam" Var Term ")"              // lambda abstraction
                   | "(" "delay" Term ")"                // delay execution of a term
 
+   syntax TermList ::= ".TermList" | Term "" TermList
+
    syntax Term ::= Var
                  | Value 
                  | "[" Term Term "]"                     // function application
                  | "(" "force" Term ")"                  // force execution of a term
-                 | "(" "builtin" BuiltinName List ")"    // builtin
+                 | "(" "builtin" BuiltinName TermList ")"    // builtin
                  | "(" "error" ")"                       // error
 
    syntax Program ::= "(" "program" Version Term ")"     // versioned program
 endmodule
 ```
 
-# CEK machine
+# Dynamic semantics of UPLC
+
+A CEK machine is a an abstract stack machine used in IOG's
+specification for the dynamic semantics of Untyped Plutus
+Core. Essentially, each reduction rule in the semantics relates
+_states_ comprised by the stack frame, the environment and a third
+component that can be either a term or a value. 
 
 ```k
 module UNTYPED-PLUTUS-CORE-CEK
@@ -75,35 +101,152 @@ module UNTYPED-PLUTUS-CORE-CEK
   imports MAP
   imports LIST
   imports INT
+```
 
+## ATerms
+
+We associate a term rewriting system with the CEK machine of IOG's
+specification where the terms being rewritten are elements of set
+`ATerm` together with the environment and the stack, explained below.
+
+```k
+  syntax ATerm ::= Program
+                 | Term
+		 | "<>"
+		 | "[]" Value Map
+```
+
+## AClosure
+
+A value is pushed onto the stack carrying the current environment, thus
+forming a closure, that will be taking into account while retrieving it
+from the stack.
+
+```k
   syntax AClosure ::= Clos(Value, Map)
+```
+
+## AFrame
+
+Frames are used to record an evaluation context. For instance, an
+application term `[M N]` is carried on by first evaluating `M` and
+then `N` is evaluated. Therefore, before the evaluation of `M` starts,
+the frame `[_ N]`, called right application, is pushed onto the stack
+to record the fact that `N` must be evaluated next. The left
+application frame `[ AClosure _]` has a similar mening. The evaluation
+of `M`, in an application `[M N]`, should yield a closure that will
+then be applied to result of the evaluation of `N`. Frames
+`BuiltinApp` and `Force` have similar meaning: to keep a record of the
+context an evaluation is taking place.
+
+```k
   syntax AFrame   ::= "[_" Term "]"
                     | "[" AClosure "_]"
-                    | BuiltinApp(BuiltinName, List, List, Map)
+                    | BuiltinApp(BuiltinName, List, TermList, Map)
                     | "Force"
+```
 
-  syntax TypeConstant ::= "integer" [token]
+## States
 
-  syntax BuiltinName ::= "addInteger" [token]
+States are represented in K Plutus using K cells. Terms and values go into
+`<k>`, the envionment into `<env>` and `the stack into `stack`.
 
-  configuration <k> $PGM:Program </k>
+```k
+  configuration <k> $PGM:ATerm </k>
                 <env> .Map </env>
 		<stack> .List </stack>
-  
-  // <k> error </> <env> RHO </env> <stack> S </stack>
-  // is the error state.
- 
-  // <k> V </> <env> RHO </env> <stack> .Map </stack>
-  // is a final state.
+```
 
+### Final states
+
+IOG's specification defines `<>` as an error state and `[](V, \rho)`
+as non-error final state. Here the error state is denoted by configuration
+```
+<k> <> </k> <env> .Map </env> <stack> .List </stack>
+```
+and a non-error final state by configuration
+```
+<k> [] V RHO </k> <env> .Map </env> <stack> .List </stack>
+```
+
+## Evaluation rules
+
+A reduction rule in IOG's specification follows one of the following forms.
+1. `s; \rho |> M |-> s'; \rho' |> N`
+1. `s; \rho |> M |-> s'; \rho' <| V`
+1. `s; \rho |> M |-> <>`
+1. `s; \rho <| V |-> s'; \rho' |> M`
+1. `. ; \rho <| V |-> [](V, \rho)`
+
+In K they are represented as rules in the following general form,
+```
+rule <k> M => N <k>
+     <env> RHO => RHO' </env>
+     <stack> S => S' <stack>
+```
+where the K cell has (a stack of) terms, the env cell is a map
+of variables and values and the stack cell is a list of frames.
+
+The rules that coherce a value from state `s, \rho |> V` to `s, \rho
+<| V` are actually not needed as states are all coaptured by K's-three
+-cells-configuration (k, env, stack) described above. Therefore, the
+following rules are implicit in this version of the K specification of UPLC.
+```
+s ; \rho |> (con tn cn) |-> s ; \rho <| (con tn cn)
+s ; \rho |> (lam x M)   |-> s ; \rho <| (lam x M)
+s ; \rho |> (delay M)   |-> s ; \rho <| (delay M)
+```
+
+### Program & final states
+
+The evaluation of a program simply forgets about the version and
+evaluates the enclosed term.
+```k
   rule <k> (program _V M) => M ... </k>
+```
 
+The error rule in IOG's specification
+```
+s ; \rho |> error |-> <>
+```
+is encoded in K as follows.
+```k
+  rule <k> (error) => <>   </k>
+       <env> _RHO => .Map  </env>
+       <stack> _S => .List </stack>
+```
+
+And so is the rule for non-error final state.
+```
+. ; \rho <| V |-> [](V, \rho)
+```
+```
+  rule <k> V:Value => [] V RHO </k>
+       <env> RHO => .Map     </env>
+       <stack> .List       </stack>
+```
+However, `uplc` compiler does not produce the syntax `[] V
+\rho`. Therefore, in the current specification we consider
+```
+<k> V </k> <env> RHO </env> <stack> .List </stack>
+```
+to be non-error final state.
+
+### Main rules
+
+The following rules should be self-explanatory given what has been
+said so far. It is perhaps worth mentioning at this point that we use
+K´s semantic lists (which are polymorphic) to represent the frame
+stack. Therefore, we need to use the `ListItem` constructor to
+represent frame stack elements. The pattern
+```
+... (.List => ListItem(F)) 
+```
+denotes pushing the frame `F` to the top (right end of the list) to
+the frame stack.
+```k
   rule <k> X:Var => V ... </k>
        <env> (_RHO X |-> Clos(V, RHO')) => RHO' </env>
-
-  // s ; \rho |> (con tn cn) |-> s ; \rho <| (con tn cn)
-  // s ; \rho |> (lam x M)   |-> s ; \rho <| (lam x M)
-  // s ; \rho |> (delay M)   |-> s ; \rho <| (delay M)
 
   rule <k> (force M:Term) => M ... </k>
        <stack> ... (.List => ListItem(Force)) </stack>
@@ -111,16 +254,6 @@ module UNTYPED-PLUTUS-CORE-CEK
   rule <k> [ M N ] => M ... </k>
        <stack> ... (.List => ListItem([_ N])) </stack>
 
-  // s ; \rho |> (builtin bn) |-> s ; \rho |> M (bn computes to M)
-
-  rule <k> (builtin BN:BuiltinName ( ListItem( M:Term ) Ms:List ) ) => M ... </k>
-       <env> RHO </env>
-       <stack> ... (.List => ListItem(BuiltinApp(BN, .List, Ms, RHO))) </stack>
-
-  // s ; \rho |> error |-> <>
-
-  // s ; \rho <| V |-> [](V, \rho)
-  
   rule <k> V:Value => N ... </k>
        <env> RHO </env>
        <stack> ... (ListItem([_ N:Term]) =>
@@ -132,21 +265,37 @@ module UNTYPED-PLUTUS-CORE-CEK
        
   rule <k> (delay M:Term) => M </k>
        <stack> ... (ListItem(Force) => .List) </stack>
+```
+
+### Builtins
+
+TO: Builtins are not being handled properly yet.
+
+```k
+  syntax TypeConstant ::= "integer" 
+
+  syntax BuiltinName ::= "addInteger" 
+  
+  // s ; \rho |> (builtin bn) |-> s ; \rho |> M (bn computes to M)
+
+  rule <k> (builtin BN:BuiltinName ( M:Term Ms:TermList ) ) => M ... </k>
+       <env> RHO </env>
+       <stack> ... (.List => ListItem(BuiltinApp(BN, .List, Ms, RHO))) </stack>
 
   // s , ((builtin bn Cs _ M Ms), \rho') ; \rho <| V    |->
   // s , ((builtin bn Cs(V, \rho) _ Ms), \rho') ; \rho' |> M
   rule <k> V:Value => M </k>
        <env> RHO => RHO' </env>
-       <stack> ... (ListItem(BuiltinApp(BN, C, (ListItem(M) Ms), RHO')) =>
+       <stack> ... (ListItem(BuiltinApp(BN, C, (M Ms), RHO')) =>
                     ListItem(BuiltinApp(BN, (C ListItem(Clos(V, RHO))), Ms, RHO')))
        </stack>
 
   // s , ((builtin bn Cs _), \rho') ; \rho <| V  |->
   // s ; \rho' |> M  (bn computes on Cs (V, \rho) to M)
 
-  // rule <k> (con int I2) => (con int (I1 +Int I2)) </k>
-  //      <env> _ => RHO' </env>
-  //      <stack> ... (ListItem(BuiltinApp(addInteger, ListItem(Clos((con int I1:Int), _RHO)), .List, RHO')) => .List) </stack>
+  rule <k> (con T:TypeConstant I2) => (con T (I1 +Int I2)) </k>
+       <env> _ => RHO' </env>
+       <stack> ... (ListItem(BuiltinApp(addInteger, ListItem(Clos((con T I1:Int), _RHO)), .TermList, RHO')) => .List) </stack>
 endmodule
 
 module UPLC
