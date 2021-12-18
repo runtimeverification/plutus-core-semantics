@@ -10,10 +10,28 @@ Core specification or simply IOG's specification.
 # Lexical grammar
 
 Module `PLUTUS-CORE-LEXICAL-GRAMMAR` defines the lexical grammar of
-Plutus Core. (Note that there exists lexemes for types.) It is almost
-a literal translation of the lexical grammar in IOG's
-specification. The most important difference at this time is the use
-of K's builtin type `Int` to represent Plutus' `Integer` lexeme.
+Plutus Core. (Note that there exists lexemes for types.)  It is almost
+a literal translation of the lexical grammar in IOG's specification.
+
+## Representing Integers
+
+We use K's builtin type `Int` to represent Plutus' `Integer` lexeme.
+
+Lines
+```
+syntax Integer      ::= r"[+-]?[0-9]+"                [token] // int
+syntax Constant     ::= ...
+                      | Integer                               // integer constant
+```
+are replaced by
+```
+imports UNSIGNED-INT-SYNTAX
+
+syntax Constant     ::= ...
+                      | Int
+```
+
+## Regexp for version
 
 Also, the `Version` lexeme has been changed with respect to IOG's
 specification as the `uplc` compiler only accepts tokens of the general form below.
@@ -32,6 +50,17 @@ $ echo "(program 1.2.3.4 (con integer 5))" | ./uplc evaluate
 uplc: Unexpected '.' at line 1, column 15
 ```
 
+We replace
+```
+syntax Version      ::= r"[0-9]+(.[0-9]+)*"           [token] // version
+```
+for the regexp below.
+```
+syntax Version      ::= r"[0-9]+.[0-9]+.[0-9]+"       [token] // updated version lexeme  
+```
+
+## The Lexical grammar
+
 ```k
 requires "domains.md"
 
@@ -42,13 +71,10 @@ module PLUTUS-CORE-LEXICAL-GRAMMAR
    syntax Var          ::= Name                                  // term variable
    syntax TyVar        ::= Name                                  // type variable
    syntax BuiltinName  ::= Name                                  // builtin term name
-// syntax Integer      ::= r"[+-]?[0-9]+"                [token] // int
    syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token] // hex string
-// syntax Version      ::= r"[0-9]+(.[0-9]+)*"           [token] // version
    syntax Version      ::= r"[0-9]+.[0-9]+.[0-9]+"       [token] // updated version lexeme  
    syntax Constant     ::= "()"                                  // unit constant
                          | "True" | "False"                      // boolean constant
-//                       | Integer                               // integer constant
                          | Int                                   // K builtin integer 
                          | ByteString                            // bytestring constant
    syntax TypeConstant ::= Name                                  // type constant
@@ -133,7 +159,7 @@ application term `[M N]` is carried on by first evaluating `M` and
 then `N` is evaluated. Therefore, before the evaluation of `M` starts,
 the frame `[_ N]`, called right application, is pushed onto the stack
 to record the fact that `N` must be evaluated next. The left
-application frame `[ AClosure _]` has a similar mening. The evaluation
+application frame `[ AClosure _]` has a similar meaning. The evaluation
 of `M`, in an application `[M N]`, should yield a closure that will
 then be applied to result of the evaluation of `N`. Frames
 `BuiltinApp` and `Force` have similar meaning: to keep a record of the
@@ -269,7 +295,7 @@ the frame stack.
 
 ### Builtins
 
-TO: Builtins are not being handled properly yet.
+TODO: Builtins are not being handled properly yet.
 
 ```k
   syntax TypeConstant ::= "integer" 
