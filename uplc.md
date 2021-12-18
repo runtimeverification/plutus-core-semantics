@@ -237,9 +237,9 @@ s ; \rho |> error |-> <>
 ```
 is encoded in K as follows.
 ```k
-  rule <k> (error) => <>   </k>
-       <env> _RHO => .Map  </env>
-       <stack> _S => .List </stack>
+  rule <k> (error) => <> ... </k>
+       <env> _RHO  => .Map   </env>
+       <stack> _S  => .List  </stack>
 ```
 
 And so is the rule for non-error final state.
@@ -247,16 +247,16 @@ And so is the rule for non-error final state.
 . ; \rho <| V |-> [](V, \rho)
 ```
 ```
-  rule <k> V:Value => [] V RHO </k>
-       <env> RHO => .Map     </env>
-       <stack> .List       </stack>
+  rule <k> V:Value   => [] V RHO </k>
+       <env> RHO     => .Map     </env>
+       <stack> .List             </stack>
 ```
 However, `uplc` compiler does not produce the syntax `[] V
 \rho`. Therefore, in the current specification we consider
 ```
 <k> V </k> <env> RHO </env> <stack> .List </stack>
 ```
-to be non-error final state.
+to be the non-error final states.
 
 ### Main rules
 
