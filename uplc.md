@@ -16,7 +16,8 @@ module UPLC-SYNTAX
    syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token]
    
    syntax Constant     ::= Int
-                         | Bool
+                         | "True"
+			 | "False"
 			 | ByteString
 			 | "()"
 			 
@@ -66,6 +67,7 @@ module UPLC-SEMANTICS
   imports UPLC-SYNTAX
   imports MAP
   imports INT
+  imports K-EQUAL
 
   syntax AClosure ::= Clos(Value, Map)
 
@@ -149,7 +151,8 @@ module UPLC-SEMANTICS
            (con integer I1 /Int I2) ... </k>
 
   // lessThanInteger
-  rule <k> (builtin lessThanInteger .TermList) => (con bool I1 <Int I2) ... </k>
+  rule <k> (builtin lessThanInteger .TermList) =>
+           #if I1 <Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
        <stack> ... (ListItem((con integer I1:Int))
                     ListItem((con integer I2:Int)) => .List) </stack>
 
@@ -157,8 +160,9 @@ module UPLC-SEMANTICS
   rule <k> (V:Value ~> ([ Clos(#LTI, _RHO) _])) => #LTI(V) ... </k>
 
   rule <k> (V1:Value ~> ([ Clos(#LTI(V2:Value), _RHO) _])) => #LTI(V1, V2) ... </k>
-  rule <k> #DIV((con integer I1:Int), (con integer I2:Int)) =>
-           (con bool I1 <Int I2) ... </k>
+
+rule <k> #LTI((con integer I1:Int), (con integer I2:Int)) =>
+         (#if I1 <Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
 
 endmodule
 
