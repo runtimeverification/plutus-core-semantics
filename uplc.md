@@ -1,6 +1,5 @@
 ```k
 requires "domains.md"
-requires "krypto.md"
 
 module UPLC-SYNTAX
    imports UNSIGNED-INT-SYNTAX
@@ -17,8 +16,7 @@ module UPLC-SYNTAX
    syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token]
    
    syntax Constant     ::= Int
-                         | "True"
-			 | "False"
+                         | Bool
 			 | ByteString
 			 | "()"
 			 
@@ -26,6 +24,7 @@ module UPLC-SYNTAX
                          | "multiplyInteger"
                          | "subtractInteger"
 			 | "divideInteger"
+			 | "lessThanInteger"
 			 | "sha3_256"
 
    syntax Value ::= "(" "con" TypeConstant Constant ")" 
@@ -43,6 +42,9 @@ module UPLC-SYNTAX
 		  | "#DIV"
 		  | #DIV(Value)
 		  | #DIV(Value, Value)
+		  | "#LTI"
+		  | #LTI(Value)
+		  | #LTI(Value, Value)
 		  
 
    syntax TermList ::= NeList{Term, ""}
@@ -64,7 +66,6 @@ module UPLC-SEMANTICS
   imports UPLC-SYNTAX
   imports MAP
   imports INT
-  imports KRYPTO
 
   syntax AClosure ::= Clos(Value, Map)
 
@@ -146,6 +147,18 @@ module UPLC-SEMANTICS
   rule <k> (V1:Value ~> ([ Clos(#DIV(V2:Value), _RHO) _])) => #DIV(V1, V2) ... </k>
   rule <k> #DIV((con integer I1:Int), (con integer I2:Int)) =>
            (con integer I1 /Int I2) ... </k>
+
+  // lessThanInteger
+  rule <k> (builtin lessThanInteger .TermList) => (con bool I1 <Int I2) ... </k>
+       <stack> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </stack>
+
+  rule <k> (builtin lessThanInteger) => #LTI ... </k>
+  rule <k> (V:Value ~> ([ Clos(#LTI, _RHO) _])) => #LTI(V) ... </k>
+
+  rule <k> (V1:Value ~> ([ Clos(#LTI(V2:Value), _RHO) _])) => #LTI(V1, V2) ... </k>
+  rule <k> #DIV((con integer I1:Int), (con integer I2:Int)) =>
+           (con bool I1 <Int I2) ... </k>
 
 endmodule
 
