@@ -38,7 +38,9 @@ export PLUGIN_SUBMODULE
         test-simple                        \
         test-uplc-examples                 \
         test-benchmark-validation-examples \
-        test-nofib-exe-examples
+        test-nofib-exe-examples            \
+        conformance-test
+
 .SECONDARY:
 
 all: build
