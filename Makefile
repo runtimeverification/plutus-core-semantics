@@ -176,7 +176,7 @@ uninstall:
 # Testing
 # -------
 
-TEST_OPTIONS :=
+TEST_OPTIONS := --result-only
 CHECK        := git --no-pager diff --no-index --ignore-all-space -R
 
 failing_tests := $(shell cat tests/failing)
@@ -213,7 +213,6 @@ test-simple: $(simple_tests:=.run)
 all_uplc-examples_tests := $(wildcard tests/uplc-examples/*.uplc)
 uplc-examples_tests     := $(filter-out $(failing_tests), $(all_uplc-examples_tests))
 
-tests/uplc-examples/%: TEST_OPTIONS += --result-only
 test-uplc-examples: $(uplc-examples_tests:=.run)
 
 # benchmark-validation-examples Tests
@@ -221,7 +220,6 @@ test-uplc-examples: $(uplc-examples_tests:=.run)
 all_benchmark-validation-examples_tests := $(wildcard tests/benchmark-validation-examples/*.uplc)
 benchmark-validation-examples_tests     := $(filter-out $(failing_tests), $(all_benchmark-validation-examples_tests))
 
-tests/benchmark-validation-examples/%: TEST_OPTIONS += --result-only
 test-benchmark-validation-examples: $(benchmark-validation-examples_tests:=.run)
 
 # nofib-exe-examples Tests
@@ -229,5 +227,4 @@ test-benchmark-validation-examples: $(benchmark-validation-examples_tests:=.run)
 all_nofib-exe-examples_tests := $(wildcard tests/nofib-exe-examples/*.uplc)
 nofib-exe-examples_tests     := $(filter-out $(failing_tests), $(all_nofib-exe-examples_tests))
 
-tests/nofib-exe-examples/%: TEST_OPTIONS += --result-only
 test-nofib-exe-examples: $(nofib-exe-examples_tests:=.run)
