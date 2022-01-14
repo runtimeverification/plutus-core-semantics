@@ -178,12 +178,21 @@ uninstall:
 
 TEST_OPTIONS := --result-only
 CHECK        := git --no-pager diff --no-index --ignore-all-space -R
+TEST         := $(KPLUTUS) run
+UPLC         := uplc
 
 failing_tests := $(shell cat tests/failing)
 
 tests/%.uplc.run: tests/%.uplc
-	$(KPLUTUS) run $< $(TEST_OPTIONS) > $<.out
+	$(TEST) $< $(TEST_OPTIONS) > $<.out
 	$(CHECK) $<.out $<.expected
+
+update-results-with-uplc: conformance-test
+update-results-with-uplc:
+        export CHECK=cp
+        export TEST= $(UPLC) evaluate --print-mode Classic -i
+        export TEST_OPTIONS=
+
 
 # Conformance tests
 #
