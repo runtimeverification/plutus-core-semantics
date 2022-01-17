@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( con data #00FF ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <stack>
+    .List
+  </stack>
+</generatedTop>

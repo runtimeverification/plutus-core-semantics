@@ -1,156 +1,173 @@
-K Semantics of UPLC
-===================
-
-This is a draft K implementation of the CEK machine for Untyped (or typed erased)
-Plutus Core (UPLC), following [version
-2.1](https://hydra.iohk.io/build/8205579/download/1/plutus-core-specification.pdf)
-of its specification, which will be henceforth refered as IOG's Plutus
-Core specification or simply IOG's specification.
-
-# Lexical grammar
-
-Module `PLUTUS-CORE-LEXICAL-GRAMMAR` defines the lexical grammar of
-Plutus Core. (Note that there exists lexemes for types.) It is almost
-a literal translation of the lexical grammar in IOG's
-specification. The most important difference at this time is the use
-of K's builtin type `Int` to represent Plutus' `Integer` lexeme.
-
 ```k
 requires "domains.md"
 
-module PLUTUS-CORE-LEXICAL-GRAMMAR
+module UPLC-SYNTAX
    imports UNSIGNED-INT-SYNTAX
-   
-   syntax Name         ::= r"[a-zA-Z][a-zA-Z0-9\\_\\']*" [token] // name
-   syntax Var          ::= Name                                  // term variable
-   syntax TyVar        ::= Name                                  // type variable
-   syntax BuiltinName  ::= Name                                  // builtin term name
-// syntax Integer      ::= r"[+-]?[0-9]+"                [token] // int
-   syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token] // hex string
-   syntax Version      ::= r"[0-9]+(.[0-9]+)*"           [token] // version
-   syntax Constant     ::= "()"                                  // unit constant
-                         | "True" | "False"                      // boolean constant
-//                       | Integer                               // integer constant
-                         | Int                                   // K builtin integer 
-                         | ByteString                            // bytestring constant
-   syntax TypeConstant ::= Name                                  // type constant
-endmodule
-```
-
-# Syntax grammar
-
-Module `UNTYPED-PLUTUS-CORE-GRAMMAR` is responsible for the
-specification of the syntax of UPLC. An UPLC program is essentially a
-pair formed by a version string together with a term. A term can be
-simply a variable, a value, an application, a `force` expression on a
-delayed term, a call to a builtin operation or an error. Last but not
-least, values can be constants, lambda abstractions or the delaying of
-a given term.
-
-```k
-module UNTYPED-PLUTUS-CORE-GRAMMAR
-   imports PLUTUS-CORE-LEXICAL-GRAMMAR
+   imports ID
    imports LIST
+   imports BOOL
 
-   syntax Value ::= "(" "con" TypeConstant Constant ")" // constant
-                  | "(" "lam" Var Term ")"              // lambda abstraction
-                  | "(" "delay" Term ")"                // delay execution of a term
+   syntax TypeConstant ::= "integer"
+                         | "data"
+                         | "bytestring"
+                         | "unit"
+                         | "bool"
+                         
+   syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token]
+   
+   syntax Constant     ::= Int
+                         | "True"
+                         | "False"
+                         | ByteString
+                         | "()"
+                         
+   syntax BuiltinName  ::= "addInteger"
+                         | "multiplyInteger"
+                         | "subtractInteger"
+                         | "divideInteger"
+                         | "lessThanInteger"
+                         | "sha3_256"
 
-   syntax Term ::= Var
+   syntax Value ::= "(" "con" TypeConstant Constant ")" 
+                  | "(" "lam" Id Term ")"              
+                  | "(" "delay" Term ")"                
+                  | "#SUM"
+                  | #SUM(Value)
+                  | #SUM(Value, Value)
+                  | "#MUL"
+                  | #MUL(Value)
+                  | #MUL(Value, Value)
+                  | "#SUB"
+                  | #SUB(Value)
+                  | #SUB(Value, Value)
+                  | "#DIV"
+                  | #DIV(Value)
+                  | #DIV(Value, Value)
+                  | "#LTI"
+                  | #LTI(Value)
+                  | #LTI(Value, Value)
+                  
+
+   syntax TermList ::= NeList{Term, ""}
+
+   syntax Term ::= Id
                  | Value 
                  | "[" Term Term "]"                     // function application
                  | "(" "force" Term ")"                  // force execution of a term
-                 | "(" "builtin" BuiltinName List ")"    // builtin
+                 | "(" "builtin" BuiltinName ")"
+                 | "(" "builtin" BuiltinName TermList ")"// builtin
                  | "(" "error" ")"                       // error
+                 
+   syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
 
    syntax Program ::= "(" "program" Version Term ")"     // versioned program
 endmodule
-```
 
-# CEK machine
-
-```k
-module UNTYPED-PLUTUS-CORE-CEK
-  imports UNTYPED-PLUTUS-CORE-GRAMMAR
+module UPLC-SEMANTICS
+  imports UPLC-SYNTAX
   imports MAP
-  imports LIST
   imports INT
+  imports K-EQUAL
 
   syntax AClosure ::= Clos(Value, Map)
-  syntax AFrame   ::= "[_" Term "]"
-                    | "[" AClosure "_]"
-                    | BuiltinApp(BuiltinName, List, List, Map)
-                    | "Force"
 
-  syntax TypeConstant ::= "integer" [token]
-
-  syntax BuiltinName ::= "addInteger" [token]
+  syntax ATerm ::= "Force"
+                 | "[_" Term "]"
+                 | "[" AClosure "_]"
+                 | Term
 
   configuration <k> $PGM:Program </k>
                 <env> .Map </env>
-		<stack> .List </stack>
-  
-  // <k> error </> <env> RHO </env> <stack> S </stack>
-  // is the error state.
- 
-  // <k> V </> <env> RHO </env> <stack> .Map </stack>
-  // is a final state.
+                <stack> .List </stack>
 
-  rule <k> (program _V M) => M ... </k>
+  rule <k> (program _V M) => M </k>
 
-  rule <k> X:Var => V ... </k>
-       <env> (_RHO X |-> Clos(V, RHO')) => RHO' </env>
+  rule <k> X:Id => V ... </k>
+       <env> (_RHO:Map X |-> Clos(V, RHO')) => RHO' </env>
 
-  // s ; \rho |> (con tn cn) |-> s ; \rho <| (con tn cn)
-  // s ; \rho |> (lam x M)   |-> s ; \rho <| (lam x M)
-  // s ; \rho |> (delay M)   |-> s ; \rho <| (delay M)
+  rule <k> (force M:Term) => (M ~> Force) ... </k>
 
-  rule <k> (force M:Term) => M ... </k>
-       <stack> ... (.List => ListItem(Force)) </stack>
+  rule <k> [ M N ] => M ~> [_ N] ... </k>
 
-  rule <k> [ M N ] => M ... </k>
-       <stack> ... (.List => ListItem([_ N])) </stack>
-
-  // s ; \rho |> (builtin bn) |-> s ; \rho |> M (bn computes to M)
-
-  rule <k> (builtin BN:BuiltinName ( ListItem( M:Term ) Ms:List ) ) => M ... </k>
+  rule <k> V:Value ~> [_ N] => N ~> [ Clos(V, RHO) _] ... </k>
        <env> RHO </env>
-       <stack> ... (.List => ListItem(BuiltinApp(BN, .List, Ms, RHO))) </stack>
 
-  // s ; \rho |> error |-> <>
+  rule <k> (V:Value ~> ([ Clos((lam X:Id M:Term), RHO') _] )) => M ... </k>
+        <env> RHO => (RHO' (X |-> Clos(V, RHO))) </env>
 
-  // s ; \rho <| V |-> [](V, \rho)
-  
-  rule <k> V:Value => N ... </k>
-       <env> RHO </env>
-       <stack> ... (ListItem([_ N:Term]) =>
-                    ListItem([ Clos(V, RHO) _])) </stack>
+   rule <k> (delay M:Term) ~> Force => M ... </k>
 
-  rule <k> V:Value => M ... </k>
-       <env> RHO => RHO' (X |-> Clos(V, RHO)) </env>
-       <stack> ... (ListItem([ Clos((lam X:Var M), RHO') _]) => .List) </stack>
-       
-  rule <k> (delay M:Term) => M </k>
-       <stack> ... (ListItem(Force) => .List) </stack>
+  // Builtins
+  rule <k> (builtin BN (M Ms)) => M ~> (builtin BN Ms) ... </k>  
+  rule <k> V:Value ~> (builtin BN Ms) => (builtin BN Ms) ... </k>
+       <stack> ... (.List => ListItem(V)) </stack>
 
-  // s , ((builtin bn Cs _ M Ms), \rho') ; \rho <| V    |->
-  // s , ((builtin bn Cs(V, \rho) _ Ms), \rho') ; \rho' |> M
-  rule <k> V:Value => M </k>
-       <env> RHO => RHO' </env>
-       <stack> ... (ListItem(BuiltinApp(BN, C, (ListItem(M) Ms), RHO')) =>
-                    ListItem(BuiltinApp(BN, (C ListItem(Clos(V, RHO))), Ms, RHO')))
-       </stack>
+  // addInteger
+  rule <k> (builtin addInteger .TermList) => (con integer I1 +Int I2) ... </k>
+       <stack> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </stack>
 
-  // s , ((builtin bn Cs _), \rho') ; \rho <| V  |->
-  // s ; \rho' |> M  (bn computes on Cs (V, \rho) to M)
+  rule <k> (builtin addInteger) => #SUM ... </k>
+  rule <k> (V:Value ~> ([ Clos(#SUM, _RHO) _])) => #SUM(V) ... </k>
 
-  // rule <k> (con int I2) => (con int (I1 +Int I2)) </k>
-  //      <env> _ => RHO' </env>
-  //      <stack> ... (ListItem(BuiltinApp(addInteger, ListItem(Clos((con int I1:Int), _RHO)), .List, RHO')) => .List) </stack>
+  rule <k> (V1:Value ~> ([ Clos(#SUM(V2:Value), _RHO) _])) => #SUM(V1, V2) ... </k>
+  rule <k> #SUM((con integer I1:Int), (con integer I2:Int)) =>
+           (con integer I1 +Int I2) ... </k>
+
+  // multiplyInteger
+  rule <k> (builtin multiplyInteger .TermList) => (con integer I1 *Int I2) ... </k>
+       <stack> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </stack>
+
+  rule <k> (builtin multiplyInteger) => #MUL ... </k>
+  rule <k> (V:Value ~> ([ Clos(#MUL, _RHO) _])) => #MUL(V) ... </k>
+
+  rule <k> (V1:Value ~> ([ Clos(#MUL(V2:Value), _RHO) _])) => #MUL(V1, V2) ... </k>
+  rule <k> #MUL((con integer I1:Int), (con integer I2:Int)) =>
+           (con integer I1 *Int I2) ... </k>
+
+  // subtractInteger
+  rule <k> (builtin subtractInteger .TermList) => (con integer I1 -Int I2) ... </k>
+       <stack> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </stack>
+
+  rule <k> (builtin subtractInteger) => #SUB ... </k>
+  rule <k> (V:Value ~> ([ Clos(#SUB, _RHO) _])) => #SUB(V) ... </k>
+
+  rule <k> (V1:Value ~> ([ Clos(#SUB(V2:Value), _RHO) _])) => #SUB(V1, V2) ... </k>
+  rule <k> #SUB((con integer I1:Int), (con integer I2:Int)) =>
+           (con integer I1 -Int I2) ... </k>
+
+  // divideInteger
+  rule <k> (builtin divideInteger .TermList) => (con integer I1 /Int I2) ... </k>
+       <stack> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </stack>
+
+  rule <k> (builtin divideInteger) => #DIV ... </k>
+  rule <k> (V:Value ~> ([ Clos(#DIV, _RHO) _])) => #DIV(V) ... </k>
+
+  rule <k> (V1:Value ~> ([ Clos(#DIV(V2:Value), _RHO) _])) => #DIV(V1, V2) ... </k>
+  rule <k> #DIV((con integer I1:Int), (con integer I2:Int)) =>
+           (con integer I1 /Int I2) ... </k>
+
+  // lessThanInteger
+  rule <k> (builtin lessThanInteger .TermList) =>
+           #if I1 <Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
+       <stack> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </stack>
+
+  rule <k> (builtin lessThanInteger) => #LTI ... </k>
+  rule <k> (V:Value ~> ([ Clos(#LTI, _RHO) _])) => #LTI(V) ... </k>
+
+  rule <k> (V1:Value ~> ([ Clos(#LTI(V2:Value), _RHO) _])) => #LTI(V1, V2) ... </k>
+
+rule <k> #LTI((con integer I1:Int), (con integer I2:Int)) =>
+         (#if I1 <Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
+
 endmodule
 
 module UPLC
-    imports UNTYPED-PLUTUS-CORE-GRAMMAR
-    imports UNTYPED-PLUTUS-CORE-CEK
+     imports UPLC-SYNTAX
+     imports UPLC-SEMANTICS
 endmodule
 ```
