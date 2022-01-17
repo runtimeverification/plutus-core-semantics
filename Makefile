@@ -39,7 +39,8 @@ export PLUGIN_SUBMODULE
         test-uplc-examples                 \
         test-benchmark-validation-examples \
         test-nofib-exe-examples            \
-        conformance-test
+        conformance-test                   \
+        update-results-with-uplc
 
 .SECONDARY:
 
@@ -188,10 +189,9 @@ tests/%.uplc.run: tests/%.uplc
 	$(CHECK) $<.out $<.expected
 
 update-results-with-uplc: conformance-test
-update-results-with-uplc:
-        export CHECK=cp
-        export TEST= $(UPLC) evaluate --print-mode Classic -i
-        export TEST_OPTIONS=
+update-results-with-uplc: CHECK=cp
+update-results-with-uplc: TEST=$(UPLC) evaluate --print-mode Classic -i
+update-results-with-uplc: TEST_OPTIONS=
 
 
 # Conformance tests
