@@ -1,5 +1,3 @@
-tests/simple/error.uplc
-tests/uplc-examples/ApplyAdd1.uplc
 tests/uplc-examples/ApplyAdd2.uplc
 tests/uplc-examples/DivideByZeroDrop.uplc
 tests/uplc-examples/DivideByZero.uplc

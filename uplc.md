@@ -9,44 +9,44 @@ module UPLC-SYNTAX
 
    syntax TypeConstant ::= "integer"
                          | "data"
-			 | "bytestring"
-			 | "unit"
-			 | "bool"
-			 
+                         | "bytestring"
+                         | "unit"
+                         | "bool"
+                         
    syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token]
    
    syntax Constant     ::= Int
                          | "True"
-			 | "False"
-			 | ByteString
-			 | "()"
-			 
+                         | "False"
+                         | ByteString
+                         | "()"
+                         
    syntax BuiltinName  ::= "addInteger"
                          | "multiplyInteger"
                          | "subtractInteger"
-			 | "divideInteger"
-			 | "lessThanInteger"
-			 | "sha3_256"
+                         | "divideInteger"
+                         | "lessThanInteger"
+                         | "sha3_256"
 
    syntax Value ::= "(" "con" TypeConstant Constant ")" 
                   | "(" "lam" Id Term ")"              
                   | "(" "delay" Term ")"                
-		  | "#SUM"
-		  | #SUM(Value)
-		  | #SUM(Value, Value)
-		  | "#MUL"
-		  | #MUL(Value)
-		  | #MUL(Value, Value)
-		  | "#SUB"
-		  | #SUB(Value)
-		  | #SUB(Value, Value)
-		  | "#DIV"
-		  | #DIV(Value)
-		  | #DIV(Value, Value)
-		  | "#LTI"
-		  | #LTI(Value)
-		  | #LTI(Value, Value)
-		  
+                  | "#SUM"
+                  | #SUM(Value)
+                  | #SUM(Value, Value)
+                  | "#MUL"
+                  | #MUL(Value)
+                  | #MUL(Value, Value)
+                  | "#SUB"
+                  | #SUB(Value)
+                  | #SUB(Value, Value)
+                  | "#DIV"
+                  | #DIV(Value)
+                  | #DIV(Value, Value)
+                  | "#LTI"
+                  | #LTI(Value)
+                  | #LTI(Value, Value)
+                  
 
    syntax TermList ::= NeList{Term, ""}
 
@@ -55,9 +55,9 @@ module UPLC-SYNTAX
                  | "[" Term Term "]"                     // function application
                  | "(" "force" Term ")"                  // force execution of a term
                  | "(" "builtin" BuiltinName ")"
-		 | "(" "builtin" BuiltinName TermList ")"// builtin
+                 | "(" "builtin" BuiltinName TermList ")"// builtin
                  | "(" "error" ")"                       // error
-		 
+                 
    syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
 
    syntax Program ::= "(" "program" Version Term ")"     // versioned program
@@ -73,7 +73,7 @@ module UPLC-SEMANTICS
 
   syntax ATerm ::= "Force"
                  | "[_" Term "]"
-		 | "[" AClosure "_]"
+                 | "[" AClosure "_]"
                  | Term
 
   configuration <k> $PGM:Program </k>
