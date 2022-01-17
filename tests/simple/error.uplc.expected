@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( error ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <stack>
+    .List
+  </stack>
+</generatedTop>
