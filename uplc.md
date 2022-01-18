@@ -1,5 +1,6 @@
 ```k
 requires "domains.md"
+requires "krypto.md"
 
 module UPLC-SYNTAX
    imports UNSIGNED-INT-SYNTAX
@@ -68,6 +69,7 @@ module UPLC-SEMANTICS
   imports MAP
   imports INT
   imports K-EQUAL
+  imports KRYPTO
 
   syntax AClosure ::= Clos(Value, Map)
 
