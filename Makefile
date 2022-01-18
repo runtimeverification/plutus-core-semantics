@@ -40,7 +40,7 @@ export PLUGIN_SUBMODULE
         test-benchmark-validation-examples \
         test-nofib-exe-examples            \
         conformance-test                   \
-        update-results-with-uplc
+        update-results
 
 .SECONDARY:
 
@@ -177,22 +177,28 @@ uninstall:
 # Testing
 # -------
 
-TEST_OPTIONS := --result-only
-CHECK        := git --no-pager diff --no-index --ignore-all-space -R
-TEST         := $(KPLUTUS) run
-UPLC         := uplc
+TEST_OPTIONS  := --result-only
+TEST_OPTIONS2 :=
+CHECK         := git --no-pager diff --no-index --ignore-all-space -R
+TEST          := $(KPLUTUS) run
+TEST2         := $(KPLUTUS) run
+UPLC          := ./uplc
+
+EXPECTED      :=.expected
+EXPECTED2     :=.krun.expected
 
 failing_tests := $(shell cat tests/failing)
 
 tests/%.uplc.run: tests/%.uplc
 	$(TEST) $< $(TEST_OPTIONS) > $<.out
-	$(CHECK) $<.out $<.expected
+	$(CHECK) $<.out $<$(EXPECTED)
+	$(TEST2) $< $(TEST_OPTIONS2) > $<.out
+	$(CHECK) $<.out $<$(EXPECTED2)
 
-update-results-with-uplc: conformance-test
-update-results-with-uplc: CHECK=cp
-update-results-with-uplc: TEST=$(UPLC) evaluate --print-mode Classic -i
-update-results-with-uplc: TEST_OPTIONS=
-
+update-results: conformance-test
+update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
+update-results: TEST_OPTIONS=
+update-results: CHECK=cp
 
 # Conformance tests
 #
