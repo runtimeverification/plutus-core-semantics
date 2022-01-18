@@ -32,7 +32,7 @@ PLUGIN_SOURCE    := $(KPLUTUS_INCLUDE)/kframework/blockchain-k-plugin/krypto.md
 export PLUGIN_SUBMODULE
 
 .PHONY: all clean distclean                \
-        deps k-deps plugin-deps            \
+        deps k-deps plugin-deps libff      \
         build build-kplutus build-llvm     \
         install uninstall                  \
         test-simple                        \
@@ -52,6 +52,39 @@ clean:
 distclean:
 	rm -rf $(BUILD_DIR)
 	git clean -dffx -- tests/
+
+# Non-K Dependencies
+# ------------------
+
+libff_out 		 := $(KPLUTUS_LIB)/libff/lib/libff.a
+libcryptopp_out  := $(KPLUTUS_LIB)/cryptopp/lib/libcryptopp.a
+
+LIBFF_CMAKE_FLAGS :=
+
+ifeq ($(UNAME_S),Linux)
+    LIBFF_CMAKE_FLAGS +=
+else ifeq ($(UNAME_S),Darwin)
+    LIBFF_CMAKE_FLAGS += -DWITH_PROCPS=OFF -DOPENSSL_ROOT_DIR=$(shell brew --prefix openssl)
+else
+    LIBFF_CMAKE_FLAGS += -DWITH_PROCPS=OFF
+endif
+
+ifneq ($(APPLE_SILICON),)
+    LIBFF_CMAKE_FLAGS += -DCURVE=ALT_BN128 -DUSE_ASM=Off
+endif
+
+libff: $(libff_out)
+
+$(libff_out): $(PLUGIN_SUBMODULE)/deps/libff/CMakeLists.txt
+	@mkdir -p $(PLUGIN_SUBMODULE)/deps/libff/build
+	cd $(PLUGIN_SUBMODULE)/deps/libff/build                                                                     \
+	    && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(INSTALL_LIB)/libff $(LIBFF_CMAKE_FLAGS) \
+	    && make -s -j4                                                                                          \
+	    && make install DESTDIR=$(CURDIR)/$(BUILD_DIR)
+
+$(libcryptopp_out): $(PLUGIN_SUBMODULE)/deps/cryptopp/GNUmakefile
+	cd $(PLUGIN_SUBMODULE)/deps/cryptopp                            \
+            && $(MAKE) install DESTDIR=$(CURDIR)/$(BUILD_DIR) PREFIX=$(INSTALL_LIB)/cryptopp
 
 # K Dependencies
 # --------------
@@ -105,7 +138,7 @@ $(KPLUTUS_INCLUDE)/kframework/%.md: %.md
 
 llvm_dir           := llvm
 llvm_main_module   := UPLC
-llvm_syntax_module := $(llvm_main_module)
+llvm_syntax_module := UPLC-SYNTAX
 llvm_main_file     := uplc.md
 llvm_main_filename := $(basename $(notdir $(llvm_main_file)))
 llvm_kompiled      := $(llvm_dir)/$(llvm_main_filename)-kompiled/interpreter
@@ -113,7 +146,11 @@ llvm_kompiled      := $(llvm_dir)/$(llvm_main_filename)-kompiled/interpreter
 foo:
 	echo $(kplutus_includes)
 
-$(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(KPLUTUS_BIN)/kplc
+ifeq ($(UNAME_S),Darwin)
+$(KPLUTUS_LIB)/$(llvm_kompiled): $(libcryptopp_out)
+endif
+
+$(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(libff_out) $(KPLUTUS_BIN)/kplc
 	$(KOMPILE) --backend llvm                 \
 	    $(llvm_main_file)                     \
 	    --main-module $(llvm_main_module)     \
