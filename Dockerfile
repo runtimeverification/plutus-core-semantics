@@ -4,10 +4,14 @@ FROM runtimeverificationinc/kframework-k:ubuntu-focal-${K_COMMIT}
 RUN    apt-get update            \
     && apt-get upgrade --yes     \
     && apt-get install --yes     \
+            cmake                \
             curl                 \
             debhelper            \
             default-jdk-headless \
+            libcrypto++-dev      \
             libprocps-dev        \
+            libsecp256k1-dev     \
+            libssl-dev           \
             libyaml-dev          \
             maven                \
             pkg-config           \
