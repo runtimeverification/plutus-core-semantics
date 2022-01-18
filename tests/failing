@@ -1,3 +1,8 @@
+tests/simple/conByteString.uplc
+tests/simple/delay.uplc
+tests/simple/error.uplc
+tests/simple/force.uplc
+tests/simple/var.uplc
 tests/uplc-examples/ApplyAdd1.uplc
 tests/uplc-examples/ApplyAdd2.uplc
 tests/uplc-examples/DivideByZeroDrop.uplc

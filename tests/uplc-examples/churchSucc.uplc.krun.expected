@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( lam n ( delay ( lam z ( lam f [ f [ [ ( force n ) z ] f ] ] ) ) ) ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <stack>
+    .List
+  </stack>
+</generatedTop>
