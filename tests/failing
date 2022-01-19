@@ -1,4 +1,7 @@
+tests/simple/error.uplc
 tests/simple/ifThenElse.uplc
+tests/simple/greaterThanInteger.uplc
+tests/simple/greaterThanEqualsInteger.uplc
 tests/uplc-examples/ApplyAdd1.uplc
 tests/uplc-examples/ApplyAdd2.uplc
 tests/uplc-examples/DivideByZeroDrop.uplc

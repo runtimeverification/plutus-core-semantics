@@ -1,11 +1,1 @@
-<generatedTop>
-  <k>
-    ( con integer 2 ) ~> .
-  </k>
-  <env>
-    .Map
-  </env>
-  <stack>
-    .List
-  </stack>
-</generatedTop>
+(con integer 2)

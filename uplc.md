@@ -325,7 +325,7 @@ module UPLC-SEMANTICS
 
   rule <k> (V:Value ~> ([ Clos(#LTI, _RHO) _])) => #LTI(V) ... </k>
 
-  rule <k> (V1:Value ~> ([ Clos(#LTI(V2:Value), _RHO) _])) => #LTI(V1, V2) ... </k>
+  rule <k> (V2:Value ~> ([ Clos(#LTI(V1:Value), _RHO) _])) => #LTI(V1, V2) ... </k>
 
   rule <k> #LTI((con integer I1:Int), (con integer I2:Int)) =>
            (#if I1 <Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>

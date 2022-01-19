@@ -1,11 +1,1 @@
-<generatedTop>
-  <k>
-    ( lam x ( delay x ) ) ~> .
-  </k>
-  <env>
-    .Map
-  </env>
-  <stack>
-    .List
-  </stack>
-</generatedTop>
+(lam x (delay x))
