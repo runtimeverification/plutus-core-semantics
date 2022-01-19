@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( lam i [ [ ( builtin addInteger ) i ] ( con integer 1 ) ] ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <stack>
+    .List
+  </stack>
+</generatedTop>
