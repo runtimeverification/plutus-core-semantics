@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    x ~> Force ~> .
+    ( lam x ( force x ) ) ~> .
   </k>
   <env>
     .Map

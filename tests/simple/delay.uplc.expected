@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    ( delay x ) ~> .
+    ( lam x ( delay x ) ) ~> .
   </k>
   <env>
     .Map

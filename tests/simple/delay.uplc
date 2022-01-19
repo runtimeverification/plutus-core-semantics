@@ -1,1 +1,1 @@
-(program 1.0.0 (delay x))
+(program 1.0.0 (lam x (delay x)))
