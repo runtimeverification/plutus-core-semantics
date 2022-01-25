@@ -18,6 +18,8 @@ RUN    apt-get update            \
             python3              \
             zlib1g-dev
 
+RUN install -d -m755 -o $(id -u) -g $(id -g) /nix
+
 RUN    git clone 'https://github.com/z3prover/z3' --branch=z3-4.8.11 \
     && cd z3                                                         \
     && python scripts/mk_make.py                                     \
@@ -31,10 +33,20 @@ RUN curl -sSL https://get.haskellstack.org/ | sh
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
-RUN groupadd -g $GROUP_ID user && useradd -m -u $USER_ID -s /bin/sh -g user user
+
+RUN    groupadd -g $GROUP_ID user && useradd -m -u $USER_ID -s /bin/sh -g user user \
+    && chown -R user /nix
 
 USER user:user
 WORKDIR /home/user
+
+RUN    curl -L https://nixos.org/nix/install | sh \
+    && source $HOME/.nix-profile/etc/profile.d/nix.sh \
+    && nix-env --version                                         \
+    && git clone 'https://github.com/input-output-hk/plutus.git' \
+    && cd plutus                                                 \
+    && nix-shell --run 'cabal build plutus-core'                 \
+    && cd ..
 
 RUN curl -L https://github.com/github/hub/releases/download/v2.14.0/hub-linux-amd64-2.14.0.tgz -o /home/user/hub.tgz
 RUN cd /home/user && tar xzf hub.tgz
