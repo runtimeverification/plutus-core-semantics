@@ -130,7 +130,7 @@ module UPLC-SEMANTICS
   rule <k> (V:Value ~> ([ Clos((lam X:Id M:Term), RHO') _] )) => M ... </k>
         <env> RHO => (RHO' (X |-> Clos(V, RHO))) </env>
 
-   rule <k> (delay M:Term) ~> Force => M ... </k>
+  rule <k> (delay M:Term) ~> Force => M ... </k>
 
   // Builtins
   rule <k> (builtin BN (M Ms)) => M ~> (builtin BN Ms) ... </k>  

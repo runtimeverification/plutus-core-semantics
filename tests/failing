@@ -1,7 +1,19 @@
+# Uplc does not compute error. The semantics specifies a black diamond
+# state which appears should be understood as the error behavior in
+# uplc
 tests/simple/error.uplc
+# Builtin ifThenElse needs a force to work in uplc but it does not
+# work (with force) in KPlutus.
 tests/simple/ifThenElse.uplc
+# Builtins greaterThan and greaterThanEquals were removed.
 tests/simple/greaterThanInteger.uplc
 tests/simple/greaterThanEqualsInteger.uplc
+# Delay uses a free-variable therefore it fails.
+tests/simple/delay.uplc
+# Force uses a free-varaible therefore it fails.
+tests/simple/force.uplc
+# Var uses a free-varaible therefore it fails.
+tests/simple/var.uplc
 tests/uplc-examples/ApplyAdd1.uplc
 tests/uplc-examples/ApplyAdd2.uplc
 tests/uplc-examples/DivideByZeroDrop.uplc
