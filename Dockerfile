@@ -41,7 +41,7 @@ USER user:user
 WORKDIR /home/user
 
 RUN    curl -L https://nixos.org/nix/install | sh \
-    && source $HOME/.nix-profile/etc/profile.d/nix.sh \
+    && . $HOME/.nix-profile/etc/profile.d/nix.sh \
     && nix-env --version                                         \
     && git clone 'https://github.com/input-output-hk/plutus.git' \
     && cd plutus                                                 \
