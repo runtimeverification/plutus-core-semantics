@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    ( con bytestring #00ff ) ~> .
+    ( lam i [ [ ( builtin addInteger ) i ] ( con integer 1 ) ] ) ~> .
   </k>
   <env>
     .Map

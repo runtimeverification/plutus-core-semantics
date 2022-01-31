@@ -224,7 +224,13 @@ UPLC          := ./uplc
 EXPECTED      :=.expected
 EXPECTED2     :=.krun.expected
 
-failing_tests := $(shell cat tests/failing)
+# Failing
+# -------
+
+# File tests/failing lists tests that are not passing.
+# Lines starting with '#' are considered comments in tests/failing.
+COMMRE = "^\#"
+failing_tests := $(shell grep -v $(COMMRE) tests/failing)
 
 tests/%.uplc.run: tests/%.uplc
 	$(TEST) $< $(TEST_OPTIONS) > $<.out

@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    ( con bytestring #00ff ) ~> .
+    ( con integer 2 ) ~> .
   </k>
   <env>
     .Map

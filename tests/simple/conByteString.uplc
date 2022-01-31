@@ -1,1 +1,1 @@
-(program 0.0.0 (con data #00FF))
+(program 0.0.0 (con bytestring #00ff))
