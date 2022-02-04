@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( con integer 255 ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <stack>
+    .List
+  </stack>
+</generatedTop>

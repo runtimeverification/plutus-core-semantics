@@ -1,56 +1,13 @@
-K Semantics of UPLC
-===================
-
-This is a draft K implementation of the CEK machine for Untyped (or typed erased)
-Plutus Core (UPLC), following [version
-2.1](https://hydra.iohk.io/build/8205579/download/1/plutus-core-specification.pdf)
-of its specification, which will be henceforth refered as IOG's Plutus
-Core specification or simply IOG's specification.
-
-# Lexical grammar
-
-Module `PLUTUS-CORE-LEXICAL-GRAMMAR` defines the lexical grammar of
-Plutus Core. (Note that there exists lexemes for types.) It is almost
-a literal translation of the lexical grammar in IOG's
-specification. The most important difference at this time is the use
-of K's builtin type `Int` to represent Plutus' `Integer` lexeme.
-
 ```k
-requires "domains.md"
-requires "krypto.md"
+require "domains.md"
+require "krypto.md"
+require "bytestring.md"
 
 module UPLC-SYNTAX
-   imports UNSIGNED-INT-SYNTAX
-   
-   syntax Name         ::= r"[a-zA-Z][a-zA-Z0-9\\_\\']*" [token] // name
-   syntax Var          ::= Name                                  // term variable
-   syntax TyVar        ::= Name                                  // type variable
-   syntax BuiltinName  ::= Name                                  // builtin term name
-   syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token] // hex string
-   syntax Version      ::= r"[0-9]+.[0-9]+.[0-9]+"       [token] // version
-   syntax Constant     ::= "()"                                  // unit constant
-                         | "True" | "False"                      // boolean constant
-                         | Int                                   // K builtin integer 
-                         | ByteString                            // bytestring constant
-   syntax TypeConstant ::= Name                                  // type constant
-endmodule
-```
-
-# Syntax grammar
-
-Module `UNTYPED-PLUTUS-CORE-GRAMMAR` is responsible for the
-specification of the syntax of UPLC. An UPLC program is essentially a
-pair formed by a version string together with a term. A term can be
-simply a variable, a value, an application, a `force` expression on a
-delayed term, a call to a builtin operation or an error. Last but not
-least, values can be constants, lambda abstractions or the delaying of
-a given term.
-
-```k
-module UNTYPED-PLUTUS-CORE-GRAMMAR
-   imports PLUTUS-CORE-LEXICAL-GRAMMAR
    imports LIST
-   imports BOOL
+   imports ID
+   imports INT-SYNTAX
+   imports BYTESTRING-SYNTAX
 
    syntax TypeConstant ::= "integer"
                          | "data"
@@ -58,8 +15,6 @@ module UNTYPED-PLUTUS-CORE-GRAMMAR
                          | "unit"
                          | "bool"
                          
-   syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token]
-   
    syntax Constant     ::= Int
                          | "True"
                          | "False"
@@ -79,7 +34,14 @@ module UNTYPED-PLUTUS-CORE-GRAMMAR
                          | "greaterThanInteger"
                          | "greaterThanEqualsInteger"
                          | "equalsInteger"
-                         | "sha3_256"
+                         | "appendByteString"
+			 | "consByteString"
+			 | "sliceByteString"
+			 | "lengthOfByteString"
+			 | "indexByteString"
+			 | "equalsByteString"
+			 | "lessThanByteString"
+			 | "lessThanEqualsByteString" 			 
 
    syntax Value ::= "(" "con" TypeConstant Constant ")" 
                   | "(" "lam" Id Term ")"              
@@ -124,7 +86,31 @@ module UNTYPED-PLUTUS-CORE-GRAMMAR
                   | "#EQI" 
                   | #EQI(Value)
                   | #EQI(Value, Value)
-                  
+		  | "#ABS" // for appendByteString
+		  | #ABS(Value)
+		  | #ABS(Value, Value)
+		  | "#CBS" // for consByteString
+		  | #CBS(Value)
+		  | #CBS(Value, Value)
+		  | "#SBS" // for sliceByteString
+		  | #SBS(Value)
+		  | #SBS(Value, Value)
+		  | #SBS(Value, Value, Value)
+		  | "#LBS" // for lengthOfByteString
+		  | #LBS(Value)
+		  | "#IBS" // for indexByteString
+		  | #IBS(Value)
+		  | #IBS(Value, Value)
+		  | "#EBS" // for equalsByteString
+		  | #EBS(Value)
+		  | #EBS(Value, Value)
+		  | "#LTBS" // for lesThanByteString
+		  | #LTBS(Value)
+		  | #LTBS(Value, Value)
+		  | "#LEBS" // for lesThanEqualsByteString
+		  | #LEBS(Value)
+		  | #LEBS(Value, Value)
+
 
    syntax TermList ::= NeList{Term, ""}
 
@@ -140,17 +126,14 @@ module UNTYPED-PLUTUS-CORE-GRAMMAR
 
    syntax Program ::= "(" "program" Version Term ")"     // versioned program
 endmodule
-```
 
-# CEK machine
-
-```k
 module UPLC-SEMANTICS
   imports UPLC-SYNTAX
   imports MAP
   imports INT
   imports K-EQUAL
   imports KRYPTO
+  imports BYTESTRING
 
   syntax AClosure ::= Clos(Value, Map)
 
@@ -300,7 +283,7 @@ module UPLC-SEMANTICS
            (con integer I1 modInt I2) ... </k>
   requires I2 =/=Int 0
   
-  rule <k> #DIV((con integer _I1:Int), (con integer I2:Int)) =>
+  rule <k> #MOD((con integer _I1:Int), (con integer I2:Int)) =>
            (error) ... </k>
   requires I2 ==Int 0
 
@@ -409,7 +392,7 @@ module UPLC-SEMANTICS
            (#if I1 >Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
 
   // greaterThanEqualsInteger
-  rule <k> (builtin lessThanEqualsInteger .TermList) =>
+  rule <k> (builtin greaterThanEqualsInteger .TermList) =>
            #if I1 >=Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
        <stack> ... (ListItem((con integer I1:Int))
                     ListItem((con integer I2:Int)) => .List) </stack>
@@ -436,6 +419,149 @@ module UPLC-SEMANTICS
   rule <k> #EQI((con integer I1:Int), (con integer I2:Int)) =>
            (#if I1 >=Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
 
+  // appendByteString
+  rule <k> (builtin appendByteString .TermList) =>
+           (con bytestring #appendByteString(B1, B2)) ... </k> 
+       <stack> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+
+  rule <k> (builtin appendByteString) => #ABS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#ABS, _RHO) _])) => #ABS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#ABS(V1:Value), _RHO) _])) => #ABS(V1, V2) ... </k>
+
+  rule <k> #ABS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
+           (con bytestring #appendByteString(B1, B2)) ... </k> 
+
+  // consByteString
+  rule <k> (builtin consByteString .TermList) =>
+           (con bytestring #consByteString(I, B)) ... </k> 
+       <stack> ... (ListItem((con integer I:Int))
+                    ListItem((con bytestring B:ByteString)) => .List) </stack>
+
+  rule <k> (builtin consByteString) => #CBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#CBS, _RHO) _])) => #CBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#CBS(V1:Value), _RHO) _])) => #CBS(V1, V2) ... </k>
+
+  rule <k> #CBS((con integer I:Int), (con bytestring B:ByteString)) =>
+           (con bytestring #consByteString(I, B)) ... </k> 
+
+  // sliceByteString
+  rule <k> (builtin sliceByteString .TermList) =>
+           (con bytestring #sliceByteString(I1, I2, B)) ... </k> 
+       <stack> ... (ListItem((con integer I1:Int))
+       	            ListItem((con integer I2:Int))
+                    ListItem((con bytestring B:ByteString)) => .List) </stack>
+
+  rule <k> (builtin sliceByteString) => #SBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#SBS, _RHO) _])) => #SBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#SBS(V1:Value), _RHO) _])) => #SBS(V1, V2) ... </k>
+
+  rule <k> (V3:Value ~> ([ Clos(#SBS(V1:Value, V2:Value), _RHO) _])) => #SBS(V1, V2, V3) ... </k>
+
+  rule <k> #SBS((con integer I1:Int), (con integer I2:Int), (con bytestring B:ByteString)) =>
+           (con bytestring #sliceByteString(I1, I2, B)) ... </k> 
+
+  // lengthOfByteString
+  rule <k> (builtin lengthOfByteString .TermList) =>
+           (con bytestring #lengthOfByteString(B)) ... </k> 
+       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+
+  rule <k> (builtin lengthOfByteString) => #LBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#LBS, _RHO) _])) => #LBS(V) ... </k>
+
+  rule <k> #LBS((con bytestring B:ByteString)) =>
+           (con integer #lengthOfByteString(B)) ... </k> 
+
+  // indexByteString
+  rule <k> (builtin indexByteString .TermList) =>
+           (con bytestring #indexByteString(B, I)) ... </k> 
+       <stack> ... (ListItem((con bytestring B:ByteString))
+       	            ListItem((con integer I:Int)) => .List) </stack>
+
+  rule <k> (builtin indexByteString) => #IBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#IBS, _RHO) _])) => #IBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#IBS(V1:Value), _RHO) _])) => #IBS(V1, V2) ... </k>
+
+  rule <k> #IBS((con bytestring B:ByteString), (con integer I:Int)) =>
+           (con integer #indexByteString(B, I)) ... </k> 
+
+  // equalsByteString
+  rule <k> (builtin equalsByteString .TermList) =>
+           (con bool
+	    #if (#equalsByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+       <stack> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+
+  rule <k> (builtin equalsByteString) => #EBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#EBS, _RHO) _])) => #EBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#EBS(V1:Value), _RHO) _])) => #EBS(V1, V2) ... </k>
+
+  rule <k> #EBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
+           (con bool
+	    #if (#equalsByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+
+  // lessThanByteString
+  rule <k> (builtin lessThanByteString .TermList) =>
+           (con bool
+	    #if (#lessThanByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+       <stack> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+
+  rule <k> (builtin lessThanByteString) => #LTBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#LTBS, _RHO) _])) => #LTBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#LTBS(V1:Value), _RHO) _])) => #LTBS(V1, V2) ... </k>
+
+  rule <k> #LTBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
+           (con bool
+	    #if (#lessThanByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+
+  // lessThanEqualsByteString
+  rule <k> (builtin lessThanEqualsByteString .TermList) =>
+           (con bool
+	    #if (#lessThanEqualsByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+       <stack> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+
+  rule <k> (builtin lessThanEqualsByteString) => #LEBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#LEBS, _RHO) _])) => #LEBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#LEBS(V1:Value), _RHO) _])) => #LEBS(V1, V2) ... </k>
+
+  rule <k> #LEBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
+           (con bool
+	    #if (#lessThanEqualsByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
 endmodule
 
 module UPLC

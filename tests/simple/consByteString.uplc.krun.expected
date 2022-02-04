@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( con bytestring #aa00ff ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <stack>
+    .List
+  </stack>
+</generatedTop>

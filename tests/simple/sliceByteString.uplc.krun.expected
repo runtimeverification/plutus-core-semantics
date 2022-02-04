@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( con bytestring #ffaa ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <stack>
+    .List
+  </stack>
+</generatedTop>
