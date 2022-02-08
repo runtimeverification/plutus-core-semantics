@@ -1,3 +1,6 @@
+#
+# Simple tests
+#
 # Uplc does not compute error. The semantics specifies a black diamond
 # state which appears should be understood as the error behavior in
 # uplc
@@ -14,6 +17,9 @@ tests/simple/delay.uplc
 tests/simple/force.uplc
 # Var uses a free-varaible therefore it fails.
 tests/simple/var.uplc
+#
+# UPLC examples 
+#
 tests/uplc-examples/ApplyAdd1.uplc
 tests/uplc-examples/ApplyAdd2.uplc
 tests/uplc-examples/DivideByZeroDrop.uplc
@@ -24,6 +30,9 @@ tests/uplc-examples/IfIntegers.uplc
 tests/uplc-examples/NatRoundTrip.uplc
 tests/uplc-examples/overapplication.uplc
 tests/uplc-examples/ScottListSum.uplc
+#
+# Benchamark validation examples
+#
 tests/benchmark-validation-examples/auction_1-1.uplc
 tests/benchmark-validation-examples/auction_1-2.uplc
 tests/benchmark-validation-examples/auction_1-3.uplc

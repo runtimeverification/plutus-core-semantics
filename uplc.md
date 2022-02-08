@@ -1,100 +1,129 @@
 ```k
-requires "domains.md"
-requires "krypto.md"
+require "domains.md"
+require "krypto.md"
+require "bytestring.md"
 
 module UPLC-SYNTAX
-   imports UNSIGNED-INT-SYNTAX
-   imports ID
-   imports LIST
-   imports BOOL
+  imports LIST
+  imports ID
+  imports INT-SYNTAX
+  imports BYTESTRING-SYNTAX
 
-   syntax TypeConstant ::= "integer"
-                         | "data"
-                         | "bytestring"
-                         | "unit"
-                         | "bool"
+  syntax TypeConstant ::= "integer"
+                        | "data"
+                        | "bytestring"
+                        | "unit"
+                        | "bool"
                          
-   syntax ByteString   ::= r"#([a-fA-F0-9][a-fA-F0-9])+" [token]
-   
-   syntax Constant     ::= Int
-                         | "True"
-                         | "False"
-                         | ByteString
-                         | "()"
+  syntax Constant     ::= Int
+                        | "True"
+                        | "False"
+                        | ByteString
+                        | "()"
                          
-   syntax BuiltinName  ::= "ifThenElse"
-                         | "addInteger"
-                         | "subtractInteger"
-                         | "multiplyInteger"
-                         | "divideInteger"
-                         | "modInteger"
-                         | "quotientInteger"
-                         | "remainderInteger"
-                         | "lessThanInteger"
-                         | "lessThanEqualsInteger"
-                         | "greaterThanInteger"
-                         | "greaterThanEqualsInteger"
-                         | "equalsInteger"
-                         | "sha3_256"
+  syntax BuiltinName  ::= "ifThenElse"
+                        | "addInteger"
+                        | "subtractInteger"
+                        | "multiplyInteger"
+                        | "divideInteger"
+                        | "modInteger"
+                        | "quotientInteger"
+                        | "remainderInteger"
+                        | "lessThanInteger"
+                        | "lessThanEqualsInteger"
+                        | "greaterThanInteger"
+                        | "greaterThanEqualsInteger"
+                        | "equalsInteger"
+                        | "appendByteString"
+                        | "consByteString"
+                        | "sliceByteString"
+                        | "lengthOfByteString"
+                        | "indexByteString"
+                        | "equalsByteString"
+                        | "lessThanByteString"
+                        | "lessThanEqualsByteString" 			 
 
-   syntax Value ::= "(" "con" TypeConstant Constant ")" 
-                  | "(" "lam" Id Term ")"              
-                  | "(" "delay" Term ")"
-                  | "#ITE"
-                  | #ITE(Value)
-                  | #ITE(Value, Value)
-                  | #ITE(Value, Value, Value)
-                  | "#SUM"
-                  | #SUM(Value)
-                  | #SUM(Value, Value)
-                  | "#MUL"
-                  | #MUL(Value)
-                  | #MUL(Value, Value)
-                  | "#SUB"
-                  | #SUB(Value)
-                  | #SUB(Value, Value)
-                  | "#DIV" 
-                  | #DIV(Value)
-                  | #DIV(Value, Value)
-                  | "#MOD" 
-                  | #MOD(Value)
-                  | #MOD(Value, Value)
-                  | "#QUO" 
-                  | #QUO(Value)
-                  | #QUO(Value, Value)
-                  | "#REM" 
-                  | #REM(Value)
-                  | #REM(Value, Value)
-                  | "#LTI"
-                  | #LTI(Value)
-                  | #LTI(Value, Value)
-                  | "#LTE"
-                  | #LTE(Value)
-                  | #LTE(Value, Value)
-                  | "#GTI"
-                  | #GTI(Value)
-                  | #GTI(Value, Value)
-                  | "#GTE"
-                  | #GTE(Value)
-                  | #GTE(Value, Value)
-                  | "#EQI" 
-                  | #EQI(Value)
-                  | #EQI(Value, Value)
-                  
+  syntax Value ::= "(" "con" TypeConstant Constant ")" 
+                 | "(" "lam" Id Term ")"              
+                 | "(" "delay" Term ")"
+                 | "#ITE"
+                 | #ITE(Value)
+                 | #ITE(Value, Value)
+                 | #ITE(Value, Value, Value)
+                 | "#SUM"
+                 | #SUM(Value)
+                 | #SUM(Value, Value)
+                 | "#MUL"
+                 | #MUL(Value)
+                 | #MUL(Value, Value)
+                 | "#SUB"
+                 | #SUB(Value)
+                 | #SUB(Value, Value)
+                 | "#DIV" 
+                 | #DIV(Value)
+                 | #DIV(Value, Value)
+                 | "#MOD" 
+                 | #MOD(Value)
+                 | #MOD(Value, Value)
+                 | "#QUO" 
+                 | #QUO(Value)
+                 | #QUO(Value, Value)
+                 | "#REM" 
+                 | #REM(Value)
+                 | #REM(Value, Value)
+                 | "#LTI"
+                 | #LTI(Value)
+                 | #LTI(Value, Value)
+                 | "#LTE"
+                 | #LTE(Value)
+                 | #LTE(Value, Value)
+                 | "#GTI"
+                 | #GTI(Value)
+                 | #GTI(Value, Value)
+                 | "#GTE"
+                 | #GTE(Value)
+                 | #GTE(Value, Value)
+                 | "#EQI" 
+                 | #EQI(Value)
+                 | #EQI(Value, Value)
+                 | "#ABS" // for appendByteString
+                 | #ABS(Value)
+                 | #ABS(Value, Value)
+                 | "#CBS" // for consByteString
+                 | #CBS(Value)
+                 | #CBS(Value, Value)
+                 | "#SBS" // for sliceByteString
+                 | #SBS(Value)
+                 | #SBS(Value, Value)
+                 | #SBS(Value, Value, Value)
+                 | "#LBS" // for lengthOfByteString
+                 | #LBS(Value)
+                 | "#IBS" // for indexByteString
+                 | #IBS(Value)
+                 | #IBS(Value, Value)
+                 | "#EBS" // for equalsByteString
+                 | #EBS(Value)
+                 | #EBS(Value, Value)
+                 | "#LTBS" // for lesThanByteString
+                 | #LTBS(Value)
+                 | #LTBS(Value, Value)
+                 | "#LEBS" // for lesThanEqualsByteString
+                 | #LEBS(Value)
+                 | #LEBS(Value, Value)
 
-   syntax TermList ::= NeList{Term, ""}
+  syntax TermList ::= NeList{Term, ""}
 
-   syntax Term ::= Id
-                 | Value 
-                 | "[" Term Term "]"                     // function application
-                 | "(" "force" Term ")"                  // force execution of a term
-                 | "(" "builtin" BuiltinName ")"
-                 | "(" "builtin" BuiltinName TermList ")"// builtin
-                 | "(" "error" ")"                       // error
-                 
-   syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
+  syntax Term ::= Id
+              | Value 
+                | "[" Term Term "]"                     // function application
+                | "(" "force" Term ")"                  // force execution of a term
+                | "(" "builtin" BuiltinName ")"
+                | "(" "builtin" BuiltinName TermList ")"// builtin
+                | "(" "error" ")"                       // error
+                
+  syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
 
-   syntax Program ::= "(" "program" Version Term ")"     // versioned program
+  syntax Program ::= "(" "program" Version Term ")"     // versioned program
 endmodule
 
 module UPLC-SEMANTICS
@@ -103,6 +132,7 @@ module UPLC-SEMANTICS
   imports INT
   imports K-EQUAL
   imports KRYPTO
+  imports BYTESTRING
 
   syntax AClosure ::= Clos(Value, Map)
 
@@ -252,7 +282,7 @@ module UPLC-SEMANTICS
            (con integer I1 modInt I2) ... </k>
   requires I2 =/=Int 0
   
-  rule <k> #DIV((con integer _I1:Int), (con integer I2:Int)) =>
+  rule <k> #MOD((con integer _I1:Int), (con integer I2:Int)) =>
            (error) ... </k>
   requires I2 ==Int 0
 
@@ -361,7 +391,7 @@ module UPLC-SEMANTICS
            (#if I1 >Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
 
   // greaterThanEqualsInteger
-  rule <k> (builtin lessThanEqualsInteger .TermList) =>
+  rule <k> (builtin greaterThanEqualsInteger .TermList) =>
            #if I1 >=Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
        <stack> ... (ListItem((con integer I1:Int))
                     ListItem((con integer I2:Int)) => .List) </stack>
@@ -388,10 +418,153 @@ module UPLC-SEMANTICS
   rule <k> #EQI((con integer I1:Int), (con integer I2:Int)) =>
            (#if I1 >=Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
 
+  // appendByteString
+  rule <k> (builtin appendByteString .TermList) =>
+           (con bytestring #appendByteString(B1, B2)) ... </k> 
+       <stack> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+
+  rule <k> (builtin appendByteString) => #ABS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#ABS, _RHO) _])) => #ABS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#ABS(V1:Value), _RHO) _])) => #ABS(V1, V2) ... </k>
+
+  rule <k> #ABS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
+           (con bytestring #appendByteString(B1, B2)) ... </k> 
+
+  // consByteString
+  rule <k> (builtin consByteString .TermList) =>
+           (con bytestring #consByteString(I, B)) ... </k> 
+       <stack> ... (ListItem((con integer I:Int))
+                    ListItem((con bytestring B:ByteString)) => .List) </stack>
+
+  rule <k> (builtin consByteString) => #CBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#CBS, _RHO) _])) => #CBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#CBS(V1:Value), _RHO) _])) => #CBS(V1, V2) ... </k>
+
+  rule <k> #CBS((con integer I:Int), (con bytestring B:ByteString)) =>
+           (con bytestring #consByteString(I, B)) ... </k> 
+
+  // sliceByteString
+  rule <k> (builtin sliceByteString .TermList) =>
+           (con bytestring #sliceByteString(I1, I2, B)) ... </k> 
+       <stack> ... (ListItem((con integer I1:Int))
+       	            ListItem((con integer I2:Int))
+                    ListItem((con bytestring B:ByteString)) => .List) </stack>
+
+  rule <k> (builtin sliceByteString) => #SBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#SBS, _RHO) _])) => #SBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#SBS(V1:Value), _RHO) _])) => #SBS(V1, V2) ... </k>
+
+  rule <k> (V3:Value ~> ([ Clos(#SBS(V1:Value, V2:Value), _RHO) _])) => #SBS(V1, V2, V3) ... </k>
+
+  rule <k> #SBS((con integer I1:Int), (con integer I2:Int), (con bytestring B:ByteString)) =>
+           (con bytestring #sliceByteString(I1, I2, B)) ... </k> 
+
+  // lengthOfByteString
+  rule <k> (builtin lengthOfByteString .TermList) =>
+           (con bytestring #lengthOfByteString(B)) ... </k> 
+       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+
+  rule <k> (builtin lengthOfByteString) => #LBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#LBS, _RHO) _])) => #LBS(V) ... </k>
+
+  rule <k> #LBS((con bytestring B:ByteString)) =>
+           (con integer #lengthOfByteString(B)) ... </k> 
+
+  // indexByteString
+  rule <k> (builtin indexByteString .TermList) =>
+           (con bytestring #indexByteString(B, I)) ... </k> 
+       <stack> ... (ListItem((con bytestring B:ByteString))
+       	            ListItem((con integer I:Int)) => .List) </stack>
+
+  rule <k> (builtin indexByteString) => #IBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#IBS, _RHO) _])) => #IBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#IBS(V1:Value), _RHO) _])) => #IBS(V1, V2) ... </k>
+
+  rule <k> #IBS((con bytestring B:ByteString), (con integer I:Int)) =>
+           (con integer #indexByteString(B, I)) ... </k> 
+
+  // equalsByteString
+  rule <k> (builtin equalsByteString .TermList) =>
+           (con bool
+	    #if (#equalsByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+       <stack> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+
+  rule <k> (builtin equalsByteString) => #EBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#EBS, _RHO) _])) => #EBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#EBS(V1:Value), _RHO) _])) => #EBS(V1, V2) ... </k>
+
+  rule <k> #EBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
+           (con bool
+	    #if (#equalsByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+
+  // lessThanByteString
+  rule <k> (builtin lessThanByteString .TermList) =>
+           (con bool
+	    #if (#lessThanByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+       <stack> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+
+  rule <k> (builtin lessThanByteString) => #LTBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#LTBS, _RHO) _])) => #LTBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#LTBS(V1:Value), _RHO) _])) => #LTBS(V1, V2) ... </k>
+
+  rule <k> #LTBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
+           (con bool
+	    #if (#lessThanByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+
+  // lessThanEqualsByteString
+  rule <k> (builtin lessThanEqualsByteString .TermList) =>
+           (con bool
+	    #if (#lessThanEqualsByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
+       <stack> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+
+  rule <k> (builtin lessThanEqualsByteString) => #LEBS ... </k>
+  
+  rule <k> (V:Value ~> ([ Clos(#LEBS, _RHO) _])) => #LEBS(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#LEBS(V1:Value), _RHO) _])) => #LEBS(V1, V2) ... </k>
+
+  rule <k> #LEBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
+           (con bool
+	    #if (#lessThanEqualsByteString(B1, B2) ==Bool true)
+	    #then (True)
+	    #else (False)
+	    #fi) ... </k> 
 endmodule
 
 module UPLC
-     imports UPLC-SYNTAX
-     imports UPLC-SEMANTICS
+  imports UPLC-SYNTAX
+  imports UPLC-SEMANTICS
 endmodule
 ```
