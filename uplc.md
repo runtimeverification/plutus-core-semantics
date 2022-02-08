@@ -86,31 +86,30 @@ module UPLC-SYNTAX
                   | "#EQI" 
                   | #EQI(Value)
                   | #EQI(Value, Value)
-		  | "#ABS" // for appendByteString
-		  | #ABS(Value)
-		  | #ABS(Value, Value)
-		  | "#CBS" // for consByteString
-		  | #CBS(Value)
-		  | #CBS(Value, Value)
-		  | "#SBS" // for sliceByteString
-		  | #SBS(Value)
-		  | #SBS(Value, Value)
-		  | #SBS(Value, Value, Value)
-		  | "#LBS" // for lengthOfByteString
-		  | #LBS(Value)
-		  | "#IBS" // for indexByteString
-		  | #IBS(Value)
-		  | #IBS(Value, Value)
-		  | "#EBS" // for equalsByteString
-		  | #EBS(Value)
-		  | #EBS(Value, Value)
-		  | "#LTBS" // for lesThanByteString
-		  | #LTBS(Value)
-		  | #LTBS(Value, Value)
-		  | "#LEBS" // for lesThanEqualsByteString
-		  | #LEBS(Value)
-		  | #LEBS(Value, Value)
-
+                  | "#ABS" // for appendByteString
+                  | #ABS(Value)
+                  | #ABS(Value, Value)
+                  | "#CBS" // for consByteString
+                  | #CBS(Value)
+                  | #CBS(Value, Value)
+                  | "#SBS" // for sliceByteString
+                  | #SBS(Value)
+                  | #SBS(Value, Value)
+                  | #SBS(Value, Value, Value)
+                  | "#LBS" // for lengthOfByteString
+                  | #LBS(Value)
+                  | "#IBS" // for indexByteString
+                  | #IBS(Value)
+                  | #IBS(Value, Value)
+                  | "#EBS" // for equalsByteString
+                  | #EBS(Value)
+                  | #EBS(Value, Value)
+                  | "#LTBS" // for lesThanByteString
+                  | #LTBS(Value)
+                  | #LTBS(Value, Value)
+                  | "#LEBS" // for lesThanEqualsByteString
+                  | #LEBS(Value)
+                  | #LEBS(Value, Value)
 
    syntax TermList ::= NeList{Term, ""}
 
