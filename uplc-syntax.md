@@ -20,25 +20,80 @@ module UPLC-CONCRETE-SYNTAX
                         | ByteString
                         | "()"
 
-  syntax BuiltinName  ::= "ifThenElse"
-                        | "addInteger"
-                        | "subtractInteger"
-                        | "multiplyInteger"
-                        | "divideInteger"
-                        | "modInteger"
-                        | "quotientInteger"
-                        | "remainderInteger"
-                        | "lessThanInteger"
-                        | "lessThanEqualsInteger"
-                        | "equalsInteger"
-                        | "appendByteString"
-                        | "consByteString"
-                        | "sliceByteString"
-                        | "lengthOfByteString"
-                        | "indexByteString"
-                        | "equalsByteString"
-                        | "lessThanByteString"
-                        | "lessThanEqualsByteString"
+  /* builtin functions for Integers */
+
+  syntax BuiltinName ::= "addInteger"
+                       | "subtractInteger"
+                       | "multiplyInteger"
+                       | "divideInteger"
+                       | "quotientInteger"
+                       | "remainderInteger"
+                       | "modInteger"
+                       | "equalsInteger"
+                       | "lessThanInteger"
+                       | "lessThanEqualsInteger"
+
+  /* builtin functions for bytestring */
+
+  syntax BuiltinName ::= "appendByteString"
+                       | "consByteString"
+                       | "sliceByteString"
+                       | "lengthOfByteString"
+                       | "indexByteString"
+                       | "equalsByteString"
+                       | "lessThanByteString"
+                       | "lessThanEqualsByteString"
+
+  /* builtin functions for cryptography */
+
+  syntax BuiltinName ::= "sha2_256"
+                       | "sha3_256"
+                       | "blake2b_256"
+                       | "verifySignature"
+
+  /* builtin functions for string */
+
+  syntax BuiltinName ::= "appendString"
+                       | "equalsString"
+                       | "encodeUtf8"
+                       | "decodeUtf8"
+
+  /* builtin functions that use types as parameters */
+
+  syntax BuiltinName ::= "ifThenElse"
+                       | "chooseUnit"
+                       | "trace"
+
+  /* builtin functions that operate on Pair */
+
+  syntax BuiltinName ::= "fstPair"
+                       | "sndPair"
+
+  /* builtin functions that operate on List */
+
+  syntax BuiltinName ::= "chooseList"
+                       | "mkCons"
+                       | "headList"
+                       | "tailList"
+                       | "nullList"
+
+  /* builtin functions that operate on Data */
+
+  syntax BuiltinName ::= "chooseData"
+                       | "constrData"
+                       | "mapData"
+                       | "listData"
+                       | "iData"
+                       | "bData"
+                       | "unConstrData"
+                       | "unMapData"
+                       | "unListData"
+                       | "unIData"
+                       | "unBData"
+                       | "equalsData"
+                       | "mkPairData"
+                       | "mkNilData"
+                       | "mkNilPairData"
 
   syntax Value ::= "(" "con" TypeConstant Constant ")"
                  | "(" "lam" Id Term ")"
