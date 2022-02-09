@@ -252,35 +252,6 @@ module UPLC-SEMANTICS
   rule <k> #LTE((con integer I1:Int), (con integer I2:Int)) =>
            (#if I1 <=Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
 
-  // greaterThanInteger
-  rule <k> (builtin greaterThanInteger .TermList) =>
-           #if I1 >Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
-
-  rule <k> (builtin greaterThanInteger) => #GTI ... </k>
-
-  rule <k> (V:Value ~> ([ Clos(#GTI, _RHO) _])) => #GTI(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#GTI(V1:Value), _RHO) _])) => #GTI(V1, V2) ... </k>
-
-  rule <k> #GTI((con integer I1:Int), (con integer I2:Int)) =>
-           (#if I1 >Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
-
-  // greaterThanEqualsInteger
-  rule <k> (builtin greaterThanEqualsInteger .TermList) =>
-           #if I1 >=Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
-
-  rule <k> (builtin greaterThanEqualsInteger) => #GTE ... </k>
-  rule <k> (V:Value ~> ([ Clos(#GTE, _RHO) _])) => #GTE(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#GTE(V1:Value), _RHO) _])) => #GTE(V1, V2) ... </k>
-
-  rule <k> #GTE((con integer I1:Int), (con integer I2:Int)) =>
-           (#if I1 >=Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
-
   // equalsInteger
   rule <k> (builtin equalsInteger .TermList) =>
            #if I1 ==Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
