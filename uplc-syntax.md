@@ -30,8 +30,6 @@ module UPLC-CONCRETE-SYNTAX
                         | "remainderInteger"
                         | "lessThanInteger"
                         | "lessThanEqualsInteger"
-                        | "greaterThanInteger"
-                        | "greaterThanEqualsInteger"
                         | "equalsInteger"
                         | "appendByteString"
                         | "consByteString"
@@ -100,12 +98,6 @@ module UPLC-ABSTRACT-SYNTAX
                  | "#LTE"
                  | #LTE(Value)
                  | #LTE(Value, Value)
-                 | "#GTI"
-                 | #GTI(Value)
-                 | #GTI(Value, Value)
-                 | "#GTE"
-                 | #GTE(Value)
-                 | #GTE(Value, Value)
                  | "#EQI"
                  | #EQI(Value)
                  | #EQI(Value, Value)
