@@ -41,6 +41,8 @@ module UPLC-CONCRETE-SYNTAX
                         | "string"
                         | "unit"
                         | "bool"
+                        | "list" "(" TypeConstant ")"
+                        | "pair" "(" TypeConstant ")" "(" TypeConstant ")"
 
   syntax Constant ::= Int
                     | "True"
@@ -48,6 +50,10 @@ module UPLC-CONCRETE-SYNTAX
                     | ByteString
                     | String
                     | "()"
+                    | "[" ConstantList "]"
+                    | "(" Constant "," Constant ")"
+
+  syntax ConstantList ::= List{Constant, ","}
 
 ```
 
