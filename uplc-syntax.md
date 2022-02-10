@@ -1,3 +1,6 @@
+
+# The Concrete Syntax of Untyped Plutus
+
 ```k
 require "domains.md"
 require "bytestring.md"
@@ -8,20 +11,41 @@ module UPLC-CONCRETE-SYNTAX
   imports INT-SYNTAX
   imports BYTESTRING-SYNTAX
 
+  syntax Program ::= "(" "program" Version Term ")"     // versioned program
+
+  syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
+
+  syntax Term ::= Id
+                | Value
+                | "[" Term Term "]"                     // function application
+                | "(" "force" Term ")"                  // force execution of a term
+                | "(" "builtin" BuiltinName ")"
+                | "(" "builtin" BuiltinName TermList ")"// builtin
+                | "(" "error" ")"                       // error
+
+  syntax Value ::= "(" "con" TypeConstant Constant ")"
+                 | "(" "lam" Id Term ")"
+                 | "(" "delay" Term ")"
+
+  syntax TermList ::= NeList{Term, ""}
+
   syntax TypeConstant ::= "integer"
                         | "data"
                         | "bytestring"
                         | "unit"
                         | "bool"
 
-  syntax Constant     ::= Int
-                        | "True"
-                        | "False"
-                        | ByteString
-                        | "()"
+  syntax Constant ::= Int
+                    | "True"
+                    | "False"
+                    | ByteString
+                    | "()"
 
-  /* builtin functions for Integers */
+```
 
+### builtin functions for Integers
+
+```k
   syntax BuiltinName ::= "addInteger"
                        | "subtractInteger"
                        | "multiplyInteger"
@@ -32,9 +56,11 @@ module UPLC-CONCRETE-SYNTAX
                        | "equalsInteger"
                        | "lessThanInteger"
                        | "lessThanEqualsInteger"
+```
 
-  /* builtin functions for bytestring */
+### builtin functions for bytestring
 
+```k
   syntax BuiltinName ::= "appendByteString"
                        | "consByteString"
                        | "sliceByteString"
@@ -43,42 +69,54 @@ module UPLC-CONCRETE-SYNTAX
                        | "equalsByteString"
                        | "lessThanByteString"
                        | "lessThanEqualsByteString"
+```
 
-  /* builtin functions for cryptography */
+### builtin functions for cryptography
 
+```k
   syntax BuiltinName ::= "sha2_256"
                        | "sha3_256"
                        | "blake2b_256"
                        | "verifySignature"
+```
 
-  /* builtin functions for string */
+### builtin functions for string
 
+```k
   syntax BuiltinName ::= "appendString"
                        | "equalsString"
                        | "encodeUtf8"
                        | "decodeUtf8"
+```
 
-  /* builtin functions that use types as parameters */
+### polymorphic builtin functions
 
+```k
   syntax BuiltinName ::= "ifThenElse"
                        | "chooseUnit"
                        | "trace"
+```
 
-  /* builtin functions that operate on Pair */
+### builtin functions that operate on pairs
 
+```k
   syntax BuiltinName ::= "fstPair"
                        | "sndPair"
+```
 
-  /* builtin functions that operate on List */
+### builtin functions that operate on lists
 
+```k
   syntax BuiltinName ::= "chooseList"
                        | "mkCons"
                        | "headList"
                        | "tailList"
                        | "nullList"
+```
 
-  /* builtin functions that operate on Data */
+### builtin functions that operate on data
 
+```k
   syntax BuiltinName ::= "chooseData"
                        | "constrData"
                        | "mapData"
@@ -94,27 +132,13 @@ module UPLC-CONCRETE-SYNTAX
                        | "mkPairData"
                        | "mkNilData"
                        | "mkNilPairData"
-
-  syntax Value ::= "(" "con" TypeConstant Constant ")"
-                 | "(" "lam" Id Term ")"
-                 | "(" "delay" Term ")"
-
-  syntax TermList ::= NeList{Term, ""}
-
-  syntax Term ::= Id
-                | Value
-                | "[" Term Term "]"                     // function application
-                | "(" "force" Term ")"                  // force execution of a term
-                | "(" "builtin" BuiltinName ")"
-                | "(" "builtin" BuiltinName TermList ")"// builtin
-                | "(" "error" ")"                       // error
-
-  syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
-
-  syntax Program ::= "(" "program" Version Term ")"     // versioned program
-
 endmodule
+```
 
+# The Abstract Syntax of Untyped Plutus
+
+These constructs are used in the semantics to describe partially applied builtin functions.
+```k
 module UPLC-ABSTRACT-SYNTAX
   imports LIST
   imports ID
