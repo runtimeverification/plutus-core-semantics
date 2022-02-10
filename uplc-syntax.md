@@ -43,7 +43,7 @@ module UPLC-CONCRETE-SYNTAX
 
 ```
 
-### builtin functions for Integers
+### Builtin Functions for Integers
 
 ```k
   syntax BuiltinName ::= "addInteger"
@@ -58,7 +58,7 @@ module UPLC-CONCRETE-SYNTAX
                        | "lessThanEqualsInteger"
 ```
 
-### builtin functions for bytestring
+### Builtin Functions for bytestring
 
 ```k
   syntax BuiltinName ::= "appendByteString"
@@ -71,7 +71,7 @@ module UPLC-CONCRETE-SYNTAX
                        | "lessThanEqualsByteString"
 ```
 
-### builtin functions for cryptography
+### Builtin Functions for Cryptography
 
 ```k
   syntax BuiltinName ::= "sha2_256"
@@ -80,7 +80,7 @@ module UPLC-CONCRETE-SYNTAX
                        | "verifySignature"
 ```
 
-### builtin functions for string
+### Builtin Functions for String
 
 ```k
   syntax BuiltinName ::= "appendString"
@@ -89,7 +89,7 @@ module UPLC-CONCRETE-SYNTAX
                        | "decodeUtf8"
 ```
 
-### polymorphic builtin functions
+### Polymorphic Builtin Functions
 
 ```k
   syntax BuiltinName ::= "ifThenElse"
@@ -97,14 +97,14 @@ module UPLC-CONCRETE-SYNTAX
                        | "trace"
 ```
 
-### builtin functions that operate on pairs
+### Builtin Functions that Operate on Pairs
 
 ```k
   syntax BuiltinName ::= "fstPair"
                        | "sndPair"
 ```
 
-### builtin functions that operate on lists
+### Builtin Functions that Operate on Lists
 
 ```k
   syntax BuiltinName ::= "chooseList"
@@ -114,7 +114,7 @@ module UPLC-CONCRETE-SYNTAX
                        | "nullList"
 ```
 
-### builtin functions that operate on data
+### Builtin Functions that Operate on Data
 
 ```k
   syntax BuiltinName ::= "chooseData"
