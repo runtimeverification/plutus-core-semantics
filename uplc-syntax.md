@@ -52,8 +52,20 @@ module UPLC-CONCRETE-SYNTAX
                     | "()"
                     | "[" ConstantList "]"
                     | "(" Constant "," Constant ")"
+                    | "{" TextualData "}"
 
   syntax ConstantList ::= List{Constant, ","}
+
+  syntax TextualData ::= "Constr" Int "[" DataList "]"
+                       | "Map" "[" DataPairList "]"
+                       | "List" "[" DataList "]"
+                       | "Integer" Int
+                       | "ByteString" ByteString
+
+  syntax DataList ::= List{TextualData, ","}
+  syntax DataPair ::= "(" TextualData "," TextualData ")"
+  syntax DataPairList ::= List{DataPair, ","}
+
 
 ```
 
