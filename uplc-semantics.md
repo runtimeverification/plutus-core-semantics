@@ -10,8 +10,11 @@ module UPLC-SEMANTICS
   imports K-EQUAL
   imports KRYPTO
   imports BYTESTRING
+  imports STRING-BUFFER
+  imports BYTES
 
   syntax AClosure ::= Clos(Value, Map)
+  syntax String ::= #sha3(String) [function]
 
   syntax ATerm ::= "Force"
                  | "[_" Term "]"
@@ -409,6 +412,70 @@ module UPLC-SEMANTICS
 	    #then (True)
 	    #else (False)
 	    #fi) ... </k>
+
+  // sha3_256
+  // UPLC bytestrings are almost what K's Sha3_256 needs. However, a proper string needs to
+  // be built from the ground up. This is done with the following steps:
+  // 1. We convert the given ByteString to a string representing an hex number and then do its
+  //    decimal representation.
+  //    `String2Base(trimByteString(B), 16)`.
+  // 2. The integer from step 1. is converted into a Byte representation,
+  //    with possible leading zeros preserved.
+  //    `Int2Bytes(lengthString(trimByteString(B)) /Int 2, StringBase(...), BE)`,
+  //    where the expression `lengthString(trimByteString(B)) /Int 2` preserves the leading zeros.
+  // 3. The Bytes resulting from step 2 are then translated into a string that can be consumed
+  //    by `Sha3_256`.
+  // 4. The last step simply converts the string resulting from step 3 into a ByteString.
+  
+  rule <k> (builtin sha3_256 .TermList) =>
+           (con bytestring String2ByteString("#" +String
+                Sha3_256(Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
+                                      String2Base(trimByteString(B), 16 ), BE))))) ... </k>
+       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+
+  rule <k> (builtin sha3_256) => #SHA3 ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#SHA3, _RHO) _])) => #SHA3(V) ... </k>
+
+  rule <k> #SHA3((con bytestring B:ByteString)) =>
+           (con bytestring String2ByteString("#" +String
+                Sha3_256(Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
+                                      String2Base(trimByteString(B), 16), BE))))) ... </k>
+
+  // sha2_256
+  // The same steps of sha3_256 are taken to produce the proper string argument for Sha256.
+  rule <k> (builtin sha2_256 .TermList) =>
+           (con bytestring String2ByteString("#" +String
+                Sha256(Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
+                                    String2Base(trimByteString(B), 16 ), BE))))) ... </k>
+       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+
+  rule <k> (builtin sha2_256) => #SHA2 ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#SHA2, _RHO) _])) => #SHA2(V) ... </k>
+
+  rule <k> #SHA2((con bytestring B:ByteString)) =>
+           (con bytestring String2ByteString("#" +String
+                Sha256(Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
+                                    String2Base(trimByteString(B), 16), BE))))) ... </k>
+
+  // blake2b_256
+  // The same steps of sha3_256 are taken to produce the proper string argument for Blake2Compress.
+  rule <k> (builtin blake2b_256 .TermList) =>
+           (con bytestring String2ByteString("#" +String
+                Blake2Compress(Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
+                                            String2Base(trimByteString(B), 16 ), BE))))) ... </k>
+       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+
+  rule <k> (builtin blake2b_256) => #BLK2B ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#BLK2B, _RHO) _])) => #BLK2B(V) ... </k>
+
+  rule <k> #BLK2B((con bytestring B:ByteString)) =>
+           (con bytestring String2ByteString("#" +String
+                Blake2Compress(Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
+                                            String2Base(trimByteString(B), 16), BE))))) ... </k>
+
 endmodule
 
 ```

@@ -204,6 +204,12 @@ module UPLC-ABSTRACT-SYNTAX
                  | "#LEBS" // for lesThanEqualsByteString
                  | #LEBS(Value)
                  | #LEBS(Value, Value)
+                 | "#SHA2" // for sha2_256
+                 | #SHA2(Value)
+                 | "#SHA3" // for sha3_256
+                 | #SHA3(Value)
+                 | "#BLK2B" // for blake2b_256
+                 | #BLK2B(Value)
 
 endmodule
 
