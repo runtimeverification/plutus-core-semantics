@@ -1,10 +1,16 @@
+# Bytestring datatype
+
 ```k
 require "domains.md"
 
 module BYTESTRING-SYNTAX
   syntax ByteString ::= r"#([a-fA-F0-9][a-fA-F0-9])*" [token]
 endmodule
+```
 
+## Hexadecimal and bytestring cohercions
+
+```k
 module HEXADECIMAL
   imports BYTESTRING-SYNTAX
   imports INT
@@ -66,20 +72,24 @@ module HEXADECIMAL
   rule int2HexStringBasic(14) => "e"
   rule int2HexStringBasic(15) => "f"
   rule int2HexString(I) => int2HexStringAux(I modInt 256 , "")
-  rule int2HexStringAux(I, S) =>
-       #if (I ==Int 0)
-       #then
-         #if (S ==String "")
-         #then "0"
-         #else (S)
-         #fi
-       #else
-         int2HexStringAux((I divInt 16), int2HexStringBasic(I modInt 16) +String S)
-       #fi
-endmodule
 
+  rule int2HexStringAux(0, S) =>
+       #if (S ==String "")
+       #then "0"
+       #else (S)
+       #fi
+
+  rule int2HexStringAux(I, S) =>
+       int2HexStringAux((I divInt 16), int2HexStringBasic(I modInt 16) +String S) [owise]
+endmodule
+```
+
+## Bytestring helper functions
+
+```k
 module BYTESTRING
-  imports BYTESTRING-SYNTAX
+
+imports BYTESTRING-SYNTAX
   imports STRING
   imports STRING-BUFFER
   imports INT
@@ -87,6 +97,7 @@ module BYTESTRING
   imports HEXADECIMAL
   imports LIST
   imports BOOL
+  imports BYTES
 
   syntax String ::= ByteString2String (ByteString) [function, functional, hook(STRING.token2string)]
   
@@ -94,6 +105,14 @@ module BYTESTRING
 
   syntax String ::= trimByteString(ByteString) [function]
   rule trimByteString(B) => substrString(ByteString2String(B), 1, lengthString(ByteString2String(B)))
+
+  syntax ByteString ::= unTrimByteString(String) [function]
+  rule unTrimByteString(S) => String2ByteString("#" +String S)
+
+  syntax String ::= encode(ByteString) [function]
+  rule encode(B) =>
+       Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
+                              String2Base(trimByteString(B), 16 ), BE))
 
   syntax String ::= addZero(String) [function]
   rule addZero(S) =>
@@ -112,6 +131,7 @@ module BYTESTRING
        #then (L)
        #else mkHexStringListAux(tail(tail(S)), L ListItem(head(S) +String head(tail(S))))
        #fi
+       
   syntax String ::= mkHexString(List) [function]
   rule mkHexString(L) => mkHexStringAux(L, "")
 
