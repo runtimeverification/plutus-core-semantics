@@ -15,6 +15,11 @@ Building
 -   Build LLVM backend: `make build-llvm -j8`
 -   Build just KPlutus runner and includes: `make build-kplutus -j8`
 
+# A note about Crypto++
+
+Due to a bug in the ubuntu bionic and focal packages for crypto++ that affects us here, we build a static library for it from source.
+If you're certain that you have a crypto++ package installed that doesn't have this bug, you can run the make commands with `NOBUILD_CRYPTOPP=true`
+
 Testing
 -------
 

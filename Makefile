@@ -83,8 +83,9 @@ $(libff_out): $(PLUGIN_SUBMODULE)/deps/libff/CMakeLists.txt
 	    && make install DESTDIR=$(CURDIR)/$(BUILD_DIR)
 
 $(libcryptopp_out): $(PLUGIN_SUBMODULE)/deps/cryptopp/GNUmakefile
-	cd $(PLUGIN_SUBMODULE)/deps/cryptopp                            \
-            && $(MAKE) install DESTDIR=$(CURDIR)/$(BUILD_DIR) PREFIX=$(INSTALL_LIB)/cryptopp
+	cd $(PLUGIN_SUBMODULE)/deps/cryptopp                                                     \
+	    && $(MAKE) static                                                                    \
+	    && $(MAKE) install-lib DESTDIR=$(CURDIR)/$(BUILD_DIR) PREFIX=$(INSTALL_LIB)/cryptopp
 
 # K Dependencies
 # --------------
@@ -109,7 +110,7 @@ k-deps:
 
 plugin_include    := $(KPLUTUS_LIB)/blockchain-k-plugin/include
 plugin_k          := krypto.md
-plugin_c          := plugin_util.cpp crypto.cpp blake2.cpp plugin_util.h blake2.h
+plugin_c          := plugin_util.cpp crypto.cpp hash_ext.cpp blake2.cpp plugin_util.h blake2.h
 plugin_includes   := $(patsubst %, $(plugin_include)/kframework/%, $(plugin_k))
 plugin_c_includes := $(patsubst %, $(plugin_include)/c/%,          $(plugin_c))
 
@@ -146,8 +147,8 @@ llvm_kompiled      := $(llvm_dir)/$(llvm_main_filename)-kompiled/interpreter
 foo:
 	echo $(kplutus_includes)
 
-ifeq ($(UNAME_S),Darwin)
-$(KPLUTUS_LIB)/$(llvm_kompiled): $(libcryptopp_out)
+ifndef NOBUILD_CRYPTOPP
+  $(KPLUTUS_LIB)/$(llvm_kompiled): $(libcryptopp_out)
 endif
 
 $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(libff_out) $(KPLUTUS_BIN)/kplc
