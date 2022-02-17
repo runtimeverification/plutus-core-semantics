@@ -133,6 +133,7 @@ run_file="$1" ; shift
 
 case "$run_command-$backend" in
     kompile-llvm) run_kompile     "$@"                                                ;;
+    kompile-haskell) run_kompile  "$@"                                                ;;
     run-llvm)     run_interpreter "$@"                                                ;;
     *)            $0 help ; fatal "Unknown command on backend: $run_command $backend" ;;
 esac
