@@ -73,9 +73,9 @@ The same steps of sha3_256 are taken to produce the proper string argument for S
 Blake2b algorithm. However, the steps should be pretty much the same
 as in the other hash functions.
 
-```
+```k
   rule <k> (builtin blake2b_256 .TermList) =>
-           (con bytestring unTrimByteString(Blake2b(encode(B)))) </k>
+           (con bytestring unTrimByteString(Blake2b256(encode(B)))) </k>
        <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
 
   rule <k> (builtin blake2b_256) => #BLK2B ... </k>
@@ -83,7 +83,7 @@ as in the other hash functions.
   rule <k> (V:Value ~> ([ Clos(#BLK2B, _RHO) _])) => #BLK2B(V) ... </k>
 
   rule <k> #BLK2B((con bytestring B:ByteString)) =>
-           (con bytestring unTrimByteString(Blake2b(encode(B)))) </k>
+           (con bytestring unTrimByteString(Blake2b256(encode(B)))) </k>
 ```
 
 ```k
