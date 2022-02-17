@@ -14,8 +14,6 @@ tests/simple/delay.uplc
 tests/simple/force.uplc
 # Var uses a free-varaible therefore it fails.
 tests/simple/var.uplc
-# Blake2b hash algorithm is not implemented yet
-tests/simple/blake2b.uplc
 #
 # UPLC examples 
 #
