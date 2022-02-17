@@ -43,11 +43,13 @@ run_kompile() {
 
     kompile_opts=( "${run_file}" --directory "${backend_dir}" --backend "${backend}" )
     kompile_opts+=( -I "${INSTALL_INCLUDE}/kframework" -I "${plugin_include}/kframework"          )
+    kompile_opts+=( --md-selector "k | libcrypto-extra"                                           )
     kompile_opts+=( --hook-namespaces "KRYPTO"                                                    )
     kompile_opts+=( --emit-json                                                                   )
     kompile_opts+=( -ccopt -L${libff_dir}/lib -ccopt -I${libff_dir}/include                       )
     kompile_opts+=( -ccopt ${plugin_include}/c/plugin_util.cpp                                    )
     kompile_opts+=( -ccopt ${plugin_include}/c/crypto.cpp                                         )
+    kompile_opts+=( -ccopt ${plugin_include}/c/hash_ext.cpp                                       )
     kompile_opts+=( -ccopt ${plugin_include}/c/blake2.cpp                                         )
     kompile_opts+=( -ccopt -g -ccopt -std=c++14                                                   )
     kompile_opts+=( -ccopt -lff -ccopt -lcryptopp -ccopt -lsecp256k1 -ccopt -lssl -ccopt -lcrypto )
@@ -57,6 +59,8 @@ run_kompile() {
         openssl_root="$(brew --prefix openssl)"
         brew_root="$(brew --prefix)"
         kompile_opts+=( -ccopt -I${brew_root}/include -ccopt -L/${brew_root}/lib -ccopt -I${openssl_root}/include -ccopt -L${openssl_root}/lib )
+    fi
+    if [[ -d ${libcryptopp_dir} ]]; then
         kompile_opts+=( -ccopt -I${libcryptopp_dir}/include -ccopt -L/${libcryptopp_dir}/lib )
     fi
 
