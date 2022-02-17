@@ -240,7 +240,7 @@ tests/%.uplc.run: tests/%.uplc
 	$(CHECK) $<.out $<$(EXPECTED2)
 
 update-results: conformance-test
-update-results: TEST=$(UPLC) evaluate --print-mode Classic -i 
+update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
 update-results: TEST_OPTIONS=
 update-results: CHECK=cp
 
