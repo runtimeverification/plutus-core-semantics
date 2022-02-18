@@ -1,15 +1,15 @@
-
 # The Concrete Syntax of Untyped Plutus
 
 ```k
 require "domains.md"
-require "bytestring.md"
+require "uplc-bytestring.md"
 
 module UPLC-CONCRETE-SYNTAX
   imports LIST
   imports ID
   imports INT-SYNTAX
-  imports BYTESTRING-SYNTAX
+  imports UPLC-BYTESTRING-SYNTAX
+  imports STRING
 
   syntax Program ::= "(" "program" Version Term ")"     // versioned program
 
@@ -32,6 +32,7 @@ module UPLC-CONCRETE-SYNTAX
   syntax TypeConstant ::= "integer"
                         | "data"
                         | "bytestring"
+                        | "string"
                         | "unit"
                         | "bool"
 
@@ -39,6 +40,7 @@ module UPLC-CONCRETE-SYNTAX
                     | "True"
                     | "False"
                     | ByteString
+                    | String
                     | "()"
 
 ```
@@ -140,79 +142,223 @@ endmodule
 These constructs are used in the semantics to describe partially applied builtin functions.
 ```k
 module UPLC-ABSTRACT-SYNTAX
-  imports LIST
-  imports ID
-  imports INT-SYNTAX
-  imports BYTESTRING-SYNTAX
   imports UPLC-CONCRETE-SYNTAX
+```
 
+## For `ifThenElse`
+
+```k
   syntax Value ::= "#ITE"
                  | #ITE(Value)
                  | #ITE(Value, Value)
                  | #ITE(Value, Value, Value)
+```                 
+## For `addInteger`
+
+```k
                  | "#SUM"
                  | #SUM(Value)
                  | #SUM(Value, Value)
+```                 
+
+## For `multiplyInteger`
+
+```k
                  | "#MUL"
                  | #MUL(Value)
                  | #MUL(Value, Value)
+```
+
+## For `subtractInteger`
+
+```k
+
                  | "#SUB"
                  | #SUB(Value)
                  | #SUB(Value, Value)
+```                 
+
+## For `divideInteger`
+
+```k
                  | "#DIV"
                  | #DIV(Value)
                  | #DIV(Value, Value)
+```                 
+
+## For `modInteger`
+
+```k
                  | "#MOD"
                  | #MOD(Value)
                  | #MOD(Value, Value)
+```               
+
+## For `quotientInteger`
+
+```k
                  | "#QUO"
                  | #QUO(Value)
                  | #QUO(Value, Value)
+```                 
+
+## For `remainderInteger`
+
+```k
                  | "#REM"
                  | #REM(Value)
                  | #REM(Value, Value)
+```
+
+## For `lessTahnInteger`
+
+```k
+
                  | "#LTI"
                  | #LTI(Value)
                  | #LTI(Value, Value)
+```
+
+## For `lessThanEqualsInteger`
+
+```k
+
                  | "#LTE"
                  | #LTE(Value)
                  | #LTE(Value, Value)
+```
+
+## For `equalsInteger`
+
+```k
                  | "#EQI"
                  | #EQI(Value)
                  | #EQI(Value, Value)
-                 | "#ABS" // for appendByteString
+```
+
+
+## For `appendByteString`
+
+```k
+                 | "#ABS" 
                  | #ABS(Value)
                  | #ABS(Value, Value)
-                 | "#CBS" // for consByteString
+```                 
+
+## For `consByteString`
+
+```k
+                 | "#CBS" 
                  | #CBS(Value)
                  | #CBS(Value, Value)
+```
+
+## For `sliceByteString`
+
+```k
                  | "#SBS" // for sliceByteString
                  | #SBS(Value)
                  | #SBS(Value, Value)
                  | #SBS(Value, Value, Value)
-                 | "#LBS" // for lengthOfByteString
+```
+
+## For `lengthOfByteString`
+
+```k
+                 | "#LBS" // 
                  | #LBS(Value)
-                 | "#IBS" // for indexByteString
+```
+
+## For `indexByteString`
+
+```k
+                 | "#IBS" 
                  | #IBS(Value)
                  | #IBS(Value, Value)
-                 | "#EBS" // for equalsByteString
+```
+
+## For `equalsByteString`
+
+```k
+                 | "#EBS" 
                  | #EBS(Value)
                  | #EBS(Value, Value)
-                 | "#LTBS" // for lesThanByteString
+```
+
+## For `lessThanByteString`
+
+```k
+                 | "#LTBS" 
                  | #LTBS(Value)
                  | #LTBS(Value, Value)
-                 | "#LEBS" // for lesThanEqualsByteString
+```                 
+
+## For `lessThanEqualsByteString`
+
+```k
+                 | "#LEBS" 
                  | #LEBS(Value)
                  | #LEBS(Value, Value)
-                 | "#SHA2" // for sha2_256
+```
+
+## For `sha2_256` 
+
+```k
+                 | "#SHA2" 
                  | #SHA2(Value)
-                 | "#SHA3" // for sha3_256
+```
+
+## For `sha3_256` 
+
+```k
+                 | "#SHA3" 
                  | #SHA3(Value)
+```
+
+## For `blake2b_256` 
+
+```k
                  | "#BLK2B" // for blake2b_256
                  | #BLK2B(Value)
+```                  
 
+## For `encodeUtf8`
+
+```k
+                 | "#EUTF" 
+                 | #EUTF(Value)
+```                 
+
+## For `decodeUtf8`
+
+```k
+                 | "#DUTF" 
+                 | #DUTF(Value)
+```
+
+## For `appendString`
+
+```k
+                 | "#ASTR" 
+                 | #ASTR(Value)
+                 | #ASTR(Value, Value)
+```
+
+## For `equalsString`
+
+```k
+                 | "#ESTR" 
+                 | #ESTR(Value)
+                 | #ESTR(Value, Value)
+```
+
+```k 
 endmodule
+```
 
+# UPLC Syntax
+
+```k 
 module UPLC-SYNTAX
   imports UPLC-CONCRETE-SYNTAX
   imports UPLC-ABSTRACT-SYNTAX
