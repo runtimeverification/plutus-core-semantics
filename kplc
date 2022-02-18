@@ -111,6 +111,14 @@ fi
 
 result_only=false
 backend='llvm'
+
+if [[ "$run_command" == 'run-haskell' ]]; then
+    run_command='run'
+    backend='haskell'
+else
+    backend='llvm'
+fi
+
 args=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -135,5 +143,6 @@ case "$run_command-$backend" in
     kompile-llvm) run_kompile     "$@"                                                ;;
     kompile-haskell) run_kompile  "$@"                                                ;;
     run-llvm)     run_interpreter "$@"                                                ;;
+    run-haskell)  run_interpreter "$@"                                                ;;
     *)            $0 help ; fatal "Unknown command on backend: $run_command $backend" ;;
 esac
