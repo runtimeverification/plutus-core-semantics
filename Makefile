@@ -129,7 +129,7 @@ plugin-deps: $(plugin_includes) $(plugin_c_includes)
 
 KOMPILE := $(KPLUTUS) kompile
 
-kplutus_files := uplc.md bytestring.md
+kplutus_files := uplc.md 
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 

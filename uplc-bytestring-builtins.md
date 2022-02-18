@@ -2,7 +2,7 @@
 
 ```k
 require "uplc-configuration.md"
-require "bytestring.md"
+require "uplc-bytestring.md"
 
 module UPLC-BYTESTRING-BUILTINS
   imports UPLC-CONFIGURATION

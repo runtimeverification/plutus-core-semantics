@@ -3,8 +3,8 @@
 This module implements functions for string handling in UPLC.
 
 ```k
-requires "domains.md"
-requires "uplc-bytestring.md"
+require "domains.md"
+require "uplc-bytestring.md"
 
 module UPLC-STRING
   imports UPLC-BYTESTRING
