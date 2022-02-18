@@ -33,8 +33,8 @@ export PLUGIN_SUBMODULE
 
 .PHONY: all clean distclean                \
         deps k-deps plugin-deps libff      \
-        build build-kplutus build-llvm     \
-        install uninstall                  \
+        build build-kplutus build-haskell  \
+        build-llvm install uninstall       \
         test-simple                        \
         test-uplc-examples                 \
         test-benchmark-validation-examples \
@@ -129,7 +129,7 @@ plugin-deps: $(plugin_includes) $(plugin_c_includes)
 
 KOMPILE := $(KPLUTUS) kompile
 
-kplutus_files := uplc.md bytestring.md
+kplutus_files := uplc.md 
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 
@@ -143,6 +143,14 @@ llvm_syntax_module := UPLC-SYNTAX
 llvm_main_file     := uplc.md
 llvm_main_filename := $(basename $(notdir $(llvm_main_file)))
 llvm_kompiled      := $(llvm_dir)/$(llvm_main_filename)-kompiled/interpreter
+
+haskell_dir            := haskell
+haskell_main_module    := UPLC
+haskell_syntax_module  := $(haskell_main_module)
+haskell_main_file      := uplc.md
+haskell_main_filename  := $(basename $(notdir $(haskell_main_file)))
+haskell_kompiled       := $(haskell_dir)/$(haskell_main_filename)-kompiled/definition.kore
+
 
 foo:
 	echo $(kplutus_includes)
@@ -158,13 +166,24 @@ $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin
 	    --syntax-module $(llvm_syntax_module) \
 	    $(KOMPILE_OPTS)
 
+$(KPLUTUS_LIB)/$(haskell_kompiled): $(kplutus_includes) $(plugin_includes) $(KPLUTUS_BIN)/kplc
+	$(KOMPILE) --backend haskell                     \
+	    $(haskell_main_file) $(HASKELL_KOMPILE_OPTS) \
+	    --main-module $(haskell_main_module)         \
+	    --syntax-module $(haskell_syntax_module)     \
+	    $(KOMPILE_OPTS)
+
+
+
+
 # Installing
 # ----------
 
 install_bins := kplc
 
-install_libs := $(llvm_kompiled) \
-                release.md       \
+install_libs := $(llvm_kompiled)    \
+                $(haskell_kompiled) \
+                release.md          \
                 version
 
 build_bins := $(install_bins)
@@ -189,6 +208,7 @@ build: $(patsubst %, $(KPLUTUS_BIN)/%, $(install_bins)) $(patsubst %, $(KPLUTUS_
 
 build-kplutus: $(KPLUTUS_BIN)/kplc $(plugin_includes)
 build-llvm:    $(KPLUTUS_LIB)/$(llvm_kompiled)
+build-haskell: $(KPLUTUS_LIB)/$(haskell_kompiled)
 
 all_bin_sources := $(shell find $(KPLUTUS_BIN) -type f | sed 's|^$(KPLUTUS_BIN)/||')
 all_lib_sources := $(shell find $(KPLUTUS_LIB) -type f                                            \

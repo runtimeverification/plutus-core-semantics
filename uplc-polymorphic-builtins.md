@@ -1,9 +1,9 @@
-# Polymorphic builtins
+# UPLC Polymorphic builtins
 
 ```k
 require "uplc-configuration.md"
 
-module POLYMORPHIC-BUILTINS
+module UPLC-POLYMORPHIC-BUILTINS
   imports UPLC-CONFIGURATION
 ```
 

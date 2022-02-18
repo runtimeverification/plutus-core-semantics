@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( con string "Ola" ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <stack>
+    .List
+  </stack>
+</generatedTop>

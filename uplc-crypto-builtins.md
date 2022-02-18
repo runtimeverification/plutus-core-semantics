@@ -1,13 +1,13 @@
-# Crypto builtins 
+# UPLC crypto builtins 
 
 ```k
 require "uplc-configuration.md"
-require "bytestring.md"
+require "uplc-bytestring.md"
 require "krypto.md"
 
-module CRYPTO-BUILTINS
+module UPLC-CRYPTO-BUILTINS
   imports UPLC-CONFIGURATION
-  imports BYTESTRING
+  imports UPLC-BYTESTRING
   imports KRYPTO
   imports STRING-BUFFER
   imports BYTES
@@ -52,7 +52,7 @@ a ByteString.
 
 ## `sha2_256`
 
-The same steps of sha3_256 are taken to produce the proper string argument for Sha256.
+The same steps of `sha3_256` are taken to produce the proper string argument for `Sha256`.
 
 ```k 
   rule <k> (builtin sha2_256 .TermList) =>
@@ -69,9 +69,7 @@ The same steps of sha3_256 are taken to produce the proper string argument for S
 
 ## `blake2b_256`
 
-*Not implemented yet* as we need a hook for the implementation of
-Blake2b algorithm. However, the steps should be pretty much the same
-as in the other hash functions.
+The same steps of `sha3_256` are taken to produce the proper string argument for `Blake2b256`.
 
 ```k
   rule <k> (builtin blake2b_256 .TermList) =>

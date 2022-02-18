@@ -1,16 +1,18 @@
 # UPLC semantics
 
 ```k
-require "polymorphic-builtins.md"
-require "integer-builtins.md" 
-require "bytestring-builtins.md"
-require "crypto-builtins.md"
+require "uplc-polymorphic-builtins.md"
+require "uplc-integer-builtins.md" 
+require "uplc-bytestring-builtins.md"
+require "uplc-crypto-builtins.md"
+require "uplc-string-builtins.md"
 
 module UPLC-SEMANTICS
-  imports POLYMORPHIC-BUILTINS
-  imports INTEGER-BUILTINS
-  imports BYTESTRING-BUILTINS
-  imports CRYPTO-BUILTINS
+  imports UPLC-POLYMORPHIC-BUILTINS
+  imports UPLC-INTEGER-BUILTINS
+  imports UPLC-BYTESTRING-BUILTINS
+  imports UPLC-CRYPTO-BUILTINS
+  imports UPLC-STRING-BUILTINS
 ```
 
 ## CEK machine

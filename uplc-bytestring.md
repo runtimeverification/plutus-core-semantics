@@ -1,9 +1,9 @@
-# Bytestring datatype
+# UPLC Bytestring datatype
 
 ```k
 require "domains.md"
 
-module BYTESTRING-SYNTAX
+module UPLC-BYTESTRING-SYNTAX
   syntax ByteString ::= r"#([a-fA-F0-9][a-fA-F0-9])*" [token]
 endmodule
 ```
@@ -11,24 +11,20 @@ endmodule
 ## Hexadecimal and bytestring cohercions
 
 ```k
-module HEXADECIMAL
-  imports BYTESTRING-SYNTAX
+module UPLC-HEXADECIMAL
+  imports UPLC-BYTESTRING-SYNTAX
   imports INT
   imports STRING
   imports STRING-BUFFER
   imports K-EQUAL
 
-  syntax Int ::= hexString2Int(String) [function]
-  syntax String ::= int2HexString(Int) [function]
-  syntax String ::= int2HexStringBasic(Int) [function]
-  syntax String ::= int2HexStringAux(Int, String) [function]   
-
   syntax String ::= head(String) [function]
-  syntax String ::= tail(String) [function]   
-
   rule head(S) => substrString(S, 0, 1)
+
+  syntax String ::= tail(String) [function]   
   rule tail(S) => substrString(S, 1, lengthString(S))
 
+  syntax Int ::= hexString2Int(String) [function]
   rule hexString2Int("0") => 0
   rule hexString2Int("1") => 1
   rule hexString2Int("2") => 2
@@ -55,6 +51,7 @@ module HEXADECIMAL
        (hexString2Int(head(S)) *Int (16 ^Int (lengthString(S) -Int 1)) +Int hexString2Int(tail(S)))
   requires lengthString(S) >Int 1
   
+  syntax String ::= int2HexStringBasic(Int) [function]
   rule int2HexStringBasic(0) => "0"
   rule int2HexStringBasic(1) => "1"
   rule int2HexStringBasic(2) => "2"
@@ -73,28 +70,37 @@ module HEXADECIMAL
   rule int2HexStringBasic(15) => "f"
   rule int2HexString(I) => int2HexStringAux(I modInt 256 , "")
 
+  syntax String ::= int2HexString(Int) [function]
   rule int2HexStringAux(0, S) =>
        #if (S ==String "")
        #then "0"
        #else (S)
        #fi
 
+  syntax String ::= int2HexStringAux(Int, String) [function]   
   rule int2HexStringAux(I, S) =>
        int2HexStringAux((I divInt 16), int2HexStringBasic(I modInt 16) +String S) [owise]
+
+  syntax String ::= hexString2Char(String) [function]
+  rule hexString2Char(S) => chrChar(String2Base(S, 16))
+  requires lengthString(S) ==Int 2
+
+  syntax String ::= char2HexString(String) [function]
+  rule char2HexString(S) => int2HexString(ordChar(S))
 endmodule
 ```
 
 ## Bytestring helper functions
 
 ```k
-module BYTESTRING
+module UPLC-BYTESTRING
 
-imports BYTESTRING-SYNTAX
+  imports UPLC-BYTESTRING-SYNTAX
+  imports UPLC-HEXADECIMAL
   imports STRING
   imports STRING-BUFFER
   imports INT
   imports K-EQUAL
-  imports HEXADECIMAL
   imports LIST
   imports BOOL
   imports BYTES
@@ -114,8 +120,8 @@ imports BYTESTRING-SYNTAX
        Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
                               String2Base(trimByteString(B), 16 ), BE))
 
-  syntax String ::= addZero(String) [function]
-  rule addZero(S) =>
+  syntax String ::= padZero(String) [function]
+  rule padZero(S) =>
        #if ((lengthString(S) modInt 2) ==Int 0)
        #then (S)
        #else ("0" +String S)
@@ -151,7 +157,7 @@ imports BYTESTRING-SYNTAX
 
   syntax ByteString::= #consByteString(Int, ByteString) [function]
   rule #consByteString(I, B) =>
-       String2ByteString("#" +String addZero(int2HexString(I)) +String trimByteString(B))
+       String2ByteString("#" +String padZero(int2HexString(I)) +String trimByteString(B))
 
   syntax String ::= sliceByteStringList(Int, Int, List) [function]
   rule sliceByteStringList(I, J, L) =>
