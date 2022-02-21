@@ -1,12 +1,12 @@
-# Bytestring builtins
+# UPLC Bytestring builtins
 
 ```k
 require "uplc-configuration.md"
-require "bytestring.md"
+require "uplc-bytestring.md"
 
-module BYTESTRING-BUILTINS
+module UPLC-BYTESTRING-BUILTINS
   imports UPLC-CONFIGURATION
-  imports BYTESTRING
+  imports UPLC-BYTESTRING
   imports K-EQUAL
 ```
 

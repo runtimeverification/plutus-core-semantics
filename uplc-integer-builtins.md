@@ -1,9 +1,9 @@
-# Integer builtins
+# UPLC Integer builtins
 
 ```k
 requires "uplc-configuration.md"
 
-module INTEGER-BUILTINS
+module UPLC-INTEGER-BUILTINS
   imports UPLC-CONFIGURATION
   imports K-EQUAL
 ```  

@@ -13,6 +13,7 @@ Building
 
 -   Build everything: `make build -j8`
 -   Build LLVM backend: `make build-llvm -j8`
+-   Build Haskell backend: `make build-haskell -j8`
 -   Build just KPlutus runner and includes: `make build-kplutus -j8`
 
 # A note about Crypto++
