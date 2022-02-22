@@ -5,6 +5,7 @@ shopt -s extglob
 
 debug=false
 verbose=false
+flat_format=false
 
 notif() {
     if ${verbose}; then
@@ -99,6 +100,7 @@ if [[ "$run_command" == 'help' ]] || [[ "$run_command" == '--help' ]] ; then
                   --verbose
                   --backend
                   --backend-dir
+                  --flat-format : The input program is encoded in the flat format
     "
     exit 0
 fi
@@ -123,6 +125,7 @@ args=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --debug)       debug=true       ; args+=("$1") ; shift   ;;
+        --flat-format) flat_format=true                ; shift   ;;
         --verbose)     verbose=true                    ; shift   ;;
         --backend)     backend="$2"                    ; shift 2 ;;
         --backend-dir) backend_dir="$2"                ; shift 2 ;;
@@ -138,6 +141,11 @@ run_file="$1" ; shift
 [[ -f "$run_file" ]] || fatal "File does not exist: $run_file"
 
 ! ${debug} || set -x
+
+if ${flat_format}; then
+    printf '%s%s' "#" `xxd -ps "${run_file}"` > "${run_file}".hex
+    run_file="${run_file}".hex
+fi
 
 case "$run_command-$backend" in
     kompile-llvm)    run_kompile     "$@"                                                ;;
