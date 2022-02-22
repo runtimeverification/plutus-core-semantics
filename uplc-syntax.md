@@ -318,8 +318,17 @@ module UPLC-ABSTRACT-SYNTAX
 ## For `blake2b_256` 
 
 ```k
-                 | "#BLK2B" // for blake2b_256
+                 | "#BLK2B" 
                  | #BLK2B(Value)
+```                  
+
+## For `verifySignature` 
+
+```k
+                 | "#VSIG"
+                 | #VSIG(Value)
+                 | #VSIG(Value, Value)
+                 | #VSIG(Value, Value, Value)                 
 ```                  
 
 ## For `encodeUtf8`
@@ -350,6 +359,13 @@ module UPLC-ABSTRACT-SYNTAX
                  | "#ESTR" 
                  | #ESTR(Value)
                  | #ESTR(Value, Value)
+```
+
+## For `chooseUnit`
+
+```k
+                 | "#CUT" 
+                 | #CUT(Value)
 ```
 
 ```k 

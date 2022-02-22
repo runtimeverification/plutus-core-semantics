@@ -5,7 +5,10 @@
   <env>
     .Map
   </env>
-  <stack>
+  <args>
     .List
-  </stack>
+  </args>
+  <trace>
+    .List
+  </trace>
 </generatedTop>

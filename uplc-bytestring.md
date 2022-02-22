@@ -117,8 +117,11 @@ module UPLC-BYTESTRING
 
   syntax String ::= encode(ByteString) [function]
   rule encode(B) =>
-       Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
-                              String2Base(trimByteString(B), 16 ), BE))
+       #if (trimByteString(B) ==String "")
+       #then ("")
+       #else Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
+                                    String2Base(trimByteString(B), 16 ), BE))
+       #fi
 
   syntax String ::= padZero(String) [function]
   rule padZero(S) =>
