@@ -16,7 +16,8 @@ RUN    apt-get update            \
             maven                \
             pkg-config           \
             python3              \
-            zlib1g-dev
+            zlib1g-dev           \
+            xxd
 
 RUN    git clone 'https://github.com/z3prover/z3' --branch=z3-4.8.11 \
     && cd z3                                                         \
