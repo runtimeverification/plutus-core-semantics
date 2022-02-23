@@ -11,6 +11,7 @@ module UPLC-CRYPTO-BUILTINS
   imports KRYPTO
   imports STRING-BUFFER
   imports BYTES
+  imports K-EQUAL
 ```
 
 ## `sha3_256`
@@ -40,7 +41,7 @@ a ByteString.
 ```k 
   rule <k> (builtin sha3_256 .TermList) =>
            (con bytestring unTrimByteString(Sha3_256(encode(B)))) </k>  
-       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
 
   rule <k> (builtin sha3_256) => #SHA3 ... </k>
 
@@ -57,7 +58,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 ```k 
   rule <k> (builtin sha2_256 .TermList) =>
            (con bytestring unTrimByteString(Sha256(encode(B)))) </k>
-       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
 
   rule <k> (builtin sha2_256) => #SHA2 ... </k>
 
@@ -74,7 +75,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 ```k
   rule <k> (builtin blake2b_256 .TermList) =>
            (con bytestring unTrimByteString(Blake2b256(encode(B)))) </k>
-       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
 
   rule <k> (builtin blake2b_256) => #BLK2B ... </k>
 
@@ -82,6 +83,35 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 
   rule <k> #BLK2B((con bytestring B:ByteString)) =>
            (con bytestring unTrimByteString(Blake2b256(encode(B)))) </k>
+```
+
+## `verifySignature`
+
+```k
+  rule <k> (builtin verifySignature .TermList) =>
+           #if ED25519VerifyMessage(encode(K), encode(M), encode(S))
+           #then (con bool True)
+           #else (con bool False)
+           #fi
+       </k>
+       <args> ... (ListItem((con bytestring K:ByteString))
+                   ListItem((con bytestring M:ByteString))
+                   ListItem((con bytestring S:ByteString)) => .List) </args>
+
+  rule <k> (builtin verifySignature) => #VSIG ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#VSIG, _RHO) _])) => #VSIG(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#VSIG(V1:Value), _RHO) _])) => #VSIG(V1, V2) ... </k>
+
+  rule <k> (V3:Value ~> ([ Clos(#VSIG(V1:Value, V2:Value), _RHO) _])) => #VSIG(V1, V2, V3) ... </k>
+
+  rule <k> #VSIG((con bytestring K:ByteString), (con bytestring M:ByteString), (con bytestring S:ByteString)) =>
+           #if ED25519VerifyMessage(encode(K), encode(M), encode(S))
+           #then (con bool True)
+           #else (con bool False)
+           #fi
+       </k>
 ```
 
 ```k

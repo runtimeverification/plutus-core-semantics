@@ -16,8 +16,8 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin appendByteString .TermList) =>
            (con bytestring #appendByteString(B1, B2)) ... </k>
-       <stack> ... (ListItem((con bytestring B1:ByteString))
-                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B1:ByteString))
+                   ListItem((con bytestring B2:ByteString)) => .List) </args>
 
   rule <k> (builtin appendByteString) => #ABS ... </k>
 
@@ -34,8 +34,8 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin consByteString .TermList) =>
            (con bytestring #consByteString(I, B)) ... </k>
-       <stack> ... (ListItem((con integer I:Int))
-                    ListItem((con bytestring B:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con integer I:Int))
+                   ListItem((con bytestring B:ByteString)) => .List) </args>
 
   rule <k> (builtin consByteString) => #CBS ... </k>
 
@@ -52,9 +52,9 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin sliceByteString .TermList) =>
            (con bytestring #sliceByteString(I1, I2, B)) ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int))
-                    ListItem((con bytestring B:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                   ListItem((con integer I2:Int))
+                   ListItem((con bytestring B:ByteString)) => .List) </args>
 
   rule <k> (builtin sliceByteString) => #SBS ... </k>
 
@@ -73,7 +73,7 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin lengthOfByteString .TermList) =>
            (con bytestring #lengthOfByteString(B)) ... </k>
-       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
 
   rule <k> (builtin lengthOfByteString) => #LBS ... </k>
 
@@ -88,8 +88,8 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin indexByteString .TermList) =>
            (con bytestring #indexByteString(B, I)) ... </k>
-       <stack> ... (ListItem((con bytestring B:ByteString))
-                    ListItem((con integer I:Int)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B:ByteString))
+                    ListItem((con integer I:Int)) => .List) </args>
 
   rule <k> (builtin indexByteString) => #IBS ... </k>
 
@@ -110,8 +110,8 @@ module UPLC-BYTESTRING-BUILTINS
 	    #then (True)
 	    #else (False)
 	    #fi) ... </k>
-       <stack> ... (ListItem((con bytestring B1:ByteString))
-                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </args>
 
   rule <k> (builtin equalsByteString) => #EBS ... </k>
 
@@ -136,8 +136,8 @@ module UPLC-BYTESTRING-BUILTINS
 	    #then (True)
 	    #else (False)
 	    #fi) ... </k>
-       <stack> ... (ListItem((con bytestring B1:ByteString))
-                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </args>
 
   rule <k> (builtin lessThanByteString) => #LTBS ... </k>
 
@@ -162,8 +162,8 @@ module UPLC-BYTESTRING-BUILTINS
 	    #then (True)
 	    #else (False)
 	    #fi) ... </k>
-       <stack> ... (ListItem((con bytestring B1:ByteString))
-                    ListItem((con bytestring B2:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B1:ByteString))
+                    ListItem((con bytestring B2:ByteString)) => .List) </args>
 
   rule <k> (builtin lessThanEqualsByteString) => #LEBS ... </k>
 

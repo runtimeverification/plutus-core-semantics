@@ -11,14 +11,14 @@ module UPLC-POLYMORPHIC-BUILTINS
 
 ```k
   rule <k> (builtin ifThenElse .TermList) => V1 </k>
-       <stack> ... (ListItem((con bool True))
-                    ListItem(V1:Value)
-                    ListItem(_V2:Value)) => .List </stack>
+       <args> ... (ListItem((con bool True))
+                   ListItem(V1:Value)
+                   ListItem(_V2:Value)) => .List </args>
 
   rule <k> (builtin ifThenElse .TermList) => V2 </k>
-       <stack> ... ((ListItem((con bool False))
-                     ListItem(_V1:Value)
-                     ListItem(V2:Value)) => .List) </stack>
+       <args> ... ((ListItem((con bool False))
+                    ListItem(_V1:Value)
+                    ListItem(V2:Value)) => .List) </args>
 
   rule <k> (builtin ifThenElse) => #ITE ... </k>
 
@@ -31,5 +31,8 @@ module UPLC-POLYMORPHIC-BUILTINS
   rule <k> #ITE((con bool True), V1:Value, _V2:Value) => V1 </k>
 
   rule <k> #ITE((con bool False), _V1:Value, V2:Value) => V2 </k>
+```
+
+```k
 endmodule
 ``` 

@@ -17,7 +17,7 @@ module UPLC-STRING-BUILTINS
 ```k 
   rule <k> (builtin encodeUtf8 .TermList) =>
            (con bytestring #encodeUtf8(S)) </k>  
-       <stack> ... (ListItem((con string S:String)) => .List) </stack>
+       <args> ... (ListItem((con string S:String)) => .List) </args>
 
   rule <k> (builtin encodeUtf8) => #EUTF ... </k>
 
@@ -32,7 +32,7 @@ module UPLC-STRING-BUILTINS
 ```k 
   rule <k> (builtin decodeUtf8 .TermList) =>
            (con string #decodeUtf8(B)) </k>  
-       <stack> ... (ListItem((con bytestring B:ByteString)) => .List) </stack>
+       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
 
   rule <k> (builtin decodeUtf8) => #DUTF ... </k>
 
@@ -47,8 +47,8 @@ module UPLC-STRING-BUILTINS
 ```k 
   rule <k> (builtin appendString .TermList) =>
            (con string #appendString(S1, S2)) </k>  
-       <stack> ... (ListItem((con string S1:String))
-                    ListItem((con string S2:String)) => .List) </stack>
+       <args> ... (ListItem((con string S1:String))
+                    ListItem((con string S2:String)) => .List) </args>
 
   rule <k> (builtin appendString) => #ASTR ... </k>
 
@@ -70,8 +70,8 @@ module UPLC-STRING-BUILTINS
             #else (False)
             #fi)
        </k>  
-       <stack> ... (ListItem((con string S1:String))
-                    ListItem((con string S2:String)) => .List) </stack>
+       <args> ... (ListItem((con string S1:String))
+                    ListItem((con string S2:String)) => .List) </args>
 
   rule <k> (builtin equalsString) => #ESTR ... </k>
 

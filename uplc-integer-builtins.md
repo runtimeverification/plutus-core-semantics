@@ -12,8 +12,8 @@ module UPLC-INTEGER-BUILTINS
 
 ```k 
   rule <k> (builtin addInteger .TermList) => (con integer I1 +Int I2) ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                   ListItem((con integer I2:Int)) => .List) </args>
 
   rule <k> (builtin addInteger) => #SUM ... </k>
 
@@ -29,8 +29,8 @@ module UPLC-INTEGER-BUILTINS
 
 ```k
   rule <k> (builtin multiplyInteger .TermList) => (con integer I1 *Int I2) ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
 
   rule <k> (builtin multiplyInteger) => #MUL ... </k>
 
@@ -46,8 +46,8 @@ module UPLC-INTEGER-BUILTINS
 
 ```k 
   rule <k> (builtin subtractInteger .TermList) => (con integer I1 -Int I2) ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
 
   rule <k> (builtin subtractInteger) => #SUB ... </k>
 
@@ -65,13 +65,13 @@ According to Plutus specification, `divideInteger` implements standard mathemati
 
 ```k 
   rule <k> (builtin divideInteger .TermList) => (con integer I1 divInt I2) ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
   requires I2 =/=Int 0
 
   rule <k> (builtin divideInteger .TermList) => (error) ... </k>
-       <stack> ... (ListItem((con integer _I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer _I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
   requires I2 ==Int 0
 
   rule <k> (builtin divideInteger) => #DIV ... </k>
@@ -95,13 +95,13 @@ According to Plutus specification, `modInteger` implements standard mathematical
 
 ```k 
   rule <k> (builtin modInteger .TermList) => (con integer I1 modInt I2) ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
   requires I2 =/=Int 0
 
   rule <k> (builtin modInteger .TermList) => (error) ... </k>
-       <stack> ... (ListItem((con integer _I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer _I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
   requires I2 ==Int 0
 
   rule <k> (builtin modInteger) => #MOD ... </k>
@@ -127,13 +127,13 @@ operator `/Int`  computes the quotient using t-division which rounds towards 0.
 
 ```k
   rule <k> (builtin quotientInteger .TermList) => (con integer I1 /Int I2) ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
   requires I2 =/=Int 0
 
   rule <k> (builtin quotientInteger .TermList) => (error) ... </k>
-       <stack> ... (ListItem((con integer _I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer _I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
   requires I2 ==Int 0
 
   rule <k> (builtin quotientInteger) => #QUO ... </k>
@@ -161,13 +161,13 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ```k 
   rule <k> (builtin remainderInteger .TermList) =>
            (con integer (I1 -Int (I1 /Int I2) *Int I2)) ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
   requires I2 =/=Int 0
 
   rule <k> (builtin remainderInteger .TermList) => (error) ... </k>
-       <stack> ... (ListItem((con integer _I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer _I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
   requires I2 ==Int 0
 
   rule <k> (builtin remainderInteger) => #REM ... </k>
@@ -190,8 +190,8 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ```k
   rule <k> (builtin lessThanInteger .TermList) =>
            #if I1 <Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
 
   rule <k> (builtin lessThanInteger) => #LTI ... </k>
 
@@ -208,8 +208,8 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ```k
   rule <k> (builtin lessThanEqualsInteger .TermList) =>
            #if I1 <=Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
 
   rule <k> (builtin lessThanEqualsInteger) => #LTE ... </k>
 
@@ -226,8 +226,8 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ```k
   rule <k> (builtin equalsInteger .TermList) =>
            #if I1 ==Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
-       <stack> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </stack>
+       <args> ... (ListItem((con integer I1:Int))
+                    ListItem((con integer I2:Int)) => .List) </args>
 
   rule <k> (builtin equalsInteger) => #EQI ... </k>
   rule <k> (V:Value ~> ([ Clos(#EQI, _RHO) _])) => #EQI(V) ... </k>

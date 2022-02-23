@@ -36,11 +36,15 @@ module UPLC-SEMANTICS
   rule <k> (delay M:Term) ~> Force => M ... </k>
 ```
 
-## General builtin evaluation for non-partial application style
+## Builtin evaluation for non-partial (uncurried) application style
 
 ```k
-  rule <k> (builtin BN (M Ms)) => M ~> (builtin BN Ms) ... </k>
+  rule <k> (builtin BN (M Ms)) => M ~> (builtin BN Ms) ... </k> 
+
   rule <k> V:Value ~> (builtin BN Ms) => (builtin BN Ms) ... </k>
-       <stack> ... (.List => ListItem(V)) </stack>
+       <args> ... (.List => ListItem(V)) </args>
+```
+
+```k
 endmodule
 ```

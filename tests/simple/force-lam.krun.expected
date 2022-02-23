@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( lam x ( force x ) ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <stack>
+    .List
+  </stack>
+</generatedTop>
