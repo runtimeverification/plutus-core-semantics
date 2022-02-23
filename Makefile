@@ -1,3 +1,30 @@
+# Define standard colors
+# ----------------------
+
+ifneq (,$(findstring xterm,${TERM}))
+	BLACK        := $(shell tput -Txterm setaf 0)
+	RED          := $(shell tput -Txterm setaf 1)
+	GREEN        := $(shell tput -Txterm setaf 2)
+	YELLOW       := $(shell tput -Txterm setaf 3)
+	LIGHTPURPLE  := $(shell tput -Txterm setaf 4)
+	PURPLE       := $(shell tput -Txterm setaf 5)
+	BLUE         := $(shell tput -Txterm setaf 6)
+	WHITE        := $(shell tput -Txterm setaf 7)
+	RESET 	     := $(shell tput -Txterm sgr0)
+	BOLD 	     := $(shell tput bold)
+else
+	BLACK        := ""
+	RED          := ""
+	GREEN        := ""
+	YELLOW       := ""
+	LIGHTPURPLE  := ""
+	PURPLE       := ""
+	BLUE         := ""
+	WHITE        := ""
+	RESET        := ""
+	BOLD         := ""
+endif
+
 # Settings
 # --------
 
@@ -254,7 +281,9 @@ COMMRE = "^\#"
 failing_tests := $(shell grep -v $(COMMRE) tests/failing)
 
 tests/%.uplc.run: tests/%.uplc
-	$(TEST) $< $(TEST_OPTIONS) > $<.out
+	@echo "${BOLD}Testing${RESET} ${GREEN}$<${RESET}"
+	@echo "==="
+	$(TEST)  $< $(TEST_OPTIONS) > $<.out
 	$(CHECK) $<.out $<$(EXPECTED)
 	$(TEST2) $< $(TEST_OPTIONS2) > $<.out
 	$(CHECK) $<.out $<$(EXPECTED2)
