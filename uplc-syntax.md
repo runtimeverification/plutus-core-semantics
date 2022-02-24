@@ -8,10 +8,19 @@ module UPLC-CONCRETE-SYNTAX
   imports LIST
   imports ID
   imports INT-SYNTAX
-  imports UPLC-BYTESTRING-SYNTAX
+  imports UPLC-BYTESTRING
   imports STRING
 
-  syntax Program ::= "(" "program" Version Term ")"     // versioned program
+  syntax ConcreteProgram ::= "(" "program" Version Term ")"
+  syntax FlatProgram ::= ByteString
+
+  syntax Program ::= ConcreteProgram
+                 | FlatProgram
+                 | #handleProgram(Program) [function]
+                 | Bytes
+
+  rule #handleProgram(C:ConcreteProgram) => C
+  rule #handleProgram(F:FlatProgram) => String2Bytes(trimByteString({F}:>ByteString))
 
   syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
 

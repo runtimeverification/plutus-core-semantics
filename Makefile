@@ -259,6 +259,10 @@ tests/%.uplc.run: tests/%.uplc
 	$(TEST2) $< $(TEST_OPTIONS2) > $<.out
 	$(CHECK) $<.out $<$(EXPECTED2)
 
+tests/%.flat.run: tests/%.flat
+	$(TEST) $< --flat-format > $<.out
+	$(CHECK) $<.out $<$(EXPECTED)
+
 update-results: conformance-test
 update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
 update-results: TEST_OPTIONS=
@@ -307,3 +311,10 @@ all_nofib-exe-examples_tests := $(wildcard tests/nofib-exe-examples/*.uplc)
 nofib-exe-examples_tests     := $(filter-out $(failing_tests), $(all_nofib-exe-examples_tests))
 
 test-nofib-exe-examples: $(nofib-exe-examples_tests:=.run)
+
+# flat format Tests
+
+all_flat_tests := $(wildcard tests/flat/*.flat)
+flat_tests     := $(filter-out $(failing_tests), $(all_flat_tests))
+
+test-flat: $(flat_tests:=.run)
