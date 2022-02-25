@@ -307,21 +307,15 @@ uninstall:
 # Testing
 # -------
 
-TEST_VERBOSE  := false 
+TEST_VERBOSE  := false
 TEST_MSG      := "\n>>> Testing "
 
 TEST_OPTIONS  := --result-only
 TEST_OPTIONS2 :=
 CHECK         := git --no-pager diff --no-index --ignore-all-space -R
 
-# Does not echo the test commands unless TEST_VERBOSE is true.
-ifeq ($(TEST_VERBOSE), false)
-TEST          := @$(KPLUTUS) run
-TEST2         := @$(KPLUTUS) run
-else
 TEST          := $(KPLUTUS) run
 TEST2         := $(KPLUTUS) run
-endif
 
 UPLC          := ./uplc
 
@@ -336,38 +330,20 @@ EXPECTED2     :=.krun.expected
 COMMRE = "^\#"
 failing_tests := $(shell grep -v $(COMMRE) tests/failing)
 
-# krun-expected option tells if the output of kplc should be compared
-# with an expected execution of krun. This appears to be usuful to inspect
-# patological cases where observing the contents of cells other than k
-# is meaningful. 
-KRUN-EXPECTED := false 
-
 # When tests are run in parallel the TEST_MSG and the subsequent commands
 # may appear in distant lines. It helps keep track of the files being tested
 # though.
 tests/%.uplc.run: tests/%.uplc
-ifeq ($(TEST_VERBOSE), false)
-	@echo $(BWhite)$(TEST_MSG)$(Color_off)$(Green)$<$(Color_Off)"\n"
-	@$(TEST)  $< $(TEST_OPTIONS) > $<.out
-	@$(CHECK) $<.out $<$(EXPECTED)
-ifeq ($(KRUN_EXPECTED),true)
-	@$(TEST2) $< $(TEST_OPTIONS2) > $<.out
-	@$(CHECK) $<.out $<$(EXPECTED2)
-endif
-else
 	@echo $(BWhite)$(TEST_MSG)$(Color_off)$(Green)$<$(Color_Off)"\n"
 	$(TEST)  $< $(TEST_OPTIONS) > $<.out
 	$(CHECK) $<.out $<$(EXPECTED)
-ifeq ($(KRUN_EXPECTED),true)
 	$(TEST2) $< $(TEST_OPTIONS2) > $<.out
 	$(CHECK) $<.out $<$(EXPECTED2)
-endif
-endif
 
 update-results: conformance-test
 update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
 # The trail command below removes break lines that litters
-# the .EXPECTED file.
+# the .EXPECTED file and breaks testing.
 update-results: TEST_OPTIONS= | tr -d '\012\015'
 update-results: CHECK=cp
 update-results: TEST_MSG="\n>>> Updating results for "
