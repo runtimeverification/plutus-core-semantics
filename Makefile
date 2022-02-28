@@ -329,9 +329,6 @@ EXPECTED2     :=.krun.expected
 COMMRE = "^\#"
 failing_tests := $(shell grep -v $(COMMRE) tests/failing)
 
-# When tests are run in parallel the TEST_MSG and the subsequent commands
-# may appear in distant lines. It helps keep track of the files being tested
-# though.
 tests/%.uplc.run: tests/%.uplc
 	@echo $(BWhite)$(TEST_MSG)$(Color_off)$(Green)$<$(Color_Off)"\n"
 	$(TEST)  $< $(TEST_OPTIONS) > $<.out
@@ -345,7 +342,9 @@ tests/%.flat.run: tests/%.flat
 
 update-results: conformance-test
 update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
-update-results: TEST_OPTIONS=
+# The trail command below removes break lines that litters
+# the .EXPECTED file and breaks testing.
+update-results: TEST_OPTIONS= | tr -d '\012\015'
 update-results: CHECK=cp
 update-results: TEST_MSG="\n>>> Updating results for "
 
