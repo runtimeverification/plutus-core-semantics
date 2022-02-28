@@ -307,7 +307,6 @@ uninstall:
 # Testing
 # -------
 
-TEST_VERBOSE  := false
 TEST_MSG      := "\n>>> Testing "
 
 TEST_OPTIONS  := --result-only
