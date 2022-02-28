@@ -25,11 +25,11 @@ pipeline {
           failFast true
           options { timeout(time: 20, unit: 'MINUTES') }
           parallel {
-            stage('Simple')                        { steps { sh 'make test-simple -j4'                        } }
-            stage('uplc-examples')                 { steps { sh 'make test-uplc-examples -j4'                 } }
-            stage('benchmark-validation-examples') { steps { sh 'make test-benchmark-validation-examples -j4' } }
-            stage('nofib-exe-examples')            { steps { sh 'make test-nofib-exe-examples -j4'            } }
-            stage('flat')                          { steps { sh 'make test-flat -j4'                          } }
+            stage('Simple')                        { steps { sh 'make test-simple -j4 --output-sync=recurse'                        } }
+            stage('uplc-examples')                 { steps { sh 'make test-uplc-examples -j4 --output-sync=recurse'                 } }
+            stage('benchmark-validation-examples') { steps { sh 'make test-benchmark-validation-examples -j4 --output-sync=recurse' } }
+            stage('nofib-exe-examples')            { steps { sh 'make test-nofib-exe-examples -j4 --output-sync=recurse'            } }
+            stage('flat')                          { steps { sh 'make test-flat -j4 --output-sync=recurse'                          } }
           }
         }
         stage('Test Interactive') {
