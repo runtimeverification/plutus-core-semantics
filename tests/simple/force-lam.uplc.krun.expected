@@ -5,9 +5,6 @@
   <env>
     .Map
   </env>
-  <args>
-    .List
-  </args>
   <trace>
     .List
   </trace>
