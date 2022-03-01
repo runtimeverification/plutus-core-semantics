@@ -39,10 +39,6 @@ a ByteString.
 ## `sha3_256`
 
 ```k 
-  rule <k> (builtin sha3_256 .TermList) =>
-           (con bytestring unTrimByteString(Sha3_256(encode(B)))) </k>  
-       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
-
   rule <k> (builtin sha3_256) => #SHA3 ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#SHA3, _RHO) _])) => #SHA3(V) ... </k>
@@ -56,10 +52,6 @@ a ByteString.
 The same steps of `sha3_256` are taken to produce the proper string argument for `Sha256`.
 
 ```k 
-  rule <k> (builtin sha2_256 .TermList) =>
-           (con bytestring unTrimByteString(Sha256(encode(B)))) </k>
-       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
-
   rule <k> (builtin sha2_256) => #SHA2 ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#SHA2, _RHO) _])) => #SHA2(V) ... </k>
@@ -73,10 +65,6 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 The same steps of `sha3_256` are taken to produce the proper string argument for `Blake2b256`.
 
 ```k
-  rule <k> (builtin blake2b_256 .TermList) =>
-           (con bytestring unTrimByteString(Blake2b256(encode(B)))) </k>
-       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
-
   rule <k> (builtin blake2b_256) => #BLK2B ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#BLK2B, _RHO) _])) => #BLK2B(V) ... </k>
@@ -88,16 +76,6 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 ## `verifySignature`
 
 ```k
-  rule <k> (builtin verifySignature .TermList) =>
-           #if ED25519VerifyMessage(encode(K), encode(M), encode(S))
-           #then (con bool True)
-           #else (con bool False)
-           #fi
-       </k>
-       <args> ... (ListItem((con bytestring K:ByteString))
-                   ListItem((con bytestring M:ByteString))
-                   ListItem((con bytestring S:ByteString)) => .List) </args>
-
   rule <k> (builtin verifySignature) => #VSIG ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#VSIG, _RHO) _])) => #VSIG(V) ... </k>
