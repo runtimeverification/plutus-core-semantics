@@ -26,11 +26,11 @@ module UPLC-CONCRETE-SYNTAX
 
   syntax Term ::= Id
                 | Value
-                | "[" Term Term "]"                     // function application
-                | "(" "force" Term ")"                  // force execution of a term
+                | "[" Term TermList "]"
+                | "(" "force" Term ")"
                 | "(" "builtin" BuiltinName ")"
-                | "(" "builtin" BuiltinName TermList ")"// builtin
-                | "(" "error" ")"                       // error
+                | "(" "builtin" BuiltinName TermList ")"
+                | "(" "error" ")"
 
   syntax Value ::= "(" "con" TypeConstant Constant ")"
                  | "(" "lam" Id Term ")"

@@ -27,22 +27,17 @@ module UPLC-SEMANTICS
 
   rule <k> [ M N ] => M ~> [_ N] ... </k>
 
+  rule <k> [ M N:Term .TermList ] => [ M N ] </k>
+
+  rule <k> [ M N:Term T:TermList ] => [ [ M N ] T ] </k> [owise]
+
   rule <k> V:Value ~> [_ N] => N ~> [ Clos(V, RHO) _] ... </k>
        <env> RHO </env>
 
   rule <k> (V:Value ~> ([ Clos((lam X:Id M:Term), RHO') _] )) => M ... </k>
-        <env> RHO => (RHO' (X |-> Clos(V, RHO))) </env>
+       <env> RHO => (RHO' (X |-> Clos(V, RHO))) </env>
 
   rule <k> (delay M:Term) ~> Force => M ... </k>
-```
-
-## Builtin evaluation for non-partial (uncurried) application style
-
-```k
-  rule <k> (builtin BN (M Ms)) => M ~> (builtin BN Ms) ... </k> 
-
-  rule <k> V:Value ~> (builtin BN Ms) => (builtin BN Ms) ... </k>
-       <args> ... (.List => ListItem(V)) </args>
 ```
 
 ```k
