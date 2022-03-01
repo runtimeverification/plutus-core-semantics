@@ -29,7 +29,6 @@ builtin.
 ```k 
   configuration <k> #handleProgram($PGM:Program) </k>
                 <env> .Map </env>
-                <args> .List </args>
                 <trace> .List </trace>
 ```
 
