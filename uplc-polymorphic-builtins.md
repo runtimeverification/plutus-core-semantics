@@ -20,7 +20,7 @@ module UPLC-POLYMORPHIC-BUILTINS
                     ListItem(_V1:Value)
                     ListItem(V2:Value)) => .List) </args>
 
-  rule <k> (builtin ifThenElse) => #ITE ... </k>
+  rule <k> (builtin ifThenElse) ~> Force => #ITE ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#ITE, _RHO) _])) => #ITE(V) ... </k>
 
