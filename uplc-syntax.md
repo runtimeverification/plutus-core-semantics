@@ -29,7 +29,6 @@ module UPLC-CONCRETE-SYNTAX
                 | "[" Term TermList "]"
                 | "(" "force" Term ")"
                 | "(" "builtin" BuiltinName ")"
-                | "(" "builtin" BuiltinName TermList ")"
                 | "(" "error" ")"
 
   syntax Value ::= "(" "con" TypeConstant Constant ")"
