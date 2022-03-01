@@ -14,11 +14,6 @@ module UPLC-BYTESTRING-BUILTINS
 
 
 ```k
-  rule <k> (builtin appendByteString .TermList) =>
-           (con bytestring #appendByteString(B1, B2)) ... </k>
-       <args> ... (ListItem((con bytestring B1:ByteString))
-                   ListItem((con bytestring B2:ByteString)) => .List) </args>
-
   rule <k> (builtin appendByteString) => #ABS ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#ABS, _RHO) _])) => #ABS(V) ... </k>
@@ -32,11 +27,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `consByteString`
 
 ```k
-  rule <k> (builtin consByteString .TermList) =>
-           (con bytestring #consByteString(I, B)) ... </k>
-       <args> ... (ListItem((con integer I:Int))
-                   ListItem((con bytestring B:ByteString)) => .List) </args>
-
   rule <k> (builtin consByteString) => #CBS ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#CBS, _RHO) _])) => #CBS(V) ... </k>
@@ -50,12 +40,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `sliceByteString`
 
 ```k
-  rule <k> (builtin sliceByteString .TermList) =>
-           (con bytestring #sliceByteString(I1, I2, B)) ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                   ListItem((con integer I2:Int))
-                   ListItem((con bytestring B:ByteString)) => .List) </args>
-
   rule <k> (builtin sliceByteString) => #SBS ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#SBS, _RHO) _])) => #SBS(V) ... </k>
@@ -71,10 +55,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lengthOfByteString`
 
 ```k
-  rule <k> (builtin lengthOfByteString .TermList) =>
-           (con bytestring #lengthOfByteString(B)) ... </k>
-       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
-
   rule <k> (builtin lengthOfByteString) => #LBS ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#LBS, _RHO) _])) => #LBS(V) ... </k>
@@ -86,11 +66,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `indexByteString`
 
 ```k
-  rule <k> (builtin indexByteString .TermList) =>
-           (con bytestring #indexByteString(B, I)) ... </k>
-       <args> ... (ListItem((con bytestring B:ByteString))
-                    ListItem((con integer I:Int)) => .List) </args>
-
   rule <k> (builtin indexByteString) => #IBS ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#IBS, _RHO) _])) => #IBS(V) ... </k>
@@ -104,15 +79,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `equalsByteString`
 
 ```k
-  rule <k> (builtin equalsByteString .TermList) =>
-           (con bool
-	    #if (#equalsByteString(B1, B2) ==Bool true)
-	    #then (True)
-	    #else (False)
-	    #fi) ... </k>
-       <args> ... (ListItem((con bytestring B1:ByteString))
-                    ListItem((con bytestring B2:ByteString)) => .List) </args>
-
   rule <k> (builtin equalsByteString) => #EBS ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#EBS, _RHO) _])) => #EBS(V) ... </k>
@@ -130,15 +96,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lessThanByteString`
 
 ```k
-  rule <k> (builtin lessThanByteString .TermList) =>
-           (con bool
-	    #if (#lessThanByteString(B1, B2) ==Bool true)
-	    #then (True)
-	    #else (False)
-	    #fi) ... </k>
-       <args> ... (ListItem((con bytestring B1:ByteString))
-                    ListItem((con bytestring B2:ByteString)) => .List) </args>
-
   rule <k> (builtin lessThanByteString) => #LTBS ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#LTBS, _RHO) _])) => #LTBS(V) ... </k>
@@ -156,15 +113,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lessThanEqualsByteString`
 
 ```k
-  rule <k> (builtin lessThanEqualsByteString .TermList) =>
-           (con bool
-	    #if (#lessThanEqualsByteString(B1, B2) ==Bool true)
-	    #then (True)
-	    #else (False)
-	    #fi) ... </k>
-       <args> ... (ListItem((con bytestring B1:ByteString))
-                    ListItem((con bytestring B2:ByteString)) => .List) </args>
-
   rule <k> (builtin lessThanEqualsByteString) => #LEBS ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#LEBS, _RHO) _])) => #LEBS(V) ... </k>
