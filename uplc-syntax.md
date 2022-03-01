@@ -15,9 +15,9 @@ module UPLC-CONCRETE-SYNTAX
   syntax FlatProgram ::= ByteString
 
   syntax Program ::= ConcreteProgram
-                 | FlatProgram
-                 | #handleProgram(Program) [function]
-                 | Bytes
+                   | FlatProgram
+                   | #handleProgram(Program) [function]
+                   | Bytes
 
   rule #handleProgram(C:ConcreteProgram) => C
   rule #handleProgram(F:FlatProgram) => String2Bytes(trimByteString({F}:>ByteString))
