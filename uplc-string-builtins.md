@@ -15,10 +15,6 @@ module UPLC-STRING-BUILTINS
 ## `encodeUtf8`
 
 ```k 
-  rule <k> (builtin encodeUtf8 .TermList) =>
-           (con bytestring #encodeUtf8(S)) </k>  
-       <args> ... (ListItem((con string S:String)) => .List) </args>
-
   rule <k> (builtin encodeUtf8) => #EUTF ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#EUTF, _RHO) _])) => #EUTF(V) ... </k>
@@ -30,10 +26,6 @@ module UPLC-STRING-BUILTINS
 ## `decodeUtf8`
 
 ```k 
-  rule <k> (builtin decodeUtf8 .TermList) =>
-           (con string #decodeUtf8(B)) </k>  
-       <args> ... (ListItem((con bytestring B:ByteString)) => .List) </args>
-
   rule <k> (builtin decodeUtf8) => #DUTF ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#DUTF, _RHO) _])) => #DUTF(V) ... </k>
@@ -45,11 +37,6 @@ module UPLC-STRING-BUILTINS
 ## `appendString`
 
 ```k 
-  rule <k> (builtin appendString .TermList) =>
-           (con string #appendString(S1, S2)) </k>  
-       <args> ... (ListItem((con string S1:String))
-                    ListItem((con string S2:String)) => .List) </args>
-
   rule <k> (builtin appendString) => #ASTR ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#ASTR, _RHO) _])) => #ASTR(V) ... </k>
@@ -63,16 +50,6 @@ module UPLC-STRING-BUILTINS
 ## `equalsString`
 
 ```k 
-  rule <k> (builtin equalsString .TermList) =>
-           (con bool
-            #if #equalsString(S1, S2)
-            #then (True)
-            #else (False)
-            #fi)
-       </k>  
-       <args> ... (ListItem((con string S1:String))
-                    ListItem((con string S2:String)) => .List) </args>
-
   rule <k> (builtin equalsString) => #ESTR ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#ESTR, _RHO) _])) => #ESTR(V) ... </k>
