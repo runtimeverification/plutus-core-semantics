@@ -10,16 +10,6 @@ module UPLC-POLYMORPHIC-BUILTINS
 ## `ifThenElse`
 
 ```k
-  rule <k> (builtin ifThenElse .TermList) => V1 </k>
-       <args> ... (ListItem((con bool True))
-                   ListItem(V1:Value)
-                   ListItem(_V2:Value)) => .List </args>
-
-  rule <k> (builtin ifThenElse .TermList) => V2 </k>
-       <args> ... ((ListItem((con bool False))
-                    ListItem(_V1:Value)
-                    ListItem(V2:Value)) => .List) </args>
-
   rule <k> (builtin ifThenElse) => #ITE ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#ITE, _RHO) _])) => #ITE(V) ... </k>
