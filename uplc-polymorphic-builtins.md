@@ -23,6 +23,19 @@ module UPLC-POLYMORPHIC-BUILTINS
   rule <k> #ITE((con bool False), _V1:Value, V2:Value) => V2 </k>
 ```
 
+## `trace`
+
+```k
+  rule <k> (builtin trace) ~> Force => #TRC ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#TRC, _RHO) _])) => #TRC(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#TRC(V1:Value), _RHO) _])) => #TRC(V1, V2) ... </k>
+
+  rule <k> #TRC((con string S), V:Value) => V </k>
+       <trace> ... (.List => ListItem(S)) </trace>
+```
+
 ```k
 endmodule
 ``` 

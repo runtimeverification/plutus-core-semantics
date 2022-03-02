@@ -376,6 +376,14 @@ module UPLC-ABSTRACT-SYNTAX
                  | #CUT(Value)
 ```
 
+## For `trace`
+
+```k
+                 | "#TRC"
+                 | #TRC(Value)
+                 | #TRC(Value, Value)
+```
+
 ```k 
 endmodule
 ```
