@@ -13,6 +13,12 @@ module UPLC-SEMANTICS
   imports UPLC-BYTESTRING-BUILTINS
   imports UPLC-CRYPTO-BUILTINS
   imports UPLC-STRING-BUILTINS
+
+
+  syntax K ::= #app(Term, TermList) [function]
+
+  rule #app(M, .TermList) => M
+  rule #app(M, (N:Term T:TermList)) => #app(M, T) ~> [_ N] [owise] 
 ```
 
 ## CEK machine
@@ -25,24 +31,15 @@ module UPLC-SEMANTICS
 
   rule <k> (force M:Term) => (M ~> Force) ... </k>
 
-  rule <k> [ M N ] => M ~> [_ N] ... </k>
+  rule <k> [ M T ] => #app(M, T) ... </k> [owise]
 
   rule <k> V:Value ~> [_ N] => N ~> [ Clos(V, RHO) _] ... </k>
        <env> RHO </env>
 
   rule <k> (V:Value ~> ([ Clos((lam X:Id M:Term), RHO') _] )) => M ... </k>
-        <env> RHO => (RHO' (X |-> Clos(V, RHO))) </env>
+       <env> RHO => (RHO' (X |-> Clos(V, RHO))) </env>
 
   rule <k> (delay M:Term) ~> Force => M ... </k>
-```
-
-## Builtin evaluation for non-partial (uncurried) application style
-
-```k
-  rule <k> (builtin BN (M Ms)) => M ~> (builtin BN Ms) ... </k> 
-
-  rule <k> V:Value ~> (builtin BN Ms) => (builtin BN Ms) ... </k>
-       <args> ... (.List => ListItem(V)) </args>
 ```
 
 ```k

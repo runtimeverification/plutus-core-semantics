@@ -11,10 +11,6 @@ module UPLC-INTEGER-BUILTINS
 ## `addInteger`
 
 ```k 
-  rule <k> (builtin addInteger .TermList) => (con integer I1 +Int I2) ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                   ListItem((con integer I2:Int)) => .List) </args>
-
   rule <k> (builtin addInteger) => #SUM ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#SUM, _RHO) _])) => #SUM(V) ... </k>
@@ -28,10 +24,6 @@ module UPLC-INTEGER-BUILTINS
 ## `multiplyInteger`
 
 ```k
-  rule <k> (builtin multiplyInteger .TermList) => (con integer I1 *Int I2) ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-
   rule <k> (builtin multiplyInteger) => #MUL ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#MUL, _RHO) _])) => #MUL(V) ... </k>
@@ -45,10 +37,6 @@ module UPLC-INTEGER-BUILTINS
 ## `subtractInteger`
 
 ```k 
-  rule <k> (builtin subtractInteger .TermList) => (con integer I1 -Int I2) ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-
   rule <k> (builtin subtractInteger) => #SUB ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#SUB, _RHO) _])) => #SUB(V) ... </k>
@@ -64,16 +52,6 @@ module UPLC-INTEGER-BUILTINS
 According to Plutus specification, `divideInteger` implements standard mathematical integer division operation.
 
 ```k 
-  rule <k> (builtin divideInteger .TermList) => (con integer I1 divInt I2) ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-  requires I2 =/=Int 0
-
-  rule <k> (builtin divideInteger .TermList) => (error) ... </k>
-       <args> ... (ListItem((con integer _I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-  requires I2 ==Int 0
-
   rule <k> (builtin divideInteger) => #DIV ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#DIV, _RHO) _])) => #DIV(V) ... </k>
@@ -94,16 +72,6 @@ According to Plutus specification, `divideInteger` implements standard mathemati
 According to Plutus specification, `modInteger` implements standard mathematical integer division operation.
 
 ```k 
-  rule <k> (builtin modInteger .TermList) => (con integer I1 modInt I2) ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-  requires I2 =/=Int 0
-
-  rule <k> (builtin modInteger .TermList) => (error) ... </k>
-       <args> ... (ListItem((con integer _I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-  requires I2 ==Int 0
-
   rule <k> (builtin modInteger) => #MOD ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#MOD, _RHO) _])) => #MOD(V) ... </k>
@@ -126,16 +94,6 @@ According to https://github.com/kframework/k/blob/master/k-distribution/include/
 operator `/Int`  computes the quotient using t-division which rounds towards 0.
 
 ```k
-  rule <k> (builtin quotientInteger .TermList) => (con integer I1 /Int I2) ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-  requires I2 =/=Int 0
-
-  rule <k> (builtin quotientInteger .TermList) => (error) ... </k>
-       <args> ... (ListItem((con integer _I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-  requires I2 ==Int 0
-
   rule <k> (builtin quotientInteger) => #QUO ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#QUO, _RHO) _])) => #QUO(V) ... </k>
@@ -159,17 +117,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 
 
 ```k 
-  rule <k> (builtin remainderInteger .TermList) =>
-           (con integer (I1 -Int (I1 /Int I2) *Int I2)) ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-  requires I2 =/=Int 0
-
-  rule <k> (builtin remainderInteger .TermList) => (error) ... </k>
-       <args> ... (ListItem((con integer _I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-  requires I2 ==Int 0
-
   rule <k> (builtin remainderInteger) => #REM ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#REM, _RHO) _])) => #REM(V) ... </k>
@@ -188,11 +135,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ## `lessThanInteger`
 
 ```k
-  rule <k> (builtin lessThanInteger .TermList) =>
-           #if I1 <Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-
   rule <k> (builtin lessThanInteger) => #LTI ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#LTI, _RHO) _])) => #LTI(V) ... </k>
@@ -206,11 +148,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ## `lessThanEqualsInteger`
 
 ```k
-  rule <k> (builtin lessThanEqualsInteger .TermList) =>
-           #if I1 <=Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-
   rule <k> (builtin lessThanEqualsInteger) => #LTE ... </k>
 
   rule <k> (V:Value ~> ([ Clos(#LTE, _RHO) _])) => #LTE(V) ... </k>
@@ -224,11 +161,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ## `equalsInteger`
 
 ```k
-  rule <k> (builtin equalsInteger .TermList) =>
-           #if I1 ==Int I2 #then (con bool True) #else (con bool False) #fi ... </k>
-       <args> ... (ListItem((con integer I1:Int))
-                    ListItem((con integer I2:Int)) => .List) </args>
-
   rule <k> (builtin equalsInteger) => #EQI ... </k>
   rule <k> (V:Value ~> ([ Clos(#EQI, _RHO) _])) => #EQI(V) ... </k>
 
