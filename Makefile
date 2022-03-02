@@ -311,7 +311,7 @@ TEST_MSG      := "\n>>> Testing "
 
 TEST_OPTIONS  := --result-only
 TEST_OPTIONS2 :=
-CHECK         := git --no-pager diff --no-index --ignore-all-space -R
+CHECK         := diff --ignore-all-space 
 
 TEST          := $(KPLUTUS) run
 TEST2         := $(KPLUTUS) run
