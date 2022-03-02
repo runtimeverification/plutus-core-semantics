@@ -14,6 +14,9 @@ tests/simple/delay.uplc
 tests/simple/force.uplc
 # Var uses a free-varaible therefore it fails.
 tests/simple/var.uplc
+# ifThenElse needs to be composed with force
+# We need to improve error report to cope with `uplc` output.
+tests/simple/ifThenElse-no-force.uplc
 #
 # UPLC examples 
 #
