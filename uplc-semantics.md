@@ -13,6 +13,12 @@ module UPLC-SEMANTICS
   imports UPLC-BYTESTRING-BUILTINS
   imports UPLC-CRYPTO-BUILTINS
   imports UPLC-STRING-BUILTINS
+
+
+  syntax K ::= #app(Term, TermList) [function]
+
+  rule #app(M, .TermList) => M
+  rule #app(M, (N:Term T:TermList)) => #app(M, T) ~> [_ N] [owise] 
 ```
 
 ## CEK machine
@@ -25,11 +31,7 @@ module UPLC-SEMANTICS
 
   rule <k> (force M:Term) => (M ~> Force) ... </k>
 
-  rule <k> [ M N ] => M ~> [_ N] ... </k>
-
-  rule <k> [ M N:Term .TermList ] => [ M N ] </k>
-
-  rule <k> [ M N:Term T:TermList ] => [ [ M N ] T ] </k> [owise]
+  rule <k> [ M T ] => #app(M, T) ... </k> [owise]
 
   rule <k> V:Value ~> [_ N] => N ~> [ Clos(V, RHO) _] ... </k>
        <env> RHO </env>
