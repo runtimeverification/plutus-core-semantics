@@ -374,6 +374,7 @@ module UPLC-ABSTRACT-SYNTAX
 ```k
                  | "#CUT" 
                  | #CUT(Value)
+                 | #CUT(Value, Value)
 ```
 
 ```k 
