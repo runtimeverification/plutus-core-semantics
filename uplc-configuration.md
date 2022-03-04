@@ -27,6 +27,13 @@ to evaluate builtin arguments when the uncurried style us used, and
 builtin.
 
 ```k 
+
+  syntax Program ::= #handleProgram(Program) [function]
+                   | Bytes
+
+  rule #handleProgram(C:ConcreteProgram) => C
+  rule #handleProgram(F:FlatProgram) => String2Bytes(trimByteString({F}:>ByteString))
+
   configuration <k> #handleProgram($PGM:Program) </k>
                 <env> .Map </env>
                 <trace> .List </trace>
