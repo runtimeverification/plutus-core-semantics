@@ -326,6 +326,8 @@ UPLC          := ./uplc
 EXPECTED      :=.expected
 EXPECTED2     :=.krun.expected
 
+CONTINUE      := ||
+
 # Failing
 # -------
 
@@ -334,12 +336,20 @@ EXPECTED2     :=.krun.expected
 COMMRE = "^\#"
 failing_tests := $(shell grep -v $(COMMRE) tests/failing)
 
+
+# Running the test
+# ----------------
+# Each test run will run kplc run on two expected outputs: one from kplc and another from uplc. In
+# addition to comparing the resulting program term, comparing all cell outputs allows us to write
+# regression tests for all cell values. Some tests may not have outputs from both interpreters so
+# the tests only need to be performed if the expected output exists.
+
 tests/%.uplc.run: tests/%.uplc
 	@echo $(BWhite)$(TEST_MSG)$(Color_off)$(Green)$<$(Color_Off)"\n"
-	$(TEST)  $< $(TEST_OPTIONS) > $<.out
-	$(CHECK) $<.out $<$(EXPECTED)
-	$(TEST2) $< $(TEST_OPTIONS2) > $<.out
-	$(CHECK) $<.out $<$(EXPECTED2)
+	[ ! -f $<$(EXPECTED)  ] $(CONTINUE) $(TEST)  $< $(TEST_OPTIONS) > $<.out
+	[ ! -f $<$(EXPECTED)  ] $(CONTINUE) $(CHECK) $<.out $<$(EXPECTED)
+	[ ! -f $<$(EXPECTED2) ] $(CONTINUE) $(TEST2) $< $(TEST_OPTIONS2) > $<.out
+	[ ! -f $<$(EXPECTED2) ] $(CONTINUE) $(CHECK) $<.out $<$(EXPECTED2)
 
 tests/%.flat.run: tests/%.flat
 	$(TEST) $< --flat-format > $<.out
@@ -352,6 +362,7 @@ update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
 update-results: TEST_OPTIONS= | tr -d '\012\015'
 update-results: CHECK=cp
 update-results: TEST_MSG="\n>>> Updating results for "
+update-results: CONTINUE=;
 
 # Conformance tests
 #
