@@ -11,16 +11,14 @@ module UPLC-CONCRETE-SYNTAX
   imports UPLC-BYTESTRING
   imports STRING
 
-  syntax ConcreteProgram ::= "(" "program" Version Term ")"
-  syntax FlatProgram ::= ByteString
 
   syntax Program ::= ConcreteProgram
-                 | FlatProgram
-                 | #handleProgram(Program) [function]
-                 | Bytes
+                   | FlatProgram
 
-  rule #handleProgram(C:ConcreteProgram) => C
-  rule #handleProgram(F:FlatProgram) => String2Bytes(trimByteString({F}:>ByteString))
+
+  syntax ConcreteProgram ::= "(" "program" Version Term ")"
+
+  syntax FlatProgram ::= ByteString
 
   syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
 
@@ -374,6 +372,7 @@ module UPLC-ABSTRACT-SYNTAX
 ```k
                  | "#CUT" 
                  | #CUT(Value)
+                 | #CUT(Value, Value)
 ```
 
 ## For `trace`
