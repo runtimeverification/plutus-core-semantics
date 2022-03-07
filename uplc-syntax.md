@@ -417,6 +417,44 @@ module UPLC-ABSTRACT-SYNTAX
                  | #SPR(Value)
 ```
 
+## For `chooseList`
+
+```k
+                 | "#CLT"
+                 | #CLT(Value)
+                 | #CLT(Value, Value)
+                 | #CLT(Value, Value, Value)
+```
+
+## For `mkCons`
+
+```k
+                 | "#MCN"
+                 | #MCN(Value)
+                 | #MCN(Value, Value)
+```
+
+## For `headList`
+
+```k
+                 | "#HLT"
+                 | #HLT(Value)
+```
+
+## For `tailList`
+
+```k
+                 | "#TLT"
+                 | #TLT(Value)
+```
+
+## For `nullList`
+
+```k
+                 | "#NLT"
+                 | #NLT(Value)
+```
+
 ```k 
 endmodule
 ```
