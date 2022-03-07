@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( con list ( pair ( integer ) ( bool ) ) [ ( 1 , True ) , ( 500000 , False ) , ( 0 , True ) , .ConstantList ] ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <trace>
+    .List
+  </trace>
+</generatedTop>

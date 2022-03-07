@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( con list ( list ( integer ) ) [ [ 0 , .ConstantList ] , [ 0 , 1 , 2 , .ConstantList ] , [ 4 , 5 , 2 , .ConstantList ] , .ConstantList ] ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <trace>
+    .List
+  </trace>
+</generatedTop>
