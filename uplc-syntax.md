@@ -393,6 +393,18 @@ module UPLC-ABSTRACT-SYNTAX
                  | #CUT(Value, Value)
 ```
 
+## For `chooseData`
+
+```k
+                 | "#CDT"
+                 | #CDT(Value)
+                 | #CDT(Value, Value)
+                 | #CDT(Value, Value, Value)
+                 | #CDT(Value, Value, Value, Value)
+                 | #CDT(Value, Value, Value, Value, Value)
+                 | #CDT(Value, Value, Value, Value, Value, Value)
+```
+
 ```k 
 endmodule
 ```

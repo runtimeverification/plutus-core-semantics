@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    ( con data { ByteString #001A } ) ~> .
+  </k>
+  <env>
+    .Map
+  </env>
+  <trace>
+    .List
+  </trace>
+</generatedTop>
