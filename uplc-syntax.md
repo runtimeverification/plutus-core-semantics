@@ -52,7 +52,7 @@ module UPLC-CONCRETE-SYNTAX
                     | "()"
                     | "[" ConstantList "]"
                     | "(" Constant "," Constant ")"
-                    | "{" TextualData "}"
+                    | Data
 
   syntax ConstantList ::= List{Constant, ","}
 
@@ -62,11 +62,10 @@ module UPLC-CONCRETE-SYNTAX
                        | "Integer" Int
                        | "ByteString" ByteString
 
-  syntax DataList ::= List{TextualData, ","}
-  syntax DataPair ::= "(" TextualData "," TextualData ")"
+  syntax Data ::= "{" TextualData "}"
+  syntax DataList ::= List{Data, ","}
+  syntax DataPair ::= "(" Data "," Data ")"
   syntax DataPairList ::= List{DataPair, ","}
-
-
 ```
 
 ### Builtin Functions for Integers
@@ -391,6 +390,14 @@ module UPLC-ABSTRACT-SYNTAX
                  | "#CUT" 
                  | #CUT(Value)
                  | #CUT(Value, Value)
+```
+
+## For `constrData`
+
+```k
+                 | "#CND" 
+                 | #CND(Value)
+                 | #CND(Value, Value)
 ```
 
 ```k 
