@@ -65,8 +65,6 @@ module UPLC-CONCRETE-SYNTAX
   syntax DataList ::= List{TextualData, ","}
   syntax DataPair ::= "(" TextualData "," TextualData ")"
   syntax DataPairList ::= List{DataPair, ","}
-
-
 ```
 
 ### Builtin Functions for Integers
@@ -403,6 +401,20 @@ module UPLC-ABSTRACT-SYNTAX
                  | #CDT(Value, Value, Value, Value)
                  | #CDT(Value, Value, Value, Value, Value)
                  | #CDT(Value, Value, Value, Value, Value, Value)
+```
+
+## For `fstPair`
+
+```k
+                 | "#FPR"
+                 | #FPR(Value)
+```
+
+## For `sndPair`
+
+```k
+                 | "#SPR"
+                 | #SPR(Value)
 ```
 
 ```k 

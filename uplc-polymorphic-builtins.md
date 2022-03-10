@@ -74,6 +74,27 @@ module UPLC-POLYMORPHIC-BUILTINS
 
 ```
 
+## `fstPair`
+
+```k
+  rule <k> (builtin fstPair) ~> Force => #FPR ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#FPR, _RHO) _])) => #FPR(V) ... </k>
+
+  rule <k> #FPR((con pair (T1:TypeConstant) (_T2:TypeConstant)
+                          (C1:Constant, _C2:Constant))) => (con T1 C1) ... </k>
+```
+
+## `sndPair`
+
+```k
+  rule <k> (builtin sndPair) ~> Force => #SPR ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#SPR, _RHO) _])) => #SPR(V) ... </k>
+
+  rule <k> #SPR((con pair (_T1:TypeConstant) (T2:TypeConstant)
+                          (_C1:Constant, C2:Constant))) => (con T2 C2) ... </k>
+```
 
 ```k
 endmodule

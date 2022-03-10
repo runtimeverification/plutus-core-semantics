@@ -366,7 +366,7 @@ update-results: CONTINUE=;
 
 # Conformance tests
 #
-# Any test that is executed by `kplc run` uses invokes krun. Since the semantics is meant to
+# Any test that is executed by `kplc run` invokes krun. Since the semantics is meant to
 # conform the execution of the reference implementation, all output from `kplc run` needs to be
 # compared to tests that use krun needs to the output of the reference implementation. The
 # reference interpreter is a program maintained by IOG called uplc. 
