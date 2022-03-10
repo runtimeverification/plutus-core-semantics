@@ -11,16 +11,14 @@ module UPLC-CONCRETE-SYNTAX
   imports UPLC-BYTESTRING
   imports STRING
 
-  syntax ConcreteProgram ::= "(" "program" Version Term ")"
-  syntax FlatProgram ::= ByteString
 
   syntax Program ::= ConcreteProgram
-                 | FlatProgram
-                 | #handleProgram(Program) [function]
-                 | Bytes
+                   | FlatProgram
 
-  rule #handleProgram(C:ConcreteProgram) => C
-  rule #handleProgram(F:FlatProgram) => String2Bytes(trimByteString({F}:>ByteString))
+
+  syntax ConcreteProgram ::= "(" "program" Version Term ")"
+
+  syntax FlatProgram ::= ByteString
 
   syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
 
@@ -43,6 +41,8 @@ module UPLC-CONCRETE-SYNTAX
                         | "string"
                         | "unit"
                         | "bool"
+                        | "list" "(" TypeConstant ")"
+                        | "pair" "(" TypeConstant ")" "(" TypeConstant ")"
 
   syntax Constant ::= Int
                     | "True"
@@ -50,7 +50,21 @@ module UPLC-CONCRETE-SYNTAX
                     | ByteString
                     | String
                     | "()"
+                    | "[" ConstantList "]"
+                    | "(" Constant "," Constant ")"
+                    | "{" TextualData "}"
 
+  syntax ConstantList ::= List{Constant, ","}
+
+  syntax TextualData ::= "Constr" Int "[" DataList "]"
+                       | "Map" "[" DataPairList "]"
+                       | "List" "[" DataList "]"
+                       | "Integer" Int
+                       | "ByteString" ByteString
+
+  syntax DataList ::= List{TextualData, ","}
+  syntax DataPair ::= "(" TextualData "," TextualData ")"
+  syntax DataPairList ::= List{DataPair, ","}
 ```
 
 ### Builtin Functions for Integers
@@ -374,6 +388,33 @@ module UPLC-ABSTRACT-SYNTAX
 ```k
                  | "#CUT" 
                  | #CUT(Value)
+                 | #CUT(Value, Value)
+```
+
+## For `chooseData`
+
+```k
+                 | "#CDT"
+                 | #CDT(Value)
+                 | #CDT(Value, Value)
+                 | #CDT(Value, Value, Value)
+                 | #CDT(Value, Value, Value, Value)
+                 | #CDT(Value, Value, Value, Value, Value)
+                 | #CDT(Value, Value, Value, Value, Value, Value)
+```
+
+## For `fstPair`
+
+```k
+                 | "#FPR"
+                 | #FPR(Value)
+```
+
+## For `sndPair`
+
+```k
+                 | "#SPR"
+                 | #SPR(Value)
 ```
 
 ```k 
