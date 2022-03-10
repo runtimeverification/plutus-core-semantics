@@ -96,6 +96,68 @@ module UPLC-POLYMORPHIC-BUILTINS
                           (_C1:Constant, C2:Constant))) => (con T2 C2) ... </k>
 ```
 
+## `chooseList`
+
+```k
+  rule <k> (builtin chooseList) ~> Force => #CLT ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#CLT, _RHO) _])) => #CLT(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#CLT(V1:Value), _RHO) _])) => #CLT(V1, V2) ... </k>
+
+  rule <k> (V3:Value ~> ([ Clos(#CLT(V1:Value, V2:Value), _RHO) _])) => #CLT(V1, V2, V3) ... </k>
+
+  rule <k> #CLT((con list(T:TypeConstant) [ .ConstantList ]), (con T C:Constant), _V:Value) =>  (con T C) ... </k>
+
+  rule <k> #CLT((con list(T:TypeConstant) [ _L:ConstantList ] ), _V:Value,  (con T C:Constant)) => (con T C) ... </k> [owise]
+```
+
+## `mkCons`
+
+```k
+  rule <k> (builtin mkCons) ~> Force => #MCN ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#MCN, _RHO) _])) => #MCN(V) ... </k>
+
+  rule <k> (V2:Value ~> ([ Clos(#MCN(V1:Value), _RHO) _])) => #MCN(V1, V2) ... </k>
+
+  rule <k> #MCN((con T:TypeConstant C:Constant), (con list(T:TypeConstant) [ L:ConstantList ])) => (con list(T:TypeConstant) [ C , L ]) </k>
+```
+
+## `headList`
+
+```k
+  rule <k> (builtin headList) ~> Force => #HLT ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#HLT, _RHO) _])) => #HLT(V) ... </k>
+
+  rule <k> #HLT((con list(T:TypeConstant) [ C:Constant  , _L:ConstantList ])) => (con T C) </k>
+```
+
+## `tailList`
+
+```k
+  rule <k> (builtin tailList) ~> Force => #TLT ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#TLT, _RHO) _])) => #TLT(V) ... </k>
+
+  rule <k> #TLT((con list(T:TypeConstant) [ .ConstantList ])) => (con T [ .ConstantList ]) </k>
+
+  rule <k> #TLT((con list(T:TypeConstant) [ _C:Constant , L:ConstantList ])) => (con T [ L ]) </k>
+```
+
+## `nullList`
+
+```k
+  rule <k> (builtin nullList) ~> Force => #NLT ... </k>
+
+  rule <k> (V:Value ~> ([ Clos(#NLT, _RHO) _])) => #NLT(V) ... </k>
+
+  rule <k> #NLT((con list(_T:TypeConstant) [ .ConstantList ])) => (con bool True) </k>
+
+  rule <k> #NLT(_V:Value) => (con bool False) </k> [owise]
+```
+
 ```k
 endmodule
 ``` 
