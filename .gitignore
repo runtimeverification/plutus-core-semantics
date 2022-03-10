@@ -4,3 +4,6 @@
 /.krun*
 /tests/**/*.out
 /tmp
+*~
+**/#*
+*.sh
