@@ -68,16 +68,16 @@ module UPLC-HEXADECIMAL
   rule int2HexStringBasic(13) => "d"
   rule int2HexStringBasic(14) => "e"
   rule int2HexStringBasic(15) => "f"
-  rule int2HexString(I) => int2HexStringAux(I modInt 256 , "")
 
   syntax String ::= int2HexString(Int) [function]
-  rule int2HexStringAux(0, S) =>
-       #if (S ==String "")
-       #then "0"
-       #else (S)
-       #fi
+  rule int2HexString(I) => int2HexStringAux(I modInt 256 , "")
 
   syntax String ::= int2HexStringAux(Int, String) [function]   
+  rule int2HexStringAux(0, "") => "0"
+
+  rule int2HexStringAux(0, S) => S
+  requires S =/=String ""
+
   rule int2HexStringAux(I, S) =>
        int2HexStringAux((I divInt 16), int2HexStringBasic(I modInt 16) +String S) [owise]
 
@@ -116,30 +116,28 @@ module UPLC-BYTESTRING
   rule unTrimByteString(S) => String2ByteString("#" +String S)
 
   syntax String ::= encode(ByteString) [function]
+  rule encode(B) => ""
+  requires trimByteString(B) ==String ""
+
   rule encode(B) =>
-       #if (trimByteString(B) ==String "")
-       #then ("")
-       #else Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
-                                    String2Base(trimByteString(B), 16 ), BE))
-       #fi
+       Bytes2String(Int2Bytes(lengthString(trimByteString(B)) /Int 2,
+                              String2Base(trimByteString(B), 16 ), BE)) [owise]
 
   syntax String ::= padZero(String) [function]
-  rule padZero(S) =>
-       #if ((lengthString(S) modInt 2) ==Int 0)
-       #then (S)
-       #else ("0" +String S)
-       #fi
+  rule padZero(S) => S
+  requires (lengthString(S) modInt 2) ==Int 0
+
+  rule padZero(S) => ("0" +String S) [owise]
 
   syntax List ::= mkHexStringList(String) [function]
   rule mkHexStringList(S) => mkHexStringListAux(S, .List)
   requires (lengthString(S) modInt 2) ==Int 0
 
   syntax List ::= mkHexStringListAux(String, List) [function]   
+  rule mkHexStringListAux("", L) => L
+
   rule mkHexStringListAux(S, L) =>
-       #if (S ==String "")
-       #then (L)
-       #else mkHexStringListAux(tail(tail(S)), L ListItem(head(S) +String head(tail(S))))
-       #fi
+       mkHexStringListAux(tail(tail(S)), L ListItem(head(S) +String head(tail(S)))) [owise]
        
   syntax String ::= mkHexString(List) [function]
   rule mkHexString(L) => mkHexStringAux(L, "")
@@ -163,11 +161,10 @@ module UPLC-BYTESTRING
        String2ByteString("#" +String padZero(int2HexString(I)) +String trimByteString(B))
 
   syntax String ::= sliceByteStringList(Int, Int, List) [function]
-  rule sliceByteStringList(I, J, L) =>
-       #if (J <Int I)
-       #then ("")
-       #else mkHexString(range(L, I, size(L) -Int 1 -Int J))
-       #fi	 
+  rule sliceByteStringList(I, J, _L) => ""
+  requires J <Int I
+
+  rule sliceByteStringList(I, J, L) => mkHexString(range(L, I, size(L) -Int 1 -Int J)) [owise]
 
   syntax ByteString ::= #sliceByteString(Int, Int, ByteString) [function]
   rule #sliceByteString(S, K, B) =>

@@ -121,7 +121,7 @@ module UPLC-POLYMORPHIC-BUILTINS
 
   rule <k> (V2:Value ~> ([ Clos(#MCN(V1:Value), _RHO) _])) => #MCN(V1, V2) ... </k>
 
-  rule <k> #MCN((con T:TypeConstant C:Constant), (con list(T:TypeConstant) [ L:ConstantList ])) => (con list(T:TypeConstant) [ C , L ]) </k>
+  rule <k> #MCN((con T:TypeConstant C:Constant), (con list(T:TypeConstant) [ L:ConstantList ])) => (con list(T:TypeConstant) [ C , L ]) ... </k>
 ```
 
 ## `headList`
@@ -131,7 +131,7 @@ module UPLC-POLYMORPHIC-BUILTINS
 
   rule <k> (V:Value ~> ([ Clos(#HLT, _RHO) _])) => #HLT(V) ... </k>
 
-  rule <k> #HLT((con list(T:TypeConstant) [ C:Constant  , _L:ConstantList ])) => (con T C) </k>
+  rule <k> #HLT((con list(T:TypeConstant) [ C:Constant  , _L:ConstantList ])) => (con T C) ... </k>
 ```
 
 ## `tailList`
@@ -141,9 +141,9 @@ module UPLC-POLYMORPHIC-BUILTINS
 
   rule <k> (V:Value ~> ([ Clos(#TLT, _RHO) _])) => #TLT(V) ... </k>
 
-  rule <k> #TLT((con list(T:TypeConstant) [ .ConstantList ])) => (con T [ .ConstantList ]) </k>
+  rule <k> #TLT((con list(T:TypeConstant) [ .ConstantList ])) => (con T [ .ConstantList ]) ... </k>
 
-  rule <k> #TLT((con list(T:TypeConstant) [ _C:Constant , L:ConstantList ])) => (con T [ L ]) </k>
+  rule <k> #TLT((con list(T:TypeConstant) [ _C:Constant , L:ConstantList ])) => (con T [ L ]) ... </k>
 ```
 
 ## `nullList`
@@ -153,9 +153,9 @@ module UPLC-POLYMORPHIC-BUILTINS
 
   rule <k> (V:Value ~> ([ Clos(#NLT, _RHO) _])) => #NLT(V) ... </k>
 
-  rule <k> #NLT((con list(_T:TypeConstant) [ .ConstantList ])) => (con bool True) </k>
+  rule <k> #NLT((con list(_T:TypeConstant) [ .ConstantList ])) => (con bool True) ... </k>
 
-  rule <k> #NLT(_V:Value) => (con bool False) </k> [owise]
+  rule <k> #NLT(_V:Value) => (con bool False) ... </k> [owise]
 ```
 
 ## `trace`
@@ -167,7 +167,7 @@ module UPLC-POLYMORPHIC-BUILTINS
 
   rule <k> (V2:Value ~> ([ Clos(#TRC(V1:Value), _RHO) _])) => #TRC(V1, V2) ... </k>
 
-  rule <k> #TRC((con string S), V:Value) => V </k>
+  rule <k> #TRC((con string S), V:Value) => V ... </k>
        <trace> ... (.List => ListItem(S)) </trace>
 ```
 
