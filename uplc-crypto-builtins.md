@@ -44,7 +44,7 @@ a ByteString.
   rule <k> (V:Value ~> ([ Clos(#SHA3, _RHO) _])) => #SHA3(V) ... </k>
 
   rule <k> #SHA3((con bytestring B:ByteString)) =>
-           (con bytestring unTrimByteString(Sha3_256(encode(B)))) </k>
+           (con bytestring unTrimByteString(Sha3_256(encode(B)))) ... </k>
 ```
 
 ## `sha2_256`
@@ -57,7 +57,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
   rule <k> (V:Value ~> ([ Clos(#SHA2, _RHO) _])) => #SHA2(V) ... </k>
 
   rule <k> #SHA2((con bytestring B:ByteString)) =>
-           (con bytestring unTrimByteString(Sha256(encode(B)))) </k>
+           (con bytestring unTrimByteString(Sha256(encode(B)))) ... </k>
 ```
 
 ## `blake2b_256`
@@ -70,7 +70,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
   rule <k> (V:Value ~> ([ Clos(#BLK2B, _RHO) _])) => #BLK2B(V) ... </k>
 
   rule <k> #BLK2B((con bytestring B:ByteString)) =>
-           (con bytestring unTrimByteString(Blake2b256(encode(B)))) </k>
+           (con bytestring unTrimByteString(Blake2b256(encode(B)))) ... </k>
 ```
 
 ## `verifySignature`
@@ -82,14 +82,16 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 
   rule <k> (V2:Value ~> ([ Clos(#VSIG(V1:Value), _RHO) _])) => #VSIG(V1, V2) ... </k>
 
-  rule <k> (V3:Value ~> ([ Clos(#VSIG(V1:Value, V2:Value), _RHO) _])) => #VSIG(V1, V2, V3) ... </k>
+  rule <k> (V3:Value ~> ([ Clos(#VSIG(V1:Value, V2:Value), _RHO) _])) =>
+           #VSIG(V1, V2, V3) ... </k>
 
-  rule <k> #VSIG((con bytestring K:ByteString), (con bytestring M:ByteString), (con bytestring S:ByteString)) =>
-           #if ED25519VerifyMessage(encode(K), encode(M), encode(S))
-           #then (con bool True)
-           #else (con bool False)
-           #fi
+  rule <k> #VSIG((con bytestring K:ByteString),
+                 (con bytestring M:ByteString),
+                 (con bytestring S:ByteString)) => (con bool True) ...
        </k>
+  requires ED25519VerifyMessage(encode(K), encode(M), encode(S))
+
+  rule <k> #VSIG(_,_,_) => (con bool False) ... </k> [owise]
 ```
 
 ```k

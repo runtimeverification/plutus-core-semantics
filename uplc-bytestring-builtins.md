@@ -85,12 +85,11 @@ module UPLC-BYTESTRING-BUILTINS
 
   rule <k> (V2:Value ~> ([ Clos(#EBS(V1:Value), _RHO) _])) => #EBS(V1, V2) ... </k>
 
-  rule <k> #EBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
-           (con bool
-	    #if (#equalsByteString(B1, B2) ==Bool true)
-	    #then (True)
-	    #else (False)
-	    #fi) ... </k>
+  rule <k> #EBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) => (con bool True) ... </k>
+  requires #equalsByteString(B1, B2)
+
+  rule <k> #EBS(_,_) => (con bool False) ... </k> [owise]
+
 ```
 
 ## `lessThanByteString`
@@ -102,12 +101,10 @@ module UPLC-BYTESTRING-BUILTINS
 
   rule <k> (V2:Value ~> ([ Clos(#LTBS(V1:Value), _RHO) _])) => #LTBS(V1, V2) ... </k>
 
-  rule <k> #LTBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
-           (con bool
-	    #if (#lessThanByteString(B1, B2) ==Bool true)
-	    #then (True)
-	    #else (False)
-	    #fi) ... </k>
+  rule <k> #LTBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) => (con bool True) ... </k>
+  requires #lessThanByteString(B1, B2)
+
+  rule <k> #LTBS(_,_) => (con bool False) ... </k> [owise]
 ```
 
 ## `lessThanEqualsByteString`
@@ -119,12 +116,10 @@ module UPLC-BYTESTRING-BUILTINS
 
   rule <k> (V2:Value ~> ([ Clos(#LEBS(V1:Value), _RHO) _])) => #LEBS(V1, V2) ... </k>
 
-  rule <k> #LEBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
-           (con bool
-	    #if (#lessThanEqualsByteString(B1, B2) ==Bool true)
-	    #then (True)
-	    #else (False)
-	    #fi) ... </k>
+  rule <k> #LEBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) => (con bool True) ... </k>
+  requires #lessThanEqualsByteString(B1, B2)
+
+  rule <k> #LEBS(_,_) => (con bool False) ... </k> [owise]
 ```
 
 ```k

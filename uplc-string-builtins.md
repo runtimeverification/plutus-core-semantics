@@ -20,7 +20,7 @@ module UPLC-STRING-BUILTINS
   rule <k> (V:Value ~> ([ Clos(#EUTF, _RHO) _])) => #EUTF(V) ... </k>
 
   rule <k> #EUTF((con string S:String)) =>
-           (con bytestring #encodeUtf8(S)) </k>
+           (con bytestring #encodeUtf8(S)) ... </k>
 ```
 
 ## `decodeUtf8`
@@ -31,7 +31,7 @@ module UPLC-STRING-BUILTINS
   rule <k> (V:Value ~> ([ Clos(#DUTF, _RHO) _])) => #DUTF(V) ... </k>
 
   rule <k> #DUTF((con bytestring B:ByteString)) =>
-           (con string #decodeUtf8(B)) </k>
+           (con string #decodeUtf8(B)) ... </k>
 ```
 
 ## `appendString`
@@ -44,7 +44,7 @@ module UPLC-STRING-BUILTINS
   rule <k> (V2:Value ~> ([ Clos(#ASTR(V1:Value), _RHO) _])) => #ASTR(V1, V2) ... </k>
 
   rule <k> #ASTR((con string S1:String), (con string S2:String)) =>
-           (con string #appendString(S1, S2)) </k>
+           (con string #appendString(S1, S2)) ... </k>
 ```
 
 ## `equalsString`
@@ -56,13 +56,10 @@ module UPLC-STRING-BUILTINS
 
   rule <k> (V2:Value ~> ([ Clos(#ESTR(V1:Value), _RHO) _])) => #ESTR(V1, V2) ... </k>
 
-  rule <k> #ESTR((con string S1:String), (con string S2:String)) =>
-           (con bool
-            #if #equalsString(S1, S2)
-            #then (True)
-            #else (False)
-            #fi)
-       </k>  
+  rule <k> #ESTR((con string S1:String), (con string S2:String)) => (con bool True) ... </k>
+  requires #equalsString(S1, S2)
+
+  rule <k> #ESTR(_,_) => (con bool False) ... </k> [owise]
 ```
 
 ```k

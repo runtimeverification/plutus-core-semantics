@@ -1,7 +1,7 @@
 # UPLC Integer builtins
 
 ```k
-requires "uplc-configuration.md"
+require "uplc-configuration.md"
 
 module UPLC-INTEGER-BUILTINS
   imports UPLC-CONFIGURATION
@@ -127,9 +127,7 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
            (con integer (I1 -Int (I1 /Int I2) *Int I2)) ... </k>
   requires I2 =/=Int 0
 
-  rule <k> #REM((con integer _I1:Int), (con integer I2:Int)) =>
-           (error) ... </k>
-  requires I2 ==Int 0
+  rule <k> #REM(_,_) => (error) ... </k> [owise]
 ```
 
 ## `lessThanInteger`
@@ -141,8 +139,10 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 
   rule <k> (V2:Value ~> ([ Clos(#LTI(V1:Value), _RHO) _])) => #LTI(V1, V2) ... </k>
 
-  rule <k> #LTI((con integer I1:Int), (con integer I2:Int)) =>
-           (#if I1 <Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
+  rule <k> #LTI((con integer I1:Int), (con integer I2:Int)) => (con bool True) ... </k>
+  requires I1 <Int I2
+
+  rule <k> #LTI(_,_) => (con bool False) ... </k> [owise]
 ```
 
 ## `lessThanEqualsInteger`
@@ -154,8 +154,10 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 
   rule <k> (V2:Value ~> ([ Clos(#LTE(V1:Value), _RHO) _])) => #LTE(V1, V2) ... </k>
 
-  rule <k> #LTE((con integer I1:Int), (con integer I2:Int)) =>
-           (#if I1 <=Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
+  rule <k> #LTE((con integer I1:Int), (con integer I2:Int)) => (con bool True) ... </k>
+  requires I1 <=Int I2
+
+  rule <k> #LTE(_,_) => (con bool False) ... </k> [owise]
 ```
 
 ## `equalsInteger`
@@ -166,8 +168,10 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 
   rule <k> (V2:Value ~> ([ Clos(#EQI(V1:Value), _RHO) _])) => #EQI(V1, V2) ... </k>
 
-  rule <k> #EQI((con integer I1:Int), (con integer I2:Int)) =>
-           (#if I1 >=Int I2 #then (con bool True) #else (con bool False) #fi) ... </k>
+  rule <k> #EQI((con integer I1:Int), (con integer I2:Int)) => (con bool True) ... </k>
+  requires I1 >=Int I2 
+
+  rule <k> #EQI(_,_) => (con bool False) ... </k> [owise]
 ```
 
 ```k 
