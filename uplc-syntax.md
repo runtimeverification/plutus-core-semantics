@@ -455,6 +455,14 @@ module UPLC-ABSTRACT-SYNTAX
                  | #NLT(Value)
 ```
 
+## For `trace`
+
+```k
+                 | "#TRC"
+                 | #TRC(Value)
+                 | #TRC(Value, Value)
+```
+
 ```k 
 endmodule
 ```
