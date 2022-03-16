@@ -15,51 +15,44 @@ module UPLC-STRING-BUILTINS
 ## `encodeUtf8`
 
 ```k 
-  rule <k> (builtin encodeUtf8) => #EUTF ... </k>
+  rule <k> (builtin encodeUtf8) => < builtin encodeUtf8 .List 1 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#EUTF, _RHO) _])) => #EUTF(V) ... </k>
-
-  rule <k> #EUTF((con string S:String)) =>
-           (con bytestring #encodeUtf8(S)) ... </k>
+  rule <k> < builtin encodeUtf8 ListItem(< con string S:String >) 0 > =>
+           < con bytestring #encodeUtf8(S) > ... </k>
 ```
 
 ## `decodeUtf8`
 
 ```k 
-  rule <k> (builtin decodeUtf8) => #DUTF ... </k>
+  rule <k> (builtin decodeUtf8) => < builtin decodeUtf8 .List 1 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#DUTF, _RHO) _])) => #DUTF(V) ... </k>
-
-  rule <k> #DUTF((con bytestring B:ByteString)) =>
-           (con string #decodeUtf8(B)) ... </k>
+  rule <k> < builtin decodeUtf8 ListItem(< con bytestring B:ByteString >) 0 > =>
+           < con string #decodeUtf8(B) > ... </k>
 ```
 
 ## `appendString`
 
 ```k 
-  rule <k> (builtin appendString) => #ASTR ... </k>
+  rule <k> (builtin appendString) => < builtin appendString .List 2 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#ASTR, _RHO) _])) => #ASTR(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#ASTR(V1:Value), _RHO) _])) => #ASTR(V1, V2) ... </k>
-
-  rule <k> #ASTR((con string S1:String), (con string S2:String)) =>
-           (con string #appendString(S1, S2)) ... </k>
+  rule <k> < builtin appendString
+              (ListItem(< con string S1:String >)
+               ListItem(< con string S2:String >)) 0 > =>
+           < con string #appendString(S1, S2) > ... </k>
 ```
 
 ## `equalsString`
 
 ```k 
-  rule <k> (builtin equalsString) => #ESTR ... </k>
+  rule <k> (builtin equalsString) => < builtin equalsString .List 2 >  ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#ESTR, _RHO) _])) => #ESTR(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#ESTR(V1:Value), _RHO) _])) => #ESTR(V1, V2) ... </k>
-
-  rule <k> #ESTR((con string S1:String), (con string S2:String)) => (con bool True) ... </k>
+  rule <k> < builtin equalsString
+              (ListItem(< con string S1:String >)
+               ListItem(< con string S2:String >)) 0 > =>
+           < con bool True > ... </k>
   requires #equalsString(S1, S2)
 
-  rule <k> #ESTR(_,_) => (con bool False) ... </k> [owise]
+  rule <k> < builtin equalsString _ 0 > => < con bool False > ... </k> [owise]
 ```
 
 ```k

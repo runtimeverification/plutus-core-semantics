@@ -39,12 +39,10 @@ a ByteString.
 ## `sha3_256`
 
 ```k 
-  rule <k> (builtin sha3_256) => #SHA3 ... </k>
+  rule <k> (builtin sha3_256) => < builtin sha3_256 .List 1 >  ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#SHA3, _RHO) _])) => #SHA3(V) ... </k>
-
-  rule <k> #SHA3((con bytestring B:ByteString)) =>
-           (con bytestring unTrimByteString(Sha3_256(encode(B)))) ... </k>
+  rule <k> < builtin sha3_256 ListItem(< con bytestring B:ByteString >) 0 > =>
+           < con bytestring unTrimByteString(Sha3_256(encode(B))) > ... </k>
 ```
 
 ## `sha2_256`
@@ -52,12 +50,10 @@ a ByteString.
 The same steps of `sha3_256` are taken to produce the proper string argument for `Sha256`.
 
 ```k 
-  rule <k> (builtin sha2_256) => #SHA2 ... </k>
+  rule <k> (builtin sha2_256) => < builtin sha2_256 .List 1 >  ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#SHA2, _RHO) _])) => #SHA2(V) ... </k>
-
-  rule <k> #SHA2((con bytestring B:ByteString)) =>
-           (con bytestring unTrimByteString(Sha256(encode(B)))) ... </k>
+  rule <k> < builtin sha2_256 ListItem(< con bytestring B:ByteString >) 0 > =>
+           < con bytestring unTrimByteString(Sha256(encode(B))) > ... </k>
 ```
 
 ## `blake2b_256`
@@ -65,33 +61,25 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 The same steps of `sha3_256` are taken to produce the proper string argument for `Blake2b256`.
 
 ```k
-  rule <k> (builtin blake2b_256) => #BLK2B ... </k>
+  rule <k> (builtin blake2b_256) => < builtin blake2b_256 .List 1 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#BLK2B, _RHO) _])) => #BLK2B(V) ... </k>
-
-  rule <k> #BLK2B((con bytestring B:ByteString)) =>
-           (con bytestring unTrimByteString(Blake2b256(encode(B)))) ... </k>
+  rule <k> < builtin blake2b_256 ListItem(< con bytestring B:ByteString >) 0 > =>
+           < con bytestring unTrimByteString(Blake2b256(encode(B))) > ... </k>
 ```
 
 ## `verifySignature`
 
 ```k
-  rule <k> (builtin verifySignature) => #VSIG ... </k>
+  rule <k> (builtin verifySignature) => < builtin verifySignature .List 3 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#VSIG, _RHO) _])) => #VSIG(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#VSIG(V1:Value), _RHO) _])) => #VSIG(V1, V2) ... </k>
-
-  rule <k> (V3:Value ~> ([ Clos(#VSIG(V1:Value, V2:Value), _RHO) _])) =>
-           #VSIG(V1, V2, V3) ... </k>
-
-  rule <k> #VSIG((con bytestring K:ByteString),
-                 (con bytestring M:ByteString),
-                 (con bytestring S:ByteString)) => (con bool True) ...
-       </k>
+  rule <k> < builtin verifySignature
+                 (ListItem(< con bytestring K:ByteString >)
+                  ListItem(< con bytestring M:ByteString >)
+                  ListItem(< con bytestring S:ByteString >)) 0 > =>
+           < con bool True > ... </k>
   requires ED25519VerifyMessage(encode(K), encode(M), encode(S))
 
-  rule <k> #VSIG(_,_,_) => (con bool False) ... </k> [owise]
+  rule <k> < builtin verifySignature _ 0 > => < con bool False > ... </k> [owise]
 ```
 
 ```k
