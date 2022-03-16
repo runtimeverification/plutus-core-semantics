@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    b"0100004981" ~> .
+    ( con unit () ) ~> .
   </k>
   <env>
     .Map
