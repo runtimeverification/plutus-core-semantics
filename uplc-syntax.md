@@ -3,18 +3,18 @@
 ```k
 require "domains.md"
 require "uplc-bytestring.md"
+require "uplc-environment.md"
 
-module UPLC-CONCRETE-SYNTAX
-  imports LIST
+module UPLC-SYNTAX
   imports ID
+  imports LIST
+  imports STRING
   imports INT-SYNTAX
   imports UPLC-BYTESTRING
-  imports STRING
-
+  imports UPLC-ENVIRONMENT
 
   syntax Program ::= ConcreteProgram
                    | FlatProgram
-
 
   syntax ConcreteProgram ::= "(" "program" Version Term ")"
 
@@ -23,15 +23,18 @@ module UPLC-CONCRETE-SYNTAX
   syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
 
   syntax Term ::= Id
-                | Value
-                | "[" Term TermList "]"
-                | "(" "force" Term ")"
+                | "(" "con" TypeConstant Constant ")"
                 | "(" "builtin" BuiltinName ")"
+                | "(" "lam" Id Term ")"
+                | "[" Term TermList "]"
+                | "(" "delay" Term ")"
+                | "(" "force" Term ")"
                 | "(" "error" ")"
 
-  syntax Value ::= "(" "con" TypeConstant Constant ")"
-                 | "(" "lam" Id Term ")"
-                 | "(" "delay" Term ")"
+  syntax Value ::= "<" "con" TypeConstant Constant ">"
+                 | "<" "lam" Id Term Env ">"
+                 | "<" "delay" Term Env ">"
+                 | "<" "builtin" BuiltinName List Int ">"
 
   syntax TermList ::= NeList{Term, ""}
 
@@ -156,322 +159,5 @@ module UPLC-CONCRETE-SYNTAX
                        | "mkPairData"
                        | "mkNilData"
                        | "mkNilPairData"
-endmodule
-```
-
-# The Abstract Syntax of Untyped Plutus
-
-These constructs are used in the semantics to describe partially applied builtin functions.
-```k
-module UPLC-ABSTRACT-SYNTAX
-  imports UPLC-CONCRETE-SYNTAX
-```
-
-## For `ifThenElse`
-
-```k
-  syntax Value ::= "#ITE"
-                 | #ITE(Value)
-                 | #ITE(Value, Value)
-                 | #ITE(Value, Value, Value)
-```                 
-## For `addInteger`
-
-```k
-                 | "#SUM"
-                 | #SUM(Value)
-                 | #SUM(Value, Value)
-```                 
-
-## For `multiplyInteger`
-
-```k
-                 | "#MUL"
-                 | #MUL(Value)
-                 | #MUL(Value, Value)
-```
-
-## For `subtractInteger`
-
-```k
-
-                 | "#SUB"
-                 | #SUB(Value)
-                 | #SUB(Value, Value)
-```                 
-
-## For `divideInteger`
-
-```k
-                 | "#DIV"
-                 | #DIV(Value)
-                 | #DIV(Value, Value)
-```                 
-
-## For `modInteger`
-
-```k
-                 | "#MOD"
-                 | #MOD(Value)
-                 | #MOD(Value, Value)
-```               
-
-## For `quotientInteger`
-
-```k
-                 | "#QUO"
-                 | #QUO(Value)
-                 | #QUO(Value, Value)
-```                 
-
-## For `remainderInteger`
-
-```k
-                 | "#REM"
-                 | #REM(Value)
-                 | #REM(Value, Value)
-```
-
-## For `lessTahnInteger`
-
-```k
-
-                 | "#LTI"
-                 | #LTI(Value)
-                 | #LTI(Value, Value)
-```
-
-## For `lessThanEqualsInteger`
-
-```k
-
-                 | "#LTE"
-                 | #LTE(Value)
-                 | #LTE(Value, Value)
-```
-
-## For `equalsInteger`
-
-```k
-                 | "#EQI"
-                 | #EQI(Value)
-                 | #EQI(Value, Value)
-```
-
-
-## For `appendByteString`
-
-```k
-                 | "#ABS" 
-                 | #ABS(Value)
-                 | #ABS(Value, Value)
-```                 
-
-## For `consByteString`
-
-```k
-                 | "#CBS" 
-                 | #CBS(Value)
-                 | #CBS(Value, Value)
-```
-
-## For `sliceByteString`
-
-```k
-                 | "#SBS" // for sliceByteString
-                 | #SBS(Value)
-                 | #SBS(Value, Value)
-                 | #SBS(Value, Value, Value)
-```
-
-## For `lengthOfByteString`
-
-```k
-                 | "#LBS" // 
-                 | #LBS(Value)
-```
-
-## For `indexByteString`
-
-```k
-                 | "#IBS" 
-                 | #IBS(Value)
-                 | #IBS(Value, Value)
-```
-
-## For `equalsByteString`
-
-```k
-                 | "#EBS" 
-                 | #EBS(Value)
-                 | #EBS(Value, Value)
-```
-
-## For `lessThanByteString`
-
-```k
-                 | "#LTBS" 
-                 | #LTBS(Value)
-                 | #LTBS(Value, Value)
-```                 
-
-## For `lessThanEqualsByteString`
-
-```k
-                 | "#LEBS" 
-                 | #LEBS(Value)
-                 | #LEBS(Value, Value)
-```
-
-## For `sha2_256` 
-
-```k
-                 | "#SHA2" 
-                 | #SHA2(Value)
-```
-
-## For `sha3_256` 
-
-```k
-                 | "#SHA3" 
-                 | #SHA3(Value)
-```
-
-## For `blake2b_256` 
-
-```k
-                 | "#BLK2B" 
-                 | #BLK2B(Value)
-```                  
-
-## For `verifySignature` 
-
-```k
-                 | "#VSIG"
-                 | #VSIG(Value)
-                 | #VSIG(Value, Value)
-                 | #VSIG(Value, Value, Value)                 
-```                  
-
-## For `encodeUtf8`
-
-```k
-                 | "#EUTF" 
-                 | #EUTF(Value)
-```                 
-
-## For `decodeUtf8`
-
-```k
-                 | "#DUTF" 
-                 | #DUTF(Value)
-```
-
-## For `appendString`
-
-```k
-                 | "#ASTR" 
-                 | #ASTR(Value)
-                 | #ASTR(Value, Value)
-```
-
-## For `equalsString`
-
-```k
-                 | "#ESTR" 
-                 | #ESTR(Value)
-                 | #ESTR(Value, Value)
-```
-
-## For `chooseUnit`
-
-```k
-                 | "#CUT" 
-                 | #CUT(Value)
-                 | #CUT(Value, Value)
-```
-
-## For `chooseData`
-
-```k
-                 | "#CDT"
-                 | #CDT(Value)
-                 | #CDT(Value, Value)
-                 | #CDT(Value, Value, Value)
-                 | #CDT(Value, Value, Value, Value)
-                 | #CDT(Value, Value, Value, Value, Value)
-                 | #CDT(Value, Value, Value, Value, Value, Value)
-```
-
-## For `fstPair`
-
-```k
-                 | "#FPR"
-                 | #FPR(Value)
-```
-
-## For `sndPair`
-
-```k
-                 | "#SPR"
-                 | #SPR(Value)
-```
-
-## For `chooseList`
-
-```k
-                 | "#CLT"
-                 | #CLT(Value)
-                 | #CLT(Value, Value)
-                 | #CLT(Value, Value, Value)
-```
-
-## For `mkCons`
-
-```k
-                 | "#MCN"
-                 | #MCN(Value)
-                 | #MCN(Value, Value)
-```
-
-## For `headList`
-
-```k
-                 | "#HLT"
-                 | #HLT(Value)
-```
-
-## For `tailList`
-
-```k
-                 | "#TLT"
-                 | #TLT(Value)
-```
-
-## For `nullList`
-
-```k
-                 | "#NLT"
-                 | #NLT(Value)
-```
-
-## For `trace`
-
-```k
-                 | "#TRC"
-                 | #TRC(Value)
-                 | #TRC(Value, Value)
-```
-
-```k 
-endmodule
-```
-
-# UPLC Syntax
-
-```k 
-module UPLC-SYNTAX
-  imports UPLC-CONCRETE-SYNTAX
-  imports UPLC-ABSTRACT-SYNTAX
 endmodule
 ```
