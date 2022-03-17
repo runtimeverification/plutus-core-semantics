@@ -3,28 +3,26 @@
 ```k
 require "domains.md"
 require "uplc-syntax.md"
+require "uplc-environment.md"
 
 module UPLC-CONFIGURATION
-  imports UPLC-SYNTAX
   imports INT
   imports MAP
   imports LIST
+  imports UPLC-SYNTAX
+  imports UPLC-ENVIRONMENT
 
-  syntax AClosure ::= Clos(Value, Map)
-
-  syntax ATerm ::= "Force"
-                 | "[_" Term "]"
-                 | "[" AClosure "_]"
-                 | Term
+  syntax Frame ::= "Force"
+                 | "[_" Term Env "]"
+                 | "[" Value "_]"
 ```
 
 ## Semantic components
 
 Each semantic component is represented by a K cell. Cell `<k>` is for
-the program syntax, `<env>` is for its environment, `<args>` is used
-to evaluate builtin arguments when the uncurried style us used, and
-`<trace>` is used to keep track of the data emitted by the `trace`
-builtin.
+the program syntax, `<env>` (a stack of bindings between identifiers
+and values) is for its environment, and `<trace>` (a list of strings)
+is used to keep track of the data emitted by the `trace` builtin.
 
 ```k 
 
@@ -35,7 +33,7 @@ builtin.
   rule #handleProgram(F:FlatProgram) => String2Bytes(trimByteString({F}:>ByteString))
 
   configuration <k> #handleProgram($PGM:Program) </k>
-                <env> .Map </env>
+                <env> .Env </env>
                 <trace> .List </trace>
 ```
 

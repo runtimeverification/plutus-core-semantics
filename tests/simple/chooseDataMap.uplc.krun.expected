@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con data { Map [ ( Integer 0 , ByteString #00 ) , ( Integer 1 , ByteString #0F ) , .DataPairList ] } ) ~> .
+    < con data { Map [ ( Integer 0 , ByteString #00 ) , ( Integer 1 , ByteString #0F ) , .DataPairList ] } > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

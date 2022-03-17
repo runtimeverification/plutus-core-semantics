@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con list ( integer ) [ 0 , .ConstantList ] ) ~> .
+    < con list ( integer ) [ 0 , .ConstantList ] > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

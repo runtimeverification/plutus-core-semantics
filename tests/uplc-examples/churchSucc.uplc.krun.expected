@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( lam n ( delay ( lam z ( lam f [ f [ [ ( force n ) z  .TermList ] f  .TermList ]  .TermList ] ) ) ) ) ~> .
+    < lam n ( delay ( lam z ( lam f [ f [ [ ( force n ) z  .TermList ] f  .TermList ]  .TermList ] ) ) ) .Env > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

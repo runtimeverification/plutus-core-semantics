@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( lam x ( force x ) ) ~> .
+    < lam x ( force x ) .Env > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( lam i [ [ ( builtin addInteger ) i  .TermList ] ( con integer 1 )  .TermList ] ) ~> .
+    < lam i [ [ ( builtin addInteger ) i  .TermList ] ( con integer 1 )  .TermList ] .Env > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

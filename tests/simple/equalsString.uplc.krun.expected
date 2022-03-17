@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con bool False ) ~> .
+    < con bool False > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

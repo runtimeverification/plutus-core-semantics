@@ -14,112 +14,102 @@ module UPLC-BYTESTRING-BUILTINS
 
 
 ```k
-  rule <k> (builtin appendByteString) => #ABS ... </k>
+  rule <k> (builtin appendByteString) => < builtin appendByteString .List 2 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#ABS, _RHO) _])) => #ABS(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#ABS(V1:Value), _RHO) _])) => #ABS(V1, V2) ... </k>
-
-  rule <k> #ABS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) =>
-           (con bytestring #appendByteString(B1, B2)) ... </k>
+  rule <k> < builtin appendByteString
+                     (ListItem(< con bytestring B1:ByteString >)
+                      ListItem(< con bytestring B2:ByteString >)) 0 > =>
+           < con bytestring #appendByteString(B1, B2) > ... </k>
 ```
 
 ## `consByteString`
 
 ```k
-  rule <k> (builtin consByteString) => #CBS ... </k>
+  rule <k> (builtin consByteString) => < builtin consByteString .List 2 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#CBS, _RHO) _])) => #CBS(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#CBS(V1:Value), _RHO) _])) => #CBS(V1, V2) ... </k>
-
-  rule <k> #CBS((con integer I:Int), (con bytestring B:ByteString)) =>
-           (con bytestring #consByteString(I, B)) ... </k>
+  rule <k> < builtin consByteString
+                     (ListItem(< con integer I:Int >)
+                      ListItem(< con bytestring B:ByteString >)) 0 > =>
+           < con bytestring #consByteString(I, B) > ... </k>
 ```
 
 ## `sliceByteString`
 
 ```k
-  rule <k> (builtin sliceByteString) => #SBS ... </k>
+  rule <k> (builtin sliceByteString) => < builtin sliceByteString .List 3 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#SBS, _RHO) _])) => #SBS(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#SBS(V1:Value), _RHO) _])) => #SBS(V1, V2) ... </k>
-
-  rule <k> (V3:Value ~> ([ Clos(#SBS(V1:Value, V2:Value), _RHO) _])) => #SBS(V1, V2, V3) ... </k>
-
-  rule <k> #SBS((con integer I1:Int), (con integer I2:Int), (con bytestring B:ByteString)) =>
-           (con bytestring #sliceByteString(I1, I2, B)) ... </k>
+  rule <k> <builtin sliceByteString
+                    (ListItem(< con integer I1:Int >)
+                     ListItem(< con integer I2:Int >)
+                     ListItem(< con bytestring B:ByteString >)) 0 > =>
+           < con bytestring #sliceByteString(I1, I2, B) > ... </k>
 ```
 
 ## `lengthOfByteString`
 
 ```k
-  rule <k> (builtin lengthOfByteString) => #LBS ... </k>
+  rule <k> (builtin lengthOfByteString) => < builtin lengthOfByteString .List 1 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#LBS, _RHO) _])) => #LBS(V) ... </k>
-
-  rule <k> #LBS((con bytestring B:ByteString)) =>
-           (con integer #lengthOfByteString(B)) ... </k>
+  rule <k> < builtin lengthOfByteString
+                     ListItem(< con bytestring B:ByteString >) 0 > =>
+           < con integer #lengthOfByteString(B) > ... </k>
 ```
 
 ## `indexByteString`
 
 ```k
-  rule <k> (builtin indexByteString) => #IBS ... </k>
+  rule <k> (builtin indexByteString) => < builtin indexByteString .List 2 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#IBS, _RHO) _])) => #IBS(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#IBS(V1:Value), _RHO) _])) => #IBS(V1, V2) ... </k>
-
-  rule <k> #IBS((con bytestring B:ByteString), (con integer I:Int)) =>
-           (con integer #indexByteString(B, I)) ... </k>
+  rule <k> < builtin indexByteString
+                     (ListItem(< con bytestring B:ByteString >)
+                      ListItem(< con integer I:Int >)) 0 > =>
+           < con integer #indexByteString(B, I) > ... </k>
 ```
 
 ## `equalsByteString`
 
 ```k
-  rule <k> (builtin equalsByteString) => #EBS ... </k>
+  rule <k> (builtin equalsByteString) => < builtin equalsByteString .List 2 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#EBS, _RHO) _])) => #EBS(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#EBS(V1:Value), _RHO) _])) => #EBS(V1, V2) ... </k>
-
-  rule <k> #EBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) => (con bool True) ... </k>
+  rule <k> < builtin equalsByteString
+                     (ListItem(< con bytestring B1:ByteString >)
+                      ListItem(< con bytestring B2:ByteString >)) 0 > =>
+           < con bool True > ... </k>
   requires #equalsByteString(B1, B2)
 
-  rule <k> #EBS(_,_) => (con bool False) ... </k> [owise]
+  rule <k> < builtin equalsByteString _ 0 > =>
+           < con bool False > ... </k> [owise]
 
 ```
 
 ## `lessThanByteString`
 
 ```k
-  rule <k> (builtin lessThanByteString) => #LTBS ... </k>
+  rule <k> (builtin lessThanByteString) => < builtin lessThanByteString .List 2 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#LTBS, _RHO) _])) => #LTBS(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#LTBS(V1:Value), _RHO) _])) => #LTBS(V1, V2) ... </k>
-
-  rule <k> #LTBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) => (con bool True) ... </k>
+  rule <k> < builtin lessThanByteString
+                     (ListItem(< con bytestring B1:ByteString >)
+                      ListItem(< con bytestring B2:ByteString >)) 0 > =>
+           < con bool True > ... </k>
   requires #lessThanByteString(B1, B2)
 
-  rule <k> #LTBS(_,_) => (con bool False) ... </k> [owise]
+  rule <k> < builtin lessThanByteString _ 0 > => < con bool False > ... </k> [owise]
 ```
 
 ## `lessThanEqualsByteString`
 
 ```k
-  rule <k> (builtin lessThanEqualsByteString) => #LEBS ... </k>
+  rule <k> (builtin lessThanEqualsByteString) =>
+            < builtin lessThanEqualsByteString .List 2 > ... </k>
 
-  rule <k> (V:Value ~> ([ Clos(#LEBS, _RHO) _])) => #LEBS(V) ... </k>
-
-  rule <k> (V2:Value ~> ([ Clos(#LEBS(V1:Value), _RHO) _])) => #LEBS(V1, V2) ... </k>
-
-  rule <k> #LEBS((con bytestring B1:ByteString), (con bytestring B2:ByteString)) => (con bool True) ... </k>
+  rule <k> < builtin lessThanEqualsByteString
+                     (ListItem(< con bytestring B1:ByteString >)
+                      ListItem(< con bytestring B2:ByteString >)) 0 > =>
+           < con bool True > ... </k>
   requires #lessThanEqualsByteString(B1, B2)
 
-  rule <k> #LEBS(_,_) => (con bool False) ... </k> [owise]
+  rule <k> < builtin lessThanEqualsByteString _ 0 > =>
+           < con bool False > ... </k> [owise]
 ```
 
 ```k

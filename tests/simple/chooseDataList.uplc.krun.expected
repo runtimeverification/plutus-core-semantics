@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con data { List [ Integer 0 , Integer 1 , .DataList ] } ) ~> .
+    < con data { List [ Integer 0 , Integer 1 , .DataList ] } > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

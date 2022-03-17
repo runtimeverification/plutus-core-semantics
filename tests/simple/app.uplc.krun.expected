@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con integer 0 ) ~> .
+    < con integer 0 > ~> .
   </k>
   <env>
-    .Map
+    bind ( x , < con integer 0 > )  .Env
   </env>
   <trace>
     .List

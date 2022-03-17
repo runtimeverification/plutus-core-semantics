@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con bytestring #aa00ff ) ~> .
+    < con bytestring #aa00ff > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

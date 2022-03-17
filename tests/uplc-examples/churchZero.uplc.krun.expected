@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( delay ( lam z ( lam f z ) ) ) ~> .
+    < delay ( lam z ( lam f z ) ) .Env > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List
