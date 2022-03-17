@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con data { List [ Constr 1 [ .DataList ] , Integer 1234 , ByteString #ABCDEF , .DataList ] } ) ~> .
+    < con data { List [ Constr 1 [ .DataList ] , Integer 1234 , ByteString #ABCDEF , .DataList ] } > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

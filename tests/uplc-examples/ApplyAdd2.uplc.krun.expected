@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    < con integer -1 > ~> .
+  </k>
+  <env>
+    bind ( x2 , < con integer 0 > )  bind ( x0 , < con bool True > )  .Env
+  </env>
+  <trace>
+    .List
+  </trace>
+</generatedTop>

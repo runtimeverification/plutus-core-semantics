@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con data { ByteString #0123456789ABCDEF } ) ~> .
+    < con data { ByteString #0123456789ABCDEF } > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

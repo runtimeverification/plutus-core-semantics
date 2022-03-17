@@ -31,6 +31,9 @@ tests/uplc-examples/ScottListSum.uplc
 # DivideByZero returns an error. We need to adapt our test harness to
 # error handling.
 tests/uplc-examples/DivideByZero.uplc
+# DivideByZeroDrop returns an error. We need to adapt our test harness to
+# error handling. Moreover, kplc run does not return an error.
+tests/uplc-examples/DivideByZeroDrop.uplc
 #
 # Benchamark validation examples
 #

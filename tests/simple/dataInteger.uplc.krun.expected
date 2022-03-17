@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con data { Integer 12354898 } ) ~> .
+    < con data { Integer 12354898 } > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List

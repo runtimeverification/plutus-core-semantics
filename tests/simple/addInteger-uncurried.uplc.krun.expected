@@ -1,9 +1,9 @@
 <generatedTop>
   <k>
-    ( con integer 3 ) ~> .
+    < con integer 3 > ~> .
   </k>
   <env>
-    .Map
+    .Env
   </env>
   <trace>
     .List
