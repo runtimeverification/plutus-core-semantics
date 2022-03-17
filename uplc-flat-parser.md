@@ -87,13 +87,14 @@ parameters such as `force` and `delay`
 
 ```k
   syntax Constant ::= #bit2boolval(Int) [function]
-//---------------------------------------------
+//------------------------------------------------
   rule #bit2boolval(0) => False
   rule #bit2boolval(1) => True
 
   // TODO: fix this function to support parametric types
+
   syntax Int ::= #readType( BitStream ) [function]
-//------------------------------------------------------
+//------------------------------------------------
   rule #readType( BitStream( I, BYTES ) ) => #readNBits( 4, BitStream( I +Int 1, BYTES ) )
 
   syntax Version ::= String2Version (String) [function, functional, hook(STRING.string2token)]
@@ -114,7 +115,7 @@ The following `Int`s represent different terms terms and encoded using 4 bits.
                | "FORCE"
                | "ERROR"
                | "BUILTIN"
-//--------------------------------
+//------------------------
   rule VAR     => 0 [macro]
   rule DELAY   => 1 [macro]
   rule LAMBDA  => 2 [macro]
@@ -140,7 +141,7 @@ They are used as parameters that describe constants or as parameters to builtin 
                | "PAIR"
                | "TYPE_APP"
                | "DATA"
-//--------------------------------
+//---------------------------
   rule INTEGER    => 0 [macro]
   rule BYTESTRING => 1 [macro]
   rule STRING     => 2 [macro]

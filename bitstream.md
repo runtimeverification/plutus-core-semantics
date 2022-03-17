@@ -13,30 +13,30 @@ module BITSTREAM
   syntax BitStream ::= BitStream(Int, Bytes)
 
   syntax Bytes ::= getBitStreamBytes(BitStream) [function]
-//=========================================================
+//--------------------------------------------------------
   rule getBitStreamBytes( BitStream(_, Bs) ) => Bs
 
   syntax Int ::= getBitStreamPos(BitStream) [function]
-//=========================================================
+//----------------------------------------------------
   rule getBitStreamPos( BitStream(I, _) ) => I
 
 
   syntax Int ::= indexBitStream (Int, BitStream) [function]
-//=========================================================
+//---------------------------------------------------------
   rule indexBitStream(I, Bs) => (getBitStreamBytes(Bs)[I divInt 8] >>Int (7 -Int (I modInt 8))) &Int 1 
 
 
   syntax Int ::= getNextBit(BitStream) [function]
-//===============================================
+//-----------------------------------------------
   rule getNextBit(Bs) => indexBitStream(getBitStreamPos(Bs), Bs)
 
   syntax BitStream ::= advancePos(BitStream) [function]
-//=====================================================
+//-----------------------------------------------------
   rule advancePos(Bs) => BitStream(getBitStreamPos(Bs) +Int 1, getBitStreamBytes(Bs))
 
 
   syntax Int ::= #readNBits(Int, BitStream) [function]
-//==================================================
+//----------------------------------------------------
   rule #readNBits(0,  _) => 0
   rule #readNBits(N, Bs) => (getNextBit(Bs) <<Int N -Int 1) |Int #readNBits(N -Int 1, advancePos(Bs)) [owise]
 
