@@ -4,8 +4,11 @@
 require "domains.md"
 require "uplc-syntax.md"
 require "uplc-environment.md"
+require "uplc-flat-parser.md"
 
 module UPLC-CONFIGURATION
+  imports UPLC-SYNTAX
+  imports UPLC-FLAT-PARSER
   imports INT
   imports MAP
   imports LIST
@@ -27,10 +30,13 @@ is used to keep track of the data emitted by the `trace` builtin.
 ```k 
 
   syntax Program ::= #handleProgram(Program) [function]
-                   | Bytes
 
   rule #handleProgram(C:ConcreteProgram) => C
-  rule #handleProgram(F:FlatProgram) => String2Bytes(trimByteString({F}:>ByteString))
+  rule #handleProgram(F:FlatProgram) => #bytes2program(getBytes(F))
+
+  syntax Bytes ::= getBytes(FlatProgram) [function]
+  rule getBytes(F) => Int2Bytes(String2Base(trimByteString({F}:>ByteString),16), BE, Unsigned)
+
 
   configuration <k> #handleProgram($PGM:Program) </k>
                 <env> .Env </env>
