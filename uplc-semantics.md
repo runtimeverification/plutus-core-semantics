@@ -28,13 +28,13 @@ module UPLC-SEMANTICS
 ```k
   rule <k> (program _V M) => M </k>
 
-  rule <k> X:Id => #lookup(RHO, X) ... </k>
+  rule <k> X:UplcId => #lookup(RHO, X) ... </k>
        <env> RHO </env>
 
   rule <k> (con T:TypeConstant C:Constant) =>
            < con T:TypeConstant C:Constant > ... </k>
 
-  rule <k> (lam X:Id M:Term) => < lam X M RHO > ... </k>
+  rule <k> (lam X:UplcId M:Term) => < lam X M RHO > ... </k>
        <env> RHO:Env </env>
 
   rule <k> (delay M:Term) => < delay M RHO > ... </k>
@@ -48,7 +48,7 @@ module UPLC-SEMANTICS
   rule <k> V:Value ~> [_ M RHO:Env ] => M ~> [ V _] ... </k>
        <env> _ => RHO </env>
 
-  rule <k> V:Value ~> [ < lam X:Id M:Term RHO:Env > _] => M ... </k>
+  rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Env > _] => M ... </k>
        <env> _ => #push(RHO, bind(X, V)) </env>
 
   rule <k> < delay M:Term RHO:Env > ~> Force => M ... </k>
