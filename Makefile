@@ -355,15 +355,25 @@ tests/%.uplc.run: tests/%.uplc
 	[ ! -f $<$(EXPECTED2) ] $(CONTINUE) $(TEST2) $< $(TEST_OPTIONS2) > $<.out
 	[ ! -f $<$(EXPECTED2) ] $(CONTINUE) $(CHECK) $<.out $<$(EXPECTED2)
 
+TEST_FLAT          := $(KPLUTUS) run
+TEST_FLAT2         := $(KPLUTUS) run
+TEST_FLAT_OPTIONS  := --flat-format $(TEST_OPTIONS)
+TEST_FLAT_OPTIONS2 := --flat-format
+
 tests/%.flat.run: tests/%.flat
-	$(TEST) $< --flat-format > $<.out
+	@echo $(BWhite)$(TEST_MSG)$(Color_off)$(Green)$<$(Color_Off)"\n"
+	$(TEST_FLAT) $< $(TEST_FLAT_OPTIONS) > $<.out
 	$(CHECK) $<.out $<$(EXPECTED)
+	$(TEST_FLAT2) $< $(TEST_FLAT_OPTIONS2) > $<.out
+	$(CHECK) $<.out $<$(EXPECTED2)
 
 update-results: conformance-test
 update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
+update-results: TEST_FLAT=$(UPLC) evaluate --if flat --print-mode Classic -i
 # The trail command below removes break lines that litters
 # the .EXPECTED file and breaks testing.
 update-results: TEST_OPTIONS= | tr -d '\012\015'
+update-results: TEST_FLAT_OPTIONS= | tr -d '\012\015'
 update-results: CHECK=cp
 update-results: TEST_MSG="\n>>> Updating results for "
 update-results: CONTINUE=;
@@ -382,7 +392,8 @@ update-results: CONTINUE=;
 conformance-test: test-simple                        \
                   test-uplc-examples                 \
                   test-benchmark-validation-examples \
-                  test-nofib-exe-examples
+                  test-nofib-exe-examples            \
+                  test-flat
 
 # Simple Tests
 
