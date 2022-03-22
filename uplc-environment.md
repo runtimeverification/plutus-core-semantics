@@ -2,25 +2,26 @@
 
 ```k
 require "domains.md"
+require "uplc-syntax.md"
 
 module UPLC-ENVIRONMENT
-  imports ID
+  imports UPLC-ID
   imports BOOL
   imports K-EQUAL
 
   syntax Bindable
-  syntax Bind ::= bind(Id, Bindable)
+  syntax Bind ::= bind(UplcId, Bindable)
   syntax Env ::= List{Bind,""} 
 
-  syntax Bool ::= #in(Env, Id) [function]
+  syntax Bool ::= #in(Env, UplcId) [function]
   rule #in(.Env, _) => false 
-  rule #in(bind(X:Id, _) _, X) => true
-  rule #in(bind(Y:Id, _) E:Env, X:Id) => #in(E, X)
+  rule #in(bind(X:UplcId, _) _, X) => true
+  rule #in(bind(Y:UplcId, _) E:Env, X:UplcId) => #in(E, X)
   requires X =/=K Y
   
-  syntax Bindable ::= #lookup(Env, Id) [function]
-  rule #lookup(bind(X:Id, V:Bindable) _, X:Id) => V
-  rule #lookup(bind(X:Id, _) E:Env, Y:Id) => #lookup(E, Y)
+  syntax Bindable ::= #lookup(Env, UplcId) [function]
+  rule #lookup(bind(X:UplcId, V:Bindable) _, X:UplcId) => V
+  rule #lookup(bind(X:UplcId, _) E:Env, Y:UplcId) => #lookup(E, Y)
   requires X =/=K Y
 
   syntax Env ::= #push(Env, Bind) [function]

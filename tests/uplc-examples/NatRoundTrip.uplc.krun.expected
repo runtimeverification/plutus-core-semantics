@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    < con integer 1 > ~> .
+  </k>
+  <env>
+    bind ( f , < lam n' [ [ rec [ f z  .TermList ]  .TermList ] n'  .TermList ] bind ( n , < delay ( lam z ( lam f z ) ) .Env > )  bind ( z , < con integer 1 > )  bind ( rec , < lam x [ [ f [ ( force ( delay ( lam s [ s s  .TermList ] ) ) ) s  .TermList ]  .TermList ] x  .TermList ] bind ( s , < lam s ( lam x [ [ f [ ( force ( delay ( lam s [ s s  .TermList ] ) ) ) s  .TermList ]  .TermList ] x  .TermList ] ) bind ( f , < lam rec ( lam z ( lam n [ [ ( force n ) z  .TermList ] ( lam n' [ [ rec [ f z  .TermList ]  .TermList ] n'  .TermList ] )  .TermList ] ) ) bind ( f , < builtin addInteger ListItem ( < con integer 1 > ) 1 > )  .Env > )  bind ( f , < builtin addInteger ListItem ( < con integer 1 > ) 1 > )  .Env > )  bind ( f , < lam rec ( lam z ( lam n [ [ ( force n ) z  .TermList ] ( lam n' [ [ rec [ f z  .TermList ]  .TermList ] n'  .TermList ] )  .TermList ] ) ) bind ( f , < builtin addInteger ListItem ( < con integer 1 > ) 1 > )  .Env > )  bind ( f , < builtin addInteger ListItem ( < con integer 1 > ) 1 > )  .Env > )  bind ( f , < builtin addInteger ListItem ( < con integer 1 > ) 1 > )  .Env > )  bind ( z , < con integer 1 > )  .Env
+  </env>
+  <trace>
+    .List
+  </trace>
+</generatedTop>

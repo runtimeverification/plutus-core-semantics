@@ -20,14 +20,10 @@ tests/simple/ifThenElse-no-force.uplc
 #
 # UPLC examples 
 #
-# Factorial has an identifier with `'` that K does not parse
+# Factorial output does not match uplc's output due to unknown reason. Needs investigation
 tests/uplc-examples/factorial.uplc
 # The source of failure here is not identified yet: 3/16/22, CBraga
 tests/uplc-examples/IfIntegers.uplc
-# Factorial has an identifier with `'` that K does not parse
-tests/uplc-examples/NatRoundTrip.uplc
-# ScottListSum has an identifier with `'` that K does not parse
-tests/uplc-examples/ScottListSum.uplc
 # DivideByZero returns an error. We need to adapt our test harness to
 # error handling.
 tests/uplc-examples/DivideByZero.uplc
