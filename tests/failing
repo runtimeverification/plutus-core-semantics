@@ -5,9 +5,6 @@
 # state which appears should be understood as the error behavior in
 # uplc
 tests/simple/error.uplc
-# Builtin ifThenElse needs a force to work in uplc but it does not
-# work (with force) in KPlutus.
-tests/simple/ifThenElse.uplc
 # Delay uses a free-variable therefore it fails.
 tests/simple/delay.uplc
 # Force uses a free-varaible therefore it fails.
@@ -20,10 +17,6 @@ tests/simple/ifThenElse-no-force.uplc
 #
 # UPLC examples 
 #
-# Factorial output does not match uplc's output due to unknown reason. Needs investigation
-tests/uplc-examples/factorial.uplc
-# The source of failure here is not identified yet: 3/16/22, CBraga
-tests/uplc-examples/IfIntegers.uplc
 # DivideByZero returns an error. We need to adapt our test harness to
 # error handling.
 tests/uplc-examples/DivideByZero.uplc
