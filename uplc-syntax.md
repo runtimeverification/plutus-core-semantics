@@ -5,13 +5,19 @@ require "domains.md"
 require "uplc-bytestring.md"
 require "uplc-environment.md"
 
+module UPLC-ID
+
+  syntax UplcId ::= r"[A-Za-z][A-Za-z0-9\\_\\']*" [prec(1), token]
+
+endmodule
+
 module UPLC-SYNTAX
-  imports ID
   imports LIST
   imports STRING
   imports INT-SYNTAX
   imports UPLC-BYTESTRING
   imports UPLC-ENVIRONMENT
+  imports UPLC-ID
 
   syntax Program ::= ConcreteProgram
                    | FlatProgram
@@ -22,17 +28,17 @@ module UPLC-SYNTAX
 
   syntax Version ::= r"[0-9]+.[0-9]+.[0-9]+" [token]
 
-  syntax Term ::= Id
+  syntax Term ::= UplcId
                 | "(" "con" TypeConstant Constant ")"
                 | "(" "builtin" BuiltinName ")"
-                | "(" "lam" Id Term ")"
+                | "(" "lam" UplcId Term ")"
                 | "[" Term TermList "]"
                 | "(" "delay" Term ")"
                 | "(" "force" Term ")"
                 | "(" "error" ")"
 
   syntax Value ::= "<" "con" TypeConstant Constant ">"
-                 | "<" "lam" Id Term Env ">"
+                 | "<" "lam" UplcId Term Env ">"
                  | "<" "delay" Term Env ">"
                  | "<" "builtin" BuiltinName List Int ">"
 
