@@ -13,10 +13,12 @@ module UPLC-INTEGER-BUILTINS
 ```k
   rule <k> (builtin addInteger) => < builtin addInteger .List 2 > ... </k>
 
-  rule <k> < builtin addInteger
+  rule <k> #eval(addInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con integer I1 +Int I2 > ... </k>
+
+  rule <k> #eval(addInteger, _) => (error) ... </k> [owise]
 ```
 
 ## `multiplyInteger`
@@ -24,10 +26,12 @@ module UPLC-INTEGER-BUILTINS
 ```k
   rule <k> (builtin multiplyInteger) => < builtin multiplyInteger .List 2 > ... </k>
 
-  rule <k> < builtin multiplyInteger
+  rule <k> #eval(multiplyInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con integer I1 *Int I2 > ... </k>
+
+  rule <k> #eval(multiplyInteger, _) => (error) ... </k> [owise]
 ```
 
 ## `subtractInteger`
@@ -35,10 +39,12 @@ module UPLC-INTEGER-BUILTINS
 ```k
   rule <k> (builtin subtractInteger) => < builtin subtractInteger .List 2 > ... </k>
 
-  rule <k> < builtin subtractInteger
+  rule <k> #eval(subtractInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con integer I1 -Int I2 > ... </k>
+
+  rule <k> #eval(subtractInteger, _) => (error) ... </k> [owise]
 ```
 
 ## `divideInteger`
@@ -49,13 +55,13 @@ mathematical integer division operation.
 ```k
   rule <k> (builtin divideInteger) => < builtin divideInteger .List 2 > ... </k>
 
-  rule <k> < builtin divideInteger
+  rule <k> #eval(divideInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con integer I1 /Int I2 > ... </k>
   requires I2 =/=Int 0
 
-  rule <k> < builtin divideInteger _ 0 > => (error) ... </k> [owise]
+  rule <k> #eval(divideInteger, _) => (error) ... </k> [owise]
 ```
 
 ## `modInteger`
@@ -65,13 +71,13 @@ According to Plutus specification, `modInteger` implements standard mathematical
 ```k
   rule <k> (builtin modInteger) => < builtin modInteger .List 2 > ... </k>
 
-  rule <k> < builtin modInteger
+  rule <k> #eval(modInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con integer I1 modInt I2 > ... </k>
   requires I2 =/=Int 0
 
-  rule <k> < builtin modInteger _ 0 > => (error) ... </k> [owise]
+  rule <k> #eval(modInteger, _) => (error) ... </k> [owise]
 ```
 
 ## `quotientInteger`
@@ -83,13 +89,13 @@ operator `/Int`  computes the quotient using t-division which rounds towards 0.
 ```k
   rule <k> (builtin quotientInteger) => < builtin quotientInteger .List 2 > ... </k>
 
-  rule <k> < builtin quotientInteger
+  rule <k> #eval(quotientInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con integer I1 /Int I2 > ... </k>
   requires I2 =/=Int 0
 
-  rule <k> < builtin quotientInteger _ 0 > => (error) ... </k> [owise]
+  rule <k> #eval(quotientInteger, _) => (error) ... </k> [owise]
 ```
 
 ## `remainderInteger`
@@ -102,13 +108,13 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ```k
   rule <k> (builtin remainderInteger) => < builtin remainderInteger .List 2 > ... </k>
 
-  rule <k> < builtin remainderInteger
+  rule <k> #eval(remainderInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con integer (I1 -Int (I1 /Int I2) *Int I2) > ... </k>
   requires I2 =/=Int 0
 
-  rule <k> < builtin remainderInteger _ 0 > => (error) ... </k> [owise]
+  rule <k> #eval(remainderInteger, _) => (error) ... </k> [owise]
 ```
 
 ## `lessThanInteger`
@@ -116,13 +122,19 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ```k
   rule <k> (builtin lessThanInteger) => < builtin lessThanInteger .List 2 > ... </k>
 
-  rule <k> < builtin lessThanInteger
+  rule <k> #eval(lessThanInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con bool True > ... </k>
   requires I1 <Int I2
 
-  rule <k> < builtin lessThanInteger _ 0 > => < con bool False > ... </k> [owise]
+  rule <k> #eval(lessThanInteger,
+                     (ListItem(< con integer I1:Int >)
+                      ListItem(< con integer I2:Int >))) =>
+           < con bool False > ... </k>
+  requires I1 >=Int I2
+
+  rule <k> #eval(lessThanInteger, _) => (error) ... </k> [owise]
 ```
 
 ## `lessThanEqualsInteger`
@@ -131,13 +143,19 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
   rule <k> (builtin lessThanEqualsInteger) =>
            < builtin lessThanEqualsInteger .List 2 > ... </k>
 
-  rule <k> < builtin lessThanEqualsInteger
+  rule <k> #eval(lessThanEqualsInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con bool True > ... </k>
   requires I1 <=Int I2
 
-  rule <k> < builtin lessThanEqualsInteger _ 0 > => < con bool False > ... </k> [owise]
+  rule <k> #eval(lessThanEqualsInteger,
+                     (ListItem(< con integer I1:Int >)
+                      ListItem(< con integer I2:Int >))) =>
+           < con bool False > ... </k>
+  requires I1 >Int I2
+
+  rule <k> #eval(lessThanEqualsInteger, _) => (error) ... </k> [owise]
 ```
 
 ## `equalsInteger`
@@ -146,13 +164,19 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
   rule <k> (builtin equalsInteger) =>
            < builtin equalsInteger .List 2 > ... </k>
 
-  rule <k> < builtin equalsInteger
+  rule <k> #eval(equalsInteger,
                      (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >)) 0 > =>
+                      ListItem(< con integer I2:Int >))) =>
            < con bool True > ... </k>
   requires I1 ==Int I2
 
-  rule <k> < builtin equalsInteger _ 0 > => < con bool False > ... </k> [owise]
+  rule <k> #eval(equalsInteger,
+                     (ListItem(< con integer I1:Int >)
+                      ListItem(< con integer I2:Int >))) =>
+           < con bool False > ... </k>
+  requires I1 =/=Int I2
+
+  rule <k> #eval(equalsInteger, _) => (error) ... </k> [owise]
 ```
 
 ```k

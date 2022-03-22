@@ -28,6 +28,7 @@ and values) is for its environment, and `<trace>` (a list of strings)
 is used to keep track of the data emitted by the `trace` builtin.
 
 ```k 
+  syntax Value ::= #eval(BuiltinName, List) 
 
   syntax Program ::= #handleProgram(Program) [function]
 
@@ -36,7 +37,6 @@ is used to keep track of the data emitted by the `trace` builtin.
 
   syntax Bytes ::= getBytes(FlatProgram) [function]
   rule getBytes(F) => Int2Bytes(String2Base(trimByteString({F}:>ByteString),16), BE, Unsigned)
-
 
   configuration <k> #handleProgram($PGM:Program) </k>
                 <env> .Env </env>

@@ -56,7 +56,10 @@ module UPLC-SEMANTICS
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List I:Int > _] =>
            < builtin BN (L ListItem(V)) (I -Int 1) > ... </k>
-  requires I >Int 0
+  requires I >Int 1
+
+  rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
+           #eval(BN, (L ListItem(V))) ... </k>
 ```
 
 ```k
