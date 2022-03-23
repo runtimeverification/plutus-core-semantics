@@ -9,6 +9,11 @@ module UPLC-DATA-BUILTINS
   syntax DataList ::= mkDataList(ConstantList) [function]
   rule mkDataList(.ConstantList) => .DataList
   rule mkDataList(({ T:TextualData }, L:ConstantList)) => (T, mkDataList(L))
+
+  syntax DataPairList ::= mkDataPairList(ConstantList) [function]
+  rule mkDataPairList(.ConstantList) => .DataPairList
+  rule mkDataPairList( ( ( {T1:TextualData}, {T2:TextualData} ) , L:ConstantList ) ) =>
+       ((T1, T2) , mkDataPairList(L))
 ```
 
 ## `constrData`
@@ -20,6 +25,16 @@ module UPLC-DATA-BUILTINS
                  (ListItem(< con integer I:Int >)
                   ListItem(< con list(data) [ L:ConstantList ] > ))) =>
            (con data { Constr I [ mkDataList(L) ] }) ... </k>
+```
+
+## `mapData`
+
+```k
+  rule <k> (builtin mapData) => < builtin mapData .List 1 > ... </k>
+
+  rule <k> #eval(mapData,
+                 ListItem(< con list(pair(data)(data)) [ L:ConstantList ] >)) =>
+           (con data { Map [ mkDataPairList(L) ] }) ... </k>
 ```
 
 ```k
