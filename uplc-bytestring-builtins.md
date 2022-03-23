@@ -16,10 +16,12 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin appendByteString) => < builtin appendByteString .List 2 > ... </k>
 
-  rule <k> < builtin appendByteString
+  rule <k> #eval(appendByteString,
                      (ListItem(< con bytestring B1:ByteString >)
-                      ListItem(< con bytestring B2:ByteString >)) 0 > =>
+                      ListItem(< con bytestring B2:ByteString >))) =>
            < con bytestring #appendByteString(B1, B2) > ... </k>
+
+  rule <k> #eval(appendByteString, _) => (error) ... </k> [owise]
 ```
 
 ## `consByteString`
@@ -27,10 +29,12 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin consByteString) => < builtin consByteString .List 2 > ... </k>
 
-  rule <k> < builtin consByteString
+  rule <k> #eval(consByteString,
                      (ListItem(< con integer I:Int >)
-                      ListItem(< con bytestring B:ByteString >)) 0 > =>
+                      ListItem(< con bytestring B:ByteString >))) =>
            < con bytestring #consByteString(I, B) > ... </k>
+
+  rule <k> #eval(consByteString, _) => (error) ... </k> [owise]
 ```
 
 ## `sliceByteString`
@@ -38,11 +42,13 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin sliceByteString) => < builtin sliceByteString .List 3 > ... </k>
 
-  rule <k> <builtin sliceByteString
+  rule <k> #eval(sliceByteString,
                     (ListItem(< con integer I1:Int >)
                      ListItem(< con integer I2:Int >)
-                     ListItem(< con bytestring B:ByteString >)) 0 > =>
+                     ListItem(< con bytestring B:ByteString >))) =>
            < con bytestring #sliceByteString(I1, I2, B) > ... </k>
+
+  rule <k> #eval(sliceByteString, _) => (error) ... </k> [owise] 
 ```
 
 ## `lengthOfByteString`
@@ -50,9 +56,11 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin lengthOfByteString) => < builtin lengthOfByteString .List 1 > ... </k>
 
-  rule <k> < builtin lengthOfByteString
-                     ListItem(< con bytestring B:ByteString >) 0 > =>
+  rule <k> #eval(lengthOfByteString,
+                     ListItem(< con bytestring B:ByteString >)) =>
            < con integer #lengthOfByteString(B) > ... </k>
+
+  rule <k> #eval(lengthOfByteString, _) => (error) ... </k> [owise]
 ```
 
 ## `indexByteString`
@@ -60,10 +68,13 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin indexByteString) => < builtin indexByteString .List 2 > ... </k>
 
-  rule <k> < builtin indexByteString
+  rule <k> #eval(indexByteString,
                      (ListItem(< con bytestring B:ByteString >)
-                      ListItem(< con integer I:Int >)) 0 > =>
+                      ListItem(< con integer I:Int >))) =>
            < con integer #indexByteString(B, I) > ... </k>
+
+  rule <k> #eval(indexByteString, _) => (error) ... </k> [owise]
+
 ```
 
 ## `equalsByteString`
@@ -71,15 +82,19 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin equalsByteString) => < builtin equalsByteString .List 2 > ... </k>
 
-  rule <k> < builtin equalsByteString
+  rule <k> #eval(equalsByteString,
                      (ListItem(< con bytestring B1:ByteString >)
-                      ListItem(< con bytestring B2:ByteString >)) 0 > =>
+                      ListItem(< con bytestring B2:ByteString >))) =>
            < con bool True > ... </k>
   requires #equalsByteString(B1, B2)
 
-  rule <k> < builtin equalsByteString _ 0 > =>
-           < con bool False > ... </k> [owise]
+  rule <k> #eval(equalsByteString,
+                     (ListItem(< con bytestring B1:ByteString >)
+                      ListItem(< con bytestring B2:ByteString >))) =>
+           < con bool False > ... </k>
+  requires notBool #equalsByteString(B1, B2)
 
+  rule <k> #eval(equalsByteString, _) => (error) ... </k> [owise]
 ```
 
 ## `lessThanByteString`
@@ -87,13 +102,19 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule <k> (builtin lessThanByteString) => < builtin lessThanByteString .List 2 > ... </k>
 
-  rule <k> < builtin lessThanByteString
+  rule <k> #eval(lessThanByteString,
                      (ListItem(< con bytestring B1:ByteString >)
-                      ListItem(< con bytestring B2:ByteString >)) 0 > =>
+                      ListItem(< con bytestring B2:ByteString >))) =>
            < con bool True > ... </k>
   requires #lessThanByteString(B1, B2)
 
-  rule <k> < builtin lessThanByteString _ 0 > => < con bool False > ... </k> [owise]
+  rule <k> #eval(lessThanByteString,
+                     (ListItem(< con bytestring B1:ByteString >)
+                      ListItem(< con bytestring B2:ByteString >))) =>
+           < con bool False > ... </k>
+  requires notBool #lessThanByteString(B1, B2)
+
+  rule <k> #eval(lessThanByteString, _) => (error) ... </k> [owise]
 ```
 
 ## `lessThanEqualsByteString`
@@ -102,14 +123,19 @@ module UPLC-BYTESTRING-BUILTINS
   rule <k> (builtin lessThanEqualsByteString) =>
             < builtin lessThanEqualsByteString .List 2 > ... </k>
 
-  rule <k> < builtin lessThanEqualsByteString
+  rule <k> #eval(lessThanEqualsByteString,
                      (ListItem(< con bytestring B1:ByteString >)
-                      ListItem(< con bytestring B2:ByteString >)) 0 > =>
+                      ListItem(< con bytestring B2:ByteString >))) =>
            < con bool True > ... </k>
   requires #lessThanEqualsByteString(B1, B2)
 
-  rule <k> < builtin lessThanEqualsByteString _ 0 > =>
-           < con bool False > ... </k> [owise]
+  rule <k> #eval(lessThanEqualsByteString,
+                     (ListItem(< con bytestring B1:ByteString >)
+                      ListItem(< con bytestring B2:ByteString >))) =>
+           < con bool False > ... </k>
+  requires notBool #lessThanEqualsByteString(B1, B2)
+
+  rule <k> #eval(lessThanEqualsByteString, _) => (error) ... </k> [owise]
 ```
 
 ```k

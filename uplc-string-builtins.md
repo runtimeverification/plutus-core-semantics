@@ -17,8 +17,10 @@ module UPLC-STRING-BUILTINS
 ```k 
   rule <k> (builtin encodeUtf8) => < builtin encodeUtf8 .List 1 > ... </k>
 
-  rule <k> < builtin encodeUtf8 ListItem(< con string S:String >) 0 > =>
+  rule <k> #eval(encodeUtf8, ListItem(< con string S:String >)) =>
            < con bytestring #encodeUtf8(S) > ... </k>
+
+  rule <k> #eval(encodeUtf8, _) => (error) ... </k> [owise]
 ```
 
 ## `decodeUtf8`
@@ -26,8 +28,11 @@ module UPLC-STRING-BUILTINS
 ```k 
   rule <k> (builtin decodeUtf8) => < builtin decodeUtf8 .List 1 > ... </k>
 
-  rule <k> < builtin decodeUtf8 ListItem(< con bytestring B:ByteString >) 0 > =>
+  rule <k> #eval(decodeUtf8, ListItem(< con bytestring B:ByteString >)) =>
            < con string #decodeUtf8(B) > ... </k>
+
+  rule <k> #eval(decodeUtf8, _) => (error) ... </k> [owise]
+
 ```
 
 ## `appendString`
@@ -35,10 +40,12 @@ module UPLC-STRING-BUILTINS
 ```k 
   rule <k> (builtin appendString) => < builtin appendString .List 2 > ... </k>
 
-  rule <k> < builtin appendString
+  rule <k> #eval(appendString,
               (ListItem(< con string S1:String >)
-               ListItem(< con string S2:String >)) 0 > =>
+               ListItem(< con string S2:String >))) =>
            < con string #appendString(S1, S2) > ... </k>
+
+  rule <k> #eval(appendString, _) => (error) ... </k> [owise]
 ```
 
 ## `equalsString`
@@ -46,13 +53,19 @@ module UPLC-STRING-BUILTINS
 ```k 
   rule <k> (builtin equalsString) => < builtin equalsString .List 2 >  ... </k>
 
-  rule <k> < builtin equalsString
+  rule <k> #eval(equalsString,
               (ListItem(< con string S1:String >)
-               ListItem(< con string S2:String >)) 0 > =>
+               ListItem(< con string S2:String >))) =>
            < con bool True > ... </k>
   requires #equalsString(S1, S2)
 
-  rule <k> < builtin equalsString _ 0 > => < con bool False > ... </k> [owise]
+  rule <k> #eval(equalsString,
+              (ListItem(< con string S1:String >)
+               ListItem(< con string S2:String >))) =>
+           < con bool False > ... </k>
+  requires notBool #equalsString(S1, S2)
+
+  rule <k> #eval(equalsString, _) => (error) ... </k> [owise]
 ```
 
 ```k
