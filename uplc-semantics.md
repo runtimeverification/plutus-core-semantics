@@ -6,6 +6,7 @@ require "uplc-integer-builtins.md"
 require "uplc-bytestring-builtins.md"
 require "uplc-crypto-builtins.md"
 require "uplc-string-builtins.md"
+require "uplc-data-builtins.md"
 
 module UPLC-SEMANTICS
   imports UPLC-POLYMORPHIC-BUILTINS
@@ -13,6 +14,7 @@ module UPLC-SEMANTICS
   imports UPLC-BYTESTRING-BUILTINS
   imports UPLC-CRYPTO-BUILTINS
   imports UPLC-STRING-BUILTINS
+  imports UPLC-DATA-BUILTINS
   imports INT
 
   syntax Bindable ::= Value

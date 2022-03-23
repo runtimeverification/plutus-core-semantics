@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    [] ( con data { Constr 1 [ Integer 0 , .DataList ] } ) ~> .
+  </k>
+  <env>
+    .Env
+  </env>
+  <trace>
+    .List
+  </trace>
+</generatedTop>
