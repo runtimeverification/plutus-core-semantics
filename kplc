@@ -73,6 +73,23 @@ run_interpreter() {
         | (${result_only} && ( tr '\n' ' ' | sed "s/.*<k>\(.*\)~> \. .*/\1/g" ) || cat - )
 }
 
+run_prove() {
+    local def_module run_dir proof_args bug_report_name \
+          eventlog_name kprove omit_cells omit_labels klab_log pyk_args
+
+    bug_report_name="kplc-bug-$(basename "${run_file%-spec.k}")"
+    eventlog_name="${run_file}.eventlog"
+
+    proof_args=(--directory "${backend_dir}" "${run_file}")
+    proof_args+=( -I "${INSTALL_INCLUDE}/kframework" -I "${plugin_include}/kframework" )
+
+    ! ${bug_report} || proof_args+=(--haskell-backend-command "kore-exec --bug-report ${bug_report_name}")
+    ! ${debugger}   || proof_args+=(--debugger)
+
+    notif_exec kprovex "${proof_args[@]}" "$@"
+}
+
+
 # Main
 # ----
 
@@ -113,24 +130,21 @@ fi
 
 result_only=false
 backend='llvm'
-
-if [[ "$run_command" == 'run-haskell' ]]; then
-    run_command='run'
-    backend='haskell'
-else
-    backend='llvm'
-fi
+bug_report=false
+debugger=false
 
 args=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --debug)       debug=true       ; args+=("$1") ; shift   ;;
-        --flat-format) flat_format=true                ; shift   ;;
-        --verbose)     verbose=true                    ; shift   ;;
-        --backend)     backend="$2"                    ; shift 2 ;;
-        --directory)   backend_dir="$2"                ; shift 2 ;;
-        --result-only) result_only=true                ; shift   ;;
-        *)             args+=("$1")                    ; shift   ;;
+        --debug)        debug=true       ; args+=("$1") ; shift   ;;
+        --flat-format)  flat_format=true                ; shift   ;;
+        --verbose)      verbose=true                    ; shift   ;;
+        --backend)      backend="$2"                    ; shift 2 ;;
+        --directory)    backend_dir="$2"                ; shift 2 ;;
+        --result-only)  result_only=true                ; shift   ;;
+        --bug-report)   bug_report=true                 ; shift   ;;
+        --debugger)     debugger=true                   ; shift   ;;
+        *)              args+=("$1")                    ; shift   ;;
     esac
 done
 
@@ -147,10 +161,9 @@ if ${flat_format}; then
     run_file="${run_file}".hex
 fi
 
-case "$run_command-$backend" in
-    kompile-llvm)    run_kompile     "$@"                                                ;;
-    kompile-haskell) run_kompile     "$@"                                                ;;
-    run-llvm)        run_interpreter "$@"                                                ;;
-    run-haskell)     run_interpreter "$@"                                                ;;
-    *)               $0 help ; fatal "Unknown command on backend: $run_command $backend" ;;
+case "${run_command}" in
+    kompile)    run_kompile     "$@"                                                ;;
+    run)        run_interpreter "$@"                                                ;;
+    prove)      run_prove       "$@"                                                ;;
+    *)          $0 help ; fatal "Unknown command: ${run_command}" ;;
 esac
