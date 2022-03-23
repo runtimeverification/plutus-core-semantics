@@ -5,6 +5,7 @@ require "uplc-configuration.md"
 
 module UPLC-DATA-BUILTINS
   imports UPLC-CONFIGURATION
+  imports K-EQUAL
 
   syntax DataList ::= #mkDataList(ConstantList) [function]
   rule #mkDataList(.ConstantList) => .DataList
@@ -125,6 +126,25 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(unBData,
                  ListItem(< con data { ByteString B:ByteString } >)) =>
            (con bytestring B) ... </k>
+```
+
+# `equalsData`
+
+```k
+  rule <k> (builtin equalsData) => < builtin equalsData .List 2 > ... </k>
+
+  rule <k> #eval(equalsData,
+                 (ListItem(< con data { T1:TextualData } >)
+                  ListItem(< con data { T2:TextualData } >))) =>
+           (con bool True) ... </k>
+  requires T1 ==K T2
+
+  rule <k> #eval(equalsData,
+                 (ListItem(< con data { T1:TextualData } >)
+                  ListItem(< con data { T2:TextualData } >))) =>
+           (con bool False) ... </k>
+  requires T1 =/=K T2
+
 ```
 
 ```k
