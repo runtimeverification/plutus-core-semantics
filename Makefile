@@ -322,15 +322,15 @@ uninstall:
 #------------
 KPROVE_OPTS :=
 
-test-prove: unit-tests/flat-unit-test.md.prove
+prove_tests := $(wildcard unit-tests/*.md)
 
-unit-tests/flat-unit-test.md.prove: unit-tests/flat-unit-test.md unit-tests/verification/haskell/verification-kompiled/timestamp
+test-prove: $(prove_tests:=.prove)
+
+unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verification-kompiled/timestamp
 	$(KPLUTUS) prove --directory unit-tests/verification/haskell $< $(KPROVE_OPTS)
 
 unit-tests/verification/haskell/verification-kompiled/timestamp: unit-tests/verification.k $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory unit-tests/verification/haskell
-
-unit-tests/flat-unit-test.md.prove: unit-tests/flat-unit-test.md
 
 
 # Testing
