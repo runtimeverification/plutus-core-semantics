@@ -97,6 +97,16 @@ module UPLC-DATA-BUILTINS
            (con list(pair (data)(data)) [ #mkConstantListFromDataPairList(L) ] ) ... </k>
 ```
 
+## `unListData`
+
+```k
+  rule <k> (builtin unListData) => < builtin unListData .List 1 > ... </k>
+
+  rule <k> #eval(unListData,
+                 ListItem(< con data { List [ L:DataList ] } >)) =>
+           (con list(data) [ #mkConstantList(L) ]) ... </k>
+```
+
 ```k
 endmodule
 ```
