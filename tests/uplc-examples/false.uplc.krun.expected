@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con bool False > ~> .
+    [] ( con bool False ) ~> .
   </k>
   <env>
     .Env

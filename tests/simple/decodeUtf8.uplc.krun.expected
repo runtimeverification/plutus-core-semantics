@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con string "Ola" > ~> .
+    [] ( con string "Ola" ) ~> .
   </k>
   <env>
     .Env

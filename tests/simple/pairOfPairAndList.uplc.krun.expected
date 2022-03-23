@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con pair ( pair ( bool ) ( bytestring ) ) ( list ( integer ) ) ( ( True , #012345 ) , [ 0 , 1 , 2 , .ConstantList ] ) > ~> .
+    [] ( con pair ( pair ( bool ) ( bytestring ) ) ( list ( integer ) ) ( ( True , #012345 ) , [ 0 , 1 , 2 , .ConstantList ] ) ) ~> .
   </k>
   <env>
     .Env

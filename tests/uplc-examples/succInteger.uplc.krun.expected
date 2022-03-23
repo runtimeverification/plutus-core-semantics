@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < lam i [ [ ( builtin addInteger ) i  .TermList ] ( con integer 1 )  .TermList ] .Env > ~> .
+    [] ( lam i [ [ ( builtin addInteger ) i  .TermList ] ( con integer 1 )  .TermList ] ) ~> .
   </k>
   <env>
     .Env

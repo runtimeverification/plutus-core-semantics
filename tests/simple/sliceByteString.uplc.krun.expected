@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con bytestring #ffaa > ~> .
+    [] ( con bytestring #ffaa ) ~> .
   </k>
   <env>
     .Env

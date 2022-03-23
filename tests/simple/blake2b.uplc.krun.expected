@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con bytestring #60148fe5896674cb7b0d5f0b3af81853fae328c4ae224f248d392ae28774b2ff > ~> .
+    [] ( con bytestring #60148fe5896674cb7b0d5f0b3af81853fae328c4ae224f248d392ae28774b2ff ) ~> .
   </k>
   <env>
     .Env

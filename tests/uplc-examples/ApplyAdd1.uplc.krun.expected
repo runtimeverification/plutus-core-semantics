@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con integer 1 > ~> .
+    [] ( con integer 1 ) ~> .
   </k>
   <env>
     bind ( x , < con integer 5 > )  bind ( f , < builtin addInteger ListItem ( < con integer -4 > ) 1 > )  .Env

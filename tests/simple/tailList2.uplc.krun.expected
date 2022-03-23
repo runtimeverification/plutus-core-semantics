@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con integer [ .ConstantList ] > ~> .
+    [] ( con integer [ .ConstantList ] ) ~> .
   </k>
   <env>
     .Env

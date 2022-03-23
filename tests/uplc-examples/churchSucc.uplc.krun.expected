@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < lam n ( delay ( lam z ( lam f [ f [ [ ( force n ) z  .TermList ] f  .TermList ]  .TermList ] ) ) ) .Env > ~> .
+    [] ( lam n ( delay ( lam z ( lam f [ f [ [ ( force n ) z  .TermList ] f  .TermList ]  .TermList ] ) ) ) ) ~> .
   </k>
   <env>
     .Env

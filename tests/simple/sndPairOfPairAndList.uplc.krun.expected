@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con bytestring #012345 > ~> .
+    [] ( con bytestring #012345 ) ~> .
   </k>
   <env>
     .Env

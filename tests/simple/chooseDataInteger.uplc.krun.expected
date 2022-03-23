@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con data { Integer 2 } > ~> .
+    [] ( con data { Integer 2 } ) ~> .
   </k>
   <env>
     .Env

@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con integer 3 > ~> .
+    [] ( con integer 3 ) ~> .
   </k>
   <env>
     .Env
