@@ -99,7 +99,7 @@ if [[ "$run_command" == 'help' ]] || [[ "$run_command" == '--help' ]] ; then
                   --debug
                   --verbose
                   --backend
-                  --backend-dir
+                  --directory
                   --flat-format : The input program is encoded in the flat format
     "
     exit 0
@@ -128,7 +128,7 @@ while [[ $# -gt 0 ]]; do
         --flat-format) flat_format=true                ; shift   ;;
         --verbose)     verbose=true                    ; shift   ;;
         --backend)     backend="$2"                    ; shift 2 ;;
-        --backend-dir) backend_dir="$2"                ; shift 2 ;;
+        --directory)   backend_dir="$2"                ; shift 2 ;;
         --result-only) result_only=true                ; shift   ;;
         *)             args+=("$1")                    ; shift   ;;
     esac
