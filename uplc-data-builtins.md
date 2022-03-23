@@ -107,6 +107,16 @@ module UPLC-DATA-BUILTINS
            (con list(data) [ #mkConstantList(L) ]) ... </k>
 ```
 
+## `unIData`
+
+```k
+  rule <k> (builtin unIData) => < builtin unIData .List 1 > ... </k>
+
+  rule <k> #eval(unIData,
+                 ListItem(< con data { Integer I:Int } >)) =>
+           (con integer I) ... </k>
+```
+
 ```k
 endmodule
 ```
