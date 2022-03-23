@@ -27,6 +27,54 @@ module UPLC-DATA-BUILTINS
        (({ T1 }, { T2 }), #mkConstantListFromDataPairList(L))
 ```
 
+## `chooseData`
+
+```k
+  rule <k> (builtin chooseData) ~> Force => < builtin chooseData .List 6 > ... </k>
+
+  rule <k> #eval(chooseData,
+                     (ListItem(< con data { Constr _Ii:Int [ _DL:DataList ] } >)
+                      ListItem(C:Value)
+                      ListItem(_M:Value)
+                      ListItem(_L:Value)
+                      ListItem(_Iv:Value)
+                      ListItem(_B:Value))) => C ... </k>
+
+  rule <k> #eval(chooseData,
+                     (ListItem(< con data { Map [ _DL:DataPairList ] } >)
+                      ListItem(_C:Value)
+                      ListItem(M:Value)
+                      ListItem(_L:Value)
+                      ListItem(_Iv:Value)
+                      ListItem(_B:Value))) => M ... </k>
+
+  rule <k> #eval(chooseData,
+                     (ListItem(< con data { List [ _DL:DataList ] } >)
+                      ListItem(_C:Value)
+                      ListItem(_M:Value)
+                      ListItem(L:Value)
+                      ListItem(_Iv:Value)
+                      ListItem(_B:Value))) => L ... </k>
+
+  rule <k> #eval(chooseData,
+                     (ListItem(< con data { Integer _ } >)
+                      ListItem(_C:Value)
+                      ListItem(_M:Value)
+                      ListItem(_L:Value)
+                      ListItem(I:Value)
+                      ListItem(_B:Value))) => I ... </k>
+
+  rule <k> #eval(chooseData,
+                     (ListItem(< con data { ByteString _ } >)
+                      ListItem(_C:Value)
+                      ListItem(_M:Value)
+                      ListItem(_L:Value)
+                      ListItem(_I:Value)
+                      ListItem(B:Value))) => B ... </k>
+
+  rule <k> #eval(chooseData, _) => (error) ... </k> [owise]
+```
+
 ## `constrData`
 
 ```k
@@ -36,6 +84,8 @@ module UPLC-DATA-BUILTINS
                  (ListItem(< con integer I:Int >)
                   ListItem(< con list(data) [ L:ConstantList ] > ))) =>
            (con data { Constr I [ #mkDataList(L) ] }) ... </k>
+
+  rule <k> #eval(constrData, _) => (error) ... </k> [owise]
 ```
 
 ## `mapData`
@@ -46,6 +96,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(mapData,
                  ListItem(< con list(pair(data)(data)) [ L:ConstantList ] >)) =>
            (con data { Map [ #mkDataPairList(L) ] }) ... </k>
+
+  rule <k> #eval(mapData, _) => (error) ... </k> [owise]
 ```
 
 ## `listData`
@@ -56,6 +108,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(listData,
                  ListItem(< con list(data) [ L:ConstantList ] >)) =>
            (con data { List [ #mkDataList(L) ] }) ... </k>
+
+  rule <k> #eval(listData, _) => (error) ... </k> [owise]
 ```
 
 ## `iData`
@@ -66,6 +120,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(iData,
                  ListItem(< con integer I:Int >)) =>
            (con data { Integer I }) ... </k>
+
+  rule <k> #eval(iData, _) => (error) ... </k> [owise]
 ```
 
 ## `bData`
@@ -76,6 +132,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(bData,
                  ListItem(< con bytestring B:ByteString >)) =>
            (con data { ByteString B }) ... </k>
+
+  rule <k> #eval(bData, _) => (error) ... </k> [owise]
 ```
 
 ## `unConstrData`
@@ -86,6 +144,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(unConstrData,
                  ListItem(< con data { Constr I:Int [ L:DataList ] } >)) =>
            (con pair(integer)(list(data)) (I, [ #mkConstantList(L) ])) ... </k>
+
+  rule <k> #eval(unConstrData, _) => (error) ... </k> [owise]
 ```
 
 ## `unMapData`
@@ -96,6 +156,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(unMapData,
                  ListItem(< con data { Map [ L:DataPairList ] } >)) =>
            (con list(pair (data)(data)) [ #mkConstantListFromDataPairList(L) ] ) ... </k>
+
+  rule <k> #eval(unMapData, _) => (error) ... </k> [owise]
 ```
 
 ## `unListData`
@@ -106,6 +168,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(unListData,
                  ListItem(< con data { List [ L:DataList ] } >)) =>
            (con list(data) [ #mkConstantList(L) ]) ... </k>
+
+  rule <k> #eval(unListData, _) => (error) ... </k> [owise]
 ```
 
 ## `unIData`
@@ -116,6 +180,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(unIData,
                  ListItem(< con data { Integer I:Int } >)) =>
            (con integer I) ... </k>
+
+  rule <k> #eval(unIData, _) => (error) ... </k> [owise]
 ```
 
 ## `unBData`
@@ -126,6 +192,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(unBData,
                  ListItem(< con data { ByteString B:ByteString } >)) =>
            (con bytestring B) ... </k>
+
+  rule <k> #eval(unBData, _) => (error) ... </k> [owise]
 ```
 
 # `equalsData`
@@ -145,6 +213,7 @@ module UPLC-DATA-BUILTINS
            (con bool False) ... </k>
   requires T1 =/=K T2
 
+  rule <k> #eval(equalsData, _) => (error) ... </k> [owise]
 ```
 
 # `mkPairData`
@@ -156,6 +225,8 @@ module UPLC-DATA-BUILTINS
                  (ListItem(< con data { T1:TextualData } >)
                   ListItem(< con data { T2:TextualData } >))) =>
            (con pair(data)(data) ( { T1 }, { T2 })) ... </k>
+
+  rule <k> #eval(mkPairData, _) => (error) ... </k> [owise]
 ```
 
 # `mkNilData`
@@ -166,6 +237,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(mkNilData,
                  ListItem(< con unit () >)) =>
            (con list(data) [ .ConstantList ]) ... </k>
+
+  rule <k> #eval(mkNilData, _) => (error) ... </k> [owise]
 ```
 
 # `mkNilPairData`
@@ -176,6 +249,8 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(mkNilPairData,
                  ListItem(< con unit () >)) =>
            (con list(pair (data) (data)) [ .ConstantList ]) ... </k>
+
+  rule <k> #eval(mkNilPairData, _) => (error) ... </k> [owise]
 ```
 
 ```k
