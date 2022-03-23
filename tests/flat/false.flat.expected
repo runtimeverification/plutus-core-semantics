@@ -1,11 +1,1 @@
-<generatedTop>
-  <k>
-    ( con bool False ) ~> .
-  </k>
-  <env>
-    .Map
-  </env>
-  <trace>
-    .List
-  </trace>
-</generatedTop>
+(con bool False)
