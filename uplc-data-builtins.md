@@ -147,6 +147,17 @@ module UPLC-DATA-BUILTINS
 
 ```
 
+# `mkPairData`
+
+```k
+  rule <k> (builtin mkPairData) => < builtin mkPairData .List 2 > ... </k>
+
+  rule <k> #eval(mkPairData,
+                 (ListItem(< con data { T1:TextualData } >)
+                  ListItem(< con data { T2:TextualData } >))) =>
+           (con pair(data)(data) ( { T1 }, { T2 })) ... </k>
+```
+
 ```k
 endmodule
 ```
