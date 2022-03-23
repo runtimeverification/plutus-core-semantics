@@ -6,18 +6,24 @@ require "uplc-configuration.md"
 module UPLC-DATA-BUILTINS
   imports UPLC-CONFIGURATION
 
-  syntax DataList ::= mkDataList(ConstantList) [function]
-  rule mkDataList(.ConstantList) => .DataList
-  rule mkDataList(({ T:TextualData }, L:ConstantList)) => (T, mkDataList(L))
+  syntax DataList ::= #mkDataList(ConstantList) [function]
+  rule #mkDataList(.ConstantList) => .DataList
+  rule #mkDataList(({ T:TextualData }, L:ConstantList)) => (T, #mkDataList(L))
 
-  syntax DataPairList ::= mkDataPairList(ConstantList) [function]
-  rule mkDataPairList(.ConstantList) => .DataPairList
-  rule mkDataPairList( ( ( {T1:TextualData}, {T2:TextualData} ), L:ConstantList ) ) =>
-       ((T1, T2) , mkDataPairList(L))
+  syntax DataPairList ::= #mkDataPairList(ConstantList) [function]
+  rule #mkDataPairList(.ConstantList) => .DataPairList
+  rule #mkDataPairList( ( ( {T1:TextualData}, {T2:TextualData} ), L:ConstantList ) ) =>
+       ((T1, T2) , #mkDataPairList(L))
 
-  syntax ConstantList ::= mkConstantList(DataList) [function]
-  rule mkConstantList(.DataList) => .ConstantList
-  rule mkConstantList( (T:TextualData, L:DataList) ) => ({ T }, mkConstantList(L))
+  syntax ConstantList ::= #mkConstantList(DataList) [function]
+  rule #mkConstantList(.DataList) => .ConstantList
+  rule #mkConstantList( (T:TextualData, L:DataList) ) => ({ T }, #mkConstantList(L))
+
+  syntax ConstantList ::= #mkConstantListFromDataPairList(DataPairList) [function]
+  rule #mkConstantListFromDataPairList(.DataPairList) => .ConstantList
+  rule #mkConstantListFromDataPairList(
+         ( (T1:TextualData, T2:TextualData), L:DataPairList ) ) =>
+       (({ T1 }, { T2 }), #mkConstantListFromDataPairList(L))
 ```
 
 ## `constrData`
@@ -28,7 +34,7 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(constrData,
                  (ListItem(< con integer I:Int >)
                   ListItem(< con list(data) [ L:ConstantList ] > ))) =>
-           (con data { Constr I [ mkDataList(L) ] }) ... </k>
+           (con data { Constr I [ #mkDataList(L) ] }) ... </k>
 ```
 
 ## `mapData`
@@ -38,7 +44,7 @@ module UPLC-DATA-BUILTINS
 
   rule <k> #eval(mapData,
                  ListItem(< con list(pair(data)(data)) [ L:ConstantList ] >)) =>
-           (con data { Map [ mkDataPairList(L) ] }) ... </k>
+           (con data { Map [ #mkDataPairList(L) ] }) ... </k>
 ```
 
 ## `listData`
@@ -48,7 +54,7 @@ module UPLC-DATA-BUILTINS
 
   rule <k> #eval(listData,
                  ListItem(< con list(data) [ L:ConstantList ] >)) =>
-           (con data { List [ mkDataList(L) ] }) ... </k>
+           (con data { List [ #mkDataList(L) ] }) ... </k>
 ```
 
 ## `iData`
@@ -78,7 +84,17 @@ module UPLC-DATA-BUILTINS
 
   rule <k> #eval(unConstrData,
                  ListItem(< con data { Constr I:Int [ L:DataList ] } >)) =>
-           (con pair(integer)(list(data)) (I, [ mkConstantList(L) ])) ... </k>
+           (con pair(integer)(list(data)) (I, [ #mkConstantList(L) ])) ... </k>
+```
+
+## `unMapData`
+
+```k
+  rule <k> (builtin unMapData) => < builtin unMapData .List 1 > ... </k>
+
+  rule <k> #eval(unMapData,
+                 ListItem(< con data { Map [ L:DataPairList ] } >)) =>
+           (con list(pair (data)(data)) [ #mkConstantListFromDataPairList(L) ] ) ... </k>
 ```
 
 ```k
