@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con pair ( integer ) ( bool ) ( 12345 , True ) > ~> .
+    [] ( con pair ( integer ) ( bool ) ( 12345 , True ) ) ~> .
   </k>
   <env>
     .Env

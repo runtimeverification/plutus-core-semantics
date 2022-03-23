@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < lam x ( delay x ) .Env > ~> .
+    [] ( lam x ( delay x ) ) ~> .
   </k>
   <env>
     .Env

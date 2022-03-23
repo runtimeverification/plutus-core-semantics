@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con integer 0 > ~> .
+    [] ( con integer 0 ) ~> .
   </k>
   <env>
     bind ( f , < lam x ( lam xs' [ [ rec [ [ f z  .TermList ] x  .TermList ]  .TermList ] xs'  .TermList ] ) bind ( xs , < delay ( lam z ( lam f z ) ) .Env > )  bind ( z , < con integer 0 > )  bind ( rec , < lam x [ [ f [ ( force ( delay ( lam s [ s s  .TermList ] ) ) ) s  .TermList ]  .TermList ] x  .TermList ] bind ( s , < lam s ( lam x [ [ f [ ( force ( delay ( lam s [ s s  .TermList ] ) ) ) s  .TermList ]  .TermList ] x  .TermList ] ) bind ( f , < lam rec ( lam z ( lam xs [ [ ( force xs ) z  .TermList ] ( lam x ( lam xs' [ [ rec [ [ f z  .TermList ] x  .TermList ]  .TermList ] xs'  .TermList ] ) )  .TermList ] ) ) bind ( f , < builtin addInteger .List 2 > )  .Env > )  bind ( f , < builtin addInteger .List 2 > )  .Env > )  bind ( f , < lam rec ( lam z ( lam xs [ [ ( force xs ) z  .TermList ] ( lam x ( lam xs' [ [ rec [ [ f z  .TermList ] x  .TermList ]  .TermList ] xs'  .TermList ] ) )  .TermList ] ) ) bind ( f , < builtin addInteger .List 2 > )  .Env > )  bind ( f , < builtin addInteger .List 2 > )  .Env > )  bind ( f , < builtin addInteger .List 2 > )  .Env > )  bind ( z , < con integer 0 > )  .Env

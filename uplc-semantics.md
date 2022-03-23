@@ -17,6 +17,10 @@ module UPLC-SEMANTICS
 
   syntax Bindable ::= Value
 
+  syntax FinalState ::= "[]" "(" "con" TypeConstant Constant ")"
+                      | "[]" "(" "lam" UplcId Term ")"
+                      | "[]" "(" "delay" Term ")"
+
   syntax K ::= #app(Term, TermList, Env) [function]
 
   rule #app(M, .TermList, _RHO) => M
@@ -60,6 +64,12 @@ module UPLC-SEMANTICS
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
            #eval(BN, (L ListItem(V))) ... </k>
+
+  rule <k> < con T:TypeConstant C:Constant > ~> . => [] (con T C) </k>
+
+  rule <k> < lam I:UplcId T:Term _E:Env > ~> . => [] (lam I T) </k>
+
+  rule <k> < delay T:Term _E:Env > ~> . => [] (delay T) </k>
 ```
 
 ```k

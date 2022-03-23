@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < lam x x .Env > ~> .
+    [] ( lam x x ) ~> .
   </k>
   <env>
     .Env

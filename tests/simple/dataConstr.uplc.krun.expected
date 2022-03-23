@@ -1,6 +1,6 @@
 <generatedTop>
   <k>
-    < con data { Constr 1 [ Integer 1 , .DataList ] } > ~> .
+    [] ( con data { Constr 1 [ Integer 1 , .DataList ] } ) ~> .
   </k>
   <env>
     .Env
