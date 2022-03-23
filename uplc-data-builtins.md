@@ -12,8 +12,12 @@ module UPLC-DATA-BUILTINS
 
   syntax DataPairList ::= mkDataPairList(ConstantList) [function]
   rule mkDataPairList(.ConstantList) => .DataPairList
-  rule mkDataPairList( ( ( {T1:TextualData}, {T2:TextualData} ) , L:ConstantList ) ) =>
+  rule mkDataPairList( ( ( {T1:TextualData}, {T2:TextualData} ), L:ConstantList ) ) =>
        ((T1, T2) , mkDataPairList(L))
+
+  syntax ConstantList ::= mkConstantList(DataList) [function]
+  rule mkConstantList(.DataList) => .ConstantList
+  rule mkConstantList( (T:TextualData, L:DataList) ) => ({ T }, mkConstantList(L))
 ```
 
 ## `constrData`
@@ -65,6 +69,16 @@ module UPLC-DATA-BUILTINS
   rule <k> #eval(bData,
                  ListItem(< con bytestring B:ByteString >)) =>
            (con data { ByteString B }) ... </k>
+```
+
+## `unConstrData`
+
+```k
+  rule <k> (builtin unConstrData) => < builtin unConstrData .List 1 > ... </k>
+
+  rule <k> #eval(unConstrData,
+                 ListItem(< con data { Constr I:Int [ L:DataList ] } >)) =>
+           (con pair(integer)(list(data)) (I, [ mkConstantList(L) ])) ... </k>
 ```
 
 ```k
