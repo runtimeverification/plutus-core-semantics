@@ -37,6 +37,16 @@ module UPLC-DATA-BUILTINS
            (con data { Map [ mkDataPairList(L) ] }) ... </k>
 ```
 
+## `listData`
+
+```k
+  rule <k> (builtin listData) => < builtin listData .List 1 > ... </k>
+
+  rule <k> #eval(listData,
+                 ListItem(< con list(data) [ L:ConstantList ] >)) =>
+           (con data { List [ mkDataList(L) ] }) ... </k>
+```
+
 ```k
 endmodule
 ```
