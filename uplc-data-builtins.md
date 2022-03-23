@@ -57,6 +57,16 @@ module UPLC-DATA-BUILTINS
            (con data { Integer I }) ... </k>
 ```
 
+## `bData`
+
+```k
+  rule <k> (builtin bData) => < builtin bData .List 1 > ... </k>
+
+  rule <k> #eval(bData,
+                 ListItem(< con bytestring B:ByteString >)) =>
+           (con data { ByteString B }) ... </k>
+```
+
 ```k
 endmodule
 ```
