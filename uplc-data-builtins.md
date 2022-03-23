@@ -47,6 +47,16 @@ module UPLC-DATA-BUILTINS
            (con data { List [ mkDataList(L) ] }) ... </k>
 ```
 
+## `iData`
+
+```k
+  rule <k> (builtin iData) => < builtin iData .List 1 > ... </k>
+
+  rule <k> #eval(iData,
+                 ListItem(< con integer I:Int >)) =>
+           (con data { Integer I }) ... </k>
+```
+
 ```k
 endmodule
 ```
