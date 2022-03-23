@@ -116,7 +116,8 @@ export PLUGIN_SUBMODULE
         test-benchmark-validation-examples \
         test-nofib-exe-examples            \
         conformance-test                   \
-        update-results
+        update-results                     \
+        test-prove
 
 .SECONDARY:
 
@@ -316,6 +317,21 @@ $(DESTDIR)$(INSTALL_LIB)/%: $(KPLUTUS_LIB)/%
 uninstall:
 	rm -rf $(DESTDIR)$(INSTALL_BIN)/kplutus
 	rm -rf $(DESTDIR)$(INSTALL_LIB)/kplutus
+
+# Prove tests
+#------------
+KPROVE_OPTS :=
+
+test-prove: unit-tests/flat-unit-test.md.prove
+
+unit-tests/flat-unit-test.md.prove: unit-tests/flat-unit-test.md unit-tests/verification/haskell/verification-kompiled/timestamp
+	$(KPLUTUS) prove --directory unit-tests/verification/haskell $< $(KPROVE_OPTS)
+
+unit-tests/verification/haskell/verification-kompiled/timestamp: unit-tests/verification.k $(kplutus_includes)
+	$(KOMPILE) --backend haskell $< --directory unit-tests/verification/haskell
+
+unit-tests/flat-unit-test.md.prove: unit-tests/flat-unit-test.md
+
 
 # Testing
 # -------
