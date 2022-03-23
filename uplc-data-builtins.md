@@ -168,6 +168,15 @@ module UPLC-DATA-BUILTINS
            (con list(data) [ .ConstantList ]) ... </k>
 ```
 
+# `mkNilPairData`
+
+```k
+  rule <k> (builtin mkNilPairData) => < builtin mkNilPairData .List 1 > ... </k>
+
+  rule <k> #eval(mkNilPairData,
+                 ListItem(< con unit () >)) =>
+           (con list(pair (data) (data)) [ .ConstantList ]) ... </k>
+```
 
 ```k
 endmodule
