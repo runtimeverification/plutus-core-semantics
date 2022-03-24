@@ -116,7 +116,8 @@ export PLUGIN_SUBMODULE
         test-benchmark-validation-examples \
         test-nofib-exe-examples            \
         conformance-test                   \
-        update-results
+        update-results                     \
+        test-prove
 
 .SECONDARY:
 
@@ -205,7 +206,22 @@ plugin-deps: $(plugin_includes) $(plugin_c_includes)
 
 KOMPILE := $(KPLUTUS) kompile
 
-kplutus_files := uplc.md 
+kplutus_files := uplc.md \
+                 bitstream.md \
+                 uplc-bytestring-builtins.md \
+                 uplc-crypto-builtins.md  \
+                 uplc-integer-builtins.md \
+                 uplc-semantics.md \
+                 uplc-syntax.md \
+                 uplc-bytestring.md \
+                 uplc-environment.md \
+                 uplc.md \
+                 uplc-string-builtins.md \
+                 uplc-configuration.md \
+                 uplc-flat-parser.md \
+                 uplc-polymorphic-builtins.md \
+                 uplc-string.md
+
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 
@@ -227,8 +243,6 @@ haskell_main_file      := uplc.md
 haskell_main_filename  := $(basename $(notdir $(haskell_main_file)))
 haskell_kompiled       := $(haskell_dir)/$(haskell_main_filename)-kompiled/definition.kore
 
-foo:
-	echo $(kplutus_includes)
 
 ifndef NOBUILD_CRYPTOPP
   $(KPLUTUS_LIB)/$(llvm_kompiled): $(libcryptopp_out)
@@ -278,7 +292,7 @@ $(KPLUTUS_LIB)/release.md: INSTALL.md
 
 build: $(patsubst %, $(KPLUTUS_BIN)/%, $(install_bins)) $(patsubst %, $(KPLUTUS_LIB)/%, $(install_libs))
 
-build-kplutus: $(KPLUTUS_BIN)/kplc $(plugin_includes)
+build-kplutus: $(KPLUTUS_BIN)/kplc $(plugin_includes) $(kplutus_includes)
 build-llvm:    $(KPLUTUS_LIB)/$(llvm_kompiled)
 build-haskell: $(KPLUTUS_LIB)/$(haskell_kompiled)
 
@@ -303,6 +317,21 @@ $(DESTDIR)$(INSTALL_LIB)/%: $(KPLUTUS_LIB)/%
 uninstall:
 	rm -rf $(DESTDIR)$(INSTALL_BIN)/kplutus
 	rm -rf $(DESTDIR)$(INSTALL_LIB)/kplutus
+
+# Prove tests
+#------------
+KPROVE_OPTS :=
+
+prove_tests := $(wildcard unit-tests/*.md)
+
+test-prove: $(prove_tests:=.prove)
+
+unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verification-kompiled/timestamp
+	$(KPLUTUS) prove --directory unit-tests/verification/haskell $< $(KPROVE_OPTS)
+
+unit-tests/verification/haskell/verification-kompiled/timestamp: unit-tests/verification.k $(kplutus_includes)
+	$(KOMPILE) --backend haskell $< --directory unit-tests/verification/haskell
+
 
 # Testing
 # -------
