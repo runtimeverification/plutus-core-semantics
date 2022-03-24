@@ -107,23 +107,23 @@ parameters such as `force` and `delay`
 The following `Int`s represent different terms terms and encoded using 4 bits.
 
 ```k
-  syntax Int ::= "VAR"
-               | "DELAY"
-               | "LAMBDA"
-               | "APP"
-               | "CON"
-               | "FORCE"
-               | "ERROR"
-               | "BUILTIN"
-//------------------------
-  rule VAR     => 0 [macro]
-  rule DELAY   => 1 [macro]
-  rule LAMBDA  => 2 [macro]
-  rule APP     => 3 [macro]
-  rule CON     => 4 [macro]
-  rule FORCE   => 5 [macro]
-  rule ERROR   => 6 [macro]
-  rule BUILTIN => 7 [macro]
+  syntax Int ::= "VAR"     [macro]
+               | "DELAY"   [macro]
+               | "LAMBDA"  [macro]
+               | "APP"     [macro]
+               | "CON"     [macro]
+               | "FORCE"   [macro]
+               | "ERROR"   [macro]
+               | "BUILTIN" [macro]
+//--------------------------------
+  rule VAR     => 0
+  rule DELAY   => 1
+  rule LAMBDA  => 2
+  rule APP     => 3
+  rule CON     => 4
+  rule FORCE   => 5
+  rule ERROR   => 6
+  rule BUILTIN => 7
 ```
 
 #### Values for type
@@ -132,25 +132,25 @@ The following `Int`s represent types within the untypted plutus language and enc
 They are used as parameters that describe constants or as parameters to builtin functions.
 
 ```k
-  syntax Int ::= "INTEGER"
-               | "BYTESTRING"
-               | "STRING"
-               | "UNIT"
-               | "BOOL"
-               | "LIST"
-               | "PAIR"
-               | "TYPE_APP"
-               | "DATA"
-//---------------------------
-  rule INTEGER    => 0 [macro]
-  rule BYTESTRING => 1 [macro]
-  rule STRING     => 2 [macro]
-  rule UNIT       => 3 [macro]
-  rule BOOL       => 4 [macro]
-  rule LIST       => 5 [macro]
-  rule PAIR       => 6 [macro]
-  rule TYPE_APP   => 7 [macro]
-  rule DATA       => 8 [macro]
+  syntax Int ::= "INTEGER"    [macro]
+               | "BYTESTRING" [macro]
+               | "STRING"     [macro]
+               | "UNIT"       [macro]
+               | "BOOL"       [macro]
+               | "LIST"       [macro]
+               | "PAIR"       [macro]
+               | "TYPE_APP"   [macro]
+               | "DATA"       [macro]
+//-----------------------------------
+  rule INTEGER    => 0
+  rule BYTESTRING => 1
+  rule STRING     => 2
+  rule UNIT       => 3
+  rule BOOL       => 4
+  rule LIST       => 5
+  rule PAIR       => 6
+  rule TYPE_APP   => 7
+  rule DATA       => 8
 
 endmodule
 ```
