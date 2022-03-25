@@ -6,6 +6,7 @@ require "uplc-integer-builtins.md"
 require "uplc-bytestring-builtins.md"
 require "uplc-crypto-builtins.md"
 require "uplc-string-builtins.md"
+require "uplc-data-builtins.md"
 
 module UPLC-SEMANTICS
   imports UPLC-POLYMORPHIC-BUILTINS
@@ -13,6 +14,7 @@ module UPLC-SEMANTICS
   imports UPLC-BYTESTRING-BUILTINS
   imports UPLC-CRYPTO-BUILTINS
   imports UPLC-STRING-BUILTINS
+  imports UPLC-DATA-BUILTINS
   imports INT
 
   syntax Bindable ::= Value
@@ -22,9 +24,11 @@ module UPLC-SEMANTICS
                       | "[]" "(" "delay" Term ")"
 
   syntax K ::= #app(Term, TermList, Env) [function]
+  rule #app(M:Term, (N:Term T:TermList), RHO:Env) => #appAux(T, M ~> [_ N RHO ], RHO)
 
-  rule #app(M, .TermList, _RHO) => M
-  rule #app(M, (N:Term T:TermList), RHO) => #app(M, T, RHO) ~> [_ N RHO ] [owise]
+  syntax K ::= #appAux(TermList, K, Env) [function]
+  rule #appAux(.TermList, K:K, RHO:Env) => K
+  rule #appAux((N:Term T:TermList), K:K, RHO:Env) => #appAux(T, K ~> [_ N RHO], RHO) 
 ```
 
 ## CEK machine

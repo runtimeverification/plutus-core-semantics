@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    [] ( con list ( pair ( data ) ( data ) ) [ ( { Integer 0 } , { Integer 1 } ) , .ConstantList ] ) ~> .
+  </k>
+  <env>
+    .Env
+  </env>
+  <trace>
+    .List
+  </trace>
+</generatedTop>

@@ -1,0 +1,11 @@
+<generatedTop>
+  <k>
+    [] ( con data { Map [ ( Integer 0 , Integer 1 ) , .DataPairList ] } ) ~> .
+  </k>
+  <env>
+    .Env
+  </env>
+  <trace>
+    .List
+  </trace>
+</generatedTop>

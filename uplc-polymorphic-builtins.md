@@ -38,54 +38,6 @@ module UPLC-POLYMORPHIC-BUILTINS
   rule <k> #eval(chooseUnit, _) => (error) ... </k> [owise]
 ```
 
-## `chooseData`
-
-```k
-  rule <k> (builtin chooseData) ~> Force => < builtin chooseData .List 6 > ... </k>
-
-  rule <k> #eval(chooseData,
-                     (ListItem(< con data { Constr _Ii:Int [ _DL:DataList ] } >)
-                      ListItem(C:Value)
-                      ListItem(_M:Value)
-                      ListItem(_L:Value)
-                      ListItem(_Iv:Value)
-                      ListItem(_B:Value))) => C ... </k>
-
-  rule <k> #eval(chooseData,
-                     (ListItem(< con data { Map [ _DL:DataPairList ] } >)
-                      ListItem(_C:Value)
-                      ListItem(M:Value)
-                      ListItem(_L:Value)
-                      ListItem(_Iv:Value)
-                      ListItem(_B:Value))) => M ... </k>
-
-  rule <k> #eval(chooseData,
-                     (ListItem(< con data { List [ _DL:DataList ] } >)
-                      ListItem(_C:Value)
-                      ListItem(_M:Value)
-                      ListItem(L:Value)
-                      ListItem(_Iv:Value)
-                      ListItem(_B:Value))) => L ... </k>
-
-  rule <k> #eval(chooseData,
-                     (ListItem(< con data { Integer _ } >)
-                      ListItem(_C:Value)
-                      ListItem(_M:Value)
-                      ListItem(_L:Value)
-                      ListItem(I:Value)
-                      ListItem(_B:Value))) => I ... </k>
-
-  rule <k> #eval(chooseData,
-                     (ListItem(< con data { ByteString _ } >)
-                      ListItem(_C:Value)
-                      ListItem(_M:Value)
-                      ListItem(_L:Value)
-                      ListItem(_I:Value)
-                      ListItem(B:Value))) => B ... </k>
-
-  rule <k> #eval(chooseData, _) => (error) ... </k> [owise]
-```
-
 ## `fstPair`
 
 ```k
