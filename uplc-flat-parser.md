@@ -19,7 +19,7 @@ The following function is the entry point to the flat parser.
                            | #bytes2program( String, K ) [function]
 
   rule #bytes2program( BYTES ) => #bytes2program( #readVersion( BitStream( 0, BYTES ) ),
-                                                  #readProgramTerm( #readTerm, BitStream( 24, BYTES ) )
+                                                  #readProgramTerm( #readTerm, BitStream( #versionLength, BYTES ) )
                                                 )
 
   rule #bytes2program( VERSION, TERM:Term ~> .) => ( program String2Version( VERSION ) TERM )
@@ -41,6 +41,10 @@ The program version is specified as 3 unsigned integers. This implementation onl
 version numbers that are less than 7 bits and needs to be updated to parse larger integers.
 
 ```k
+  syntax Int ::= "#versionLength" [macro]
+//---------------------------------------
+  rule #versionLength => 24
+
   syntax String ::= #readVersion(BitStream) [function]
 //----------------------------------------------------
   rule #readVersion( BitStream( I, BYTES ) ) =>
@@ -49,13 +53,13 @@ version numbers that are less than 7 bits and needs to be updated to parse large
     Int2String( #readNBits( 8, BitStream( I +Int 16, BYTES ) ) )
 ```
 
-## Reading Terms Term
+## Reading Terms
 
 ```k
   syntax Term ::= #readProgramTerm( K, BitStream ) [function]
 
-  rule #readProgramTerm( #readTerm => #readTermTag #readNBits( 4, BitStream( 24, BYTES) ),
-                         BitStream( I => I +Int 4, BYTES )
+  rule #readProgramTerm( #readTerm => #readTermTag #readNBits( #termTagLength, BitStream( I, BYTES) ),
+                         BitStream( I => I +Int #termTagLength, BYTES )
                        )
 
   rule #readProgramTerm( #readTermTag ERROR => ( error ),
@@ -63,7 +67,7 @@ version numbers that are less than 7 bits and needs to be updated to parse large
                        )
 
   rule #readProgramTerm( #readTermTag CON => #readConType #readType( BitStream( I, Bs ) ),
-                         BitStream( I => I +Int  6, Bs )
+                         BitStream( I => I +Int #typeLength, Bs )
                        )
 
   rule #readProgramTerm( #readConType UNIT  => ( con unit () ),
@@ -103,6 +107,10 @@ version numbers that are less than 7 bits and needs to be updated to parse large
 The following `Int`s represent different terms terms and encoded using 4 bits.
 
 ```k
+  syntax Int ::= "#termTagLength" [macro]
+//---------------------------------------
+  rule #termTagLength => 4
+
   syntax Int ::= "VAR"     [macro]
                | "DELAY"   [macro]
                | "LAMBDA"  [macro]
@@ -128,6 +136,10 @@ The following `Int`s represent types within the untypted plutus language and enc
 They are used as parameters that describe constants or as parameters to builtin functions.
 
 ```k
+  syntax Int ::= "#typeLength" [macro]
+//------------------------------------
+  rule #typeLength => 6
+
   syntax Int ::= "INTEGER"    [macro]
                | "BYTESTRING" [macro]
                | "STRING"     [macro]
