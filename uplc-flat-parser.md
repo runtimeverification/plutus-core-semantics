@@ -15,13 +15,14 @@ module UPLC-FLAT-PARSER
 The following function is the entry point to the flat parser.
 
 ```k
-  syntax ConcreteProgram ::= #bytes2program( Bytes )                [function]
-                           | #bytes2program( String, K, BitStream ) [function]
+  syntax ConcreteProgram ::= #bytes2program( Bytes )     [function]
+                           | #bytes2program( String, K ) [function]
 
   rule #bytes2program( BYTES ) => #bytes2program( #readVersion( BitStream( 0, BYTES ) ),
-                                                  #readTerm,
-                                                  BitStream( 24, BYTES )
+                                                  #readProgramTerm( #readTerm, BitStream( 24, BYTES ) )
                                                 )
+
+  rule #bytes2program( VERSION, TERM:Term ~> .) => ( program String2Version( VERSION ) TERM )
 ```
 
 The following KItems are used to manage control in the function above.
@@ -48,38 +49,33 @@ version numbers that are less than 7 bits and needs to be updated to parse large
     Int2String( #readNBits( 8, BitStream( I +Int 16, BYTES ) ) )
 ```
 
-## Rules used to read Terms
-
-Note: this is a first draft and expected to change to enable parsing terms that take terms as
-parameters such as `force` and `delay`
+## Reading Terms Term
 
 ```k
+  syntax Term ::= #readProgramTerm( K, BitStream ) [function]
 
-  rule #bytes2program( _, #readTerm => #readTermTag #readNBits( 4, BitStream( I, Bs ) ),
-                       BitStream( I => I +Int 4, Bs )
-                     )
+  rule #readProgramTerm( #readTerm => #readTermTag #readNBits( 4, BitStream( 24, BYTES) ),
+                         BitStream( I => I +Int 4, BYTES )
+                       )
 
-  rule #bytes2program( _, #readTermTag ERROR => ( error ),
-                       BitStream( I => #nextByteBoundary(I), _ )
-                     )
+  rule #readProgramTerm( #readTermTag ERROR => ( error ),
+                         BitStream( I => #nextByteBoundary(I), _ )
+                       )
 
-  rule #bytes2program( _, #readTermTag CON => #readConType #readType( BitStream( I, Bs ) ),
-                       BitStream( I => I +Int  6, Bs )
-                     )
+  rule #readProgramTerm( #readTermTag CON => #readConType #readType( BitStream( I, Bs ) ),
+                         BitStream( I => I +Int  6, Bs )
+                       )
 
-  rule #bytes2program( _, #readConType UNIT => ( con unit () ),
-                       BitStream( I => #nextByteBoundary( I ), _ )
-                     )
+  rule #readProgramTerm( #readConType UNIT  => ( con unit () ),
+                         BitStream( I => #nextByteBoundary( I ), _ )
+                       )
 
-  rule #bytes2program( _, #readConType BOOL => ( con bool #bit2boolval( #readNBits( 1, BitStream( I, Bs ) ) ) ),
-                       BitStream( I => #nextByteBoundary( I ), Bs )
-                     )
+  rule #readProgramTerm( #readConType BOOL => ( con bool #bit2boolval( #readNBits( 1, BitStream( I, Bs ) ) ) ),
+                         BitStream( I => #nextByteBoundary( I ), Bs )
+                       )
 
-  rule #bytes2program( VERSION, TERM:Term ~> .,
-                       BitStream( X, BYTES )
-                     )
-    => ( program String2Version(VERSION) TERM )
-    requires (X /Int 8) ==Int lengthBytes(BYTES)
+  rule #readProgramTerm( TERM:Term ~> ., BitStream( X, BYTES ) ) => TERM
+    requires (X /Int 8) ==Int lengthBytes( BYTES )
 
 ```
 
