@@ -62,6 +62,8 @@ version numbers that are less than 7 bits and needs to be updated to parse large
                          BitStream( I => I +Int #termTagLength, BYTES )
                        )
 
+  rule #readProgramTerm( #readTermTag DELAY, BITSTREAM ) => ( delay #readProgramTerm( #readTerm, BITSTREAM ) )
+
   rule #readProgramTerm( #readTermTag ERROR, _ ) => ( error )
 
   rule #readProgramTerm( #readTermTag CON => #readConType #readType( BitStream( I, Bs ) ),
