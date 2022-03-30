@@ -154,6 +154,42 @@ They are used as parameters that describe constants or as parameters to builtin 
   rule PAIR       => 6
   rule TYPE_APP   => 7
   rule DATA       => 8
+```
 
+### Variable Length Data
+
+There are two parts to variable length data that are necessary for parsing: the actual datum and
+the length of the datum. To facilitate parsing, the `VarLenDatum` sort has a datum that was parsed
+and the bit length that was traversed when parsing the datum.
+
+```k
+  syntax VarLenDatum ::= VDat( BitLength:Int, Datum:Int )
+
+  syntax Int ::= #getDatum( VarLenDatum ) [function]
+//--------------------------------------------------
+  rule #getDatum( VDat( _, D ) ) => D
+
+  syntax Int ::= #getBitLength( VarLenDatum ) [function]
+//------------------------------------------------------
+  rule #getBitLength( VDat( BitLen, _ ) ) => BitLen
+
+  syntax VarLenDatum ::= #getVarLenData( BitStream ) [function]
+//-----------------------------------------------------------
+  rule #getVarLenData( BITSTREAM ) => #getVarLenData( 0, 0, BITSTREAM )
+
+  syntax VarLenDatum ::= #getVarLenData( CurrentByteOffset:Int, CurrentDatum:Int, BitStream ) [function]
+//------------------------------------------------------------------------------------------------------
+  rule #getVarLenData( I0 => I0 +Int 1,
+                       D  => D +Int ( #readNBits( 7, BitStream( I1 +Int 1 , BYTES ) ) <<Int ( 7 *Int I0 ) ),
+                       BitStream( I1, BYTES ) => BitStream( I1 +Int 8, BYTES )
+                     )
+    requires #readNBits( 1, BitStream( I1, BYTES ) ) ==Int 1
+
+  rule #getVarLenData( I0, D, BitStream( I1, BYTES) ) =>
+    VDat( ( I0 +Int 1 ) *Int 8, D +Int ( #readNBits( 7, BitStream( I1 +Int 1, BYTES ) ) <<Int ( 7 *Int I0 ) ) ) [owise]
+
+```
+
+```k
 endmodule
 ```
