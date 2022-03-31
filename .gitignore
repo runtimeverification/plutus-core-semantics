@@ -8,3 +8,6 @@
 **/#*
 *.sh
 unit-tests/verification/
+*.swo
+*.swn
+*.swp

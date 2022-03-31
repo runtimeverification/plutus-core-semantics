@@ -62,24 +62,19 @@ version numbers that are less than 7 bits and needs to be updated to parse large
                          BitStream( I => I +Int #termTagLength, BYTES )
                        )
 
-  rule #readProgramTerm( #readTermTag ERROR => ( error ),
-                         BitStream( I => #nextByteBoundary(I), _ )
-                       )
+  rule #readProgramTerm( #readTermTag DELAY, BITSTREAM ) => ( delay #readProgramTerm( #readTerm, BITSTREAM ) )
+
+  rule #readProgramTerm( #readTermTag ERROR, _ ) => ( error )
 
   rule #readProgramTerm( #readTermTag CON => #readConType #readType( BitStream( I, Bs ) ),
                          BitStream( I => I +Int #typeLength, Bs )
                        )
 
-  rule #readProgramTerm( #readConType UNIT  => ( con unit () ),
-                         BitStream( I => #nextByteBoundary( I ), _ )
-                       )
+  rule #readProgramTerm( #readConType UNIT, _ ) => ( con unit () )
 
-  rule #readProgramTerm( #readConType BOOL => ( con bool #bit2boolval( #readNBits( 1, BitStream( I, Bs ) ) ) ),
-                         BitStream( I => #nextByteBoundary( I ), Bs )
-                       )
+  rule #readProgramTerm( #readConType BOOL, BitStream( I, BYTES) ) => ( con bool #bit2boolval( #readNBits( 1, BitStream( I, BYTES ) ) ) )
 
-  rule #readProgramTerm( TERM:Term ~> ., BitStream( X, BYTES ) ) => TERM
-    requires (X /Int 8) ==Int lengthBytes( BYTES )
+  rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
 
 ```
 
