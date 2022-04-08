@@ -323,7 +323,8 @@ uninstall:
 #------------
 KPROVE_OPTS :=
 
-prove_tests := $(wildcard unit-tests/*.md)
+prove_tests := $(wildcard unit-tests/*.md) \
+               $(wildcard simple-proofs/*.md)
 
 test-prove: $(prove_tests:=.prove)
 
@@ -332,6 +333,12 @@ unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verificat
 
 unit-tests/verification/haskell/verification-kompiled/timestamp: unit-tests/verification.k $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory unit-tests/verification/haskell
+
+simple-proofs/%.md.prove: simple-proofs/%.md simple-proofs/verification/haskell/verification-kompiled/timestamp
+	$(KPLUTUS) prove --directory simple-proofs/verification/haskell $< $(KPROVE_OPTS)
+
+simple-proofs/verification/haskell/verification-kompiled/timestamp: simple-proofs/verification.k $(kplutus_includes)
+	$(KOMPILE) --backend haskell $< --directory simple-proofs/verification/haskell
 
 
 # Testing
