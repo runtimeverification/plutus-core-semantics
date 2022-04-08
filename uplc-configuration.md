@@ -40,6 +40,8 @@ is used to keep track of the data emitted by the `trace` builtin.
 
   configuration <k> #handleProgram($PGM:Program) </k>
                 <env> .Env </env>
+                <heap> .Map </heap>
+                <current> 0 </current>
                 <trace> .List </trace>
 ```
 
