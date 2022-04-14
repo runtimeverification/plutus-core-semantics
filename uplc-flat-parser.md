@@ -18,11 +18,15 @@ The following function is the entry point to the flat parser.
   syntax ConcreteProgram ::= #bytes2program( Bytes )     [function]
                            | #bytes2program( String, K ) [function]
 
-  rule #bytes2program( BYTES ) => #bytes2program( #readVersion( BitStream( 0, BYTES ) ),
-                                                  #readProgramTerm( #readTerm, BitStream( #versionLength, BYTES ) )
-                                                )
+  rule #bytes2program( BYTES ) =>
+    #let
+      VERSION = #readVersion( BitStream( 0, BYTES ) )
+    #in
+      #bytes2program( #getDatum( VERSION ),
+                      #readProgramTerm( #readTerm, BitStream( #getBitLength( VERSION ), BYTES ) )
+                    )
 
-  rule #bytes2program( VERSION, TERM:Term ~> .) => ( program String2Version( VERSION ) TERM )
+  rule #bytes2program( VERSION, TERM:Term ~> . ) => ( program String2Version( VERSION ) TERM )
 ```
 
 The following KItems are used to manage control in the function above.
@@ -34,23 +38,55 @@ The following KItems are used to manage control in the function above.
                  | "#readConType" Int
 ```
 
-
 ## Parsing The program version
 
 The program version is specified as 3 unsigned integers. This implementation only accounts for
 version numbers that are less than 7 bits and needs to be updated to parse larger integers.
 
 ```k
-  syntax Int ::= "#versionLength" [macro]
-//---------------------------------------
-  rule #versionLength => 24
+  syntax StringDatum ::= SDat( BitLength:Int, Datum:String )
 
-  syntax String ::= #readVersion(BitStream) [function]
-//----------------------------------------------------
+  syntax Int ::= #getBitLength( StringDatum ) [function]
+//------------------------------------------------------
+  rule #getBitLength( SDat( I, _ ) ) => I
+
+  syntax String ::= #getDatum( StringDatum ) [function]
+//-----------------------------------------------------
+  rule #getDatum( SDat( _, S ) ) => S
+
+  syntax KItem ::= "#read1stVersion" String
+                 | "#read2ndVersion" String
+                 | "#read3rdVersion" String
+
+  syntax StringDatum ::= #readVersion( BitStream )    [function]
+  syntax StringDatum ::= #readVersion( K, BitStream ) [function]
+//--------------------------------------------------------------
   rule #readVersion( BitStream( I, BYTES ) ) =>
-    Int2String( #readNBits( 8, BitStream( I, BYTES         ) ) ) +String "." +String
-    Int2String( #readNBits( 8, BitStream( I +Int 8,  BYTES ) ) ) +String "." +String
-    Int2String( #readNBits( 8, BitStream( I +Int 16, BYTES ) ) )
+    #let
+      VARDATA = #getVarLenData( BitStream( I, BYTES ) )
+    #in
+      #readVersion( #read1stVersion #getDatumAsString( VARDATA ) +String ".",
+                    BitStream( I +Int #getBitLength( VARDATA ), BYTES )
+                  )
+
+  rule #readVersion( #read1stVersion S, BitStream( I, BYTES ) ) =>
+    #let
+      VARDATA = #getVarLenData( BitStream( I, BYTES ) )
+    #in
+      #readVersion( #read2ndVersion S +String #getDatumAsString( VARDATA ) +String ".",
+                    BitStream( I +Int #getBitLength( VARDATA ), BYTES )
+                  )
+
+  rule #readVersion( #read2ndVersion S, BitStream( I, BYTES ) ) =>
+    #let
+      VARDATA = #getVarLenData( BitStream( I, BYTES ) )
+    #in
+      SDat( I +Int #getBitLength( VARDATA ) , S +String #getDatumAsString( VARDATA ) )
+
+  syntax String ::= #getDatumAsString( VarLenDatum ) [function]
+//-------------------------------------------------------------
+  rule #getDatumAsString( VDat( _ , D ) ) => Int2String( D )
+
 ```
 
 ## Reading Terms

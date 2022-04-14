@@ -27,5 +27,20 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #getVarLenData( BitStream( 0, String2Bytes( "\x01\x00" ) ) ) )
     => simplified( VDat( 8, 1 ) ) ... </k>
 
+  claim <k> simplify( #readVersion( BitStream ( 0, String2Bytes( "\x01\x00\x00" ) ) ) )
+    => simplified( SDat( 24, "1.0.0" ) ) ... </k>
+
+  claim <k> simplify( #readVersion( BitStream ( 0, String2Bytes( "\x01\x02\x03" ) ) ) )
+    => simplified( SDat( 24, "1.2.3" ) ) ... </k>
+
+  claim <k> simplify( #readVersion( BitStream ( 0, String2Bytes( "\x80\x01\x01\x02" ) ) ) )
+    => simplified( SDat( 32, "128.1.2" ) ) ... </k>
+
+  claim <k> simplify( #readVersion( BitStream ( 0, String2Bytes( "\x80\x01\x80\x02\x80\x03" ) ) ) )
+    => simplified( SDat( 48, "128.256.384" ) ) ... </k>
+
+  claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x49\x81" ) ) )
+    => simplified( ( program 1.0.0 ( con unit ()) ) ) ... </k>
+
 endmodule
 ```
