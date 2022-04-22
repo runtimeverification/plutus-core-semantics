@@ -17,7 +17,6 @@ module UPLC-INTEGER-BUILTINS
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
            < con integer I1 +Int I2 > ... </k>
-//          [priority(49)]
 
   rule <k> #eval(addInteger, _) => (error) ... </k> [owise]
 ```
