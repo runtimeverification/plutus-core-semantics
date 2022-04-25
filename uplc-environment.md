@@ -8,9 +8,11 @@ module UPLC-ENVIRONMENT
   imports UPLC-ID
   imports BOOL
   imports K-EQUAL
+  imports MAP
 
   syntax Bindable
-  syntax Bind ::= bind(UplcId, Bindable)
+  syntax Bind ::= bind(UplcId, Int)
+
   syntax Env ::= List{Bind,""} 
 
   syntax Bool ::= #in(Env, UplcId) [function]
@@ -19,9 +21,9 @@ module UPLC-ENVIRONMENT
   rule #in(bind(Y:UplcId, _) E:Env, X:UplcId) => #in(E, X)
   requires X =/=K Y
   
-  syntax Bindable ::= #lookup(Env, UplcId) [function]
-  rule #lookup(bind(X:UplcId, V:Bindable) _, X:UplcId) => V
-  rule #lookup(bind(X:UplcId, _) E:Env, Y:UplcId) => #lookup(E, Y)
+  syntax Value ::= #lookup(Env, UplcId, Map) [function]
+  rule #lookup(bind(X:UplcId, I:Int) _, X:UplcId, M:Map) => {M[I]}:>Value
+  rule #lookup(bind(X:UplcId, _) E:Env, Y:UplcId, M:Map) => #lookup(E, Y, M)
   requires X =/=K Y
 
   syntax Env ::= #push(Env, Bind) [function]
