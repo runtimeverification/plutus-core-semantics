@@ -348,18 +348,10 @@ TEST_MSG      := "\n>>> Testing "
 TEST_OPTIONS  := --result-only | \
 		 sed -e 's/\[\]//g' \
                      -e 's/\(.TermList\s*\|.ConstantList\s*\|.DataList\s*\|.Env\s*\)//g' 
-TEST_OPTIONS2 :=
-CHECK         := diff --ignore-all-space 
-
+CHECK         := diff --ignore-all-space
 TEST          := $(KPLUTUS) run
-TEST2         := $(KPLUTUS) run
-
-UPLC          := ./uplc
-
+UPLC          := uplc
 EXPECTED      :=.expected
-EXPECTED2     :=.krun.expected
-
-CONTINUE      := ||
 
 # Failing
 # -------
@@ -372,29 +364,19 @@ failing_tests := $(shell grep -v $(COMMRE) tests/failing)
 
 # Running the test
 # ----------------
-# Each test run will run kplc run on two expected outputs: one from kplc and another from uplc. In
-# addition to comparing the resulting program term, comparing all cell outputs allows us to write
-# regression tests for all cell values. Some tests may not have outputs from both interpreters so
-# the tests only need to be performed if the expected output exists.
 
 tests/%.uplc.run: tests/%.uplc
 	@echo $(BWhite)$(TEST_MSG)$(Color_off)$(Green)$<$(Color_Off)"\n"
-	[ ! -f $<$(EXPECTED)  ] $(CONTINUE) $(TEST)  $< $(TEST_OPTIONS) > $<.out
-	[ ! -f $<$(EXPECTED)  ] $(CONTINUE) $(CHECK) $<.out $<$(EXPECTED)
-	[ ! -f $<$(EXPECTED2) ] $(CONTINUE) $(TEST2) $< $(TEST_OPTIONS2) > $<.out
-	[ ! -f $<$(EXPECTED2) ] $(CONTINUE) $(CHECK) $<.out $<$(EXPECTED2)
+	$(TEST)  $< $(TEST_OPTIONS) > $<.out
+	$(CHECK) $<.out $<$(EXPECTED)
 
 TEST_FLAT          := $(KPLUTUS) run
-TEST_FLAT2         := $(KPLUTUS) run
 TEST_FLAT_OPTIONS  := --flat-format $(TEST_OPTIONS)
-TEST_FLAT_OPTIONS2 := --flat-format
 
 tests/%.flat.run: tests/%.flat
 	@echo $(BWhite)$(TEST_MSG)$(Color_off)$(Green)$<$(Color_Off)"\n"
 	$(TEST_FLAT) $< $(TEST_FLAT_OPTIONS) > $<.out
 	$(CHECK) $<.out $<$(EXPECTED)
-	$(TEST_FLAT2) $< $(TEST_FLAT_OPTIONS2) > $<.out
-	$(CHECK) $<.out $<$(EXPECTED2)
 
 update-results: conformance-test
 update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
@@ -405,7 +387,6 @@ update-results: TEST_OPTIONS= | tr -d '\012\015'
 update-results: TEST_FLAT_OPTIONS= | tr -d '\012\015'
 update-results: CHECK=cp
 update-results: TEST_MSG="\n>>> Updating results for "
-update-results: CONTINUE=;
 
 # Conformance tests
 #
