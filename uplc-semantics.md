@@ -23,11 +23,11 @@ module UPLC-SEMANTICS
                       | "[]" "(" "lam" UplcId Term ")"
                       | "[]" "(" "delay" Term ")"
 
-  syntax K ::= #app(Term, TermList, Env) [function]
+  syntax K ::= #app(Term, TermList, Env) [function, functional]
   rule #app(M:Term, (N:Term T:TermList), RHO:Env) => #appAux(T, M ~> [_ N RHO ], RHO)
 
-  syntax K ::= #appAux(TermList, K, Env) [function]
-  rule #appAux(.TermList, K:K, RHO:Env) => K
+  syntax K ::= #appAux(TermList, K, Env) [function, functional]
+  rule #appAux(.TermList, K:K, _RHO:Env) => K
   rule #appAux((N:Term T:TermList), K:K, RHO:Env) => #appAux(T, K ~> [_ N RHO], RHO) 
 ```
 
