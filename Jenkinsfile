@@ -31,6 +31,7 @@ pipeline {
             stage('benchmark-validation-examples') { steps { sh 'make test-benchmark-validation-examples -j4 --output-sync=recurse' } }
             stage('nofib-exe-examples')            { steps { sh 'make test-nofib-exe-examples -j4 --output-sync=recurse'            } }
             stage('flat')                          { steps { sh 'make test-flat -j4 --output-sync=recurse'                          } }
+            stage('new-syntax')                    { steps { sh 'make test-new-syntax -j4 --output-sync=recurse'                    } }
           }
         }
         stage('Test Interactive') {

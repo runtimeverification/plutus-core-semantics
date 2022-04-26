@@ -27,8 +27,9 @@ the program syntax, `<env>` (a stack of bindings between identifiers
 and values) is for its environment, and `<trace>` (a list of strings)
 is used to keep track of the data emitted by the `trace` builtin.
 
-```k 
-  syntax Value ::= #eval(BuiltinName, List) 
+```k
+  syntax UValue ::= Value
+  syntax UValue ::= #eval(BuiltinName, List)
 
   syntax Program ::= #handleProgram(Program) [function]
 
@@ -40,6 +41,8 @@ is used to keep track of the data emitted by the `trace` builtin.
 
   configuration <k> #handleProgram($PGM:Program) </k>
                 <env> .Env </env>
+                <heap> .Map </heap>
+                <current> 0 </current>
                 <trace> .List </trace>
 ```
 
