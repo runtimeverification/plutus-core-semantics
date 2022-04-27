@@ -23,13 +23,6 @@ module UPLC-SEMANTICS
   syntax FinalState ::= "[]" "(" "con" TypeConstant Constant ")"
                       | "[]" "(" "lam" UplcId Term ")"
                       | "[]" "(" "delay" Term ")"
-
-  syntax K ::= #app(Term, TermList, Env) [function, functional]
-  rule #app(M:Term, (N:Term T:TermList), RHO:Env) => #appAux(T, M ~> [_ N RHO ], RHO)
-
-  syntax K ::= #appAux(TermList, K, Env) [function, functional]
-  rule #appAux(.TermList, K:K, _RHO:Env) => K
-  rule #appAux((N:Term T:TermList), K:K, RHO:Env) => #appAux(T, K ~> [_ N RHO], RHO) 
 ```
 
 ## CEK machine
@@ -52,7 +45,10 @@ module UPLC-SEMANTICS
 
   rule <k> (force M:Term) => (M ~> Force) ... </k>
 
-  rule <k> [ M T ] => #app(M, T, RHO) ... </k>
+  rule <k> < delay M:Term RHO:Env > ~> Force => M ... </k>
+       <env> _ => RHO:Env </env>
+
+  rule <k> [ M N ] => M ~> [_ N RHO ] ... </k>
        <env> RHO:Env </env>
 
   rule <k> V:Value ~> [_ M RHO:Env ] => M ~> [ V _] ... </k>
@@ -63,21 +59,24 @@ module UPLC-SEMANTICS
        <heap> Heap => Heap[  I <- V ] </heap>
        <current> I => I +Int 1 </current>
 
-  rule <k> < delay M:Term RHO:Env > ~> Force => M ... </k>
-       <env> _ => RHO:Env </env>
+  rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
+           #eval(BN, (L ListItem(V))) ... </k>
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List I:Int > _] =>
            < builtin BN (L ListItem(V)) (I -Int 1) > ... </k>
   requires I >Int 1
 
-  rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
-           #eval(BN, (L ListItem(V))) ... </k>
+  rule <k> _V:Value ~> [ < con _ _ > _] => (error) ... </k>
+
+  rule <k> _V:Value ~> [ < delay _ _ > _] => (error) ... </k>
 
   rule <k> < con T:TypeConstant C:Constant > ~> . => [] (con T C) </k>
 
   rule <k> < lam I:UplcId T:Term _E:Env > ~> . => [] (lam I T) </k>
 
   rule <k> < delay T:Term _E:Env > ~> . => [] (delay T) </k>
+
+  rule <k> < builtin _ _ _ > ~> . => (error) </k>
 ```
 
 ```k

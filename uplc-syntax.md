@@ -32,7 +32,7 @@ module UPLC-SYNTAX
                 | "(" "con" TypeConstant Constant ")"
                 | "(" "builtin" BuiltinName ")"
                 | "(" "lam" UplcId Term ")"
-                | "[" Term TermList "]"
+                | "[" Term Term "]"
                 | "(" "delay" Term ")"
                 | "(" "force" Term ")"
                 | "(" "error" ")"
@@ -41,8 +41,6 @@ module UPLC-SYNTAX
                  | "<" "lam" UplcId Term Env ">"
                  | "<" "delay" Term Env ">"
                  | "<" "builtin" BuiltinName List Int ">"
-
-  syntax TermList ::= NeList{Term, ""}
 
   syntax TypeConstant ::= "integer"
                         | "data"
