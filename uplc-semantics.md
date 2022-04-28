@@ -7,16 +7,18 @@ require "uplc-bytestring-builtins.md"
 require "uplc-crypto-builtins.md"
 require "uplc-string-builtins.md"
 require "uplc-data-builtins.md"
+require "uplc-hash.md"
 
 module UPLC-SEMANTICS
+  imports INT
+  imports MAP
   imports UPLC-POLYMORPHIC-BUILTINS
   imports UPLC-INTEGER-BUILTINS
   imports UPLC-BYTESTRING-BUILTINS
   imports UPLC-CRYPTO-BUILTINS
   imports UPLC-STRING-BUILTINS
   imports UPLC-DATA-BUILTINS
-  imports INT
-  imports MAP
+  imports UPLC-HASH
 
   syntax Bindable ::= Value
 
@@ -55,9 +57,8 @@ module UPLC-SEMANTICS
        <env> _ => RHO </env>
 
   rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Env > _] => M ... </k>
-       <env> _ => #push( RHO, bind( X, I ) ) </env>
-       <heap> Heap => Heap[  I <- V ] </heap>
-       <current> I => I +Int 1 </current>
+       <env> _ => #push( RHO, bind( X, #uplcHash(V) ) ) </env>
+       <heap> Heap => Heap[  #uplcHash(V) <- V ] </heap>
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
            #eval(BN, (L ListItem(V))) ... </k>
@@ -66,15 +67,15 @@ module UPLC-SEMANTICS
            < builtin BN (L ListItem(V)) (I -Int 1) > ... </k>
   requires I >Int 1
 
-  rule <k> _V:Value ~> [ < con _ _ > _] => (error) ... </k>
-
-  rule <k> _V:Value ~> [ < delay _ _ > _] => (error) ... </k>
-
   rule <k> < con T:TypeConstant C:Constant > ~> . => [] (con T C) </k>
 
   rule <k> < lam I:UplcId T:Term _E:Env > ~> . => [] (lam I T) </k>
 
   rule <k> < delay T:Term _E:Env > ~> . => [] (delay T) </k>
+
+  rule <k> _V:Value ~> [ < con _ _ > _] => (error) ... </k>
+
+  rule <k> _V:Value ~> [ < delay _ _ > _] => (error) ... </k>
 
   rule <k> < builtin _ _ _ > ~> . => (error) </k>
 ```
