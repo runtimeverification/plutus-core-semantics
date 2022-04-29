@@ -78,6 +78,10 @@ module UPLC-SEMANTICS
 
   rule <k> _V:Value ~> [ < delay _ _ > _] => (error) </k>
 
+  rule <k> _V:Value ~> [ < con _ _ > _] => (error) ... </k>
+
+  rule <k> _V:Value ~> [ < delay _ _ > _] => (error) ... </k>
+
   rule <k> < builtin _ _ _ > ~> . => (error) </k>
 ```
 
