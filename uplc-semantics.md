@@ -35,29 +35,30 @@ module UPLC-SEMANTICS
   rule <k> X:UplcId => #lookup(RHO, X, Heap) ... </k>
        <env> RHO </env>
        <heap> Heap </heap>
+  requires #in(RHO, X)
 
   rule <k> (con T:TypeConstant C:Constant) =>
            < con T:TypeConstant C:Constant > ... </k>
 
   rule <k> (lam X:UplcId M:Term) => < lam X M RHO > ... </k>
-       <env> RHO:Env </env>
+       <env> RHO:Map </env>
 
   rule <k> (delay M:Term) => < delay M RHO > ... </k>
-       <env> RHO:Env </env>
+       <env> RHO:Map </env>
 
   rule <k> (force M:Term) => (M ~> Force) ... </k>
 
-  rule <k> < delay M:Term RHO:Env > ~> Force => M ... </k>
-       <env> _ => RHO:Env </env>
+  rule <k> < delay M:Term RHO:Map > ~> Force => M ... </k>
+       <env> _ => RHO:Map </env>
 
   rule <k> [ M N ] => M ~> [_ N RHO ] ... </k>
-       <env> RHO:Env </env>
+       <env> RHO:Map </env>
 
-  rule <k> V:Value ~> [_ M RHO:Env ] => M ~> [ V _] ... </k>
+  rule <k> V:Value ~> [_ M RHO:Map ] => M ~> [ V _] ... </k>
        <env> _ => RHO </env>
 
-  rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Env > _] => M ... </k>
-       <env> _ => #push( RHO, bind( X, #uplcHash(V) ) ) </env>
+  rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Map > _] => M ... </k>
+       <env> _ => #push( RHO, X, #uplcHash(V) ) </env>
        <heap> Heap => Heap[  #uplcHash(V) <- V ] </heap>
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
@@ -69,9 +70,13 @@ module UPLC-SEMANTICS
 
   rule <k> < con T:TypeConstant C:Constant > ~> . => [] (con T C) </k>
 
-  rule <k> < lam I:UplcId T:Term _E:Env > ~> . => [] (lam I T) </k>
+  rule <k> < lam I:UplcId T:Term _ > ~> . => [] (lam I T) </k>
 
-  rule <k> < delay T:Term _E:Env > ~> . => [] (delay T) </k>
+  rule <k> < delay T:Term _ > ~> . => [] (delay T) </k>
+
+  rule <k> _V:Value ~> [ < con _ _ > _] => (error) </k>
+
+  rule <k> _V:Value ~> [ < delay _ _ > _] => (error) </k>
 
   rule <k> _V:Value ~> [ < con _ _ > _] => (error) ... </k>
 

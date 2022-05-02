@@ -6,27 +6,20 @@ require "uplc-syntax.md"
 
 module UPLC-ENVIRONMENT
   imports UPLC-ID
-  imports BOOL
-  imports K-EQUAL
+  imports BOOL-SYNTAX
+  imports INT-SYNTAX
   imports MAP
+  imports LIST
 
-  syntax Bindable
-  syntax Bind ::= bind(UplcId, Int)
-
-  syntax Env ::= List{Bind,""} 
-
-  syntax Bool ::= #in(Env, UplcId) [function]
-  rule #in(.Env, _) => false 
-  rule #in(bind(X:UplcId, _) _, X) => true
-  rule #in(bind(Y:UplcId, _) E:Env, X:UplcId) => #in(E, X)
-  requires X =/=K Y
+  syntax Bool ::= #in(Map, UplcId) [function, functional]
+  rule #in(E:Map, X:UplcId) => X in_keys(E)
   
-  syntax Value ::= #lookup(Env, UplcId, Map) [function]
-  rule #lookup(bind(X:UplcId, I:Int) _, X:UplcId, M:Map) => {M[I]}:>Value
-  rule #lookup(bind(X:UplcId, _) E:Env, Y:UplcId, M:Map) => #lookup(E, Y, M)
-  requires X =/=K Y
+  syntax Value ::= #lookup(Map, UplcId, Map) [function]
+  rule #lookup((_ X:UplcId |-> _ ListItem(I:Int)), X, H:Map) => {H[I]}:>Value
 
-  syntax Env ::= #push(Env, Bind) [function]
-  rule #push(E:Env, B:Bind) => (B E)
+  syntax Map ::= #push(Map, UplcId, Int) [function, functional]
+  rule #push(E:Map, X:UplcId, I:Int) => E[X <- ({E[X]}:>List ListItem(I))]
+  requires X in_keys(E)
+  rule #push(E:Map, X:UplcId, I:Int) => E[ X <- ListItem(I)] [owise]
 endmodule
 ```
