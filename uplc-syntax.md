@@ -38,8 +38,8 @@ module UPLC-SYNTAX
                 | "(" "error" ")"
 
   syntax Value ::= "<" "con" TypeConstant Constant ">"
-                 | "<" "lam" UplcId Term Env ">"
-                 | "<" "delay" Term Env ">"
+                 | "<" "lam" UplcId Term Map ">"
+                 | "<" "delay" Term Map ">"
                  | "<" "builtin" BuiltinName List Int ">"
 
   syntax TypeConstant ::= "integer"
