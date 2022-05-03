@@ -425,7 +425,7 @@ conformance-test: test-simple test-new-syntax        \
                   test-uplc-examples                 \
                   test-benchmark-validation-examples \
                   test-nofib-exe-examples            \
-                  test-flat
+                  test-flat test-error
 
 # Simple Tests
 
@@ -471,3 +471,14 @@ all_new_syntax_tests := $(wildcard tests/new-syntax/*.uplc)
 new_syntax_tests     := $(filter-out $(failing_tests), $(all_new_syntax_tests))
 
 test-new-syntax: $(new_syntax_tests:=.krun)
+
+# error Tests
+#
+# These tests will evaluate to an `(error)` term. When uplc encounters this term during evaluation,
+# it will exit with a non-zero status and therefore require different recipes to update the result.
+# TODO: figure out how to incorporate uplc for these tests.
+
+all_error_tests := $(wildcard tests/error/*.uplc)
+error_tests     := $(filter-out $(failing_tests), $(all_error_tests))
+
+test-error: $(error_tests:=.krun)
