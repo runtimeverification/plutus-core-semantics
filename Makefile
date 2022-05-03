@@ -109,8 +109,9 @@ export PLUGIN_SUBMODULE
 
 .PHONY: all clean distclean                \
         deps k-deps plugin-deps libff      \
-        build build-kplutus build-haskell  \
-        build-llvm install uninstall       \
+        build build-coverage build-kplutus \
+        build-haskell build-llvm           \
+        install uninstall                  \
         test-new-syntax test-simple        \
         test-uplc-examples                 \
         test-benchmark-validation-examples \
@@ -236,7 +237,8 @@ llvm_main_module   := UPLC
 llvm_syntax_module := UPLC-SYNTAX
 llvm_main_file     := uplc.md
 llvm_main_filename := $(basename $(notdir $(llvm_main_file)))
-llvm_kompiled      := $(llvm_dir)/$(llvm_main_filename)-kompiled/interpreter
+llvm_kompiled_dir  := $(llvm_dir)/$(llvm_main_filename)-kompiled/
+llvm_kompiled      := $(llvm_kompiled_dir)/interpreter
 
 haskell_dir            := haskell
 haskell_main_module    := UPLC
@@ -263,6 +265,12 @@ $(KPLUTUS_LIB)/$(haskell_kompiled): $(kplutus_includes) $(plugin_includes) $(KPL
 	    --main-module $(haskell_main_module)         \
 	    --syntax-module $(haskell_syntax_module)     \
 	    $(KOMPILE_OPTS)
+
+# Coverage Processing
+# -------------------
+
+coverage:
+	kcovr $(KPLUTUS_LIB)/$(llvm_kompiled_dir) -- $(kplutus_includes) > $(BUILD_DIR)/coverage.xml
 
 # Installing
 # ----------
@@ -293,6 +301,9 @@ $(KPLUTUS_LIB)/release.md: INSTALL.md
 	cat INSTALL.md                                >> $@
 
 build: $(patsubst %, $(KPLUTUS_BIN)/%, $(install_bins)) $(patsubst %, $(KPLUTUS_LIB)/%, $(install_libs))
+
+build-coverage: KOMPILE_OPTS += --coverage
+build-coverage: $(KPLUTUS_LIB)/$(llvm_kompiled)
 
 build-kplutus: $(KPLUTUS_BIN)/kplc $(plugin_includes) $(kplutus_includes)
 build-llvm:    $(KPLUTUS_LIB)/$(llvm_kompiled)
