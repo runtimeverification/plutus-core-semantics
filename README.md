@@ -43,5 +43,7 @@ Testing
     nofib-exe is a program that generates large programs that can serve as performance tests.
     This program is a part of the plutus repository.
 
+-   Tests that evaluate to an `error` term: `make test-error`
+
 -   Update test results: `make update-results`
     Update all test results. Note: this requires having the uplc program installed in the machine's PATH.
