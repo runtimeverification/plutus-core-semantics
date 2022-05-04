@@ -116,9 +116,8 @@ export PLUGIN_SUBMODULE
         test-uplc-examples                 \
         test-benchmark-validation-examples \
         test-nofib-exe-examples            \
-        conformance-test                   \
-        update-results                     \
-        test-prove
+        conformance-test update-results    \
+        test-prove fresh-test-coverage
 
 .SECONDARY:
 
@@ -330,6 +329,14 @@ $(DESTDIR)$(INSTALL_LIB)/%: $(KPLUTUS_LIB)/%
 uninstall:
 	rm -rf $(DESTDIR)$(INSTALL_BIN)/kplutus
 	rm -rf $(DESTDIR)$(INSTALL_LIB)/kplutus
+
+procs := $(shell nproc)
+
+fresh-test-coverage:
+	rm -r $(KPLUTUS_LIB)/$(llvm_kompiled_dir)
+	make build-coverage
+	make conformance-test -j$(procs)
+	make coverage
 
 # Prove tests
 #------------
