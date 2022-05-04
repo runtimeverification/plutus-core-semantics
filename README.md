@@ -47,3 +47,18 @@ Testing
 
 -   Update test results: `make update-results`
     Update all test results. Note: this requires having the uplc program installed in the machine's PATH.
+
+Rule Coverage
+-------------
+
+This project contains facilities to generate coverage metrics for K rewrite rules that were executed by `kplc run`.
+This is helpful in ensuring that the test suite contains input programs that exercise all rewrite rules in the semantics.
+
+To generate this information, run the following command:
+
+```
+  make fresh-test-coverage
+```
+
+This command generates a `.build/coverage.xml` file. This file contains information about the K
+rewrite rules that have been exercised for all tests in the tests/ directory.
