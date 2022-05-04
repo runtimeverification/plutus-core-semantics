@@ -54,13 +54,11 @@ Rule Coverage
 This project contains facilities to generate coverage metrics for K rewrite rules that were executed by `kplc run`.
 This is helpful in ensuring that the test suite contains input programs that exercise all rewrite rules in the semantics.
 
-To generate this information, run the following sequence of commands:
+To generate this information, run the following command:
 
 ```
-  make build-coverage
-  make conformance-test
-  make coverage
+  make fresh-test-coverage
 ```
 
-This sequence of commands generates a `.build/coverage.xml` file. This file contains information
-about the k rewrite rules that have been exercised while `make conformance-test` was running.
+This command generates a `.build/coverage.xml` file. This file contains information about the K
+rewrite rules that have been exercised for all tests in the tests/ directory.
