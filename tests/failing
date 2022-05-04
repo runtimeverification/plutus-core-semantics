@@ -115,3 +115,11 @@ tests/nofib-exe-examples/lastpiece.uplc
 tests/nofib-exe-examples/prime-P200.uplc
 tests/nofib-exe-examples/primetest-large.uplc
 tests/nofib-exe-examples/queens-6-bt.uplc
+#
+# Error examples
+#
+# File addInteger-one-arg.uplc calls addInteger with
+# a single argument. In the current semantics,
+# kplc returns an error. However, it is a valid program as
+# that should return a term.
+tests/error/addInteger-one-arg.uplc
