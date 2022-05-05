@@ -1,0 +1,1 @@
+(program 1.0.0[[(builtin equalsInteger)(con string "Ola")](con integer 10)])

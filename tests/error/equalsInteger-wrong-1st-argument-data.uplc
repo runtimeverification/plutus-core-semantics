@@ -1,0 +1,1 @@
+(program 1.0.0[[(builtin equalsInteger)(con data {ByteString #AFD3})](con integer 10)])
