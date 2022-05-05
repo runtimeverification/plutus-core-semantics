@@ -72,6 +72,7 @@ module UPLC-BYTESTRING-BUILTINS
                      (ListItem(< con bytestring B:ByteString >)
                       ListItem(< con integer I:Int >))) =>
            < con integer #indexByteString(B, I) > ... </k>
+  requires ((I >=Int 0) andBool (I <=Int (size(mkHexStringList(trimByteString(B))) -Int 1)))
 
   rule <k> #eval(indexByteString, _) => (error) ... </k> [owise]
 
