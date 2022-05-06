@@ -179,7 +179,6 @@ module UPLC-BYTESTRING
   syntax Int ::= #indexByteString(ByteString, Int) [function]
   rule #indexByteString(B, I) =>
        hexString2Int(getHexStringFromHexList(mkHexStringList(trimByteString(B)), I))
-  requires ((I >=Int 0) andBool (I <=Int (size(mkHexStringList(trimByteString(B))) -Int 1)))
 
   syntax Bool ::= #equalsByteString(ByteString, ByteString) [function]
   rule #equalsByteString(B1, B2) =>
