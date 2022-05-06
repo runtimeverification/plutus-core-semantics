@@ -1,1 +1,0 @@
-(program 1.0.0[[(builtin lessThanInteger)(con integer 10)](con data {ByteString #AFD3})])
