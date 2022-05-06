@@ -1,1 +1,0 @@
-(program 1.0.0[[(builtin lessThanEqualsInteger)(con integer 10)](con pair(integer)(integer) (90, 93))])

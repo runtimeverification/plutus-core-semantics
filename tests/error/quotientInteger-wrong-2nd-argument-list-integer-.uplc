@@ -1,1 +1,0 @@
-(program 1.0.0[[(builtin quotientInteger)(con integer 10)](con list(integer) [42, 10, 53])])
