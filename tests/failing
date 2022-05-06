@@ -22,7 +22,7 @@ tests/simple/addInteger-uncurried.uplc
 # that should return a term. This of course should be repetead for the
 # remaining builtins and will not be included until we solve this.
 tests/simple/addInteger-one-arg.uplc
-tests/simple/addInteger-no-arg.uplc
+tests/simple/addInteger-no-args.uplc
 #
 # UPLC examples 
 #
