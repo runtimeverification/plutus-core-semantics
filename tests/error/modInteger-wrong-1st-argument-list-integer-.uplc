@@ -1,0 +1,1 @@
+(program 1.0.0[[(builtin modInteger)(con list(integer) [42, 10, 53])](con integer 10)])
