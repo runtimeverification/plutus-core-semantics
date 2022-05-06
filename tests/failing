@@ -16,6 +16,13 @@ tests/simple/var.uplc
 tests/simple/ifThenElse-no-force.uplc
 # Non-iterative application is not supported yet.
 tests/simple/addInteger-uncurried.uplc
+# Programs addInteger-one-arg.uplc and addInteger-no-arg.uplc call
+# addInteger with a single argument or none. In the current semantics,
+# kplc returns an error. However, they are valid programs as
+# that should return a term. This of course should be repetead for the
+# remaining builtins and will not be included until we solve this.
+tests/simple/addInteger-one-arg.uplc
+tests/simple/addInteger-no-arg.uplc
 #
 # UPLC examples 
 #
@@ -118,10 +125,3 @@ tests/nofib-exe-examples/queens-6-bt.uplc
 #
 # Error examples
 #
-# Programs in addInteger-one-arg.uplc and addInteger-no-arg.uplc call
-# addInteger with a single argument or none. In the current semantics,
-# kplc returns an error. However, they are valid programs as
-# that should return a term. This of course should be repetead for the
-# remaining builtins and will not be included until we solve this.
-tests/error/addInteger-one-arg.uplc
-tests/error/addInteger-no-arg.uplc
