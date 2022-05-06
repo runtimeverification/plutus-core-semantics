@@ -77,91 +77,97 @@ module UPLC-SYNTAX
 ### Builtin Functions for Integers
 
 ```k
-  syntax BuiltinName ::= "addInteger"
-                       | "subtractInteger"
-                       | "multiplyInteger"
-                       | "divideInteger"
-                       | "quotientInteger"
-                       | "remainderInteger"
-                       | "modInteger"
-                       | "equalsInteger"
-                       | "lessThanInteger"
-                       | "lessThanEqualsInteger"
+  syntax BuiltinName ::= IntegerBuiltinName
+  syntax IntegerBuiltinName ::= "addInteger"
+                              | "subtractInteger"
+                              | "multiplyInteger"
+                              | "divideInteger"
+                              | "quotientInteger"
+                              | "remainderInteger"
+                              | "modInteger"
+                              | "equalsInteger"
+                              | "lessThanInteger"
+                              | "lessThanEqualsInteger"
 ```
 
 ### Builtin Functions for bytestring
 
 ```k
-  syntax BuiltinName ::= "appendByteString"
-                       | "consByteString"
-                       | "sliceByteString"
-                       | "lengthOfByteString"
-                       | "indexByteString"
-                       | "equalsByteString"
-                       | "lessThanByteString"
-                       | "lessThanEqualsByteString"
+  syntax BuiltinName ::= ByteStringBuiltinName
+  syntax ByteStringBuiltinName  ::= "appendByteString"
+                                  | "consByteString"
+                                  | "sliceByteString"
+                                  | "lengthOfByteString"
+                                  | "indexByteString"
+                                  | "equalsByteString"
+                                  | "lessThanByteString"
+                                  | "lessThanEqualsByteString"
 ```
 
 ### Builtin Functions for Cryptography
 
 ```k
-  syntax BuiltinName ::= "sha2_256"
-                       | "sha3_256"
-                       | "blake2b_256"
-                       | "verifySignature"
+  syntax BuiltinName ::= CryptoBuiltinName
+  syntax CryptoBuiltinName ::= "sha2_256"
+                             | "sha3_256"
+                             | "blake2b_256"
+                             | "verifySignature"
 ```
 
 ### Builtin Functions for String
 
 ```k
-  syntax BuiltinName ::= "appendString"
-                       | "equalsString"
-                       | "encodeUtf8"
-                       | "decodeUtf8"
+  syntax BuiltinName ::= StringBuiltinName
+  syntax StringBuiltinName ::= "appendString"
+                             | "equalsString"
+                             | "encodeUtf8"
+                             | "decodeUtf8"
 ```
 
 ### Polymorphic Builtin Functions
 
 ```k
-  syntax BuiltinName ::= "ifThenElse"
-                       | "chooseUnit"
-                       | "trace"
+  syntax BuiltinName ::= PolyBuiltinName
+  syntax PolyBuiltinName ::= "ifThenElse"
+                           | "chooseUnit"
+                           | "trace"
 ```
 
 ### Builtin Functions that Operate on Pairs
 
 ```k
-  syntax BuiltinName ::= "fstPair"
-                       | "sndPair"
+  syntax PolyBuiltinName ::= "fstPair"
+                           | "sndPair"
 ```
 
 ### Builtin Functions that Operate on Lists
 
 ```k
-  syntax BuiltinName ::= "chooseList"
-                       | "mkCons"
-                       | "headList"
-                       | "tailList"
-                       | "nullList"
+  syntax PolyBuiltinName ::= "chooseList"
+                           | "mkCons"
+                           | "headList"
+                           | "tailList"
+                           | "nullList"
 ```
 
 ### Builtin Functions that Operate on Data
 
 ```k
-  syntax BuiltinName ::= "chooseData"
-                       | "constrData"
-                       | "mapData"
-                       | "listData"
-                       | "iData"
-                       | "bData"
-                       | "unConstrData"
-                       | "unMapData"
-                       | "unListData"
-                       | "unIData"
-                       | "unBData"
-                       | "equalsData"
-                       | "mkPairData"
-                       | "mkNilData"
-                       | "mkNilPairData"
+  syntax BuiltinName ::= DataBuiltinName
+  syntax DataBuiltinName ::= "chooseData"
+                           | "constrData"
+                           | "mapData"
+                           | "listData"
+                           | "iData"
+                           | "bData"
+                           | "unConstrData"
+                           | "unMapData"
+                           | "unListData"
+                           | "unIData"
+                           | "unBData"
+                           | "equalsData"
+                           | "mkPairData"
+                           | "mkNilData"
+                           | "mkNilPairData"
 endmodule
 ```
