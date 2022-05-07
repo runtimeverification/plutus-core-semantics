@@ -1,0 +1,1 @@
+(program 0.0.0 [ [ (builtin equalsString) (con integer 0)] (con string " mundo!") ])
