@@ -1,0 +1,1 @@
+(program 1.0.0[[(builtin subtractInteger)(con bool True)](con integer 10)])

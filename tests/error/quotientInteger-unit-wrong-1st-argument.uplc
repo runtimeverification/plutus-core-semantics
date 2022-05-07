@@ -1,0 +1,1 @@
+(program 1.0.0[[(builtin quotientInteger)(con unit ())](con integer 10)])

@@ -1,0 +1,1 @@
+(program 1.0.0[[(builtin remainderInteger)(con unit ())](con integer 10)])
