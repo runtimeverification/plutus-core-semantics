@@ -2,10 +2,22 @@
 
 ```k
 require "uplc-configuration.md"
+require "uplc-syntax.md"
 
 module UPLC-POLYMORPHIC-BUILTINS
   imports UPLC-CONFIGURATION
+  imports UPLC-SYNTAX
+  imports BOOL
   imports K-EQUAL
+```
+
+## General error rule for polymorphic builtins
+
+All polymorphic builtins should be arguments to a call to `force`.
+
+```k
+  rule <k> (builtin BN:PolyBuiltinName) ~> K:KItem => (error) ... </k>
+  requires K =/=K Force
 ```
 
 ## `ifThenElse`
