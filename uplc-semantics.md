@@ -74,10 +74,6 @@ module UPLC-SEMANTICS
 
   rule <k> < delay T:Term _ > ~> . => [] (delay T) </k>
 
-  rule <k> _V:Value ~> [ < con _ _ > _] => (error) </k>
-
-  rule <k> _V:Value ~> [ < delay _ _ > _] => (error) </k>
-
   rule <k> _V:Value ~> [ < con _ _ > _] => (error) ... </k>
 
   rule <k> _V:Value ~> [ < delay _ _ > _] => (error) ... </k>
