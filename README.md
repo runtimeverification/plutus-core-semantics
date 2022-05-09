@@ -62,3 +62,9 @@ To generate this information, run the following command:
 
 This command generates a `.build/coverage.xml` file. This file contains information about the K
 rewrite rules that have been exercised for all tests in the tests/ directory.
+
+After running `make fresh-test-coverage`, the execution of
+`./no-hits.py -r` will show all the rules that have not been exercised
+in the last execution of `make fresh-test-coverage`. (By executing
+`./no-hits.py -t`, a Python 3 dictionary containing file names and
+line numbers is pretty-printed. This dictionary denotes the same as the rules printed with option `-r`.)

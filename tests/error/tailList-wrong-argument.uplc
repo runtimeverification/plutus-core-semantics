@@ -1,1 +1,1 @@
-(program 0.0.0 [(force (builtin headList)) (con integer 1)])
+(program 0.0.0 [(force (builtin tailList)) (con integer 1)])

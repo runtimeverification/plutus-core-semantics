@@ -16,45 +16,45 @@ def mk_con(type_name, con):
     return "(con "+ type_name + " " + con + ")"
 
 def mk_prg():
-    return "program 1.0.0" 
+    return "program 1.0.0"
 
-def wrongTypeBinary(bn, type_name):
+def mk_label(type_name):
+    return type_name.replace("(","-").replace(")", "-")
+
+def write_program(bn, basic_prg, type_name, file_label):
+    prg = "(" + mk_prg() + mk_apply(basic_prg, mk_con(type_name, some_instances[type_name])) + ")"
+    fn = bn + "-" + file_label + ".uplc"
+    h = open(fn, "w")
+    h.write(prg)
+    h.close()
+
+def wrong_type_binary(bn, type_name, first_arg, second_arg):
     global some_instances
     prg = mk_prg()
     builtin = "(builtin " + bn + ")"
 
     # Wrong 2nd argument
-    basic_prg = mk_apply(builtin, mk_con(type_name, some_instances[type_name]))
-    
-    for i in some_instances.keys():
-        if i != type_name:
-            prg = "(" + prg + mk_apply(basic_prg, mk_con(i, some_instances[i])) + ")"
-            fn = bn + "-wrong-2nd-argument-" + i.replace("(","-").replace(")", "-") + ".uplc"
-            print("// " + fn) 
-            print(prg)
-            h = open(fn, "w")
-            h.write(prg)
-            h.close()
-            prg = mk_prg()
-            print()
+    if second_arg:
+        basic_prg = mk_apply(builtin, mk_con(type_name, some_instances[type_name]))
 
-    # Wrong 1st argument    
-    for i in some_instances.keys():
-        if i != type_name:
-            basic_prg = mk_apply(builtin, mk_con(i, some_instances[i]))
-            prg = "(" + prg + mk_apply(basic_prg, mk_con(type_name, some_instances[type_name])) + ")"
-            fn = bn + "-wrong-1st-argument-" + i.replace("(","-").replace(")", "-") + ".uplc"
-            print("// " + fn) 
-            print(prg)
-            h = open(fn, "w")
-            h.write(prg)
-            h.close()
-            prg = mk_prg()
-            print()
-            
+        for i in some_instances.keys():
+            if i != type_name:
+                file_label = mk_label(i) + "-wrong-2nd-argument"
+                write_program(bn, basic_prg, i, file_label)
+        print("There were " + str(len(some_instances.keys())) + " files generated to test for wrong 2nd argument type for builtin " + bn + ".")
+
+    # Wrong 1st argument
+    if first_arg:
+        for i in some_instances.keys():
+            if i != type_name:
+                basic_prg = mk_apply(builtin, mk_con(i, some_instances[i]))
+                file_label = mk_label(i) + "-wrong-1st-argument"
+                write_program(bn, basic_prg, type_name, file_label)
+        print("There were " + str(len(some_instances.keys())) + " files generated to test for wrong 1st argument type for builtin " + bn + ".")
+
 integer_bn = [ "addInteger", "subtractInteger", "multiplyInteger", \
                "divideInteger", "quotientInteger", "remainderInteger", \
                "modInteger", "equalsInteger", "lessThanInteger", "lessThanEqualsInteger"]
 
 for bn in integer_bn:
-    wrongTypeBinary(bn, "integer")
+    wrong_type_binary(bn, "integer", True, False)
