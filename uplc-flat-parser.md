@@ -110,8 +110,9 @@ version numbers that are less than 7 bits and needs to be updated to parse large
 
   rule #readProgramTerm( #readConType BOOL, BitStream( I, BYTES) ) => ( con bool #bit2boolval( #readNBits( 1, BitStream( I, BYTES ) ) ) )
 
-  rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
+  rule #readProgramTerm( #readConType INTEGER, BitStream( I, BYTES) ) => ( con integer #getDatum(#readIntegerValue( BitStream( I, BYTES ) ) ) )
 
+  rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
 ```
 
 ### Utility Functions Used to Read Terms
@@ -210,7 +211,7 @@ and the bit length that was traversed when parsing the datum.
   rule #getBitLength( VDat( BitLen, _ ) ) => BitLen
 
   syntax VarLenDatum ::= #getVarLenData( BitStream ) [function]
-//-----------------------------------------------------------
+//-------------------------------------------------------------
   rule #getVarLenData( BITSTREAM ) => #getVarLenData( 0, 0, BITSTREAM )
 
   syntax VarLenDatum ::= #getVarLenData( CurrentByteOffset:Int, CurrentDatum:Int, BitStream ) [function]
@@ -223,6 +224,31 @@ and the bit length that was traversed when parsing the datum.
 
   rule #getVarLenData( I0, D, BitStream( I1, BYTES) ) =>
     VDat( ( I0 +Int 1 ) *Int 8, D +Int ( #readNBits( 7, BitStream( I1 +Int 1, BYTES ) ) <<Int ( 7 *Int I0 ) ) ) [owise]
+
+```
+
+### Reading Integer Values
+
+```k
+  syntax VarLenDatum ::= #readIntegerValue( BitStream ) [function]
+//----------------------------------------------------------------
+  rule #readIntegerValue( Bs ) => #readIntegerValue( #getVarLenData( Bs ) )
+
+  syntax VarLenDatum ::= #readIntegerValue( VarLenDatum ) [function]
+//------------------------------------------------------------------
+  rule #readIntegerValue( VDat( Len, Dat ) ) => VDat( Len, #decodeZigZag( Dat ) )
+```
+
+This zigzag decoding algorithm is derived from this gist: https://gist.github.com/mfuerstenau/ba870a29e16536fdbaba
+which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
+
+```k
+  syntax Int ::= #decodeZigZag( Int ) [function]
+//----------------------------------------------
+  rule #decodeZigZag( I ) => ( I >>Int 1 )
+  requires I %Int 2 ==Int 0
+
+  rule #decodeZigZag( I ) => (~Int I) >>Int 1 [owise]
 
 ```
 
