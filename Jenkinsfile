@@ -26,6 +26,7 @@ pipeline {
           options { timeout(time: 20, unit: 'MINUTES') }
           parallel {
             stage('proof tests')                   { steps { sh 'make test-prove -j4 --output-sync=recurse'                         } }
+            stage('functional unit tests')         { steps { sh 'make test-unit-tests -j4 --output-sync=recurse'                    } }
             stage('Simple')                        { steps { sh 'make test-simple -j4 --output-sync=recurse'                        } }
             stage('uplc-examples')                 { steps { sh 'make test-uplc-examples -j4 --output-sync=recurse'                 } }
             stage('benchmark-validation-examples') { steps { sh 'make test-benchmark-validation-examples -j4 --output-sync=recurse' } }
