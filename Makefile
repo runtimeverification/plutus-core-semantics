@@ -267,12 +267,12 @@ $(KPLUTUS_LIB)/$(haskell_kompiled): $(kplutus_includes) $(plugin_includes) $(KPL
 # -------------------
 
 coverage:
-	kcovr $(KPLUTUS_LIB)/$(llvm_kompiled_dir) -- $(kplutus_includes) > $(BUILD_DIR)/coverage.xml
+	$(KPLUTUS_BIN)/kplutus-covr $(KPLUTUS_LIB)/$(llvm_kompiled_dir) -- $(kplutus_includes) -nd > $(BUILD_DIR)/coverage.xml
 
 # Installing
 # ----------
 
-install_bins := kplc
+install_bins := kplc kplutus-covr
 
 install_libs := $(llvm_kompiled)    \
                 $(haskell_kompiled) \
@@ -284,6 +284,10 @@ build_bins := $(install_bins)
 build_libs := $(install_libs)
 
 $(KPLUTUS_BIN)/kplc: kplc
+	@mkdir -p $(dir $@)
+	install $< $@
+
+$(KPLUTUS_BIN)/kplutus-covr: kplutus-covr
 	@mkdir -p $(dir $@)
 	install $< $@
 
