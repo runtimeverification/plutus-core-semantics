@@ -8,6 +8,8 @@ module UPLC-FLAT-PARSER
   imports UPLC-SYNTAX
   imports BYTES
   imports BITSTREAM
+  imports STRING
+  imports STRING-BUFFER
 ```
 
 ## Flat Parser Entrypoint
@@ -112,6 +114,14 @@ version numbers that are less than 7 bits and needs to be updated to parse large
 
   rule #readProgramTerm( #readConType INTEGER, BitStream( I, BYTES) ) => ( con integer #getDatum(#readIntegerValue( BitStream( I, BYTES ) ) ) )
 
+  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, BYTES) ) => ( con bytestring #readByteStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
+
+  syntax KItem ::= "#readBuiltinName" Int
+
+  rule #readProgramTerm( #readTermTag BUILTIN => #readBuiltinName #readNBits( 8, BitStream( I, BYTES ) ),
+                         BitStream( I => I +Int #builtinTagLength, BYTES )
+                       )
+
   rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
 ```
 
@@ -193,6 +203,20 @@ They are used as parameters that describe constants or as parameters to builtin 
   rule DATA       => 8
 ```
 
+#### Values for Builtin Names
+
+Tags for builtins use 8 bits allowing for a max of 256 builtin functions.
+
+```k
+  syntax Int ::= "#builtinTagLength" [macro]
+//------------------------------------------
+  rule #builtinTagLength => 8
+
+  syntax Int ::= "#addInteger" [macro]
+//------------------------------------
+  rule #addInteger => 0
+```
+
 ### Variable Length Data
 
 There are two parts to variable length data that are necessary for parsing: the actual datum and
@@ -250,6 +274,39 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
 
   rule #decodeZigZag( I ) => (~Int I) >>Int 1 [owise]
 
+```
+
+### Reading ByteString Values
+
+```k
+  syntax ByteString ::= #readByteStringValue( BitStream ) [function]
+//------------------------------------------------------------------
+  rule #readByteStringValue( BitStream( I, Bs ) ) =>
+   #let
+     StartIndex = (I /Int 8 ) +Int 1
+   #in
+     String2ByteString( "#" +String #readBytesAsString( Bs, StartIndex, StartIndex +Int #readNBits( 8, BitStream( I , Bs ) ) ) )
+
+  syntax String ::= #readBytesAsString( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
+//-------------------------------------------------------------------------------------------------
+  rule #readBytesAsString( Bytes, Start, Length ) => Bytes2StringBase16( substrBytes( Bytes, Start, Length ) )
+```
+
+String helper functions to translate between Bytes and String without losing leading zeros.
+
+```k
+  syntax String ::= Bytes2StringBase16( Bytes ) [function]
+  syntax String ::= Bytes2StringBase16( Bytes, Int, StringBuffer ) [function]
+
+  rule Bytes2StringBase16( Bs ) => Bytes2StringBase16( Bs, 0, .StringBuffer )
+
+  rule Bytes2StringBase16( Bs, I, Buffer ) => StringBuffer2String( Buffer )
+    requires I ==Int lengthBytes( Bs )
+
+  rule Bytes2StringBase16( Bs, I, Buffer ) => Bytes2StringBase16( Bs, I +Int 1, Buffer +String ("0" +String Base2String(Bs[I], 16) ) )
+    requires Bs[I] <Int 16
+
+  rule Bytes2StringBase16( Bs, I, Buffer ) => Bytes2StringBase16( Bs, I +Int 1, Buffer +String Base2String(Bs[I], 16) ) [owise]
 ```
 
 ```k
