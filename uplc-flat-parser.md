@@ -114,6 +114,8 @@ version numbers that are less than 7 bits and needs to be updated to parse large
 
   rule #readProgramTerm( #readConType INTEGER, BitStream( I, BYTES) ) => ( con integer #getDatum(#readIntegerValue( BitStream( I, BYTES ) ) ) )
 
+  rule #readProgramTerm( #readConType STRING, BitStream( I, BYTES) ) => ( con string #readStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
+
   rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, BYTES) ) => ( con bytestring #readByteStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
 
   syntax KItem ::= "#readBuiltinName" Int
@@ -279,6 +281,18 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
 ### Reading ByteString Values
 
 ```k
+  syntax String ::= #readStringValue( BitStream ) [function]
+//----------------------------------------------------------
+  rule #readStringValue( BitStream( I, Bs ) ) =>
+   #let
+     StartIndex = (I /Int 8 ) +Int 1
+   #in
+     #readStringValue( Bs, StartIndex, StartIndex +Int #readNBits( 8, BitStream( I , Bs ) ) )
+
+  syntax String ::= #readStringValue( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
+//-------------------------------------------------------------------------------------------------
+  rule #readStringValue( Bytes, Start, Length ) => decodeBytes( "UTF-8", substrBytes( Bytes, Start, Length ) )
+
   syntax ByteString ::= #readByteStringValue( BitStream ) [function]
 //------------------------------------------------------------------
   rule #readByteStringValue( BitStream( I, Bs ) ) =>

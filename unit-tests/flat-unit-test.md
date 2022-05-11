@@ -78,5 +78,11 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x48\x81\x05\x00\x01\x0a\xf0\x04\x00\x01" ) ) )
     => simplified( ( program 1.0.0 ( con bytestring String2ByteString("#00010af004") ) ) ) ... </k>
 
+  claim <k> simplify( #readStringValue( String2Bytes( "\x68\x65\x6c\x6c\x6f\x21" ), 0, 6 ) )
+    => simplified( "hello!" ) ... </k>
+
+  claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x49\x01\x00\x01" ) ) )
+    => simplified( ( program 1.0.0 ( con string "") ) ) ... </k>
+
 endmodule
 ```
