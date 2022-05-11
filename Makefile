@@ -267,13 +267,27 @@ $(KPLUTUS_LIB)/$(haskell_kompiled): $(kplutus_includes) $(plugin_includes) $(KPL
 # Coverage Processing
 # -------------------
 
+covr_ignore_files := bitstream.md \
+                     uplc-bytestring.md \
+                     uplc-flat-parser.md
+
+covr_ignore_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(covr_ignore_files))
+
+K_BUILTINS_INCLUDE := $(KPLUTUS_LIB)/kframework/include/kframework/builtin
+
+k_builtin_ignore_files := domains.md
+
+k_builtin_ignore_includes := $(patsubst %, $(K_BUILTINS_INCLUDE)/%, $(k_builtin_ignore_files))
+
 coverage:
-	kcovr $(KPLUTUS_LIB)/$(llvm_kompiled_dir) -- $(kplutus_includes) > $(BUILD_DIR)/coverage.xml
+	$(KPLUTUS_BIN)/kplutus-covr $(KPLUTUS_LIB)/$(llvm_kompiled_dir) \
+        -- $(kplutus_includes) \
+        -ig $(covr_ignore_includes) $(k_builtin_ignore_includes) > $(BUILD_DIR)/coverage.xml
 
 # Installing
 # ----------
 
-install_bins := kplc
+install_bins := kplc kplutus-covr
 
 install_libs := $(llvm_kompiled)    \
                 $(haskell_kompiled) \
@@ -285,6 +299,10 @@ build_bins := $(install_bins)
 build_libs := $(install_libs)
 
 $(KPLUTUS_BIN)/kplc: kplc
+	@mkdir -p $(dir $@)
+	install $< $@
+
+$(KPLUTUS_BIN)/kplutus-covr: kplutus-covr
 	@mkdir -p $(dir $@)
 	install $< $@
 
@@ -332,7 +350,7 @@ uninstall:
 procs := $(shell nproc)
 
 fresh-test-coverage:
-	rm -r $(KPLUTUS_LIB)/$(llvm_kompiled_dir)
+	[ -d $(KPLUTUS_LIB)/$(llvm_kompiled_dir) ] && rm -r $(KPLUTUS_LIB)/$(llvm_kompiled_dir)
 	make build-coverage
 	make conformance-test -j$(procs)
 	make coverage
