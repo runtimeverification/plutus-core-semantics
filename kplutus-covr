@@ -32,38 +32,44 @@ for idx, dir in enumerate(sys.argv[1:], start=1):
       for line in f:
         addCover(line)
 
-# If the option -nd is passed _as last argument_ to kcovr then it removes any hash from
-# allRules related with a rule from `domains.md`. The hash of such a
-# rule is also removed from coverMap that keeps a dictionary of the
-# rules that were actually applied during the tests, that is, executed
-# by `krun` and resulted into a `/*_coverage.txt` file.
-if "-nd" in sys.argv:
+def removeRules(module_list):
+  global allRules
+  global coverMap
   new_all_rules = set()
   for l in allRules:
-    if l.find("domains.md") == -1:
-      new_all_rules.add(l)
-    else:
+    remove_line = False
+    for module in module_list:
+      if l.find(module) != -1:
+        remove_line = True
+        break
+    if remove_line:
       rule_hash_idx = l.find(" ")
       rule_hash = l[:rule_hash_idx]
+      # l is not added to new_all_rules
       # Operation `pop` over dictionaries
       # removes a key if it is in its keys or returns
       # its 2nd argument otherwise
       coverMap.pop(rule_hash, None)
+    else:
+      new_all_rules.add(l)
   allRules = new_all_rules
-  end_idx = sys.argv.index("-nd")
+
+# If the option -ig is passed _as last argument_ to kcovr then it removes any hash from
+# allRules related with rules from the modules withing the files passed by -ig.
+# The hash of such a rule is also removed from coverMap that keeps a dictionary of the
+# rules that were actually applied during the tests, that is, executed
+# by `krun` and resulted into a `/*_coverage.txt` file.
+sources_ignore = []
+if "-ig" in sys.argv:
+  source_ignore_idx = sys.argv.index("-ig") + 1
+  sources_ignore = [os.path.abspath(path) for path in sys.argv[source_ignore_idx:]]
+  removeRules(sources_ignore)
+  end_idx = sys.argv.index("-ig")
 else:
   end_idx = len(sys.argv)
 
 sources = [os.path.abspath(path) for path in sys.argv[fileIdx:end_idx]]
-  
-# if "-ig" in sys.argv:
-#   source_ignore_idx = sys.argv.index("-ig") + 1
-#   sources_ignore = [os.path.abspath(path) for path in sys.argv[source_ignore_idx:]]
-#   sources = list(set(sources) - set(sources_ignore))
-#   print(sources_ignore)
-#   print(sources)
-  
-# exit()
+sources = list(set(sources) - set(sources_ignore))
 
 ruleMap = {}
 
