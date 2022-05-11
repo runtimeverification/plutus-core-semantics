@@ -25,61 +25,10 @@ module UPLC-HEXADECIMAL
   rule tail(S) => substrString(S, 1, lengthString(S))
 
   syntax Int ::= hexString2Int(String) [function]
-  rule hexString2Int("0") => 0
-  rule hexString2Int("1") => 1
-  rule hexString2Int("2") => 2
-  rule hexString2Int("3") => 3
-  rule hexString2Int("4") => 4
-  rule hexString2Int("5") => 5
-  rule hexString2Int("6") => 6
-  rule hexString2Int("7") => 7
-  rule hexString2Int("8") => 8
-  rule hexString2Int("9") => 9
-  rule hexString2Int("A") => 10
-  rule hexString2Int("B") => 11
-  rule hexString2Int("C") => 12
-  rule hexString2Int("D") => 13
-  rule hexString2Int("E") => 14
-  rule hexString2Int("F") => 15
-  rule hexString2Int("a") => 10
-  rule hexString2Int("b") => 11
-  rule hexString2Int("c") => 12
-  rule hexString2Int("d") => 13
-  rule hexString2Int("e") => 14
-  rule hexString2Int("f") => 15
-  rule hexString2Int(S) =>
-       (hexString2Int(head(S)) *Int (16 ^Int (lengthString(S) -Int 1)) +Int hexString2Int(tail(S)))
-  requires lengthString(S) >Int 1
-  
-  syntax String ::= int2HexStringBasic(Int) [function]
-  rule int2HexStringBasic(0) => "0"
-  rule int2HexStringBasic(1) => "1"
-  rule int2HexStringBasic(2) => "2"
-  rule int2HexStringBasic(3) => "3"
-  rule int2HexStringBasic(4) => "4"
-  rule int2HexStringBasic(5) => "5"
-  rule int2HexStringBasic(6) => "6"
-  rule int2HexStringBasic(7) => "7"
-  rule int2HexStringBasic(8) => "8"
-  rule int2HexStringBasic(9) => "9"
-  rule int2HexStringBasic(10) => "a"
-  rule int2HexStringBasic(11) => "b"
-  rule int2HexStringBasic(12) => "c"
-  rule int2HexStringBasic(13) => "d"
-  rule int2HexStringBasic(14) => "e"
-  rule int2HexStringBasic(15) => "f"
+  rule hexString2Int(S) => String2Base(S, 16)
 
   syntax String ::= int2HexString(Int) [function]
-  rule int2HexString(I) => int2HexStringAux(I modInt 256 , "")
-
-  syntax String ::= int2HexStringAux(Int, String) [function]   
-  rule int2HexStringAux(0, "") => "0"
-
-  rule int2HexStringAux(0, S) => S
-  requires S =/=String ""
-
-  rule int2HexStringAux(I, S) =>
-       int2HexStringAux((I divInt 16), int2HexStringBasic(I modInt 16) +String S) [owise]
+  rule int2HexString(I) => Base2String(I, 16)
 
   syntax String ::= hexString2Char(String) [function]
   rule hexString2Char(S) => chrChar(String2Base(S, 16))

@@ -8,6 +8,10 @@ module UPLC-FLAT-PARSER
   imports UPLC-SYNTAX
   imports BYTES
   imports BITSTREAM
+  imports STRING
+  imports DECODE-UTF8-BYTES
+  imports DECODE-UTF8-BYTES-SYMBOLIC
+  imports FLAT-STRING-HELPER
 ```
 
 ## Flat Parser Entrypoint
@@ -110,8 +114,19 @@ version numbers that are less than 7 bits and needs to be updated to parse large
 
   rule #readProgramTerm( #readConType BOOL, BitStream( I, BYTES) ) => ( con bool #bit2boolval( #readNBits( 1, BitStream( I, BYTES ) ) ) )
 
-  rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
+  rule #readProgramTerm( #readConType INTEGER, BitStream( I, BYTES) ) => ( con integer #getDatum(#readIntegerValue( BitStream( I, BYTES ) ) ) )
 
+  rule #readProgramTerm( #readConType STRING, BitStream( I, BYTES) ) => ( con string #readStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
+
+  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, BYTES) ) => ( con bytestring #readByteStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
+
+  syntax KItem ::= "#readBuiltinName" Int
+
+  rule #readProgramTerm( #readTermTag BUILTIN => #readBuiltinName #readNBits( 8, BitStream( I, BYTES ) ),
+                         BitStream( I => I +Int #builtinTagLength, BYTES )
+                       )
+
+  rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
 ```
 
 ### Utility Functions Used to Read Terms
@@ -192,6 +207,20 @@ They are used as parameters that describe constants or as parameters to builtin 
   rule DATA       => 8
 ```
 
+#### Values for Builtin Names
+
+Tags for builtins use 8 bits allowing for a max of 256 builtin functions.
+
+```k
+  syntax Int ::= "#builtinTagLength" [macro]
+//------------------------------------------
+  rule #builtinTagLength => 8
+
+  syntax Int ::= "#addInteger" [macro]
+//------------------------------------
+  rule #addInteger => 0
+```
+
 ### Variable Length Data
 
 There are two parts to variable length data that are necessary for parsing: the actual datum and
@@ -210,7 +239,7 @@ and the bit length that was traversed when parsing the datum.
   rule #getBitLength( VDat( BitLen, _ ) ) => BitLen
 
   syntax VarLenDatum ::= #getVarLenData( BitStream ) [function]
-//-----------------------------------------------------------
+//-------------------------------------------------------------
   rule #getVarLenData( BITSTREAM ) => #getVarLenData( 0, 0, BITSTREAM )
 
   syntax VarLenDatum ::= #getVarLenData( CurrentByteOffset:Int, CurrentDatum:Int, BitStream ) [function]
@@ -226,6 +255,108 @@ and the bit length that was traversed when parsing the datum.
 
 ```
 
+### Reading Integer Values
+
 ```k
+  syntax VarLenDatum ::= #readIntegerValue( BitStream ) [function]
+//----------------------------------------------------------------
+  rule #readIntegerValue( Bs ) => #readIntegerValue( #getVarLenData( Bs ) )
+
+  syntax VarLenDatum ::= #readIntegerValue( VarLenDatum ) [function]
+//------------------------------------------------------------------
+  rule #readIntegerValue( VDat( Len, Dat ) ) => VDat( Len, #decodeZigZag( Dat ) )
+```
+
+This zigzag decoding algorithm is derived from this gist: https://gist.github.com/mfuerstenau/ba870a29e16536fdbaba
+which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
+
+```k
+  syntax Int ::= #decodeZigZag( Int ) [function]
+//----------------------------------------------
+  rule #decodeZigZag( I ) => ( I >>Int 1 )
+  requires I %Int 2 ==Int 0
+
+  rule #decodeZigZag( I ) => (~Int I) >>Int 1 [owise]
+
+```
+
+### Reading ByteString Values
+
+```k
+  syntax String ::= #readStringValue( BitStream ) [function]
+//----------------------------------------------------------
+  rule #readStringValue( BitStream( I, Bs ) ) =>
+   #let
+     StartIndex = (I /Int 8 ) +Int 1
+   #in
+     #readStringValue( Bs, StartIndex, StartIndex +Int #readNBits( 8, BitStream( I , Bs ) ) )
+
+  syntax String ::= #readStringValue( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
+//-------------------------------------------------------------------------------------------------
+  rule #readStringValue( Bytes, Start, Length ) => #decodeUtf8Bytes( substrBytes( Bytes, Start, Length ) )
+
+  syntax ByteString ::= #readByteStringValue( BitStream ) [function]
+//------------------------------------------------------------------
+  rule #readByteStringValue( BitStream( I, Bs ) ) =>
+   #let
+     StartIndex = (I /Int 8 ) +Int 1
+   #in
+     String2ByteString( "#" +String #readBytesAsString( Bs, StartIndex, StartIndex +Int #readNBits( 8, BitStream( I , Bs ) ) ) )
+
+  syntax String ::= #readBytesAsString( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
+//-------------------------------------------------------------------------------------------------
+  rule #readBytesAsString( Bytes, Start, Length ) => Bytes2StringBase16( substrBytes( Bytes, Start, Length ) )
+
+endmodule
+```
+
+The modules below split out Utf8 decoding functions between llvm backend and haskell backend as a temporary hack. Once
+the `decodeBytes` has been implemented in the llvm backend, remove these modules and use decodeBytes for both backends.
+
+```k
+module DECODE-UTF8-BYTES-SYMBOLIC [symbolic]
+  imports BYTES
+  imports STRING
+
+  syntax String ::= #decodeUtf8Bytes( Bytes ) [function]
+  rule #decodeUtf8Bytes( Bs ) => decodeBytes( "UTF-8", Bs )
+
+endmodule
+
+module DECODE-UTF8-BYTES [concrete]
+  imports BYTES
+  imports FLAT-STRING-HELPER
+  imports STRING
+  imports UPLC-STRING
+
+  syntax String ::= #decodeUtf8Bytes( Bytes ) [function]
+  rule #decodeUtf8Bytes( Bs ) => #decodeUtf8( String2ByteString( "#" +String Bytes2StringBase16( Bs ) ) )
+
+endmodule
+```
+
+String helper functions to translate between Bytes and String without losing leading zeros.
+
+```k
+module FLAT-STRING-HELPER
+  imports BOOL
+  imports BYTES
+  imports INT
+  imports STRING
+  imports STRING-BUFFER
+
+  syntax String ::= Bytes2StringBase16( Bytes ) [function]
+  syntax String ::= Bytes2StringBase16( Bytes, Int, StringBuffer ) [function]
+
+  rule Bytes2StringBase16( Bs ) => Bytes2StringBase16( Bs, 0, .StringBuffer )
+
+  rule Bytes2StringBase16( Bs, I, Buffer ) => StringBuffer2String( Buffer )
+    requires I ==Int lengthBytes( Bs )
+
+  rule Bytes2StringBase16( Bs, I, Buffer ) => Bytes2StringBase16( Bs, I +Int 1, Buffer +String ("0" +String Base2String(Bs[I], 16) ) )
+    requires I <Int lengthBytes( Bs ) andBool Bs[I] <Int 16
+
+  rule Bytes2StringBase16( Bs, I, Buffer ) => Bytes2StringBase16( Bs, I +Int 1, Buffer +String Base2String(Bs[I], 16) ) [owise]
+
 endmodule
 ```

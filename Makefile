@@ -117,7 +117,8 @@ export PLUGIN_SUBMODULE
         test-benchmark-validation-examples \
         test-nofib-exe-examples            \
         conformance-test update-results    \
-        test-prove fresh-test-coverage
+        test-prove test-unit-tests         \
+        fresh-test-coverage
 
 .SECONDARY:
 
@@ -358,9 +359,10 @@ fresh-test-coverage:
 #------------
 KPROVE_OPTS :=
 
-prove_tests := $(wildcard unit-tests/*.md) \
-               $(wildcard simple-proofs/*.md)
+unit_tests := $(wildcard unit-tests/*.md)
+test-unit-tests: $(unit_tests:=.prove)
 
+prove_tests := $(wildcard simple-proofs/*.md)
 test-prove: $(prove_tests:=.prove)
 
 unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verification-kompiled/timestamp

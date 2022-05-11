@@ -16,7 +16,7 @@ module UPLC-POLYMORPHIC-BUILTINS
 All polymorphic builtins should be arguments to a call to `force`.
 
 ```k
-  rule <k> (builtin BN:PolyBuiltinName) ~> K:KItem => (error) ... </k>
+  rule <k> (builtin _BN:PolyBuiltinName) ~> K:KItem => (error) ... </k>
   requires K =/=K Force
 ```
 
