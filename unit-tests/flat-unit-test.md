@@ -42,5 +42,14 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x49\x81" ) ) )
     => simplified( ( program 1.0.0 ( con unit ()) ) ) ... </k>
 
+  claim <k> simplify( #readIntegerValue( BitStream ( 0, String2Bytes( "\x16" ) ) ) )
+    => simplified( VDat( 8, 11 ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x48\x05\x81" ) ) ) )
+    => simplified( ( con integer 11 ) ) ... </k>
+
+  claim <k> simplify( #bytes2program( String2Bytes( "\x0b\x16\x21\x48\x05\x81" ) ) )
+    => simplified( ( program 11.22.33 ( con integer 11) ) ) ... </k>
+
 endmodule
 ```
