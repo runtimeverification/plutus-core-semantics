@@ -9,7 +9,9 @@ module UPLC-FLAT-PARSER
   imports BYTES
   imports BITSTREAM
   imports STRING
-  imports STRING-BUFFER
+  imports DECODE-UTF8-BYTES
+  imports DECODE-UTF8-BYTES-SYMBOLIC
+  imports FLAT-STRING-HELPER
 ```
 
 ## Flat Parser Entrypoint
@@ -291,7 +293,7 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
 
   syntax String ::= #readStringValue( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
 //-------------------------------------------------------------------------------------------------
-  rule #readStringValue( Bytes, Start, Length ) => decodeBytes( "UTF-8", substrBytes( Bytes, Start, Length ) )
+  rule #readStringValue( Bytes, Start, Length ) => #decodeUtf8Bytes( substrBytes( Bytes, Start, Length ) )
 
   syntax ByteString ::= #readByteStringValue( BitStream ) [function]
 //------------------------------------------------------------------
@@ -304,11 +306,45 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
   syntax String ::= #readBytesAsString( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
 //-------------------------------------------------------------------------------------------------
   rule #readBytesAsString( Bytes, Start, Length ) => Bytes2StringBase16( substrBytes( Bytes, Start, Length ) )
+
+endmodule
+```
+
+The modules below split out Utf8 decoding functions between llvm backend and haskell backend as a temporary hack. Once
+the `decodeBytes` has been implemented in the llvm backend, remove these modules and use decodeBytes for both backends.
+
+```k
+module DECODE-UTF8-BYTES-SYMBOLIC [symbolic]
+  imports BYTES
+  imports STRING
+
+  syntax String ::= #decodeUtf8Bytes( Bytes ) [function]
+  rule #decodeUtf8Bytes( Bs ) => decodeBytes( "UTF-8", Bs )
+
+endmodule
+
+module DECODE-UTF8-BYTES [concrete]
+  imports BYTES
+  imports FLAT-STRING-HELPER
+  imports STRING
+  imports UPLC-STRING
+
+  syntax String ::= #decodeUtf8Bytes( Bytes ) [function]
+  rule #decodeUtf8Bytes( Bs ) => #decodeUtf8( String2ByteString( "#" +String Bytes2StringBase16( Bs ) ) )
+
+endmodule
 ```
 
 String helper functions to translate between Bytes and String without losing leading zeros.
 
 ```k
+module FLAT-STRING-HELPER
+  imports BOOL
+  imports BYTES
+  imports INT
+  imports STRING
+  imports STRING-BUFFER
+
   syntax String ::= Bytes2StringBase16( Bytes ) [function]
   syntax String ::= Bytes2StringBase16( Bytes, Int, StringBuffer ) [function]
 
@@ -321,8 +357,6 @@ String helper functions to translate between Bytes and String without losing lea
     requires Bs[I] <Int 16
 
   rule Bytes2StringBase16( Bs, I, Buffer ) => Bytes2StringBase16( Bs, I +Int 1, Buffer +String Base2String(Bs[I], 16) ) [owise]
-```
 
-```k
 endmodule
 ```
