@@ -354,7 +354,7 @@ module FLAT-STRING-HELPER
     requires I ==Int lengthBytes( Bs )
 
   rule Bytes2StringBase16( Bs, I, Buffer ) => Bytes2StringBase16( Bs, I +Int 1, Buffer +String ("0" +String Base2String(Bs[I], 16) ) )
-    requires Bs[I] <Int 16
+    requires I <Int lengthBytes( Bs ) andBool Bs[I] <Int 16
 
   rule Bytes2StringBase16( Bs, I, Buffer ) => Bytes2StringBase16( Bs, I +Int 1, Buffer +String Base2String(Bs[I], 16) ) [owise]
 
