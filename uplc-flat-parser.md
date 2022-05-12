@@ -120,13 +120,9 @@ version numbers that are less than 7 bits and needs to be updated to parse large
 
   rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, BYTES) ) => ( con bytestring #readByteStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
 
-  syntax KItem ::= "#readBuiltinName" Int
-
-  rule #readProgramTerm( #readTermTag BUILTIN => #readBuiltinName #readNBits( 8, BitStream( I, BYTES ) ),
+  rule #readProgramTerm( #readTermTag BUILTIN => ( builtin #bn2BuiltinName( #readNBits( #builtinTagLength, BitStream( I, BYTES ) ) ) ),
                          BitStream( I => I +Int #builtinTagLength, BYTES )
                        )
-
-  rule #readProgramTerm( #readBuiltinName Bn, _ ) => ( builtin #bn2BuiltinName( Bn ) )
 
   rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
 ```
@@ -216,7 +212,7 @@ Tags for builtins use 8 bits allowing for a max of 256 builtin functions.
 ```k
   syntax Int ::= "#builtinTagLength" [macro]
 //------------------------------------------
-  rule #builtinTagLength => 8
+  rule #builtinTagLength => 7
 
   syntax BuiltinName ::= #bn2BuiltinName( Int ) [function]
 //--------------------------------------------------------
