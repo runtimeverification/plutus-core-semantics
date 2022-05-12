@@ -126,6 +126,8 @@ version numbers that are less than 7 bits and needs to be updated to parse large
                          BitStream( I => I +Int #builtinTagLength, BYTES )
                        )
 
+  rule #readProgramTerm( #readBuiltinName Bn, _ ) => ( builtin #bn2BuiltinName( Bn ) )
+
   rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
 ```
 
@@ -216,9 +218,10 @@ Tags for builtins use 8 bits allowing for a max of 256 builtin functions.
 //------------------------------------------
   rule #builtinTagLength => 8
 
-  syntax Int ::= "#addInteger" [macro]
-//------------------------------------
-  rule #addInteger => 0
+  syntax BuiltinName ::= #bn2BuiltinName( Int ) [function]
+//--------------------------------------------------------
+  rule #bn2BuiltinName( 0 ) => addInteger
+  /* TODO: Add remaining rules here */
 ```
 
 ### Variable Length Data
