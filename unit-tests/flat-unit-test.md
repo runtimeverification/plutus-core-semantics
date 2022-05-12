@@ -84,5 +84,8 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x49\x01\x00\x01" ) ) )
     => simplified( ( program 1.0.0 ( con string "") ) ) ... </k>
 
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x00" ) ) ) )
+    => simplified( ( builtin addInteger ) ) ... </k>
+
 endmodule
 ```
