@@ -221,7 +221,56 @@ Tags for builtins use 8 bits allowing for a max of 256 builtin functions.
   syntax BuiltinName ::= #bn2BuiltinName( Int ) [function]
 //--------------------------------------------------------
   rule #bn2BuiltinName( 0 ) => addInteger
-  /* TODO: Add remaining rules here */
+  rule #bn2BuiltinName( 1 ) => subtractInteger
+  rule #bn2BuiltinName( 2 ) => multiplyInteger
+  rule #bn2BuiltinName( 3 ) => divideInteger
+  rule #bn2BuiltinName( 4 ) => quotientInteger
+  rule #bn2BuiltinName( 5 ) => remainderInteger
+  rule #bn2BuiltinName( 6 ) => modInteger
+  rule #bn2BuiltinName( 7 ) => equalsInteger
+  rule #bn2BuiltinName( 8 ) => lessThanInteger
+  rule #bn2BuiltinName( 9 ) => lessThanEqualsInteger
+  rule #bn2BuiltinName( 10 ) => appendByteString
+  rule #bn2BuiltinName( 11 ) => consByteString
+  rule #bn2BuiltinName( 12 ) => sliceByteString
+  rule #bn2BuiltinName( 13 ) => lengthOfByteString
+  rule #bn2BuiltinName( 14 ) => indexByteString
+  rule #bn2BuiltinName( 15 ) => equalsByteString
+  rule #bn2BuiltinName( 16 ) => lessThanByteString
+  rule #bn2BuiltinName( 17 ) => lessThanEqualsByteString
+  rule #bn2BuiltinName( 18 ) => sha2_256
+  rule #bn2BuiltinName( 19 ) => sha3_256
+  rule #bn2BuiltinName( 20 ) => blake2b_256
+  rule #bn2BuiltinName( 21 ) => verifySignature
+  rule #bn2BuiltinName( 22 ) => appendString
+  rule #bn2BuiltinName( 23 ) => equalsString
+  rule #bn2BuiltinName( 24 ) => encodeUtf8
+  rule #bn2BuiltinName( 25 ) => decodeUtf8
+  rule #bn2BuiltinName( 26 ) => ifThenElse
+  rule #bn2BuiltinName( 27 ) => chooseUnit
+  rule #bn2BuiltinName( 28 ) => trace
+  rule #bn2BuiltinName( 29 ) => fstPair
+  rule #bn2BuiltinName( 30 ) => sndPair
+  rule #bn2BuiltinName( 31 ) => chooseList
+  rule #bn2BuiltinName( 32 ) => mkCons
+  rule #bn2BuiltinName( 33 ) => headList
+  rule #bn2BuiltinName( 34 ) => tailList
+  rule #bn2BuiltinName( 35 ) => nullList
+  rule #bn2BuiltinName( 36 ) => chooseData
+  rule #bn2BuiltinName( 37 ) => constrData
+  rule #bn2BuiltinName( 38 ) => mapData
+  rule #bn2BuiltinName( 39 ) => listData
+  rule #bn2BuiltinName( 40 ) => iData
+  rule #bn2BuiltinName( 41 ) => bData
+  rule #bn2BuiltinName( 42 ) => unConstrData
+  rule #bn2BuiltinName( 43 ) => unMapData
+  rule #bn2BuiltinName( 44 ) => unListData
+  rule #bn2BuiltinName( 45 ) => unIData
+  rule #bn2BuiltinName( 46 ) => unBData
+  rule #bn2BuiltinName( 47 ) => equalsData
+  rule #bn2BuiltinName( 48 ) => mkPairData
+  rule #bn2BuiltinName( 49 ) => mkNilData
+  rule #bn2BuiltinName( 50 ) => mkNilPairData
 ```
 
 ### Variable Length Data
