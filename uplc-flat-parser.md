@@ -95,38 +95,98 @@ version numbers that are less than 7 bits and needs to be updated to parse large
 
 ## Reading Terms
 
+This parsing algorithm recursively descends to create the AST. In order to keep track of where the terms end and the
+subsequent terms start, we need to bubble up the next bit position to be parsed along with the term itself. Once the
+parser reaches the end of the input program and parses the last leaf term, there is no need to pass the bit position
+and only the leaf term is returned passed. The `#resolveTerm` function contains logic to either create the bit
+position/term pair, or to simply create the term to pass back.
+
+```k
+  syntax Term ::= TermBitLengthPair( Term, Int )
+  syntax Term ::= #resolveTerm( Term, Int, Bytes) [function]
+//-------------------------------------------------------
+  rule #resolveTerm( T, I, B ) => T
+    requires lengthBytes( B ) *Int 8 -Int I <=Int 8
+
+  rule #resolveTerm( T, I, _ ) => TermBitLengthPair( T, I ) [owise]
+```
+
+### Parser Entry Point
+
 ```k
   syntax Term ::= #readProgramTerm( K, BitStream ) [function]
 
   rule #readProgramTerm( #readTerm => #readTermTag #readNBits( #termTagLength, BitStream( I, BYTES) ),
                          BitStream( I => I +Int #termTagLength, BYTES )
                        )
+```
 
-  rule #readProgramTerm( #readTermTag DELAY, BITSTREAM ) => ( delay #readProgramTerm( #readTerm, BITSTREAM ) )
+Parsing Delay
 
-  rule #readProgramTerm( #readTermTag ERROR, _ ) => ( error )
+```k
+  syntax KItem ::= "#readDelayTerm" Term
 
+  rule #readProgramTerm( #readTermTag DELAY => #readDelayTerm #readProgramTerm( #readTerm, BITSTREAM ), BITSTREAM )
+  rule #readProgramTerm( #readDelayTerm TermBitLengthPair( T, I ), _ ) => TermBitLengthPair( ( delay T ), I )
+  rule #readProgramTerm( #readDelayTerm T, _ ) => ( delay T )
+```
+
+Parsing Error
+
+```k
+  rule #readProgramTerm( #readTermTag ERROR, BitStream( I, Bs ) ) => #resolveTerm( ( error ), I, Bs )
+```
+
+Parsing Function Application
+
+```k
+  syntax KItem ::= "#readApplyFirstTerm"  Term
+                 | "#readApplySecondTerm" Term Term
+
+  rule #readProgramTerm( #readTermTag APP => #readApplyFirstTerm #readProgramTerm( #readTerm, BitStream( I, Bs ) ),
+                         BitStream( I, Bs )
+                       )
+
+  rule #readProgramTerm( #readApplyFirstTerm TermBitLengthPair( T, I ) =>
+                           #readApplySecondTerm T #readProgramTerm(#readTerm, BitStream( I, Bs ) ),
+                         BitStream( _, Bs )
+                       )
+
+  rule #readProgramTerm( #readApplySecondTerm T0 TermBitLengthPair( T1, I ), _ ) => TermBitLengthPair( [ T0 T1 ], I )
+
+  rule #readProgramTerm( #readApplySecondTerm T0 T1, _ ) => [ T0 T1 ] [owise]
+```
+
+Parsing Constants
+
+```k
   rule #readProgramTerm( #readTermTag CON => #readConType #readType( BitStream( I, Bs ) ),
                          BitStream( I => I +Int #typeLength, Bs )
                        )
 
-  rule #readProgramTerm( #readConType UNIT, _ ) => ( con unit () )
+  rule #readProgramTerm( #readConType UNIT, BitStream( I, Bs ) ) => #resolveTerm( ( con unit () ), I, Bs )
 
-  rule #readProgramTerm( #readConType BOOL, BitStream( I, BYTES) ) => ( con bool #bit2boolval( #readNBits( 1, BitStream( I, BYTES ) ) ) )
+  rule #readProgramTerm( #readConType BOOL, BitStream( I, Bs) ) =>
+    #resolveTerm( ( con bool #bit2boolval( #readNBits( #boolValLength, BitStream( I, Bs ) ) ) ),
+                   I +Int #boolValLength, Bs
+                )
 
-  rule #readProgramTerm( #readConType INTEGER, BitStream( I, BYTES) ) => ( con integer #getDatum(#readIntegerValue( BitStream( I, BYTES ) ) ) )
+  rule #readProgramTerm( #readConType INTEGER, BitStream( I, Bs) ) =>
+    #let
+      INT_VAL = #readIntegerValue( BitStream( I, Bs ) )
+    #in
+      #resolveTerm( ( con integer #getDatum( {INT_VAL}:>VarLenDatum ) ), #getBitLength( {INT_VAL}:>VarLenDatum ) +Int I, Bs )
 
   rule #readProgramTerm( #readConType STRING, BitStream( I, BYTES) ) => ( con string #readStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
 
   rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, BYTES) ) => ( con bytestring #readByteStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
+```
 
-  syntax KItem ::= "#readBuiltinName" Int
+Parsing Builtin Functions
 
-  rule #readProgramTerm( #readTermTag BUILTIN => #readBuiltinName #readNBits( 8, BitStream( I, BYTES ) ),
-                         BitStream( I => I +Int #builtinTagLength, BYTES )
-                       )
-
-  rule #readProgramTerm( #readBuiltinName Bn, _ ) => ( builtin #bn2BuiltinName( Bn ) )
+```k
+  rule #readProgramTerm( #readTermTag BUILTIN, BitStream( I, BYTES ) ) =>
+    #resolveTerm( ( builtin #bn2BuiltinName( #readNBits( #builtinTagLength, BitStream( I, BYTES ) ) ) ), I +Int #builtinTagLength, BYTES )
 
   rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
 ```
@@ -134,6 +194,10 @@ version numbers that are less than 7 bits and needs to be updated to parse large
 ### Utility Functions Used to Read Terms
 
 ```k
+  syntax Int ::= "#boolValLength" [macro]
+//---------------------------------------
+  rule #boolValLength => 1
+
   syntax Constant ::= #bit2boolval(Int) [function]
 //------------------------------------------------
   rule #bit2boolval(0) => False
@@ -216,7 +280,7 @@ Tags for builtins use 8 bits allowing for a max of 256 builtin functions.
 ```k
   syntax Int ::= "#builtinTagLength" [macro]
 //------------------------------------------
-  rule #builtinTagLength => 8
+  rule #builtinTagLength => 7
 
   syntax BuiltinName ::= #bn2BuiltinName( Int ) [function]
 //--------------------------------------------------------

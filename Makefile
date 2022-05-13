@@ -245,6 +245,7 @@ haskell_main_file      := uplc.md
 haskell_main_filename  := $(basename $(notdir $(haskell_main_file)))
 haskell_kompiled       := $(haskell_dir)/$(haskell_main_filename)-kompiled/definition.kore
 
+KOMPILE_OPTS += --no-exc-wrap
 
 ifndef NOBUILD_CRYPTOPP
   $(KPLUTUS_LIB)/$(llvm_kompiled): $(libcryptopp_out)
