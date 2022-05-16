@@ -75,7 +75,7 @@ a ByteString.
   rule <k> #eval(sha3_256, ListItem(< con bytestring B:ByteString >)) =>
            < con bytestring unTrimByteString(Sha3_256Wrapper(encode(B))) > ... </k>
 
-  rule <k> #eval(sha3_256, _) => (error) ... </k> [owise]
+  rule <k> #eval(sha3_256, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `sha2_256`
@@ -88,7 +88,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
   rule <k> #eval(sha2_256, ListItem(< con bytestring B:ByteString >)) =>
            < con bytestring unTrimByteString(Sha256Wrapper(encode(B))) > ... </k>
 
-  rule <k> #eval(sha2_256, _) => (error) ... </k> [owise]
+  rule <k> #eval(sha2_256, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `blake2b_256`
@@ -101,7 +101,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
   rule <k> #eval(blake2b_256, ListItem(< con bytestring B:ByteString >)) =>
            < con bytestring unTrimByteString(Blake2b256Wrapper(encode(B))) > ... </k>
 
-  rule <k> #eval(blake2b_256, _) => (error) ... </k> [owise]
+  rule <k> #eval(blake2b_256, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `verifySignature`
@@ -123,7 +123,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
            < con bool False > ... </k>
   requires notBool ED25519VerifyMessageWrapper(encode(K), encode(M), encode(S))
 
-  rule <k> #eval(verifySignature, _) => (error) ... </k> [owise]
+  rule <k> #eval(verifySignature, _) ~> _ => (error) </k> [owise]
 ```
 
 ```k

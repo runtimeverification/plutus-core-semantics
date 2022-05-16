@@ -20,6 +20,6 @@ module UPLC-ENVIRONMENT
   syntax Map ::= #push(Map, UplcId, Int) [function, functional]
   rule #push(E:Map, X:UplcId, I:Int) => E[X <- ({E[X]}:>List ListItem(I))]
   requires X in_keys(E)
-  rule #push(E:Map, X:UplcId, I:Int) => E[ X <- ListItem(I)] [owise]
+  rule #push(E:Map, X:UplcId, I:Int) => E[X <- ListItem(I)] [owise]
 endmodule
 ```
