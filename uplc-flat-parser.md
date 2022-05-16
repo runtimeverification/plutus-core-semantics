@@ -177,9 +177,14 @@ Parsing Constants
     #in
       #resolveTerm( ( con integer #getDatum( {INT_VAL}:>VarLenDatum ) ), #getBitLength( {INT_VAL}:>VarLenDatum ) +Int I, Bs )
 
-  rule #readProgramTerm( #readConType STRING, BitStream( I, BYTES) ) => ( con string #readStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
+  rule #readProgramTerm( #readConType STRING, BitStream( I, Bs) ) =>
+    #let
+      STR_VAL = #readStringValue( BitStream( #nextByteBoundary(I), Bs ) )
+    #in
+      #resolveTerm( ( con string #getDatum( {STR_VAL}:>StringDatum ) ), #getBitLength( {STR_VAL}:>StringDatum ), Bs )
 
-  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, BYTES) ) => ( con bytestring #readByteStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) )
+  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, BYTES) ) =>
+    ( con bytestring String2ByteString( #getDatum(#readByteStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) ) ) )
 ```
 
 Parsing Builtin Functions
@@ -399,25 +404,33 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
 ### Reading ByteString Values
 
 ```k
-  syntax String ::= #readStringValue( BitStream ) [function]
+  syntax StringDatum ::= #readStringValue( BitStream ) [function]
 //----------------------------------------------------------
   rule #readStringValue( BitStream( I, Bs ) ) =>
    #let
-     StartIndex = (I /Int 8 ) +Int 1
+     StartIndex = ( I /Int 8 ) +Int 1 #in
+   #let
+     ByteLen = #readNBits( 8, BitStream( I , Bs ) )
    #in
-     #readStringValue( Bs, StartIndex, StartIndex +Int #readNBits( 8, BitStream( I , Bs ) ) )
+     SDat( ( ByteLen +Int StartIndex +Int 1 ) *Int 8,
+           #readStringValue( Bs, StartIndex, StartIndex +Int ByteLen )
+         )
 
   syntax String ::= #readStringValue( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
 //-------------------------------------------------------------------------------------------------
   rule #readStringValue( Bytes, Start, Length ) => #decodeUtf8Bytes( substrBytes( Bytes, Start, Length ) )
 
-  syntax ByteString ::= #readByteStringValue( BitStream ) [function]
+  syntax StringDatum ::= #readByteStringValue( BitStream ) [function]
 //------------------------------------------------------------------
   rule #readByteStringValue( BitStream( I, Bs ) ) =>
    #let
-     StartIndex = (I /Int 8 ) +Int 1
+     StartIndex = ( I /Int 8 ) +Int 1 #in
+   #let
+     ByteLen = #readNBits( 8, BitStream( I , Bs ) )
    #in
-     String2ByteString( "#" +String #readBytesAsString( Bs, StartIndex, StartIndex +Int #readNBits( 8, BitStream( I , Bs ) ) ) )
+     SDat( ( ByteLen +Int StartIndex +Int 1 ) *Int 8,
+           "#" +String #readBytesAsString( Bs, StartIndex, StartIndex +Int ByteLen )
+         )
 
   syntax String ::= #readBytesAsString( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
 //-------------------------------------------------------------------------------------------------
