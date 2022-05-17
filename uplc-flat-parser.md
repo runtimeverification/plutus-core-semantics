@@ -416,7 +416,7 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
    #let
      ByteLen = #readNBits( 8, BitStream( I , Bs ) )
    #in
-     SDat( ( ByteLen +Int StartIndex +Int 1 ) *Int 8,
+     SDat( ( ByteLen +Int StartIndex +Int #possibleNullTerminator( ByteLen ) ) *Int 8,
            #readStringValue( Bs, StartIndex, StartIndex +Int ByteLen )
          )
 
@@ -432,13 +432,25 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
    #let
      ByteLen = #readNBits( 8, BitStream( I , Bs ) )
    #in
-     SDat( ( ByteLen +Int StartIndex +Int 1 ) *Int 8,
+     SDat( ( ByteLen +Int StartIndex +Int #possibleNullTerminator( ByteLen ) ) *Int 8,
            "#" +String #readBytesAsString( Bs, StartIndex, StartIndex +Int ByteLen )
          )
 
   syntax String ::= #readBytesAsString( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
 //-------------------------------------------------------------------------------------------------
   rule #readBytesAsString( Bytes, Start, Length ) => Bytes2StringBase16( substrBytes( Bytes, Start, Length ) )
+```
+
+String and ByteString encodings starts with a byte that indicates the byte length of the data. This is followed by the
+data and terminated with a `\x00` byte. However, in the case that the byte length is `0`, both the data and the null
+terminator do not exist. When parsing these constants, the following function indicates the presence of this null
+terminator.
+
+```k
+  syntax Int ::= #possibleNullTerminator( Int ) [function]
+//--------------------------------------------------------
+  rule #possibleNullTerminator( 0 ) => 0
+  rule #possibleNullTerminator( _ ) => 1 [owise]
 
 endmodule
 ```

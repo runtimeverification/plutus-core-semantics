@@ -66,8 +66,11 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #readByteStringValue( BitStream( 0, String2Bytes( "\x02\x00\xff" ) ) ) )
     => simplified( SDat( 32, "#00ff" ) ) ... </k>
 
+  claim <k> simplify( #readByteStringValue( BitStream( 0, String2Bytes( "\x01\xff\x00" ) ) ) )
+    => simplified( SDat( 24, "#ff" ) ) ... </k>
+
   claim <k> simplify( #readByteStringValue( BitStream( 0, String2Bytes( "\x00\xff" ) ) ) )
-    => simplified( SDat( 16, "#" ) ) ... </k>
+    => simplified( SDat( 8, "#" ) ) ... </k>
 
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x48\x81\x01\xff\x00\x01" ) ) )
     => simplified( ( program 1.0.0 ( con bytestring String2ByteString("#ff") ) ) ) ... </k>
@@ -83,6 +86,9 @@ module FLAT-UNIT-TEST
 
   claim <k> simplify( #readStringValue( BitStream( 0, String2Bytes( "\x06\x68\x65\x6c\x6c\x6f\x21" ) ) ) )
     => simplified( SDat( 64, "hello!" ) ) ... </k>
+
+  claim <k> simplify( #readStringValue( BitStream( 0, String2Bytes( "\x00" ) ) ) )
+    => simplified( SDat( 8, "" ) ) ... </k>
 
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x49\x01\x00\x01" ) ) )
     => simplified( ( program 1.0.0 ( con string "") ) ) ... </k>
