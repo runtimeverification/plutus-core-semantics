@@ -131,12 +131,9 @@ tests/nofib-exe-examples/queens-6-bt.uplc
 tests/flat/fromSimple-addInteger-no-args.flat
 tests/flat/fromSimple-addInteger-one-arg.flat
 tests/flat/fromSimple-app.flat
-tests/flat/fromSimple-chooseUnit.flat
 tests/flat/fromSimple-delay-lam.flat
 tests/flat/fromSimple-error.flat
 tests/flat/fromSimple-force-lam.flat
-tests/flat/fromSimple-ifThenElse.flat
 tests/flat/fromSimple-ifThenElse-no-force.flat
 tests/flat/fromSimple-lam.flat
-tests/flat/fromSimple-trace.flat
 tests/flat/fromSimple-var-lam.flat

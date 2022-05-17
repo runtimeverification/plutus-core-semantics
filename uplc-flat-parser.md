@@ -132,7 +132,17 @@ Parsing Delay
 
   rule #readProgramTerm( #readTermTag DELAY => #readDelayTerm #readProgramTerm( #readTerm, BITSTREAM ), BITSTREAM )
   rule #readProgramTerm( #readDelayTerm TermBitLengthPair( T, I ), _ ) => TermBitLengthPair( ( delay T ), I )
-  rule #readProgramTerm( #readDelayTerm T, _ ) => ( delay T )
+  rule #readProgramTerm( #readDelayTerm T, _ ) => ( delay T ) [owise]
+```
+
+Parsing Force
+
+```k
+  syntax KItem ::= "#readForceTerm" Term
+
+  rule #readProgramTerm( #readTermTag FORCE => #readForceTerm #readProgramTerm( #readTerm, BITSTREAM ), BITSTREAM )
+  rule #readProgramTerm( #readForceTerm TermBitLengthPair( T, I ), _ ) => TermBitLengthPair( ( force T ), I )
+  rule #readProgramTerm( #readForceTerm T, _ ) => ( force T ) [owise]
 ```
 
 Parsing Error
