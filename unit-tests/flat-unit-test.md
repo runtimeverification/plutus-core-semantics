@@ -99,6 +99,8 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x33\x70\x29\x00\x12\x40\x09" ) ) )
     => simplified( ( program 1.0.0 [ [ ( builtin subtractInteger ) ( con integer 1 ) ] ( con integer 2 ) ] ) ) ... </k>
 
+  claim <k> simplify( #readVersion( BitStream( #startProgramPosition, String2Bytes( "\x00\x00\x00" ) ) ) )
+    => simplified( SDat( 24, "0.0.0" ) ) ... </k>
 
 endmodule
 ```

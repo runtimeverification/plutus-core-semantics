@@ -22,9 +22,13 @@ The following function is the entry point to the flat parser.
   syntax ConcreteProgram ::= #bytes2program( Bytes )     [function]
                            | #bytes2program( String, K ) [function]
 
+  syntax Int ::= "#startProgramPosition" [macro]
+//----------------------------------------------
+  rule #startProgramPosition => 0
+
   rule #bytes2program( BYTES ) =>
     #let
-      VERSION = #readVersion( BitStream( 0, BYTES ) )
+      VERSION = #readVersion( BitStream( #startProgramPosition, BYTES ) )
     #in
       #bytes2program( #getDatum( VERSION ),
                       #readProgramTerm( #readTerm, BitStream( #getBitLength( VERSION ), BYTES ) )
