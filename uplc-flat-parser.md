@@ -187,8 +187,11 @@ Parsing Constants
     #in
       #resolveTerm( ( con string #getDatum( {STR_VAL}:>StringDatum ) ), #getBitLength( {STR_VAL}:>StringDatum ), Bs )
 
-  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, BYTES) ) =>
-    ( con bytestring String2ByteString( #getDatum(#readByteStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) ) ) )
+  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, Bs ) ) =>
+    #let
+      BSTR_VAL = #readByteStringValue( BitStream( #nextByteBoundary(I), Bs ) )
+    #in
+      #resolveTerm( ( con bytestring String2ByteString( #getDatum( BSTR_VAL ) ) ), #getBitLength( {BSTR_VAL}:>StringDatum ), Bs )
 ```
 
 Parsing Builtin Functions
