@@ -128,6 +128,8 @@ tests/nofib-exe-examples/queens-6-bt.uplc
 #
 # Flat format
 #
+tests/flat/fromSimple-addInteger-no-args.flat
+tests/flat/fromSimple-addInteger-one-arg.flat
 tests/flat/fromSimple-appendByteString.flat
 tests/flat/fromSimple-appendString.flat
 tests/flat/fromSimple-app.flat
