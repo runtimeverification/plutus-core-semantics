@@ -104,7 +104,7 @@ position/term pair, or to simply create the term to pass back.
 ```k
   syntax Term ::= TermBitLengthPair( Term, Int )
   syntax Term ::= #resolveTerm( Term, Int, Bytes) [function]
-//-------------------------------------------------------
+//----------------------------------------------------------
   rule #resolveTerm( T, I, B ) => T
     requires lengthBytes( B ) *Int 8 -Int I <=Int 8
 
@@ -405,7 +405,7 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
 
 ```k
   syntax StringDatum ::= #readStringValue( BitStream ) [function]
-//----------------------------------------------------------
+//---------------------------------------------------------------
   rule #readStringValue( BitStream( I, Bs ) ) =>
    #let
      StartIndex = ( I /Int 8 ) +Int 1 #in
@@ -417,11 +417,11 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
          )
 
   syntax String ::= #readStringValue( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
   rule #readStringValue( Bytes, Start, Length ) => #decodeUtf8Bytes( substrBytes( Bytes, Start, Length ) )
 
   syntax StringDatum ::= #readByteStringValue( BitStream ) [function]
-//------------------------------------------------------------------
+//-------------------------------------------------------------------
   rule #readByteStringValue( BitStream( I, Bs ) ) =>
    #let
      StartIndex = ( I /Int 8 ) +Int 1 #in
