@@ -1,1 +1,1 @@
-     ( error ) ~> [_ ( con integer 0 ) .Map ] ~> [_ ( con integer 1 ) .Map ] 
+     ( error ) 

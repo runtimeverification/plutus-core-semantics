@@ -18,7 +18,7 @@ module UPLC-INTEGER-BUILTINS
                       ListItem(< con integer I2:Int >))) =>
            < con integer I1 +Int I2 > ... </k>
 
-  rule <k> #eval(addInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(addInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `multiplyInteger`
@@ -31,7 +31,7 @@ module UPLC-INTEGER-BUILTINS
                       ListItem(< con integer I2:Int >))) =>
            < con integer I1 *Int I2 > ... </k>
 
-  rule <k> #eval(multiplyInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(multiplyInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `subtractInteger`
@@ -44,7 +44,7 @@ module UPLC-INTEGER-BUILTINS
                       ListItem(< con integer I2:Int >))) =>
            < con integer I1 -Int I2 > ... </k>
 
-  rule <k> #eval(subtractInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(subtractInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `divideInteger`
@@ -61,7 +61,7 @@ mathematical integer division operation.
            < con integer I1 /Int I2 > ... </k>
   requires I2 =/=Int 0
 
-  rule <k> #eval(divideInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(divideInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `modInteger`
@@ -77,7 +77,7 @@ According to Plutus specification, `modInteger` implements standard mathematical
            < con integer I1 modInt I2 > ... </k>
   requires I2 =/=Int 0
 
-  rule <k> #eval(modInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(modInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `quotientInteger`
@@ -95,7 +95,7 @@ operator `/Int`  computes the quotient using t-division which rounds towards 0.
            < con integer I1 /Int I2 > ... </k>
   requires I2 =/=Int 0
 
-  rule <k> #eval(quotientInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(quotientInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `remainderInteger`
@@ -114,7 +114,7 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
            < con integer (I1 -Int (I1 /Int I2) *Int I2) > ... </k>
   requires I2 =/=Int 0
 
-  rule <k> #eval(remainderInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(remainderInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `lessThanInteger`
@@ -134,7 +134,7 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
            < con bool False > ... </k>
   requires I1 >=Int I2
 
-  rule <k> #eval(lessThanInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(lessThanInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `lessThanEqualsInteger`
@@ -155,7 +155,7 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
            < con bool False > ... </k>
   requires I1 >Int I2
 
-  rule <k> #eval(lessThanEqualsInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(lessThanEqualsInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `equalsInteger`
@@ -176,7 +176,7 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
            < con bool False > ... </k>
   requires I1 =/=Int I2
 
-  rule <k> #eval(equalsInteger, _) => (error) ... </k> [owise]
+  rule <k> #eval(equalsInteger, _) ~> _ => (error) </k> [owise]
 ```
 
 ```k

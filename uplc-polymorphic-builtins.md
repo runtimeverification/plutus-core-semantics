@@ -16,8 +16,8 @@ module UPLC-POLYMORPHIC-BUILTINS
 All polymorphic builtins should be arguments to a call to `force`.
 
 ```k
-  rule <k> (builtin _BN:PolyBuiltinName) ~> K:KItem => (error) ... </k>
-  requires K =/=K Force
+  rule <k> (builtin _BN:PolyBuiltinName) ~> KI:KItem ~> _ => (error) </k>
+  requires KI =/=K Force
 ```
 
 ## `ifThenElse`
@@ -35,7 +35,7 @@ All polymorphic builtins should be arguments to a call to `force`.
                     ListItem(_)
                     ListItem(V2:Value))) => V2 ... </k>
 
-  rule <k> #eval(ifThenElse, _) => (error) ... </k> [owise]
+  rule <k> #eval(ifThenElse, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `chooseUnit`
@@ -47,7 +47,7 @@ All polymorphic builtins should be arguments to a call to `force`.
                    (ListItem(< con unit () >)
                     ListItem(V:Value))) => V ... </k>
 
-  rule <k> #eval(chooseUnit, _) => (error) ... </k> [owise]
+  rule <k> #eval(chooseUnit, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `fstPair`
@@ -59,7 +59,7 @@ All polymorphic builtins should be arguments to a call to `force`.
               ListItem(< con pair (T1:TypeConstant) (_T2:TypeConstant)
                          (C1:Constant, _C2:Constant) >)) => < con T1 C1 > ... </k>
 
-  rule <k> #eval(fstPair, _) => (error) ... </k> [owise]
+  rule <k> #eval(fstPair, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `sndPair`
@@ -71,7 +71,7 @@ All polymorphic builtins should be arguments to a call to `force`.
               ListItem(< con pair (_T1:TypeConstant) (T2:TypeConstant)
                          (_C1:Constant, C2:Constant) >)) => < con T2 C2 > ... </k>
 
-  rule <k> #eval(sndPair, _) => (error) ... </k> [owise]
+  rule <k> #eval(sndPair, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `chooseList`
@@ -90,7 +90,7 @@ All polymorphic builtins should be arguments to a call to `force`.
                       ListItem(V2:Value))) => V2 ... </k>
   requires L =/=K .ConstantList
 
-  rule <k> #eval(chooseList, _) => (error) ... </k> [owise]
+  rule <k> #eval(chooseList, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `mkCons`
@@ -103,7 +103,7 @@ All polymorphic builtins should be arguments to a call to `force`.
                ListItem(< con list(T) [ L:ConstantList ] >))) =>
            < con list(T) [ C , L ] > ... </k>
 
-  rule <k> #eval(mkCons, _) => (error) ... </k> [owise]
+  rule <k> #eval(mkCons, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `headList`
@@ -116,7 +116,7 @@ All polymorphic builtins should be arguments to a call to `force`.
                                  [ C:Constant  , _L:ConstantList ] >)) =>
            (con T C) ... </k>
 
-  rule <k> #eval(headList, _) => (error) ... </k> [owise]
+  rule <k> #eval(headList, _) ~> _ => (error) </k> [owise]
 
 ```
 
@@ -133,7 +133,7 @@ All polymorphic builtins should be arguments to a call to `force`.
               ListItem(< con list(T:TypeConstant) [ _C:Constant , L:ConstantList ] >)) =>
            < con T [ L ] > ... </k>
 
-  rule <k> #eval(tailList, _) => (error) ... </k> [owise]
+  rule <k> #eval(tailList, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `nullList`
@@ -150,7 +150,7 @@ All polymorphic builtins should be arguments to a call to `force`.
            < con bool False > ... </k>
   requires L =/=K .ConstantList 
 
-  rule <k> #eval(nullList, _) => (error) ... </k> [owise]
+  rule <k> #eval(nullList, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `trace`
@@ -163,7 +163,7 @@ All polymorphic builtins should be arguments to a call to `force`.
                ListItem(V:Value))) => V ... </k>
        <trace> ... (.List => ListItem(S)) </trace>
 
-  rule <k> #eval(trace, _) => (error) ... </k> [owise]
+  rule <k> #eval(trace, _) ~> _ => (error) </k> [owise]
 ```
 
 ```k
