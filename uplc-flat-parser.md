@@ -22,9 +22,13 @@ The following function is the entry point to the flat parser.
   syntax ConcreteProgram ::= #bytes2program( Bytes )     [function]
                            | #bytes2program( String, K ) [function]
 
+  syntax Int ::= "#startProgramPosition" [macro]
+//----------------------------------------------
+  rule #startProgramPosition => 0
+
   rule #bytes2program( BYTES ) =>
     #let
-      VERSION = #readVersion( BitStream( 0, BYTES ) )
+      VERSION = #readVersion( BitStream( #startProgramPosition, BYTES ) )
     #in
       #bytes2program( #getDatum( VERSION ),
                       #readProgramTerm( #readTerm, BitStream( #getBitLength( VERSION ), BYTES ) )
@@ -104,7 +108,7 @@ position/term pair, or to simply create the term to pass back.
 ```k
   syntax Term ::= TermBitLengthPair( Term, Int )
   syntax Term ::= #resolveTerm( Term, Int, Bytes) [function]
-//-------------------------------------------------------
+//----------------------------------------------------------
   rule #resolveTerm( T, I, B ) => T
     requires lengthBytes( B ) *Int 8 -Int I <=Int 8
 
@@ -128,7 +132,17 @@ Parsing Delay
 
   rule #readProgramTerm( #readTermTag DELAY => #readDelayTerm #readProgramTerm( #readTerm, BITSTREAM ), BITSTREAM )
   rule #readProgramTerm( #readDelayTerm TermBitLengthPair( T, I ), _ ) => TermBitLengthPair( ( delay T ), I )
-  rule #readProgramTerm( #readDelayTerm T, _ ) => ( delay T )
+  rule #readProgramTerm( #readDelayTerm T, _ ) => ( delay T ) [owise]
+```
+
+Parsing Force
+
+```k
+  syntax KItem ::= "#readForceTerm" Term
+
+  rule #readProgramTerm( #readTermTag FORCE => #readForceTerm #readProgramTerm( #readTerm, BITSTREAM ), BITSTREAM )
+  rule #readProgramTerm( #readForceTerm TermBitLengthPair( T, I ), _ ) => TermBitLengthPair( ( force T ), I )
+  rule #readProgramTerm( #readForceTerm T, _ ) => ( force T ) [owise]
 ```
 
 Parsing Error
@@ -183,8 +197,11 @@ Parsing Constants
     #in
       #resolveTerm( ( con string #getDatum( {STR_VAL}:>StringDatum ) ), #getBitLength( {STR_VAL}:>StringDatum ), Bs )
 
-  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, BYTES) ) =>
-    ( con bytestring String2ByteString( #getDatum(#readByteStringValue( BitStream( #nextByteBoundary(I), BYTES ) ) ) ) )
+  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, Bs ) ) =>
+    #let
+      BSTR_VAL = #readByteStringValue( BitStream( #nextByteBoundary(I), Bs ) )
+    #in
+      #resolveTerm( ( con bytestring String2ByteString( #getDatum( BSTR_VAL ) ) ), #getBitLength( {BSTR_VAL}:>StringDatum ), Bs )
 ```
 
 Parsing Builtin Functions
@@ -405,36 +422,48 @@ which is also referenced by Haskell's `Data.ZigZag` library used in uplc.
 
 ```k
   syntax StringDatum ::= #readStringValue( BitStream ) [function]
-//----------------------------------------------------------
+//---------------------------------------------------------------
   rule #readStringValue( BitStream( I, Bs ) ) =>
    #let
      StartIndex = ( I /Int 8 ) +Int 1 #in
    #let
      ByteLen = #readNBits( 8, BitStream( I , Bs ) )
    #in
-     SDat( ( ByteLen +Int StartIndex +Int 1 ) *Int 8,
+     SDat( ( ByteLen +Int StartIndex +Int #possibleNullTerminator( ByteLen ) ) *Int 8,
            #readStringValue( Bs, StartIndex, StartIndex +Int ByteLen )
          )
 
   syntax String ::= #readStringValue( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
   rule #readStringValue( Bytes, Start, Length ) => #decodeUtf8Bytes( substrBytes( Bytes, Start, Length ) )
 
   syntax StringDatum ::= #readByteStringValue( BitStream ) [function]
-//------------------------------------------------------------------
+//-------------------------------------------------------------------
   rule #readByteStringValue( BitStream( I, Bs ) ) =>
    #let
      StartIndex = ( I /Int 8 ) +Int 1 #in
    #let
      ByteLen = #readNBits( 8, BitStream( I , Bs ) )
    #in
-     SDat( ( ByteLen +Int StartIndex +Int 1 ) *Int 8,
+     SDat( ( ByteLen +Int StartIndex +Int #possibleNullTerminator( ByteLen ) ) *Int 8,
            "#" +String #readBytesAsString( Bs, StartIndex, StartIndex +Int ByteLen )
          )
 
   syntax String ::= #readBytesAsString( BytesData:Bytes, StartByte:Int, ByteLength:Int ) [function]
 //-------------------------------------------------------------------------------------------------
   rule #readBytesAsString( Bytes, Start, Length ) => Bytes2StringBase16( substrBytes( Bytes, Start, Length ) )
+```
+
+String and ByteString encodings starts with a byte that indicates the byte length of the data. This is followed by the
+data and terminated with a `\x00` byte. However, in the case that the byte length is `0`, both the data and the null
+terminator do not exist. When parsing these constants, the following function indicates the presence of this null
+terminator.
+
+```k
+  syntax Int ::= #possibleNullTerminator( Int ) [function]
+//--------------------------------------------------------
+  rule #possibleNullTerminator( 0 ) => 0
+  rule #possibleNullTerminator( _ ) => 1 [owise]
 
 endmodule
 ```

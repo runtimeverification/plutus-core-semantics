@@ -11,3 +11,4 @@ unit-tests/verification/
 *.swo
 *.swn
 *.swp
+/tests/**/*.flat.hex
