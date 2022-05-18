@@ -37,7 +37,11 @@ is used to keep track of the data emitted by the `trace` builtin.
   rule #handleProgram(F:FlatProgram) => #bytes2program(getBytes(F))
 
   syntax Bytes ::= getBytes(FlatProgram) [function]
-  rule getBytes(F) => Int2Bytes(String2Base(trimByteString({F}:>ByteString),16), BE, Unsigned)
+  rule getBytes(F) =>
+    #let
+      INPUT=trimByteString({F}:>ByteString)
+    #in
+      Int2Bytes( lengthString( INPUT ) /Int 2, String2Base( INPUT, 16 ), BE)
 
   configuration <k> #handleProgram($PGM:Program) </k>
                 <env> .Map </env>
