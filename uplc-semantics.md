@@ -51,7 +51,14 @@ module UPLC-SEMANTICS
   rule <k> < delay M:Term RHO:Map > ~> Force => M ... </k>
        <env> _ => RHO:Map </env>
 
-  rule <k> [ M N ] => M ~> [_ N RHO ] ... </k>
+  syntax K ::= #app(Term, TermList, Map) [function]
+  syntax K ::= #appAux(TermList, Map) [function]
+
+  rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
+  rule #appAux(N:Term .TermList, RHO) => [_ N RHO ]
+  rule #appAux(N:Term TL:TermList, RHO) => [_ N RHO ] ~> #appAux(TL, RHO) [owise]
+
+  rule <k> [ M:Term TL:TermList ] => #app(M, TL, RHO) ... </k>
        <env> RHO:Map </env>
 
   rule <k> V:Value ~> [_ M RHO:Map ] => M ~> [ V _] ... </k>
