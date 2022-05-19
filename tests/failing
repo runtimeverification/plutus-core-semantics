@@ -14,8 +14,6 @@ tests/simple/var.uplc
 # ifThenElse needs to be composed with force
 # We need to improve error report to cope with `uplc` output.
 tests/simple/ifThenElse-no-force.uplc
-# Non-iterative application is not supported yet.
-tests/simple/addInteger-uncurried.uplc
 # Programs addInteger-one-arg.uplc and addInteger-no-arg.uplc call
 # addInteger with a single argument or none. In the current semantics,
 # kplc returns an error. However, they are valid programs as
