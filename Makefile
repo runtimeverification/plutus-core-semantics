@@ -222,7 +222,8 @@ kplutus_files := uplc.md \
                  uplc-polymorphic-builtins.md \
                  uplc-string.md \
                  uplc-data-builtins.md \
-                 uplc-hash.md
+                 uplc-hash.md \
+		 uplc-pretty-print.md
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 
@@ -270,7 +271,8 @@ $(KPLUTUS_LIB)/$(haskell_kompiled): $(kplutus_includes) $(plugin_includes) $(KPL
 
 covr_ignore_files := bitstream.md \
                      uplc-bytestring.md \
-                     uplc-flat-parser.md
+                     uplc-flat-parser.md \
+		     uplc-pretty-print.md
 
 covr_ignore_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(covr_ignore_files))
 
