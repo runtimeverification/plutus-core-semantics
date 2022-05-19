@@ -45,7 +45,7 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #readIntegerValue( BitStream ( 0, String2Bytes( "\x16" ) ) ) )
     => simplified( VDat( 8, 11 ) ) ... </k>
 
-  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x48\x05\x81" ) ) ) )
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x48\x05\x81" ) ), #emptyContext ) )
     => simplified( ( con integer 11 ) ) ... </k>
 
   claim <k> simplify( #bytes2program( String2Bytes( "\x0b\x16\x21\x48\x05\x81" ) ) )
@@ -93,13 +93,13 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x49\x01\x00\x01" ) ) )
     => simplified( ( program 1.0.0 ( con string "") ) ) ... </k>
 
-  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x00" ) ) ) )
-    => simplified( #readProgramTerm( ( builtin addInteger ), BitStream( 11, String2Bytes( "\x70\x00" ) ) ) ) ... </k>
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x00" ) ), #emptyContext ) )
+    => simplified( #readProgramTerm( ( builtin addInteger ), BitStream( 11, String2Bytes( "\x70\x00" ) ), #emptyContext ) ) ... </k>
 
-  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x20" ) ) ) )
-    => simplified( #readProgramTerm( ( builtin subtractInteger), BitStream( 11, String2Bytes( "\x70\x20" ) ) ) ) ... </k>
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x20" ) ), #emptyContext ) )
+    => simplified( #readProgramTerm( ( builtin subtractInteger), BitStream( 11, String2Bytes( "\x70\x20" ) ), #emptyContext ) ) ... </k>
 
-  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x20\x00" ) ) ) )
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x20\x00" ) ), #emptyContext ) )
     => simplified( TermBitLengthPair( ( builtin subtractInteger), 11 ) ) ... </k>
 
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x33\x70\x29\x00\x12\x40\x09" ) ) )
