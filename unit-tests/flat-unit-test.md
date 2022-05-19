@@ -108,5 +108,17 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #readVersion( BitStream( #startProgramPosition, String2Bytes( "\x00\x00\x00" ) ) ) )
     => simplified( SDat( 24, "0.0.0" ) ) ... </k>
 
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x24\x99" ) ), #emptyContext ) )
+    => simplified( ( lam v_0 ( con unit () ) ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x24\x99\x01" ) ), #emptyContext ) )
+    => simplified( TermBitLengthPair( ( lam v_0 ( con unit () ) ), 14 ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x22\x49\x81" ) ), #emptyContext ) )
+    => simplified( ( lam v_0 (lam v_1 ( con unit () ) ) ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x22\x49\x81\x01" ) ), #emptyContext ) )
+    => simplified( TermBitLengthPair( ( lam v_0 (lam v_1 ( con unit () ) ) ), 18 ) ) ... </k>
+
 endmodule
 ```

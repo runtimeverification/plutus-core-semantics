@@ -137,6 +137,30 @@ create the term to pass back.
                        )
 ```
 
+Parsing Lambda
+
+```k
+  syntax UplcId ::= #freshVarName(Int) [function]
+//-----------------------------------------------
+  rule #freshVarName( Curr ) => String2UplcId( "v_" +String Int2String( Curr ) )
+
+  syntax KItem ::= "#readLambdaTerm" UplcId Term
+
+  rule #readProgramTerm( #readTermTag LAMBDA, Bs, LambdaContext( Cur, VList ) ) =>
+    #let
+      FRESH_VAR = #freshVarName( Cur )
+    #in
+      #readProgramTerm( #readLambdaTerm FRESH_VAR
+                          #readProgramTerm( #readTerm, Bs,
+                                            LambdaContext( Cur +Int 1, {ListItem( FRESH_VAR ) {VList}:>List }:>VarList)
+                                          ),
+                        Bs, LambdaContext( Cur, VList )
+                      )
+
+  rule #readProgramTerm( #readLambdaTerm VarName TermBitLengthPair( T, I ), _, _ ) => TermBitLengthPair( ( lam VarName T ), I )
+  rule #readProgramTerm( #readLambdaTerm VarName T, _, _ ) => ( lam VarName T ) [owise]
+```
+
 Parsing Delay
 
 ```k
