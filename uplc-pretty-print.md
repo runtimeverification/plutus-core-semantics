@@ -13,12 +13,8 @@ module UPLC-PRETTY-PRINT
   
   rule list2TermList(.List) => .TermList
 
-  rule list2TermList(ListItem(V:Value)) =>
-       prettyPrint(V) 
-  
-  rule list2TermList(L:List) =>
-       prettyPrint({L[0]}:>Value) list2TermList(range(L, 1, size(L)))
-  requires size(L) >Int 1
+  rule list2TermList(ListItem(V:Value) L:List) =>
+       prettyPrint(V) list2TermList(L)
 
   rule prettyPrint(< con T:TypeConstant C:Constant >) => (con T C) 
 

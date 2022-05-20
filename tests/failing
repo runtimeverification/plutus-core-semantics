@@ -123,6 +123,10 @@ tests/nofib-exe-examples/queens-6-bt.uplc
 #
 # Error examples
 #
+# File chooseData is a partial application but with a ill-typed argument.
+# `kplc` now returns a partial application but `uplc` would return an error
+# as it does for a partial application of `addInteger` to a string, for instance.
+tests/error/chooseData.uplc
 #
 # Flat format
 #
