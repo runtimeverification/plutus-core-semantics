@@ -34,8 +34,6 @@ All polymorphic builtins should be arguments to a call to `force`.
                    (ListItem(< con bool False >)
                     ListItem(_)
                     ListItem(V2:Value))) => V2 ... </k>
-
-  rule <k> #eval(ifThenElse, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `chooseUnit`
@@ -46,8 +44,6 @@ All polymorphic builtins should be arguments to a call to `force`.
   rule <k> #eval(chooseUnit,
                    (ListItem(< con unit () >)
                     ListItem(V:Value))) => V ... </k>
-
-  rule <k> #eval(chooseUnit, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `fstPair`
@@ -58,8 +54,6 @@ All polymorphic builtins should be arguments to a call to `force`.
   rule <k> #eval(fstPair,
               ListItem(< con pair (T1:TypeConstant) (_T2:TypeConstant)
                          (C1:Constant, _C2:Constant) >)) => < con T1 C1 > ... </k>
-
-  rule <k> #eval(fstPair, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `sndPair`
@@ -70,8 +64,6 @@ All polymorphic builtins should be arguments to a call to `force`.
   rule <k> #eval(sndPair,
               ListItem(< con pair (_T1:TypeConstant) (T2:TypeConstant)
                          (_C1:Constant, C2:Constant) >)) => < con T2 C2 > ... </k>
-
-  rule <k> #eval(sndPair, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `chooseList`
@@ -89,8 +81,6 @@ All polymorphic builtins should be arguments to a call to `force`.
                       ListItem(_V1:Value)
                       ListItem(V2:Value))) => V2 ... </k>
   requires L =/=K .ConstantList
-
-  rule <k> #eval(chooseList, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `mkCons`
@@ -102,8 +92,6 @@ All polymorphic builtins should be arguments to a call to `force`.
               (ListItem(< con T:TypeConstant C:Constant >)
                ListItem(< con list(T) [ L:ConstantList ] >))) =>
            < con list(T) [ C , L ] > ... </k>
-
-  rule <k> #eval(mkCons, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `headList`
@@ -115,9 +103,6 @@ All polymorphic builtins should be arguments to a call to `force`.
               ListItem(< con list(T:TypeConstant)
                                  [ C:Constant  , _L:ConstantList ] >)) =>
            (con T C) ... </k>
-
-  rule <k> #eval(headList, _) ~> _ => (error) </k> [owise]
-
 ```
 
 ## `tailList`
@@ -132,8 +117,6 @@ All polymorphic builtins should be arguments to a call to `force`.
   rule <k> #eval(tailList,
               ListItem(< con list(T:TypeConstant) [ _C:Constant , L:ConstantList ] >)) =>
            < con T [ L ] > ... </k>
-
-  rule <k> #eval(tailList, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `nullList`
@@ -149,8 +132,6 @@ All polymorphic builtins should be arguments to a call to `force`.
               ListItem(< con list(_T:TypeConstant) [ L:ConstantList ] >)) =>
            < con bool False > ... </k>
   requires L =/=K .ConstantList 
-
-  rule <k> #eval(nullList, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `trace`
@@ -162,8 +143,6 @@ All polymorphic builtins should be arguments to a call to `force`.
               (ListItem(< con string S >)
                ListItem(V:Value))) => V ... </k>
        <trace> ... (.List => ListItem(S)) </trace>
-
-  rule <k> #eval(trace, _) ~> _ => (error) </k> [owise]
 ```
 
 ```k

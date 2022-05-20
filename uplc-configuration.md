@@ -30,6 +30,7 @@ is used to keep track of the data emitted by the `trace` builtin.
 ```k
   syntax UValue ::= Value
   syntax UValue ::= #eval(BuiltinName, List)
+  rule <k> #eval(_,_) ~> _ => (error) </k> [owise]
 
   syntax Program ::= #handleProgram(Program) [function]
 
