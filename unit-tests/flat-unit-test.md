@@ -126,5 +126,16 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x13\x24\x98\x92\x61" ) ), #emptyContext ) )
     => simplified( ( delay [ ( lam v_0 ( con unit () ) ) ( lam v_1 ( con unit () ) ) ] ) ) ... </k>
 
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x00\x10" ) ),
+    LambdaContext( 1, ListItem(String2UplcId("v_0")) .List ) ) )
+    => simplified( String2UplcId("v_0") ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x20\x01" ) ), #emptyContext ) )
+    => simplified( ( lam v_0 v_0 ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x20\x01\x00\x00" ) ), #emptyContext ) )
+    => simplified( LeafTermContext ( ( lam v_0 v_0 ) , 16 , 1 ) ) ... </k>
+
+
 endmodule
 ```

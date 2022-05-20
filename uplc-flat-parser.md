@@ -140,6 +140,32 @@ simply create the term to pass back.
                        )
 ```
 
+Parsing Variables
+
+Note: variable names are encoded as De Bruijn Indicies
+
+```k
+  rule #readProgramTerm( #readTermTag VAR, BitStream( I, Bs ), LambdaContext( V, VList ) ) =>
+    #let
+      VAR_INDEX = #getVarLenData( BitStream( I, Bs ) )
+    #in
+      #resolveTerm( #lookupDeBruijnIdx( {VList}:>List, #getDatum( {VAR_INDEX}:>VarLenDatum ) ),
+                    #getBitLength( {VAR_INDEX}:>VarLenDatum ) +Int I, Bs, V
+                  )
+```
+The De Bruijn index is a natural number that denotes the distance from this variable to the binding lambda abstraction.
+In otherwords, an index of 1 indicates that the variable is bound by the closest parent lambda abstraction and an index
+of 2 indicates the variable bound by the parent of the parent, and so on. The variable identifiers of the parent
+lambdas are stored inside of the LambdaContext's VarList and the index is used to look up the identifier of the
+variable associated to the lambda. Since the list is 0-indexed and the De Bruijn index is a natural number, subtract 1
+from the De Bruijn index to correctly index the list.
+
+```k
+  syntax UplcId ::= #lookupDeBruijnIdx( List, Int ) [function]
+//---------------------------------------------------------------
+  rule #lookupDeBruijnIdx( VList, I ) => { VList[ I -Int 1 ] }:>UplcId
+```
+
 Parsing Lambda
 
 ```k
