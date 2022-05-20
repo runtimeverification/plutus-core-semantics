@@ -269,8 +269,7 @@ $(KPLUTUS_LIB)/$(haskell_kompiled): $(kplutus_includes) $(plugin_includes) $(KPL
 # Coverage Processing
 # -------------------
 
-covr_ignore_files := bitstream.md \
-                     uplc-bytestring.md \
+covr_ignore_files := uplc-bytestring.md \
                      uplc-flat-parser.md \
 		     uplc-pretty-print.md
 
@@ -394,7 +393,8 @@ TEST_MSG      := "\n>>> Testing "
 
 TEST_OPTS  := --result-only | \
 		 sed -e 's/\[\]//g' \
-                     -e 's/\(.TermList\s*\|.ConstantList\s*\|.DataList\s*\|.Env\s*\)//g' 
+                     -e 's/\(.TermList\s*\|.ConstantList\s*\|.DataList\s*\|.Env\s*\)//g'
+
 CHECK          := diff --ignore-all-space
 TEST           := $(KPLUTUS) run
 UPLC           := uplc
