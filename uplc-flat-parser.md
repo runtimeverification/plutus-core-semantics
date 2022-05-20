@@ -119,12 +119,11 @@ simply create the term to pass back.
 
   rule #resolveTerm( T, I, _, V ) => LeafTermContext( T, I, V ) [owise]
 
-  syntax LambdaContext ::= LambdaContext( Int, VarList )
-  syntax VarList ::= List{UplcId,""}
+  syntax LambdaContext ::= LambdaContext( Int, List )
 
   syntax LambdaContext ::= "#emptyContext" [macro]
 //------------------------------------------------
-  rule #emptyContext => LambdaContext( 0, {.List}:>VarList )
+  rule #emptyContext => LambdaContext( 0, .List )
 
   syntax Int ::= #getNextVarNum( LambdaContext ) [function]
 //---------------------------------------------------------
@@ -154,10 +153,8 @@ Parsing Lambda
     #let
       FRESH_VAR = #freshVarName( Cur )
     #in
-      #readProgramTerm( #readLambdaTerm FRESH_VAR
-                          #readProgramTerm( #readTerm, Bs,
-                                            LambdaContext( Cur +Int 1, {ListItem( FRESH_VAR ) {VList}:>List }:>VarList)
-                                          ),
+      #readProgramTerm( #readLambdaTerm
+                          FRESH_VAR #readProgramTerm( #readTerm, Bs, LambdaContext( Cur +Int 1, ListItem( FRESH_VAR ) VList ) ),
                         Bs, LambdaContext( Cur, VList )
                       )
 
