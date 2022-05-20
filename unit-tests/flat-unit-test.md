@@ -100,7 +100,7 @@ module FLAT-UNIT-TEST
     => simplified( #readProgramTerm( ( builtin subtractInteger), BitStream( 11, String2Bytes( "\x70\x20" ) ), #emptyContext ) ) ... </k>
 
   claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x20\x00" ) ), #emptyContext ) )
-    => simplified( TermBitLengthPair( ( builtin subtractInteger), 11 ) ) ... </k>
+    => simplified( LeafTermContext( ( builtin subtractInteger), 11, 0 ) ) ... </k>
 
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x33\x70\x29\x00\x12\x40\x09" ) ) )
     => simplified( ( program 1.0.0 [ [ ( builtin subtractInteger ) ( con integer 1 ) ] ( con integer 2 ) ] ) ) ... </k>
@@ -112,13 +112,19 @@ module FLAT-UNIT-TEST
     => simplified( ( lam v_0 ( con unit () ) ) ) ... </k>
 
   claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x24\x99\x01" ) ), #emptyContext ) )
-    => simplified( TermBitLengthPair( ( lam v_0 ( con unit () ) ), 14 ) ) ... </k>
+    => simplified( LeafTermContext( ( lam v_0 ( con unit () ) ), 14, 1 ) ) ... </k>
 
   claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x22\x49\x81" ) ), #emptyContext ) )
     => simplified( ( lam v_0 (lam v_1 ( con unit () ) ) ) ) ... </k>
 
   claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x22\x49\x81\x01" ) ), #emptyContext ) )
-    => simplified( TermBitLengthPair( ( lam v_0 (lam v_1 ( con unit () ) ) ), 18 ) ) ... </k>
+    => simplified( LeafTermContext( ( lam v_0 (lam v_1 ( con unit () ) ) ), 18, 2 ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x32\x49\x89\x26\x01" ) ), #emptyContext ) )
+    => simplified( [ ( lam v_0 ( con unit () ) ) ( lam v_1 ( con unit () ) ) ] ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x13\x24\x98\x92\x61" ) ), #emptyContext ) )
+    => simplified( ( delay [ ( lam v_0 ( con unit () ) ) ( lam v_1 ( con unit () ) ) ] ) ) ... </k>
 
 endmodule
 ```
