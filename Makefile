@@ -519,3 +519,19 @@ all_error_tests := $(wildcard tests/error/*.uplc)
 error_tests     := $(filter-out $(failing_tests), $(all_error_tests))
 
 test-error: $(error_tests:=.krun)
+
+#
+# Update flat tests
+#
+CONVRT_MSG:= ">>  Converting "
+all_textual_tests := $(wildcard tests/*/*.uplc)
+textual_tests     := $(filter-out $(failing_tests), $(all_textual_tests))
+textual_tests     := $(filter-out $(error_tests), $(textual_tests))
+textual_tests     := $(filter-out $(new_syntax_tests), $(textual_tests))
+
+update-flat: $(textual_tests:=.textual2flat)
+
+CONVERT = uplc convert --of flat -i
+tests/%.uplc.textual2flat: tests/%.uplc
+	@echo $(BWhite)$(CONVRT_MSG)$(Color_off)$(Green)$<$(Color_Off)"\n"
+	$(CONVERT) $< > tests/flat/$(shell basename `dirname $<`)/$(shell basename $< .uplc).flat
