@@ -45,7 +45,7 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #readIntegerValue( BitStream ( 0, String2Bytes( "\x16" ) ) ) )
     => simplified( VDat( 8, 11 ) ) ... </k>
 
-  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x48\x05\x81" ) ) ) )
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x48\x05\x81" ) ), #emptyContext ) )
     => simplified( ( con integer 11 ) ) ... </k>
 
   claim <k> simplify( #bytes2program( String2Bytes( "\x0b\x16\x21\x48\x05\x81" ) ) )
@@ -93,20 +93,49 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x49\x01\x00\x01" ) ) )
     => simplified( ( program 1.0.0 ( con string "") ) ) ... </k>
 
-  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x00" ) ) ) )
-    => simplified( #readProgramTerm( ( builtin addInteger ), BitStream( 11, String2Bytes( "\x70\x00" ) ) ) ) ... </k>
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x00" ) ), #emptyContext ) )
+    => simplified( #readProgramTerm( ( builtin addInteger ), BitStream( 11, String2Bytes( "\x70\x00" ) ), #emptyContext ) ) ... </k>
 
-  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x20" ) ) ) )
-    => simplified( #readProgramTerm( ( builtin subtractInteger), BitStream( 11, String2Bytes( "\x70\x20" ) ) ) ) ... </k>
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x20" ) ), #emptyContext ) )
+    => simplified( #readProgramTerm( ( builtin subtractInteger), BitStream( 11, String2Bytes( "\x70\x20" ) ), #emptyContext ) ) ... </k>
 
-  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x20\x00" ) ) ) )
-    => simplified( TermBitLengthPair( ( builtin subtractInteger), 11 ) ) ... </k>
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x70\x20\x00" ) ), #emptyContext ) )
+    => simplified( LeafTermContext( ( builtin subtractInteger), 11, 0 ) ) ... </k>
 
   claim <k> simplify( #bytes2program( String2Bytes( "\x01\x00\x00\x33\x70\x29\x00\x12\x40\x09" ) ) )
     => simplified( ( program 1.0.0 [ [ ( builtin subtractInteger ) ( con integer 1 ) ] ( con integer 2 ) ] ) ) ... </k>
 
   claim <k> simplify( #readVersion( BitStream( #startProgramPosition, String2Bytes( "\x00\x00\x00" ) ) ) )
     => simplified( SDat( 24, "0.0.0" ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x24\x99" ) ), #emptyContext ) )
+    => simplified( ( lam v_0 ( con unit () ) ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x24\x99\x01" ) ), #emptyContext ) )
+    => simplified( LeafTermContext( ( lam v_0 ( con unit () ) ), 14, 1 ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x22\x49\x81" ) ), #emptyContext ) )
+    => simplified( ( lam v_0 (lam v_1 ( con unit () ) ) ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x22\x49\x81\x01" ) ), #emptyContext ) )
+    => simplified( LeafTermContext( ( lam v_0 (lam v_1 ( con unit () ) ) ), 18, 2 ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x32\x49\x89\x26\x01" ) ), #emptyContext ) )
+    => simplified( [ ( lam v_0 ( con unit () ) ) ( lam v_1 ( con unit () ) ) ] ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x13\x24\x98\x92\x61" ) ), #emptyContext ) )
+    => simplified( ( delay [ ( lam v_0 ( con unit () ) ) ( lam v_1 ( con unit () ) ) ] ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x00\x10" ) ),
+    LambdaContext( 1, ListItem(String2UplcId("v_0")) .List ) ) )
+    => simplified( String2UplcId("v_0") ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x20\x01" ) ), #emptyContext ) )
+    => simplified( ( lam v_0 v_0 ) ) ... </k>
+
+  claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x20\x01\x00\x00" ) ), #emptyContext ) )
+    => simplified( LeafTermContext ( ( lam v_0 v_0 ) , 16 , 1 ) ) ... </k>
+
 
 endmodule
 ```

@@ -6,8 +6,10 @@ require "uplc-bytestring.md"
 require "uplc-environment.md"
 
 module UPLC-ID
+  imports STRING
 
   syntax UplcId ::= r"[A-Za-z][A-Za-z0-9\\_\\']*" [prec(1), token]
+  syntax UplcId ::= String2UplcId( String ) [function, functional, hook(STRING.string2token)]
 
 endmodule
 

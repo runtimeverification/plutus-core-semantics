@@ -12,6 +12,7 @@ module UPLC-FLAT-PARSER
   imports DECODE-UTF8-BYTES
   imports DECODE-UTF8-BYTES-SYMBOLIC
   imports FLAT-STRING-HELPER
+  imports LIST
 ```
 
 ## Flat Parser Entrypoint
@@ -31,7 +32,7 @@ The following function is the entry point to the flat parser.
       VERSION = #readVersion( BitStream( #startProgramPosition, BYTES ) )
     #in
       #bytes2program( #getDatum( VERSION ),
-                      #readProgramTerm( #readTerm, BitStream( #getBitLength( VERSION ), BYTES ) )
+                      #readProgramTerm( #readTerm, BitStream( #getBitLength( VERSION ), BYTES ), #emptyContext )
                     )
 
   rule #bytes2program( VERSION, TERM:Term ~> . ) => ( program String2Version( VERSION ) TERM )
@@ -99,30 +100,93 @@ version numbers that are less than 7 bits and needs to be updated to parse large
 
 ## Reading Terms
 
-This parsing algorithm recursively descends to create the AST. In order to keep track of where the terms end and the
-subsequent terms start, we need to bubble up the next bit position to be parsed along with the term itself. Once the
-parser reaches the end of the input program and parses the last leaf term, there is no need to pass the bit position
-and only the leaf term is returned passed. The `#resolveTerm` function contains logic to either create the bit
-position/term pair, or to simply create the term to pass back.
+This parser is a recursive descent parser that traverses a sequence of bits where the bits represent a lambda calculus
+using de Bruijn indicies instead of variable names. In order to keep track of where the terms end and the subsequent
+terms start, we need to bubble up the next bit position to be parsed along with the term itself. In order to give
+unique names to the variables, the parser needs to keep track of the amount of `lam` terms that it has seen as well as
+a list of variable names to be indexed by the de Bruijn number. Once the parser reaches the end of the input program
+and parses the last leaf term, there is no need to pass the bit position and/or the lambda context and only the leaf
+term is returned passed. The `#resolveTerm` function contains logic to either create the bit position/term pair, or to
+simply create the term to pass back.
 
 ```k
-  syntax Term ::= TermBitLengthPair( Term, Int )
-  syntax Term ::= #resolveTerm( Term, Int, Bytes) [function]
-//----------------------------------------------------------
-  rule #resolveTerm( T, I, B ) => T
+  syntax Term ::= LeafTermContext( Leaf:Term, BitPosition:Int, NextVarNum:Int )
+
+  syntax Term ::= #resolveTerm( Term, Int, Bytes, Int) [function]
+//---------------------------------------------------------------
+  rule #resolveTerm( T, I, B, _ ) => T
     requires lengthBytes( B ) *Int 8 -Int I <=Int 8
 
-  rule #resolveTerm( T, I, _ ) => TermBitLengthPair( T, I ) [owise]
+  rule #resolveTerm( T, I, _, V ) => LeafTermContext( T, I, V ) [owise]
+
+  syntax LambdaContext ::= LambdaContext( Int, List )
+
+  syntax LambdaContext ::= "#emptyContext" [macro]
+//------------------------------------------------
+  rule #emptyContext => LambdaContext( 0, .List )
+
+  syntax Int ::= #getNextVarNum( LambdaContext ) [function]
+//---------------------------------------------------------
+  rule #getNextVarNum( LambdaContext( I, _ ) ) => I
 ```
 
 ### Parser Entry Point
 
 ```k
-  syntax Term ::= #readProgramTerm( K, BitStream ) [function]
+  syntax Term ::= #readProgramTerm( K, BitStream, LambdaContext ) [function]
 
   rule #readProgramTerm( #readTerm => #readTermTag #readNBits( #termTagLength, BitStream( I, BYTES) ),
-                         BitStream( I => I +Int #termTagLength, BYTES )
+                         BitStream( I => I +Int #termTagLength, BYTES ), _
                        )
+```
+
+Parsing Variables
+
+Note: variable names are encoded as De Bruijn Indicies
+
+```k
+  rule #readProgramTerm( #readTermTag VAR, BitStream( I, Bs ), LambdaContext( V, VList ) ) =>
+    #let
+      VAR_INDEX = #getVarLenData( BitStream( I, Bs ) )
+    #in
+      #resolveTerm( #lookupDeBruijnIdx( {VList}:>List, #getDatum( {VAR_INDEX}:>VarLenDatum ) ),
+                    #getBitLength( {VAR_INDEX}:>VarLenDatum ) +Int I, Bs, V
+                  )
+```
+The De Bruijn index is a natural number that denotes the distance from this variable to the binding lambda abstraction.
+In otherwords, an index of 1 indicates that the variable is bound by the closest parent lambda abstraction and an index
+of 2 indicates the variable bound by the parent of the parent, and so on. The variable identifiers of the parent
+lambdas are stored inside of the LambdaContext's VarList and the index is used to look up the identifier of the
+variable associated to the lambda. Since the list is 0-indexed and the De Bruijn index is a natural number, subtract 1
+from the De Bruijn index to correctly index the list.
+
+```k
+  syntax UplcId ::= #lookupDeBruijnIdx( List, Int ) [function]
+//---------------------------------------------------------------
+  rule #lookupDeBruijnIdx( VList, I ) => { VList[ I -Int 1 ] }:>UplcId
+```
+
+Parsing Lambda
+
+```k
+  syntax UplcId ::= #freshVarName(Int) [function]
+//-----------------------------------------------
+  rule #freshVarName( Curr ) => String2UplcId( "v_" +String Int2String( Curr ) )
+
+  syntax KItem ::= "#readLambdaTerm" UplcId Term
+
+  rule #readProgramTerm( #readTermTag LAMBDA, Bs, LambdaContext( Cur, VList ) ) =>
+    #let
+      FRESH_VAR = #freshVarName( Cur )
+    #in
+      #readProgramTerm( #readLambdaTerm
+                          FRESH_VAR #readProgramTerm( #readTerm, Bs, LambdaContext( Cur +Int 1, ListItem( FRESH_VAR ) VList ) ),
+                        Bs, LambdaContext( Cur, VList )
+                      )
+
+  rule #readProgramTerm( #readLambdaTerm VarName LeafTermContext( T, I, V ), _, _ ) =>
+    LeafTermContext( ( lam VarName T ), I, V )
+  rule #readProgramTerm( #readLambdaTerm VarName T, _, _ ) => ( lam VarName T ) [owise]
 ```
 
 Parsing Delay
@@ -130,9 +194,9 @@ Parsing Delay
 ```k
   syntax KItem ::= "#readDelayTerm" Term
 
-  rule #readProgramTerm( #readTermTag DELAY => #readDelayTerm #readProgramTerm( #readTerm, BITSTREAM ), BITSTREAM )
-  rule #readProgramTerm( #readDelayTerm TermBitLengthPair( T, I ), _ ) => TermBitLengthPair( ( delay T ), I )
-  rule #readProgramTerm( #readDelayTerm T, _ ) => ( delay T ) [owise]
+  rule #readProgramTerm( #readTermTag DELAY => #readDelayTerm #readProgramTerm( #readTerm, BITSTREAM, CONTEXT ), BITSTREAM, CONTEXT )
+  rule #readProgramTerm( #readDelayTerm LeafTermContext( T, I, C ), _, _ ) => LeafTermContext( ( delay T ), I, C )
+  rule #readProgramTerm( #readDelayTerm T, _, _ ) => ( delay T ) [owise]
 ```
 
 Parsing Force
@@ -140,15 +204,16 @@ Parsing Force
 ```k
   syntax KItem ::= "#readForceTerm" Term
 
-  rule #readProgramTerm( #readTermTag FORCE => #readForceTerm #readProgramTerm( #readTerm, BITSTREAM ), BITSTREAM )
-  rule #readProgramTerm( #readForceTerm TermBitLengthPair( T, I ), _ ) => TermBitLengthPair( ( force T ), I )
-  rule #readProgramTerm( #readForceTerm T, _ ) => ( force T ) [owise]
+  rule #readProgramTerm( #readTermTag FORCE => #readForceTerm #readProgramTerm( #readTerm, BITSTREAM, CONTEXT ), BITSTREAM, CONTEXT )
+  rule #readProgramTerm( #readForceTerm LeafTermContext( T, I, C ), _, _ ) => LeafTermContext( ( force T ), I, C )
+  rule #readProgramTerm( #readForceTerm T, _, _ ) => ( force T ) [owise]
 ```
 
 Parsing Error
 
 ```k
-  rule #readProgramTerm( #readTermTag ERROR, BitStream( I, Bs ) ) => #resolveTerm( ( error ), I, Bs )
+  rule #readProgramTerm( #readTermTag ERROR, BitStream( I, Bs ), C ) =>
+    #resolveTerm( ( error ), I, Bs, #getNextVarNum( C ) )
 ```
 
 Parsing Function Application
@@ -157,60 +222,68 @@ Parsing Function Application
   syntax KItem ::= "#readApplyFirstTerm"  Term
                  | "#readApplySecondTerm" Term Term
 
-  rule #readProgramTerm( #readTermTag APP => #readApplyFirstTerm #readProgramTerm( #readTerm, BitStream( I, Bs ) ),
-                         BitStream( I, Bs )
+  rule #readProgramTerm( #readTermTag APP => #readApplyFirstTerm #readProgramTerm( #readTerm, BitStream( I, Bs ), Ctxt ),
+                         BitStream( I, Bs ), Ctxt
                        )
 
-  rule #readProgramTerm( #readApplyFirstTerm TermBitLengthPair( T, I ) =>
-                           #readApplySecondTerm T #readProgramTerm(#readTerm, BitStream( I, Bs ) ),
-                         BitStream( _, Bs )
+  rule #readProgramTerm( #readApplyFirstTerm LeafTermContext( T, I, V ) =>
+                           #readApplySecondTerm T #readProgramTerm( #readTerm, BitStream( I, Bs ), LambdaContext( V, VList ) ),
+                         BitStream( _, Bs ), LambdaContext( _, VList)
                        )
 
-  rule #readProgramTerm( #readApplySecondTerm T0 TermBitLengthPair( T1, I ), _ ) => TermBitLengthPair( [ T0 T1 ], I )
+  rule #readProgramTerm( #readApplySecondTerm T0 LeafTermContext( T1, I, V ), _, _ ) => LeafTermContext( [ T0 T1 ], I, V )
 
-  rule #readProgramTerm( #readApplySecondTerm T0 T1, _ ) => [ T0 T1 ] [owise]
+  rule #readProgramTerm( #readApplySecondTerm T0 T1, _, _ ) => [ T0 T1 ] [owise]
 ```
 
 Parsing Constants
 
 ```k
   rule #readProgramTerm( #readTermTag CON => #readConType #readType( BitStream( I, Bs ) ),
-                         BitStream( I => I +Int #typeLength, Bs )
+                         BitStream( I => I +Int #typeLength, Bs ), _
                        )
 
-  rule #readProgramTerm( #readConType UNIT, BitStream( I, Bs ) ) => #resolveTerm( ( con unit () ), I, Bs )
+  rule #readProgramTerm( #readConType UNIT, BitStream( I, Bs ), C ) =>
+    #resolveTerm( ( con unit () ), I, Bs, #getNextVarNum( C ) )
 
-  rule #readProgramTerm( #readConType BOOL, BitStream( I, Bs) ) =>
+  rule #readProgramTerm( #readConType BOOL, BitStream( I, Bs), C ) =>
     #resolveTerm( ( con bool #bit2boolval( #readNBits( #boolValLength, BitStream( I, Bs ) ) ) ),
-                   I +Int #boolValLength, Bs
+                   I +Int #boolValLength, Bs, #getNextVarNum( C )
                 )
 
-  rule #readProgramTerm( #readConType INTEGER, BitStream( I, Bs) ) =>
+  rule #readProgramTerm( #readConType INTEGER, BitStream( I, Bs), C ) =>
     #let
       INT_VAL = #readIntegerValue( BitStream( I, Bs ) )
     #in
-      #resolveTerm( ( con integer #getDatum( {INT_VAL}:>VarLenDatum ) ), #getBitLength( {INT_VAL}:>VarLenDatum ) +Int I, Bs )
+      #resolveTerm( ( con integer #getDatum( {INT_VAL}:>VarLenDatum ) ),
+                    #getBitLength( {INT_VAL}:>VarLenDatum ) +Int I, Bs, #getNextVarNum( C )
+                  )
 
-  rule #readProgramTerm( #readConType STRING, BitStream( I, Bs) ) =>
+  rule #readProgramTerm( #readConType STRING, BitStream( I, Bs), C ) =>
     #let
       STR_VAL = #readStringValue( BitStream( #nextByteBoundary(I), Bs ) )
     #in
-      #resolveTerm( ( con string #getDatum( {STR_VAL}:>StringDatum ) ), #getBitLength( {STR_VAL}:>StringDatum ), Bs )
+      #resolveTerm( ( con string #getDatum( {STR_VAL}:>StringDatum ) ),
+                    #getBitLength( {STR_VAL}:>StringDatum ), Bs, #getNextVarNum( C )
+                  )
 
-  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, Bs ) ) =>
+  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, Bs ), C ) =>
     #let
       BSTR_VAL = #readByteStringValue( BitStream( #nextByteBoundary(I), Bs ) )
     #in
-      #resolveTerm( ( con bytestring String2ByteString( #getDatum( BSTR_VAL ) ) ), #getBitLength( {BSTR_VAL}:>StringDatum ), Bs )
+      #resolveTerm( ( con bytestring String2ByteString( #getDatum( BSTR_VAL ) ) ),
+                    #getBitLength( {BSTR_VAL}:>StringDatum ), Bs, #getNextVarNum( C ) )
 ```
 
 Parsing Builtin Functions
 
 ```k
-  rule #readProgramTerm( #readTermTag BUILTIN, BitStream( I, BYTES ) ) =>
-    #resolveTerm( ( builtin #bn2BuiltinName( #readNBits( #builtinTagLength, BitStream( I, BYTES ) ) ) ), I +Int #builtinTagLength, BYTES )
+  rule #readProgramTerm( #readTermTag BUILTIN, BitStream( I, Bs ), C ) =>
+    #resolveTerm( ( builtin #bn2BuiltinName( #readNBits( #builtinTagLength, BitStream( I, Bs ) ) ) ),
+                  I +Int #builtinTagLength, Bs, #getNextVarNum( C )
+                )
 
-  rule #readProgramTerm( TERM:Term ~> ., _ ) => TERM
+  rule #readProgramTerm( TERM:Term ~> ., _, _ ) => TERM
 ```
 
 ### Utility Functions Used to Read Terms
