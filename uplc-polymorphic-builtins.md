@@ -23,6 +23,15 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `ifThenElse`
 
 ```k
+  rule #numArgs(ifThenElse) => 3
+
+  rule #typeCheck(ListItem(< con bool _ >), ifThenElse, 1) => true
+
+  rule #typeCheck(_, ifThenElse, 2) => true
+
+  rule #typeCheck(ListItem(< con bool _ >) ListItem(_:Value) ListItem(_:Value) ,
+         ifThenElse, 3) => true
+
   rule <k> (builtin ifThenElse) ~> Force => < builtin ifThenElse .List 3 > ... </k>
 
   rule <k> #eval(ifThenElse,
@@ -39,6 +48,12 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `chooseUnit`
 
 ```k
+  rule #numArgs(chooseUnit) => 2
+
+  rule #typeCheck(ListItem(< con unit () >) _, chooseUnit, 1) => true
+
+  rule #typeCheck(ListItem(< con unit () >) ListItem(_:Value) .List, chooseUnit, 2) => true
+
   rule <k> (builtin chooseUnit) ~> Force => < builtin chooseUnit .List 2 > ... </k>
 
   rule <k> #eval(chooseUnit,
@@ -48,7 +63,17 @@ All polymorphic builtins should be arguments to a call to `force`.
 
 ## `fstPair`
 
+For the moment, we only type check a pair againts `fstPair`'
+signature, that is, if it has builtin types for its projections. We
+might as well simply return `true` now for `fstPair` as `#eval` would
+return an error if `fstPair`'s argument is not a pair.
+
 ```k
+  rule #numArgs(fstPair) => 1
+
+  rule #typeCheck(ListItem(< con pair (_:TypeConstant) (_:TypeConstant) (_,_) >),
+                             fstPair, 1) => true
+
   rule <k> (builtin fstPair) ~> Force => < builtin fstPair .List 1 >  ... </k>
 
   rule <k> #eval(fstPair,
@@ -58,7 +83,17 @@ All polymorphic builtins should be arguments to a call to `force`.
 
 ## `sndPair`
 
+For the moment, we only type check a pair againts `sndPair`' signature,
+that is, if it has builtin types for its projections. We
+might as well simply return `true` now for `sndPair` as `#eval` would
+return an error if `sndPair`'s argument is not a pair.
+
 ```k
+  rule #numArgs(sndPair) => 1
+
+  rule #typeCheck(ListItem(< con pair (_:TypeConstant) (_:TypeConstant) (_,_) >),
+                             sndPair, 1) => true
+
   rule <k> (builtin sndPair) ~> Force => < builtin sndPair .List 1 >  ... </k>
 
   rule <k> #eval(sndPair,
@@ -69,6 +104,19 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `chooseList`
 
 ```k
+  rule #numArgs(chooseList) => 3
+
+  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _ ] >), chooseList, 1) => true
+
+  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _ ] >)
+                  ListItem(_:Value),
+                  chooseList, 2) => true
+
+  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _ ] >)
+                  ListItem(_:Value)
+                  ListItem(_:Value),
+                  chooseList, 3) => true
+
   rule <k> (builtin chooseList) ~> Force => < builtin chooseList .List 3 > ... </k>
 
   rule <k> #eval(chooseList,
@@ -86,6 +134,13 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `mkCons`
 
 ```k
+  rule #numArgs(chooseList) => 2
+
+  rule #typeCheck(ListItem(< con _:TypeConstant _:Constant >), mkCons, 1) => true
+
+  rule #typeCheck(ListItem(< con T:TypeConstant _:Constant >)
+                  ListItem(< con list(T) [ _:ConstantList ] >), mkCons, 2) => true
+
   rule <k> (builtin mkCons) ~> Force => < builtin mkCons .List 2 > ... </k>
 
   rule <k> #eval(mkCons,
@@ -97,6 +152,10 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `headList`
 
 ```k
+  rule #numArgs(headList) => 1
+
+  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), headList, 1) => true
+
   rule <k> (builtin headList) ~> Force => < builtin headList .List 1 > ... </k>
 
   rule <k> #eval(headList,
@@ -108,6 +167,10 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `tailList`
 
 ```k
+  rule #numArgs(tailList) => 1
+
+  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), tailList, 1) => true
+
   rule <k> (builtin tailList) ~> Force => < builtin tailList .List 1 > ... </k>
 
   rule <k> #eval(tailList,
@@ -122,6 +185,10 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `nullList`
 
 ```k
+  rule #numArgs(nullList) => 1
+
+  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), nullList, 1) => true
+
   rule <k> (builtin nullList) ~> Force => < builtin nullList .List 1 > ... </k>
 
   rule <k> #eval(nullList,
@@ -131,15 +198,22 @@ All polymorphic builtins should be arguments to a call to `force`.
   rule <k> #eval(nullList,
               ListItem(< con list(_T:TypeConstant) [ L:ConstantList ] >)) =>
            < con bool False > ... </k>
-  requires L =/=K .ConstantList 
+  requires L =/=K .ConstantList
 ```
 
 ## `trace`
 
 ```k
+  rule #numArgs(trace) => 1
+
+  rule #typeCheck(ListItem(< con string _ >), trace, 1) => true
+
+  rule #typeCheck(ListItem(< con string _ >)
+                  ListItem(_:Value), trace, 2) => true
+
   rule <k> (builtin trace) ~> Force => < builtin trace .List 2 > ... </k>
 
-  rule <k> #eval(trace, 
+  rule <k> #eval(trace,
               (ListItem(< con string S >)
                ListItem(V:Value))) => V ... </k>
        <trace> ... (.List => ListItem(S)) </trace>
@@ -147,4 +221,4 @@ All polymorphic builtins should be arguments to a call to `force`.
 
 ```k
 endmodule
-``` 
+```
