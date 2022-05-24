@@ -4,16 +4,12 @@
 # Uplc does not compute error. The semantics specifies a black diamond
 # state which appears should be understood as the error behavior in
 # uplc
-tests/textual/simple/error.uplc
 # Delay uses a free-variable therefore it fails.
 tests/textual/simple/delay.uplc
 # Force uses a free-varaible therefore it fails.
 tests/textual/simple/force.uplc
 # Var uses a free-varaible therefore it fails.
 tests/textual/simple/var.uplc
-# ifThenElse needs to be composed with force
-# We need to improve error report to cope with `uplc` output.
-tests/textual/simple/ifThenElse-no-force.uplc
 # Programs addInteger-one-arg.uplc and addInteger-no-arg.uplc call
 # addInteger with a single argument or none. In the current semantics,
 # kplc returns an error. However, they are valid programs as
