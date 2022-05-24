@@ -123,11 +123,3 @@ tests/textual/nofib-exe-examples/queens-6-bt.uplc
 #
 # Error examples
 #
-#
-# Flat format
-#
-tests/flat/fromSimple-addInteger-no-args.flat
-tests/flat/fromSimple-addInteger-one-arg.flat
-tests/flat/fromSimple-error.flat
-tests/flat/fromSimple-force-lam.flat
-tests/flat/fromSimple-ifThenElse-no-force.flat
