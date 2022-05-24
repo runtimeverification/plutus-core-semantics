@@ -439,7 +439,7 @@ tests/%.uplc.krun: tests/%.uplc
 
 update-results: conformance-test
 update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
-update-results: TEST_FLAT=$(UPLC) evaluate --if flat --print-mode Classic -i
+update-results: TEST_FLAT=$(UPLC) evaluate --if flat -i
 # The trail command below removes break lines that litters
 # the .EXPECTED file and breaks testing.
 update-results: TEST_OPTS= | tr -d '\012\015'
@@ -494,7 +494,7 @@ test-nofib-exe-examples: $(nofib-exe-examples_tests:=.run)
 
 # flat format Tests
 
-all_flat_tests := $(wildcard tests/flat/*.flat)
+all_flat_tests := $(wildcard tests/flat/*/*.flat)
 flat_tests     := $(filter-out $(failing_tests), $(all_flat_tests))
 
 test-flat: $(flat_tests:=.run)

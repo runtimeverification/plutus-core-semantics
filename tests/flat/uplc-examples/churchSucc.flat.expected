@@ -1,0 +1,1 @@
+(lam v_0 (delay (lam v_1 (lam v_2 [ v_2 [ [ (force v_0) v_1 ] v_2 ] ]))))
