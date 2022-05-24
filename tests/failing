@@ -4,122 +4,122 @@
 # Uplc does not compute error. The semantics specifies a black diamond
 # state which appears should be understood as the error behavior in
 # uplc
-tests/simple/error.uplc
+tests/textual/simple/error.uplc
 # Delay uses a free-variable therefore it fails.
-tests/simple/delay.uplc
+tests/textual/simple/delay.uplc
 # Force uses a free-varaible therefore it fails.
-tests/simple/force.uplc
+tests/textual/simple/force.uplc
 # Var uses a free-varaible therefore it fails.
-tests/simple/var.uplc
+tests/textual/simple/var.uplc
 # ifThenElse needs to be composed with force
 # We need to improve error report to cope with `uplc` output.
-tests/simple/ifThenElse-no-force.uplc
+tests/textual/simple/ifThenElse-no-force.uplc
 # Programs addInteger-one-arg.uplc and addInteger-no-arg.uplc call
 # addInteger with a single argument or none. In the current semantics,
 # kplc returns an error. However, they are valid programs as
 # that should return a term. This of course should be repetead for the
 # remaining builtins and will not be included until we solve this.
-tests/simple/addInteger-one-arg.uplc
-tests/simple/addInteger-no-args.uplc
+tests/textual/simple/addInteger-one-arg.uplc
+tests/textual/simple/addInteger-no-args.uplc
 #
 # UPLC examples 
 #
 # DivideByZero returns an error. We need to adapt our test harness to
 # error handling.
-tests/uplc-examples/DivideByZero.uplc
+tests/textual/uplc-examples/DivideByZero.uplc
 # DivideByZeroDrop returns an error. We need to adapt our test harness to
 # error handling. Moreover, kplc run does not return an error.
-tests/uplc-examples/DivideByZeroDrop.uplc
+tests/textual/uplc-examples/DivideByZeroDrop.uplc
 #
 # Benchamark validation examples
 #
-tests/benchmark-validation-examples/auction_1-1.uplc
-tests/benchmark-validation-examples/auction_1-2.uplc
-tests/benchmark-validation-examples/auction_1-3.uplc
-tests/benchmark-validation-examples/auction_1-4.uplc
-tests/benchmark-validation-examples/auction_2-1.uplc
-tests/benchmark-validation-examples/auction_2-2.uplc
-tests/benchmark-validation-examples/auction_2-3.uplc
-tests/benchmark-validation-examples/auction_2-4.uplc
-tests/benchmark-validation-examples/auction_2-5.uplc
-tests/benchmark-validation-examples/crowdfunding-success-1.uplc
-tests/benchmark-validation-examples/crowdfunding-success-2.uplc
-tests/benchmark-validation-examples/crowdfunding-success-3.uplc
-tests/benchmark-validation-examples/currency-1.uplc
-tests/benchmark-validation-examples/escrow-redeem_1-1.uplc
-tests/benchmark-validation-examples/escrow-redeem_1-2.uplc
-tests/benchmark-validation-examples/escrow-redeem_2-1.uplc
-tests/benchmark-validation-examples/escrow-redeem_2-2.uplc
-tests/benchmark-validation-examples/escrow-redeem_2-3.uplc
-tests/benchmark-validation-examples/escrow-refund-1.uplc
-tests/benchmark-validation-examples/future-increase-margin-1.uplc
-tests/benchmark-validation-examples/future-increase-margin-2.uplc
-tests/benchmark-validation-examples/future-increase-margin-3.uplc
-tests/benchmark-validation-examples/future-increase-margin-4.uplc
-tests/benchmark-validation-examples/future-increase-margin-5.uplc
-tests/benchmark-validation-examples/future-pay-out-1.uplc
-tests/benchmark-validation-examples/future-pay-out-2.uplc
-tests/benchmark-validation-examples/future-pay-out-3.uplc
-tests/benchmark-validation-examples/future-pay-out-4.uplc
-tests/benchmark-validation-examples/future-settle-early-1.uplc
-tests/benchmark-validation-examples/future-settle-early-2.uplc
-tests/benchmark-validation-examples/future-settle-early-3.uplc
-tests/benchmark-validation-examples/future-settle-early-4.uplc
-tests/benchmark-validation-examples/game-sm-success_1-1.uplc
-tests/benchmark-validation-examples/game-sm-success_1-2.uplc
-tests/benchmark-validation-examples/game-sm-success_1-3.uplc
-tests/benchmark-validation-examples/game-sm-success_1-4.uplc
-tests/benchmark-validation-examples/game-sm-success_2-1.uplc
-tests/benchmark-validation-examples/game-sm-success_2-2.uplc
-tests/benchmark-validation-examples/game-sm-success_2-3.uplc
-tests/benchmark-validation-examples/game-sm-success_2-4.uplc
-tests/benchmark-validation-examples/game-sm-success_2-5.uplc
-tests/benchmark-validation-examples/game-sm-success_2-6.uplc
-tests/benchmark-validation-examples/multisig-sm-10.uplc
-tests/benchmark-validation-examples/multisig-sm-1.uplc
-tests/benchmark-validation-examples/multisig-sm-2.uplc
-tests/benchmark-validation-examples/multisig-sm-3.uplc
-tests/benchmark-validation-examples/multisig-sm-4.uplc
-tests/benchmark-validation-examples/multisig-sm-5.uplc
-tests/benchmark-validation-examples/multisig-sm-6.uplc
-tests/benchmark-validation-examples/multisig-sm-7.uplc
-tests/benchmark-validation-examples/multisig-sm-8.uplc
-tests/benchmark-validation-examples/multisig-sm-9.uplc
-tests/benchmark-validation-examples/ping-pong-1.uplc
-tests/benchmark-validation-examples/ping-pong_2-1.uplc
-tests/benchmark-validation-examples/ping-pong-2.uplc
-tests/benchmark-validation-examples/prism-1.uplc
-tests/benchmark-validation-examples/prism-2.uplc
-tests/benchmark-validation-examples/prism-3.uplc
-tests/benchmark-validation-examples/pubkey-1.uplc
-tests/benchmark-validation-examples/stablecoin_1-1.uplc
-tests/benchmark-validation-examples/stablecoin_1-2.uplc
-tests/benchmark-validation-examples/stablecoin_1-3.uplc
-tests/benchmark-validation-examples/stablecoin_1-4.uplc
-tests/benchmark-validation-examples/stablecoin_1-5.uplc
-tests/benchmark-validation-examples/stablecoin_1-6.uplc
-tests/benchmark-validation-examples/stablecoin_2-1.uplc
-tests/benchmark-validation-examples/stablecoin_2-2.uplc
-tests/benchmark-validation-examples/stablecoin_2-3.uplc
-tests/benchmark-validation-examples/stablecoin_2-4.uplc
-tests/benchmark-validation-examples/token-account-1.uplc
-tests/benchmark-validation-examples/token-account-2.uplc
-tests/benchmark-validation-examples/uniswap-1.uplc
-tests/benchmark-validation-examples/uniswap-2.uplc
-tests/benchmark-validation-examples/uniswap-3.uplc
-tests/benchmark-validation-examples/uniswap-4.uplc
-tests/benchmark-validation-examples/uniswap-5.uplc
-tests/benchmark-validation-examples/uniswap-6.uplc
-tests/benchmark-validation-examples/vesting-1.uplc
+tests/textual/benchmark-validation-examples/auction_1-1.uplc
+tests/textual/benchmark-validation-examples/auction_1-2.uplc
+tests/textual/benchmark-validation-examples/auction_1-3.uplc
+tests/textual/benchmark-validation-examples/auction_1-4.uplc
+tests/textual/benchmark-validation-examples/auction_2-1.uplc
+tests/textual/benchmark-validation-examples/auction_2-2.uplc
+tests/textual/benchmark-validation-examples/auction_2-3.uplc
+tests/textual/benchmark-validation-examples/auction_2-4.uplc
+tests/textual/benchmark-validation-examples/auction_2-5.uplc
+tests/textual/benchmark-validation-examples/crowdfunding-success-1.uplc
+tests/textual/benchmark-validation-examples/crowdfunding-success-2.uplc
+tests/textual/benchmark-validation-examples/crowdfunding-success-3.uplc
+tests/textual/benchmark-validation-examples/currency-1.uplc
+tests/textual/benchmark-validation-examples/escrow-redeem_1-1.uplc
+tests/textual/benchmark-validation-examples/escrow-redeem_1-2.uplc
+tests/textual/benchmark-validation-examples/escrow-redeem_2-1.uplc
+tests/textual/benchmark-validation-examples/escrow-redeem_2-2.uplc
+tests/textual/benchmark-validation-examples/escrow-redeem_2-3.uplc
+tests/textual/benchmark-validation-examples/escrow-refund-1.uplc
+tests/textual/benchmark-validation-examples/future-increase-margin-1.uplc
+tests/textual/benchmark-validation-examples/future-increase-margin-2.uplc
+tests/textual/benchmark-validation-examples/future-increase-margin-3.uplc
+tests/textual/benchmark-validation-examples/future-increase-margin-4.uplc
+tests/textual/benchmark-validation-examples/future-increase-margin-5.uplc
+tests/textual/benchmark-validation-examples/future-pay-out-1.uplc
+tests/textual/benchmark-validation-examples/future-pay-out-2.uplc
+tests/textual/benchmark-validation-examples/future-pay-out-3.uplc
+tests/textual/benchmark-validation-examples/future-pay-out-4.uplc
+tests/textual/benchmark-validation-examples/future-settle-early-1.uplc
+tests/textual/benchmark-validation-examples/future-settle-early-2.uplc
+tests/textual/benchmark-validation-examples/future-settle-early-3.uplc
+tests/textual/benchmark-validation-examples/future-settle-early-4.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_1-1.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_1-2.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_1-3.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_1-4.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_2-1.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_2-2.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_2-3.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_2-4.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_2-5.uplc
+tests/textual/benchmark-validation-examples/game-sm-success_2-6.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-10.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-1.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-2.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-3.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-4.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-5.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-6.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-7.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-8.uplc
+tests/textual/benchmark-validation-examples/multisig-sm-9.uplc
+tests/textual/benchmark-validation-examples/ping-pong-1.uplc
+tests/textual/benchmark-validation-examples/ping-pong_2-1.uplc
+tests/textual/benchmark-validation-examples/ping-pong-2.uplc
+tests/textual/benchmark-validation-examples/prism-1.uplc
+tests/textual/benchmark-validation-examples/prism-2.uplc
+tests/textual/benchmark-validation-examples/prism-3.uplc
+tests/textual/benchmark-validation-examples/pubkey-1.uplc
+tests/textual/benchmark-validation-examples/stablecoin_1-1.uplc
+tests/textual/benchmark-validation-examples/stablecoin_1-2.uplc
+tests/textual/benchmark-validation-examples/stablecoin_1-3.uplc
+tests/textual/benchmark-validation-examples/stablecoin_1-4.uplc
+tests/textual/benchmark-validation-examples/stablecoin_1-5.uplc
+tests/textual/benchmark-validation-examples/stablecoin_1-6.uplc
+tests/textual/benchmark-validation-examples/stablecoin_2-1.uplc
+tests/textual/benchmark-validation-examples/stablecoin_2-2.uplc
+tests/textual/benchmark-validation-examples/stablecoin_2-3.uplc
+tests/textual/benchmark-validation-examples/stablecoin_2-4.uplc
+tests/textual/benchmark-validation-examples/token-account-1.uplc
+tests/textual/benchmark-validation-examples/token-account-2.uplc
+tests/textual/benchmark-validation-examples/uniswap-1.uplc
+tests/textual/benchmark-validation-examples/uniswap-2.uplc
+tests/textual/benchmark-validation-examples/uniswap-3.uplc
+tests/textual/benchmark-validation-examples/uniswap-4.uplc
+tests/textual/benchmark-validation-examples/uniswap-5.uplc
+tests/textual/benchmark-validation-examples/uniswap-6.uplc
+tests/textual/benchmark-validation-examples/vesting-1.uplc
 #
 # Nofib-exe examples
 #
-tests/nofib-exe-examples/clausify-F7.uplc
-tests/nofib-exe-examples/knights-500-500.uplc
-tests/nofib-exe-examples/lastpiece.uplc
-tests/nofib-exe-examples/prime-P200.uplc
-tests/nofib-exe-examples/primetest-large.uplc
-tests/nofib-exe-examples/queens-6-bt.uplc
+tests/textual/nofib-exe-examples/clausify-F7.uplc
+tests/textual/nofib-exe-examples/knights-500-500.uplc
+tests/textual/nofib-exe-examples/lastpiece.uplc
+tests/textual/nofib-exe-examples/prime-P200.uplc
+tests/textual/nofib-exe-examples/primetest-large.uplc
+tests/textual/nofib-exe-examples/queens-6-bt.uplc
 #
 # Error examples
 #
