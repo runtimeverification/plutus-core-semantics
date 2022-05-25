@@ -86,7 +86,7 @@ run_prove() {
     ! ${bug_report} || proof_args+=(--haskell-backend-command "kore-exec --bug-report ${bug_report_name}")
     ! ${debugger}   || proof_args+=(--debugger)
 
-    notif_exec kprovex "${proof_args[@]}" "$@"
+    notif_exec kprove "${proof_args[@]}" "$@"
 }
 
 
