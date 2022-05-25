@@ -1,3 +1,0 @@
-(program 1.0.0
-  (abs a (type) (lam x a (lam y a x)))
-)

@@ -1,1 +1,0 @@
-(program 1.0.0 [ {(builtin sizeOfInteger) (con 1)} (con 1 ! 3) ])
