@@ -134,7 +134,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `mkCons`
 
 ```k
-  rule #numArgs(chooseList) => 2
+  rule #numArgs(mkCons) => 2
 
   rule #typeCheck(ListItem(< con _:TypeConstant _:Constant >), mkCons, 1) => true
 

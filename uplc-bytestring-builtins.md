@@ -14,6 +14,13 @@ module UPLC-BYTESTRING-BUILTINS
 
 
 ```k
+  rule #numArgs(appendByteString) => 2
+
+  rule #typeCheck(ListItem(< con bytestring _ >), appendByteString, 1) => true
+
+  rule #typeCheck(ListItem(< con bytestring _ >) ListItem(< con bytestring _ >),
+                  appendByteString, 2) => true
+
   rule <k> (builtin appendByteString) => < builtin appendByteString .List 2 > ... </k>
 
   rule <k> #eval(appendByteString,
@@ -25,6 +32,13 @@ module UPLC-BYTESTRING-BUILTINS
 ## `consByteString`
 
 ```k
+  rule #numArgs(consByteString) => 2
+ 
+  rule #typeCheck(ListItem(< con integer _ >), consByteString, 1) => true
+
+  rule #typeCheck(ListItem(< con integer _ >)
+                  ListItem(< con bytestring _ >), consByteString, 2) => true
+
   rule <k> (builtin consByteString) => < builtin consByteString .List 2 > ... </k>
 
   rule <k> #eval(consByteString,
@@ -36,6 +50,17 @@ module UPLC-BYTESTRING-BUILTINS
 ## `sliceByteString`
 
 ```k
+  rule #numArgs(sliceByteString) => 2
+ 
+  rule #typeCheck(ListItem(< con integer _ >), sliceByteString, 1) => true
+
+  rule #typeCheck(ListItem(< con integer _ >)
+                  ListItem(< con integer _ >), sliceByteString, 2) => true
+
+  rule #typeCheck(ListItem(< con integer _ >)
+                  ListItem(< con integer _ >)
+                  ListItem(< con bytestring _ >), sliceByteString, 3) => true
+
   rule <k> (builtin sliceByteString) => < builtin sliceByteString .List 3 > ... </k>
 
   rule <k> #eval(sliceByteString,
@@ -48,6 +73,10 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lengthOfByteString`
 
 ```k
+  rule #numArgs(lengthOfByteString) => 1
+ 
+  rule #typeCheck(ListItem(< con bytestring _ >), lengthOfByteString, 1) => true
+
   rule <k> (builtin lengthOfByteString) => < builtin lengthOfByteString .List 1 > ... </k>
 
   rule <k> #eval(lengthOfByteString,
@@ -58,6 +87,13 @@ module UPLC-BYTESTRING-BUILTINS
 ## `indexByteString`
 
 ```k
+  rule #numArgs(indexByteString) => 2
+
+  rule #typeCheck(ListItem(< con bytestring B:ByteString >), indexByteString, 1) => true
+
+  rule #typeCheck(ListItem(< con bytestring B:ByteString >)
+                  ListItem(< con integer I:Int >), indexByteString, 2) => true
+                  
   rule <k> (builtin indexByteString) => < builtin indexByteString .List 2 > ... </k>
 
   rule <k> #eval(indexByteString,
