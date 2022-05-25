@@ -439,7 +439,7 @@ tests/%.uplc.krun: tests/%.uplc
 
 update-results: conformance-test
 update-results: TEST=$(UPLC) evaluate --print-mode Classic -i
-update-results: TEST_FLAT=$(UPLC) evaluate --if flat --print-mode Classic -i
+update-results: TEST_FLAT=$(UPLC) evaluate --if flat -i
 # The trail command below removes break lines that litters
 # the .EXPECTED file and breaks testing.
 update-results: TEST_OPTS= | tr -d '\012\015'
@@ -466,35 +466,35 @@ conformance-test: test-simple test-new-syntax        \
 
 # Simple Tests
 
-all_simple_tests := $(wildcard tests/simple/*.uplc)
+all_simple_tests := $(wildcard tests/textual/simple/*.uplc)
 simple_tests     := $(filter-out $(failing_tests), $(all_simple_tests))
 
 test-simple: $(simple_tests:=.run)
 
 # uplc-example Tests
 
-all_uplc-examples_tests := $(wildcard tests/uplc-examples/*.uplc)
+all_uplc-examples_tests := $(wildcard tests/textual/uplc-examples/*.uplc)
 uplc-examples_tests     := $(filter-out $(failing_tests), $(all_uplc-examples_tests))
 
 test-uplc-examples: $(uplc-examples_tests:=.run)
 
 # benchmark-validation-examples Tests
 
-all_benchmark-validation-examples_tests := $(wildcard tests/benchmark-validation-examples/*.uplc)
+all_benchmark-validation-examples_tests := $(wildcard tests/textual/benchmark-validation-examples/*.uplc)
 benchmark-validation-examples_tests     := $(filter-out $(failing_tests), $(all_benchmark-validation-examples_tests))
 
 test-benchmark-validation-examples: $(benchmark-validation-examples_tests:=.run)
 
 # nofib-exe-examples Tests
 
-all_nofib-exe-examples_tests := $(wildcard tests/nofib-exe-examples/*.uplc)
+all_nofib-exe-examples_tests := $(wildcard tests/textual/nofib-exe-examples/*.uplc)
 nofib-exe-examples_tests     := $(filter-out $(failing_tests), $(all_nofib-exe-examples_tests))
 
 test-nofib-exe-examples: $(nofib-exe-examples_tests:=.run)
 
 # flat format Tests
 
-all_flat_tests := $(wildcard tests/flat/*.flat)
+all_flat_tests := $(wildcard tests/flat/*/*.flat)
 flat_tests     := $(filter-out $(failing_tests), $(all_flat_tests))
 
 test-flat: $(flat_tests:=.run)
@@ -504,7 +504,7 @@ test-flat: $(flat_tests:=.run)
 # These tests cannot be run using UPLC at the moment. Once support is added to parse new syntax, it
 # will be moved to the simple tests directory
 
-all_new_syntax_tests := $(wildcard tests/new-syntax/*.uplc)
+all_new_syntax_tests := $(wildcard tests/textual/new-syntax/*.uplc)
 new_syntax_tests     := $(filter-out $(failing_tests), $(all_new_syntax_tests))
 
 test-new-syntax: $(new_syntax_tests:=.krun)
@@ -515,7 +515,23 @@ test-new-syntax: $(new_syntax_tests:=.krun)
 # it will exit with a non-zero status and therefore require different recipes to update the result.
 # TODO: figure out how to incorporate uplc for these tests.
 
-all_error_tests := $(wildcard tests/error/*.uplc)
+all_error_tests := $(wildcard tests/textual/error/*.uplc)
 error_tests     := $(filter-out $(failing_tests), $(all_error_tests))
 
 test-error: $(error_tests:=.krun)
+
+#
+# Update flat tests
+#
+CONVRT_MSG:= ">>  Converting "
+all_textual_tests := $(wildcard tests/textual/*/*.uplc)
+textual_tests     := $(filter-out $(failing_tests), $(all_textual_tests))
+textual_tests     := $(filter-out $(error_tests), $(textual_tests))
+textual_tests     := $(filter-out $(new_syntax_tests), $(textual_tests))
+
+update-flat: $(textual_tests:=.textual2flat)
+
+CONVERT = uplc convert --of flat -i
+tests/%.uplc.textual2flat: tests/%.uplc
+	@echo $(BWhite)$(CONVRT_MSG)$(Color_off)$(Green)$<$(Color_Off)"\n"
+	$(CONVERT) $< > tests/flat/$(shell basename `dirname $<`)/$(shell basename $< .uplc).flat

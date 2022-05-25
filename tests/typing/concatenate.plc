@@ -1,1 +1,0 @@
-(program 1.0.0 [ [ {(builtin concatenate) (con 1)} (con 1 ! #aa) ] (con 1 ! #ab) ])

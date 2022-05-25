@@ -1,1 +1,0 @@
-(delay (lam v_0 (lam v_1 v_0)))
