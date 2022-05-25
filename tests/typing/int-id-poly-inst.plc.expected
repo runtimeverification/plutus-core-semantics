@@ -1,8 +1,0 @@
-<generatedTop>
-  <k>
-    ( fun [ ( con integer ) ( con 3 ) ] [ ( con integer ) ( con 3 ) ] ) :: ( type )
-  </k>
-  <env>
-    .
-  </env>
-</generatedTop>
