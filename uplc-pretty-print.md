@@ -9,13 +9,9 @@ module UPLC-PRETTY-PRINT
   imports UPLC-SYNTAX
   
   syntax Term ::= prettyPrint(Value) [function]
-  syntax TermList ::= list2TermList(List) [function]
+  syntax Term ::= prettyPrintApp(BuiltinName, List) [function]
+  syntax Term ::= prettyPrintAppAux(Term, List) [function]
   
-  rule list2TermList(.List) => .TermList
-
-  rule list2TermList(ListItem(V:Value) L:List) =>
-       prettyPrint(V) list2TermList(L)
-
   rule prettyPrint(< con T:TypeConstant C:Constant >) => (con T C) 
 
   rule prettyPrint(< lam I:UplcId T:Term _ >) => (lam I T) 
@@ -23,6 +19,16 @@ module UPLC-PRETTY-PRINT
   rule prettyPrint(< delay T:Term _ >) => (delay T) 
 
   rule prettyPrint(< builtin BN:BuiltinName L:List _ >) =>
-       [ (builtin BN) list2TermList(L) ] 
+       prettyPrintApp(BN, L)
+
+  rule prettyPrintApp(BN:PolyBuiltinName, ListItem(V:Value) L) =>
+       prettyPrintAppAux([(force (builtin BN)) prettyPrint(V)], L)
+
+  rule prettyPrintApp(BN:BuiltinName, ListItem(V:Value) L) =>
+       prettyPrintAppAux([(builtin BN) prettyPrint(V)], L) [owise]
+
+  rule prettyPrintAppAux(T, .List) => T
+  rule prettyPrintAppAux(T, ListItem(V:Value) L:List) =>
+       prettyPrintAppAux([T prettyPrint(V)], L)
 endmodule
 ```
