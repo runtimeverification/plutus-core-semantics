@@ -30,6 +30,20 @@ module UPLC-DATA-BUILTINS
 ## `chooseData`
 
 ```k
+  rule #numArgs(chooseData) => 6
+
+  rule #typeCheck(ListItem(< con data{ _ } >), chooseData, 1) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value ), chooseData, 2) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value ), chooseData, 3) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 4) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 5) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 6) => true
+  
   rule <k> (builtin chooseData) ~> Force => < builtin chooseData .List 6 > ... </k>
 
   rule <k> #eval(chooseData,
@@ -76,6 +90,12 @@ module UPLC-DATA-BUILTINS
 ## `constrData`
 
 ```k
+  rule #numArgs(constrData) => 2
+
+  rule #typeCheck(ListItem(< con integer _ >), constrData, 1) => true
+
+  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con list(data)[ _ ] >), constrData, 2) => true
+
   rule <k> (builtin constrData) => < builtin constrData .List 2 > ... </k>
 
   rule <k> #eval(constrData,
@@ -87,6 +107,10 @@ module UPLC-DATA-BUILTINS
 ## `mapData`
 
 ```k
+  rule #numArgs(mapData) => 1
+
+  rule #typeCheck(ListItem(< con list(pair(data)(data))[ _ ] >), mapData, 1) => true
+
   rule <k> (builtin mapData) => < builtin mapData .List 1 > ... </k>
 
   rule <k> #eval(mapData,
@@ -97,6 +121,10 @@ module UPLC-DATA-BUILTINS
 ## `listData`
 
 ```k
+  rule #numArgs(listData) => 1
+
+  rule #typeCheck(ListItem(< con list(data)[ _ ] >), listData, 1) => true
+
   rule <k> (builtin listData) => < builtin listData .List 1 > ... </k>
 
   rule <k> #eval(listData,
@@ -107,6 +135,10 @@ module UPLC-DATA-BUILTINS
 ## `iData`
 
 ```k
+  rule #numArgs(iData) => 1
+
+  rule #typeCheck(ListItem(< con integer _ >), iData, 1) => true
+
   rule <k> (builtin iData) => < builtin iData .List 1 > ... </k>
 
   rule <k> #eval(iData,
@@ -117,6 +149,10 @@ module UPLC-DATA-BUILTINS
 ## `bData`
 
 ```k
+  rule #numArgs(bData) => 1
+
+  rule #typeCheck(ListItem(< con bytestring _ >), bData, 1) => true
+
   rule <k> (builtin bData) => < builtin bData .List 1 > ... </k>
 
   rule <k> #eval(bData,
@@ -127,6 +163,10 @@ module UPLC-DATA-BUILTINS
 ## `unConstrData`
 
 ```k
+  rule #numArgs(unConstrData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unConstrData, 1) => true
+
   rule <k> (builtin unConstrData) => < builtin unConstrData .List 1 > ... </k>
 
   rule <k> #eval(unConstrData,
@@ -137,6 +177,10 @@ module UPLC-DATA-BUILTINS
 ## `unMapData`
 
 ```k
+  rule #numArgs(unMapData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unMapData, 1) => true
+
   rule <k> (builtin unMapData) => < builtin unMapData .List 1 > ... </k>
 
   rule <k> #eval(unMapData,
@@ -147,6 +191,10 @@ module UPLC-DATA-BUILTINS
 ## `unListData`
 
 ```k
+  rule #numArgs(unListData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unListData, 1) => true
+
   rule <k> (builtin unListData) => < builtin unListData .List 1 > ... </k>
 
   rule <k> #eval(unListData,
@@ -157,6 +205,10 @@ module UPLC-DATA-BUILTINS
 ## `unIData`
 
 ```k
+  rule #numArgs(unIData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unIData, 1) => true
+
   rule <k> (builtin unIData) => < builtin unIData .List 1 > ... </k>
 
   rule <k> #eval(unIData,
@@ -167,6 +219,10 @@ module UPLC-DATA-BUILTINS
 ## `unBData`
 
 ```k
+  rule #numArgs(unBData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unBData, 1) => true
+
   rule <k> (builtin unBData) => < builtin unBData .List 1 > ... </k>
 
   rule <k> #eval(unBData,
@@ -177,6 +233,12 @@ module UPLC-DATA-BUILTINS
 # `equalsData`
 
 ```k
+  rule #numArgs(equalsData) => 2
+
+  rule #typeCheck(ListItem(< con data{ _ } >), equalsData, 1) => true
+
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem(< con data{ _ } >), equalsData, 2) => true
+
   rule <k> (builtin equalsData) => < builtin equalsData .List 2 > ... </k>
 
   rule <k> #eval(equalsData,
@@ -195,6 +257,12 @@ module UPLC-DATA-BUILTINS
 # `mkPairData`
 
 ```k
+  rule #numArgs(mkPairData) => 2
+
+  rule #typeCheck(ListItem(< con data{ _ } >), mkPairData, 1) => true
+
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem(< con data{ _ } >), mkPairData, 2) => true
+
   rule <k> (builtin mkPairData) => < builtin mkPairData .List 2 > ... </k>
 
   rule <k> #eval(mkPairData,
@@ -206,6 +274,10 @@ module UPLC-DATA-BUILTINS
 # `mkNilData`
 
 ```k
+  rule #numArgs(mkNilData) => 1
+
+  rule #typeCheck(ListItem(< con unit _ >), mkNilData, 1) => true
+
   rule <k> (builtin mkNilData) => < builtin mkNilData .List 1 > ... </k>
 
   rule <k> #eval(mkNilData,
@@ -216,6 +288,10 @@ module UPLC-DATA-BUILTINS
 # `mkNilPairData`
 
 ```k
+  rule #numArgs(mkNilPairData) => 1
+  
+  rule #typeCheck(ListItem(< con unit _ >), mkNilPairData, 1) => true
+  
   rule <k> (builtin mkNilPairData) => < builtin mkNilPairData .List 1 > ... </k>
 
   rule <k> #eval(mkNilPairData,
