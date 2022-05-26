@@ -1,0 +1,1 @@
+[ [ (force (builtin ifThenElse)) (con bool True) ] (con integer 0) ]

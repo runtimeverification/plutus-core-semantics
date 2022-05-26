@@ -204,7 +204,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `trace`
 
 ```k
-  rule #numArgs(trace) => 1
+  rule #numArgs(trace) => 2
 
   rule #typeCheck(ListItem(< con string _ >), trace, 1) => true
 

@@ -1,0 +1,1 @@
+[ (builtin appendByteString) (con bytestring #00ff) ]

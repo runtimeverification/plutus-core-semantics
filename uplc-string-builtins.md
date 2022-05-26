@@ -30,7 +30,7 @@ module UPLC-STRING-BUILTINS
 ```k 
   rule #numArgs(decodeUtf8) => 1
 
-  rule #typeCheck(ListItem(< con string _ >), decodeUtf8, 1) => true
+  rule #typeCheck(ListItem(< con bytestring _ >), decodeUtf8, 1) => true
 
   rule <k> (builtin decodeUtf8) => < builtin decodeUtf8 .List 1 > ... </k>
 
