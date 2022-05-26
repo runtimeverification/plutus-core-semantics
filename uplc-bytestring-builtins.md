@@ -50,7 +50,7 @@ module UPLC-BYTESTRING-BUILTINS
 ## `sliceByteString`
 
 ```k
-  rule #numArgs(sliceByteString) => 2
+  rule #numArgs(sliceByteString) => 3
  
   rule #typeCheck(ListItem(< con integer _ >), sliceByteString, 1) => true
 
@@ -89,10 +89,10 @@ module UPLC-BYTESTRING-BUILTINS
 ```k
   rule #numArgs(indexByteString) => 2
 
-  rule #typeCheck(ListItem(< con bytestring B:ByteString >), indexByteString, 1) => true
+  rule #typeCheck(ListItem(< con bytestring _ >), indexByteString, 1) => true
 
-  rule #typeCheck(ListItem(< con bytestring B:ByteString >)
-                  ListItem(< con integer I:Int >), indexByteString, 2) => true
+  rule #typeCheck(ListItem(< con bytestring _ >)
+                  ListItem(< con integer _ >), indexByteString, 2) => true
                   
   rule <k> (builtin indexByteString) => < builtin indexByteString .List 2 > ... </k>
 
@@ -106,6 +106,12 @@ module UPLC-BYTESTRING-BUILTINS
 ## `equalsByteString`
 
 ```k
+  rule #numArgs(equalsByteString) => 2
+
+  rule #typeCheck(ListItem(< con bytestring _ >), equalsByteString, 1) => true
+
+  rule #typeCheck(ListItem(< con bytestring _ >)ListItem(< con bytestring _ >), equalsByteString, 2) => true
+
   rule <k> (builtin equalsByteString) => < builtin equalsByteString .List 2 > ... </k>
 
   rule <k> #eval(equalsByteString,
@@ -124,6 +130,12 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lessThanByteString`
 
 ```k
+  rule #numArgs(lessThanByteString) => 2
+
+  rule #typeCheck(ListItem(< con bytestring _ >), lessThanByteString, 1) => true
+
+  rule #typeCheck(ListItem(< con bytestring _ >)ListItem(< con bytestring _ >), lessThanByteString, 2) => true
+
   rule <k> (builtin lessThanByteString) => < builtin lessThanByteString .List 2 > ... </k>
 
   rule <k> #eval(lessThanByteString,
@@ -142,6 +154,12 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lessThanEqualsByteString`
 
 ```k
+  rule #numArgs(lessThanEqualsByteString) => 2
+
+  rule #typeCheck(ListItem(< con bytestring _ >), lessThanEqualsByteString, 1) => true
+
+  rule #typeCheck(ListItem(< con bytestring _ >)ListItem(< con bytestring _ >), lessThanEqualsByteString, 2) => true
+
   rule <k> (builtin lessThanEqualsByteString) =>
             < builtin lessThanEqualsByteString .List 2 > ... </k>
 
