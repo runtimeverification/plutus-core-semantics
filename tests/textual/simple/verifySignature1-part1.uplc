@@ -1,0 +1,2 @@
+(program 0.0.0 [(builtin verifySignature)
+ (con bytestring #d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a)])

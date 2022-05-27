@@ -7,11 +7,11 @@ require "uplc-environment.md"
 require "uplc-flat-parser.md"
 
 module UPLC-CONFIGURATION
-  imports UPLC-SYNTAX
-  imports UPLC-FLAT-PARSER
   imports INT
   imports MAP
   imports LIST
+  imports UPLC-SYNTAX
+  imports UPLC-FLAT-PARSER
   imports UPLC-SYNTAX
   imports UPLC-ENVIRONMENT
 
@@ -30,6 +30,11 @@ is used to keep track of the data emitted by the `trace` builtin.
 ```k
   syntax UValue ::= Value
   syntax UValue ::= #eval(BuiltinName, List)
+  rule <k> #eval(_,_) ~> _ => (error) </k> [owise]
+
+  syntax Int  ::= #numArgs(BuiltinName) [function]
+  syntax Bool ::= #typeCheck(List, BuiltinName, Int) [function]
+  rule #typeCheck(_,_,_) => false [owise]
 
   syntax Program ::= #handleProgram(Program) [function]
 
@@ -49,6 +54,6 @@ is used to keep track of the data emitted by the `trace` builtin.
                 <trace> .List </trace>
 ```
 
-```k 
+```k
 endmodule
 ```

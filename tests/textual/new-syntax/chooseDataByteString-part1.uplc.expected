@@ -1,0 +1,1 @@
+      [ ( builtin chooseData ) ( con data { ByteString #001A } )  ] 
