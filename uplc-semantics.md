@@ -8,7 +8,7 @@ require "uplc-crypto-builtins.md"
 require "uplc-string-builtins.md"
 require "uplc-data-builtins.md"
 require "uplc-hash.md"
-require "uplc-pretty-print.md"
+require "uplc-discharge.md"
 
 module UPLC-SEMANTICS
   imports INT
@@ -20,11 +20,23 @@ module UPLC-SEMANTICS
   imports UPLC-STRING-BUILTINS
   imports UPLC-DATA-BUILTINS
   imports UPLC-HASH
-  imports UPLC-PRETTY-PRINT
+  imports UPLC-DISCHARGE
 
   syntax Bindable ::= Value
 
   syntax FinalState ::= "[]" Term
+```
+
+## Non-interactive application
+
+```k
+  syntax K ::= #app(Term, TermList, Map) [function]
+  syntax K ::= #appAux(TermList, Map) [function]
+
+  rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
+  rule #appAux(N:Term .TermList, RHO) => [_ N RHO ]
+  rule #appAux(N:Term TL:TermList, RHO) => [_ N RHO ] ~> #appAux(TL, RHO) [owise]
+
 ```
 
 ## CEK machine
@@ -55,13 +67,6 @@ module UPLC-SEMANTICS
   rule <k> < delay M:Term RHO:Map > ~> Force => M ... </k>
        <env> _ => RHO:Map </env>
 
-  syntax K ::= #app(Term, TermList, Map) [function]
-  syntax K ::= #appAux(TermList, Map) [function]
-
-  rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
-  rule #appAux(N:Term .TermList, RHO) => [_ N RHO ]
-  rule #appAux(N:Term TL:TermList, RHO) => [_ N RHO ] ~> #appAux(TL, RHO) [owise]
-
   rule <k> [ M:Term TL:TermList ] => #app(M, TL, RHO) ... </k>
        <env> RHO:Map </env>
 
@@ -87,7 +92,7 @@ module UPLC-SEMANTICS
 
   rule <k> _V:Value ~> [ < delay _ _ > _] ~> _ => (error) </k>
 
-  rule <k> V:Value ~> . => [] prettyPrint(V) </k>
+  rule <k> V:Value ~> . => [] discharge(V) </k>
 ```
 
 ```k
