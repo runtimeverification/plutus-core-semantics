@@ -20,11 +20,10 @@ tests/textual/simple/addInteger-no-args.uplc
 #
 # UPLC examples 
 #
-# DivideByZero returns an error. We need to adapt our test harness to
-# error handling.
+# DivideByZero and DivideByZeroDrop both evaluate to ( error ).
+# This test has been copied to tests/textual/error. We may want to remove these tests from
+# tests/textual/uplc-examples in the future.
 tests/textual/uplc-examples/DivideByZero.uplc
-# DivideByZeroDrop returns an error. We need to adapt our test harness to
-# error handling. Moreover, kplc run does not return an error.
 tests/textual/uplc-examples/DivideByZeroDrop.uplc
 #
 # Benchamark validation examples
