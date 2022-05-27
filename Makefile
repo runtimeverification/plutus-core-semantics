@@ -222,7 +222,8 @@ kplutus_files := uplc.md \
                  uplc-polymorphic-builtins.md \
                  uplc-string.md \
                  uplc-data-builtins.md \
-                 uplc-hash.md
+                 uplc-hash.md \
+		 uplc-pretty-print.md
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 
@@ -268,9 +269,9 @@ $(KPLUTUS_LIB)/$(haskell_kompiled): $(kplutus_includes) $(plugin_includes) $(KPL
 # Coverage Processing
 # -------------------
 
-covr_ignore_files := bitstream.md \
-                     uplc-bytestring.md \
-                     uplc-flat-parser.md
+covr_ignore_files := uplc-bytestring.md \
+                     uplc-flat-parser.md \
+		     uplc-pretty-print.md
 
 covr_ignore_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(covr_ignore_files))
 
@@ -392,7 +393,8 @@ TEST_MSG      := "\n>>> Testing "
 
 TEST_OPTS  := --result-only | \
 		 sed -e 's/\[\]//g' \
-                     -e 's/\(.TermList\s*\|.ConstantList\s*\|.DataList\s*\|.Env\s*\)//g' 
+                     -e 's/\(.TermList\s*\|.ConstantList\s*\|.DataList\s*\|.Env\s*\)//g'
+
 CHECK          := diff --ignore-all-space
 TEST           := $(KPLUTUS) run
 UPLC           := uplc

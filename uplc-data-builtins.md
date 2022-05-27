@@ -30,6 +30,20 @@ module UPLC-DATA-BUILTINS
 ## `chooseData`
 
 ```k
+  rule #numArgs(chooseData) => 6
+
+  rule #typeCheck(ListItem(< con data{ _ } >), chooseData, 1) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value ), chooseData, 2) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value ), chooseData, 3) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 4) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 5) => true
+  
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 6) => true
+  
   rule <k> (builtin chooseData) ~> Force => < builtin chooseData .List 6 > ... </k>
 
   rule <k> #eval(chooseData,
@@ -71,134 +85,160 @@ module UPLC-DATA-BUILTINS
                       ListItem(_L:Value)
                       ListItem(_I:Value)
                       ListItem(B:Value))) => B ... </k>
-
-  rule <k> #eval(chooseData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `constrData`
 
 ```k
+  rule #numArgs(constrData) => 2
+
+  rule #typeCheck(ListItem(< con integer _ >), constrData, 1) => true
+
+  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con list(data)[ _ ] >), constrData, 2) => true
+
   rule <k> (builtin constrData) => < builtin constrData .List 2 > ... </k>
 
   rule <k> #eval(constrData,
                  (ListItem(< con integer I:Int >)
                   ListItem(< con list(data) [ L:ConstantList ] > ))) =>
            (con data { Constr I [ #mkDataList(L) ] }) ... </k>
-
-  rule <k> #eval(constrData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `mapData`
 
 ```k
+  rule #numArgs(mapData) => 1
+
+  rule #typeCheck(ListItem(< con list(pair(data)(data))[ _ ] >), mapData, 1) => true
+
   rule <k> (builtin mapData) => < builtin mapData .List 1 > ... </k>
 
   rule <k> #eval(mapData,
                  ListItem(< con list(pair(data)(data)) [ L:ConstantList ] >)) =>
            (con data { Map [ #mkDataPairList(L) ] }) ... </k>
-
-  rule <k> #eval(mapData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `listData`
 
 ```k
+  rule #numArgs(listData) => 1
+
+  rule #typeCheck(ListItem(< con list(data)[ _ ] >), listData, 1) => true
+
   rule <k> (builtin listData) => < builtin listData .List 1 > ... </k>
 
   rule <k> #eval(listData,
                  ListItem(< con list(data) [ L:ConstantList ] >)) =>
            (con data { List [ #mkDataList(L) ] }) ... </k>
-
-  rule <k> #eval(listData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `iData`
 
 ```k
+  rule #numArgs(iData) => 1
+
+  rule #typeCheck(ListItem(< con integer _ >), iData, 1) => true
+
   rule <k> (builtin iData) => < builtin iData .List 1 > ... </k>
 
   rule <k> #eval(iData,
                  ListItem(< con integer I:Int >)) =>
            (con data { Integer I }) ... </k>
-
-  rule <k> #eval(iData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `bData`
 
 ```k
+  rule #numArgs(bData) => 1
+
+  rule #typeCheck(ListItem(< con bytestring _ >), bData, 1) => true
+
   rule <k> (builtin bData) => < builtin bData .List 1 > ... </k>
 
   rule <k> #eval(bData,
                  ListItem(< con bytestring B:ByteString >)) =>
            (con data { ByteString B }) ... </k>
-
-  rule <k> #eval(bData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `unConstrData`
 
 ```k
+  rule #numArgs(unConstrData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unConstrData, 1) => true
+
   rule <k> (builtin unConstrData) => < builtin unConstrData .List 1 > ... </k>
 
   rule <k> #eval(unConstrData,
                  ListItem(< con data { Constr I:Int [ L:DataList ] } >)) =>
            (con pair(integer)(list(data)) (I, [ #mkConstantList(L) ])) ... </k>
-
-  rule <k> #eval(unConstrData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `unMapData`
 
 ```k
+  rule #numArgs(unMapData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unMapData, 1) => true
+
   rule <k> (builtin unMapData) => < builtin unMapData .List 1 > ... </k>
 
   rule <k> #eval(unMapData,
                  ListItem(< con data { Map [ L:DataPairList ] } >)) =>
            (con list(pair (data)(data)) [ #mkConstantListFromDataPairList(L) ] ) ... </k>
-
-  rule <k> #eval(unMapData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `unListData`
 
 ```k
+  rule #numArgs(unListData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unListData, 1) => true
+
   rule <k> (builtin unListData) => < builtin unListData .List 1 > ... </k>
 
   rule <k> #eval(unListData,
                  ListItem(< con data { List [ L:DataList ] } >)) =>
            (con list(data) [ #mkConstantList(L) ]) ... </k>
-
-  rule <k> #eval(unListData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `unIData`
 
 ```k
+  rule #numArgs(unIData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unIData, 1) => true
+
   rule <k> (builtin unIData) => < builtin unIData .List 1 > ... </k>
 
   rule <k> #eval(unIData,
                  ListItem(< con data { Integer I:Int } >)) =>
            (con integer I) ... </k>
-
-  rule <k> #eval(unIData, _) ~> _ => (error) </k> [owise]
 ```
 
 ## `unBData`
 
 ```k
+  rule #numArgs(unBData) => 1
+
+  rule #typeCheck(ListItem(< con data{ _ } >), unBData, 1) => true
+
   rule <k> (builtin unBData) => < builtin unBData .List 1 > ... </k>
 
   rule <k> #eval(unBData,
                  ListItem(< con data { ByteString B:ByteString } >)) =>
            (con bytestring B) ... </k>
-
-  rule <k> #eval(unBData, _) ~> _ => (error) </k> [owise]
 ```
 
 # `equalsData`
 
 ```k
+  rule #numArgs(equalsData) => 2
+
+  rule #typeCheck(ListItem(< con data{ _ } >), equalsData, 1) => true
+
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem(< con data{ _ } >), equalsData, 2) => true
+
   rule <k> (builtin equalsData) => < builtin equalsData .List 2 > ... </k>
 
   rule <k> #eval(equalsData,
@@ -212,45 +252,51 @@ module UPLC-DATA-BUILTINS
                   ListItem(< con data { T2:TextualData } >))) =>
            (con bool False) ... </k>
   requires T1 =/=K T2
-
-  rule <k> #eval(equalsData, _) ~> _ => (error) </k> [owise]
 ```
 
 # `mkPairData`
 
 ```k
+  rule #numArgs(mkPairData) => 2
+
+  rule #typeCheck(ListItem(< con data{ _ } >), mkPairData, 1) => true
+
+  rule #typeCheck(ListItem(< con data{ _ } >)ListItem(< con data{ _ } >), mkPairData, 2) => true
+
   rule <k> (builtin mkPairData) => < builtin mkPairData .List 2 > ... </k>
 
   rule <k> #eval(mkPairData,
                  (ListItem(< con data { T1:TextualData } >)
                   ListItem(< con data { T2:TextualData } >))) =>
            (con pair(data)(data) ( { T1 }, { T2 })) ... </k>
-
-  rule <k> #eval(mkPairData, _) ~> _ => (error) </k> [owise]
 ```
 
 # `mkNilData`
 
 ```k
+  rule #numArgs(mkNilData) => 1
+
+  rule #typeCheck(ListItem(< con unit _ >), mkNilData, 1) => true
+
   rule <k> (builtin mkNilData) => < builtin mkNilData .List 1 > ... </k>
 
   rule <k> #eval(mkNilData,
                  ListItem(< con unit () >)) =>
            (con list(data) [ .ConstantList ]) ... </k>
-
-  rule <k> #eval(mkNilData, _) ~> _ => (error) </k> [owise]
 ```
 
 # `mkNilPairData`
 
 ```k
+  rule #numArgs(mkNilPairData) => 1
+  
+  rule #typeCheck(ListItem(< con unit _ >), mkNilPairData, 1) => true
+  
   rule <k> (builtin mkNilPairData) => < builtin mkNilPairData .List 1 > ... </k>
 
   rule <k> #eval(mkNilPairData,
                  ListItem(< con unit () >)) =>
            (con list(pair (data) (data)) [ .ConstantList ]) ... </k>
-
-  rule <k> #eval(mkNilPairData, _) ~> _ => (error) </k> [owise]
 ```
 
 ```k

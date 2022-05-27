@@ -1,0 +1,3 @@
+(program 0.0.0 [[(force (builtin chooseList))
+                                (con list(integer) [ 0 , 1 , 2 ])]
+                                (con integer 1)])

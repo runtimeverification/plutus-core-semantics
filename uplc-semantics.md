@@ -8,6 +8,7 @@ require "uplc-crypto-builtins.md"
 require "uplc-string-builtins.md"
 require "uplc-data-builtins.md"
 require "uplc-hash.md"
+require "uplc-pretty-print.md"
 
 module UPLC-SEMANTICS
   imports INT
@@ -19,12 +20,11 @@ module UPLC-SEMANTICS
   imports UPLC-STRING-BUILTINS
   imports UPLC-DATA-BUILTINS
   imports UPLC-HASH
+  imports UPLC-PRETTY-PRINT
 
   syntax Bindable ::= Value
 
-  syntax FinalState ::= "[]" "(" "con" TypeConstant Constant ")"
-                      | "[]" "(" "lam" UplcId Term ")"
-                      | "[]" "(" "delay" Term ")"
+  syntax FinalState ::= "[]" Term
 ```
 
 ## CEK machine
@@ -36,6 +36,10 @@ module UPLC-SEMANTICS
        <env> RHO </env>
        <heap> Heap </heap>
   requires #in(RHO, X)
+
+  rule <k> X:UplcId => (error) ... </k>
+       <env> RHO </env>
+  requires notBool(#in(RHO, X))
 
   rule <k> (con T:TypeConstant C:Constant) =>
            < con T:TypeConstant C:Constant > ... </k>
@@ -66,26 +70,24 @@ module UPLC-SEMANTICS
 
   rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Map > _] => M ... </k>
        <env> _ => #push( RHO, X, #uplcHash(V) ) </env>
-       <heap> Heap => Heap[  #uplcHash(V) <- V ] </heap>
+       <heap> Heap => Heap[ #uplcHash(V) <- V ] </heap>
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
            #eval(BN, (L ListItem(V))) ... </k>
+  requires #typeCheck(L ListItem(V), BN, #numArgs(BN))
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List I:Int > _] =>
            < builtin BN (L ListItem(V)) (I -Int 1) > ... </k>
-  requires I >Int 1
+  requires I >Int 1 andBool #typeCheck(L ListItem(V), BN, #numArgs(BN) -Int I +Int 1)
 
-  rule <k> < con T:TypeConstant C:Constant > ~> . => [] (con T C) </k>
-
-  rule <k> < lam I:UplcId T:Term _ > ~> . => [] (lam I T) </k>
-
-  rule <k> < delay T:Term _ > ~> . => [] (delay T) </k>
+  rule <k> V:Value ~> [ < builtin BN L I > _] ~> _ => (error) </k>
+  requires notBool(#typeCheck(L ListItem(V), BN, #numArgs(BN) -Int I +Int 1))
 
   rule <k> _V:Value ~> [ < con _ _ > _] ~> _ => (error) </k>
 
   rule <k> _V:Value ~> [ < delay _ _ > _] ~> _ => (error) </k>
 
-  rule <k> < builtin _ _ _ > ~> . => (error) </k>
+  rule <k> V:Value ~> . => [] prettyPrint(V) </k>
 ```
 
 ```k
