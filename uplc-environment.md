@@ -4,11 +4,24 @@
 require "domains.md"
 require "uplc-syntax.md"
 
+module UPLC-MAP-CONCRETE [concrete]
+  imports MAP
+endmodule
+
+module UPLC-MAP-SYMBOLIC [symbolic]
+  imports MAP-SYMBOLIC
+endmodule
+
+module UPLC-MAP
+  imports UPLC-MAP-CONCRETE
+  imports UPLC-MAP-SYMBOLIC
+endmodule
+
 module UPLC-ENVIRONMENT
   imports UPLC-ID
   imports BOOL-SYNTAX
   imports INT-SYNTAX
-  imports MAP
+  imports UPLC-MAP
   imports LIST
 
   syntax Bool ::= #in(Map, UplcId) [function, functional]
