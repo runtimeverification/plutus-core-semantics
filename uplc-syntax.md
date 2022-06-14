@@ -39,7 +39,8 @@ module UPLC-SYNTAX
                 | "(" "force" Term ")"
                 | "(" "error" ")"
 
-  syntax TermList ::= NeList{Term, ""}
+  syntax TermList ::= Term TermList
+                    | Term
 
   syntax Value ::= "<" "con" TypeConstant Constant ">"
                  | "<" "lam" UplcId Term Map ">"

@@ -32,9 +32,8 @@ module UPLC-SEMANTICS
 ```k
   syntax K ::= #app(Term, TermList, Map) [function]
   syntax K ::= #appAux(TermList, Map) [function]
-
   rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
-  rule #appAux(N:Term .TermList, RHO) => [_ N RHO ]
+  rule #appAux(N:Term, RHO) => [_ N RHO ]
   rule #appAux(N:Term TL:TermList, RHO) => [_ N RHO ] ~> #appAux(TL, RHO) [owise]
 
 ```

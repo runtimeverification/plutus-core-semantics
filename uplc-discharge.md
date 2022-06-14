@@ -48,8 +48,6 @@ module UPLC-DISCHARGE
   rule dischargeTerm([ T1:Term (T2:Term TL:TermList) ], RHO:Map) =>
        dischargeTermApp(TL, [dischargeTerm(T1, RHO) dischargeTerm(T2, RHO) ], RHO)
 
-  rule dischargeTermApp(.TermList, T, _) => T
-
   rule dischargeTermApp(T1:Term TL:TermList, T2:Term, RHO:Map) =>
   
        dischargeTermApp(TL, [T2 dischargeTerm(T1, RHO)], RHO)
@@ -59,5 +57,8 @@ module UPLC-DISCHARGE
   rule dischargeTerm((force T:Term), RHO:Map) => (force dischargeTerm(T, RHO))
   
   rule dischargeTerm((error), _) => (error)
+
+  rule dischargeTerm( T, .Map) => T
+
 endmodule
 ```
