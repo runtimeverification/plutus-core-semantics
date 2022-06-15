@@ -25,5 +25,11 @@ module SIMPLE-SYMBOLIC
   claim <k> [ ( lam v_0 v_0 ) (T:Term) ] => T ~> [ < lam v_0 v_0 M > _] ... </k>
         <env> M </env>
 
+  claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => (con integer 1) ... </k>
+
+  claim <k> [ ( lam v_0 v_0 ) (con TN:TypeConstant C:Constant) ] => ( con TN C ) ... </k>
+
+  claim <k> [ ( lam X:UplcId X ) (T:Term)] => ( T ) ... </k>
+
 endmodule
 ```
