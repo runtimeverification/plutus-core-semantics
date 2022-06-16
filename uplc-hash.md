@@ -10,7 +10,7 @@ requires "domains.md"
 requires "uplc-syntax.md"
 requires "krypto.md"
 
-module UPLC-HASH
+module UPLC-HASH-CONCRETE [concrete]
   imports INT
   imports STRING
   imports KRYPTO
@@ -20,4 +20,20 @@ module UPLC-HASH
   syntax Int ::= #uplcHash(Value) [function]
   rule #uplcHash(V:Value) => String2Base(Sha3_256(#unparseKORE(V)), 16)
 endmodule
+
+module UPLC-HASH-SYMBOLIC [symbolic]
+  imports INT
+  imports STRING
+  imports UPLC-SYNTAX
+  imports K-EQUAL
+
+  syntax Int ::= #uplcHash(Value) [function, functional, no-evaluators]
+  rule {#uplcHash(V1:Value) #Equals #uplcHash(V2:Value)} => {V1 #Equals V2} [simplification]
+endmodule
+
+module UPLC-HASH
+  imports UPLC-HASH-CONCRETE
+  imports UPLC-HASH-SYMBOLIC
+endmodule
+
 ```

@@ -9,5 +9,4 @@ module VERIFICATION
                  | simplified(KItem)
 
   rule <k> simplify(K) => simplified(K) ... </k>
-
 endmodule
