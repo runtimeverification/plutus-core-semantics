@@ -72,9 +72,31 @@ module UPLC-SEMANTICS
   rule <k> V:Value ~> [_ M RHO:Map ] => M ~> [ V _] ... </k>
        <env> _ => RHO </env>
 
-  rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Map > _] => M ... </k>
+  syntax KItem ::= #ENDAPPLY(UplcId, Int)
+
+  rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Map > _] =>
+           M ~> #ENDAPPLY(X, #uplcHash(V)) ... </k>
        <env> _ => #push( RHO, X, #uplcHash(V) ) </env>
        <heap> Heap => Heap[ #uplcHash(V) <- V ] </heap>
+       <refcount> R =>
+                  R[#uplcHash(V) <-
+                    ({R[#uplcHash(V)] orDefault 0}:>Int +Int 1)] </refcount>
+
+  rule <k> V:Value ~> #ENDAPPLY(_, I) => V ... </k>
+       <refcount> R => R[I <- ({R[I]}:>Int -Int 1)] </refcount>
+  requires {(R[I] orDefault 0)}:>Int >Int 1
+
+  syntax List ::= #remove(List, Int) [function]
+  rule #remove(.List, _) => .List
+  rule #remove(ListItem(I) L:List, I) => L
+  rule #remove(ListItem(J) L:List, I) => ListItem(J) #remove(L, I)
+  requires I =/=Int J
+
+  rule <k> V:Value ~> #ENDAPPLY(X, I) => V ... </k>
+       <env> RHO => RHO[X <- #remove({RHO[X] orDefault .List}:>List, I)] </env>
+       <heap> H => H[I <- undef] </heap>
+       <refcount> R => R[I <- undef] </refcount>
+  requires {(R[I] orDefault 0)}:>Int ==Int 1
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
            #eval(BN, (L ListItem(V))) ... </k>

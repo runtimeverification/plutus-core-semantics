@@ -52,6 +52,7 @@ is used to keep track of the data emitted by the `trace` builtin.
                 <env> .Map </env>
                 <heap> .Map </heap>
                 <trace> .List </trace>
+                <refcount> .Map </refcount>
 ```
 
 ```k
