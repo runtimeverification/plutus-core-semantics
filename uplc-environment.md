@@ -27,10 +27,10 @@ module UPLC-ENVIRONMENT
   rule #lookup(E:Map, X:UplcId, H:Map) => {H[#last({E[X]}:>List)]}:>Value
   requires X in_keys(E)
 
-  syntax Map ::= #push(Map, UplcId, Int) [function, functional]
+  syntax Map ::= #push(Map, UplcId, Int) [function]
   rule #push(E:Map, X:UplcId, I:Int) =>
        #if X in_keys(E)
-       #then E[X <- #append({E[X]}:>List, I)]
+       #then E[X <- #append({E[X] orDefault .List}:>List, I)]
        #else E[X <- ListItem(I)]
        #fi
 endmodule
