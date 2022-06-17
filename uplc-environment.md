@@ -9,10 +9,10 @@ module UPLC-MAP
   imports MAP-SYMBOLIC
 endmodule
 
-module UPLC-ENVIRONMENT 
+module UPLC-ENVIRONMENT
   imports UPLC-ID
   imports BOOL
-  imports INT-SYNTAX    
+  imports INT-SYNTAX
   imports UPLC-MAP
   imports LIST
   imports K-EQUAL
