@@ -8,5 +8,6 @@ module VERIFICATION
   syntax KItem ::= simplify(KItem)
                  | simplified(KItem)
 
-  rule <k> simplify(K) => simplified(K) ... </k>
+  rule #Ceil({@L:KItem}:>List) => {isList(@L) #Equals true} #And #Ceil(@L) [anywhere, simplification]
+
 endmodule

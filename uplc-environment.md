@@ -17,8 +17,6 @@ module UPLC-ENVIRONMENT
   imports LIST
   imports K-EQUAL
 
-  rule #Ceil({@L:KItem}:>List) => {isList(@L) #Equals true} #And #Ceil(@L) [anywhere, simplification]
-
   syntax List ::= #append(List, Int) [function, functional]
   rule #append(L:List, I:Int) => L ListItem(I)
 
