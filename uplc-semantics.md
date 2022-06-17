@@ -41,16 +41,22 @@ module UPLC-SEMANTICS
 ## CEK machine
 
 ```k
-  rule <k> (program _V M) => M </k>
+  syntax Term ::= getTerm(Value) [function, functional]
+  rule getTerm(< con TC:TypeConstant C:Constant >) => ( con TC C )
+  rule getTerm(< lam X:UplcId T:Term _ >) => ( lam X T )
+  rule getTerm(< delay T:Term _ >) => ( delay T )
+  rule getTerm(< builtin BN:BuiltinName _ _ >) => ( builtin BN )
 
-  rule <k> X:UplcId => #lookup(RHO, X, Heap) ... </k>
+  rule <k> (program _ M) => M </k>
+
+  rule <k> X:UplcId => {#lookup(RHO, X, Heap)}:>Value ... </k>
        <env> RHO </env>
        <heap> Heap </heap>
-  requires #in(RHO, X)
+  requires X in_keys(RHO)
 
   rule <k> X:UplcId => (error) ... </k>
        <env> RHO </env>
-  requires notBool(#in(RHO, X))
+  requires notBool(X in_keys(RHO))
 
   rule <k> (con T:TypeConstant C:Constant) =>
            < con T:TypeConstant C:Constant > ... </k>
@@ -73,8 +79,8 @@ module UPLC-SEMANTICS
        <env> _ => RHO </env>
 
   rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Map > _] => M ... </k>
-       <env> _ => #push( RHO, X, #uplcHash(V) ) </env>
-       <heap> Heap => Heap[ #uplcHash(V) <- V ] </heap>
+       <env> _ => #push( RHO, X, #uplcHash(getTerm(V)) ) </env>
+       <heap> Heap => #push(Heap, #uplcHash(getTerm(V)), V) </heap>
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
            #eval(BN, (L ListItem(V))) ... </k>

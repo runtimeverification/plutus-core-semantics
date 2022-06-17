@@ -17,7 +17,7 @@ module UPLC-HASH
   imports K-REFLECTION
   imports UPLC-SYNTAX
 
-  syntax Int ::= #uplcHash(Value) [function]
-  rule #uplcHash(V:Value) => String2Base(Sha3_256(#unparseKORE(V)), 16)
+  syntax Int ::= #uplcHash(Term) [function]
+  rule #uplcHash(T:Term) => String2Base(Sha3_256(#unparseKORE(T)), 16)
 endmodule
 ```
