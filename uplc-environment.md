@@ -4,22 +4,34 @@
 require "domains.md"
 require "uplc-syntax.md"
 
+module UPLC-MAP
+  imports MAP
+  imports MAP-SYMBOLIC
+endmodule
+
 module UPLC-ENVIRONMENT
   imports UPLC-ID
-  imports BOOL-SYNTAX
+  imports BOOL
   imports INT-SYNTAX
-  imports MAP
+  imports UPLC-MAP
   imports LIST
+  imports K-EQUAL
 
-  syntax Bool ::= #in(Map, UplcId) [function, functional]
-  rule #in(E:Map, X:UplcId) => X in_keys(E)
-  
+  syntax List ::= #append(List, Int) [function, functional]
+  rule #append(L:List, I:Int) => L ListItem(I)
+
+  syntax Int ::= #last(List) [function]
+  rule #last(L:List) => {L[-1]}:>Int
+
   syntax Value ::= #lookup(Map, UplcId, Map) [function]
-  rule #lookup((_ X:UplcId |-> _ ListItem(I:Int)), X, H:Map) => {H[I]}:>Value
-
-  syntax Map ::= #push(Map, UplcId, Int) [function, functional]
-  rule #push(E:Map, X:UplcId, I:Int) => E[X <- ({E[X]}:>List ListItem(I))]
+  rule #lookup(E:Map, X:UplcId, H:Map) => {H[#last({E[X]}:>List)]}:>Value
   requires X in_keys(E)
-  rule #push(E:Map, X:UplcId, I:Int) => E[X <- ListItem(I)] [owise]
+
+  syntax Map ::= #push(Map, UplcId, Int) [function]
+  rule #push(E:Map, X:UplcId, I:Int) =>
+       #if X in_keys(E)
+       #then E[X <- #append({E[X] orDefault .List}:>List, I)]
+       #else E[X <- ListItem(I)]
+       #fi
 endmodule
 ```
