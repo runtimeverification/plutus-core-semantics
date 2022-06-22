@@ -91,7 +91,8 @@ module UPLC-SEMANTICS
 
   rule <k> _V:Value ~> [ < delay _ _ > _] ~> _ => (error) </k>
 
-  rule <k> V:Value ~> . => [] discharge(V) </k>
+  rule <k> V:Value ~> . => [] discharge(V, Heap) </k>
+       <heap> Heap:Map </heap>
 ```
 
 ```k
