@@ -175,11 +175,11 @@ return an error if `sndPair`'s argument is not a pair.
 
   rule <k> #eval(tailList,
               ListItem(< con list(T:TypeConstant) [ .ConstantList ] >)) =>
-           < con T [ .ConstantList ] > ... </k>
+           < con list(T) [ .ConstantList ] > ... </k>
 
   rule <k> #eval(tailList,
               ListItem(< con list(T:TypeConstant) [ _C:Constant , L:ConstantList ] >)) =>
-           < con T [ L ] > ... </k>
+           < con list(T) [ L ] > ... </k>
 ```
 
 ## `nullList`
