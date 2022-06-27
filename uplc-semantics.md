@@ -46,11 +46,11 @@ module UPLC-SEMANTICS
   rule <k> X:UplcId => #lookup(RHO, X, Heap) ... </k>
        <env> RHO </env>
        <heap> Heap </heap>
-  requires #in(RHO, X)
+  requires X in_keys(RHO)
 
   rule <k> X:UplcId => (error) ... </k>
        <env> RHO </env>
-  requires notBool(#in(RHO, X))
+  requires notBool(X in_keys(RHO))
 
   rule <k> (con T:TypeConstant C:Constant) =>
            < con T:TypeConstant C:Constant > ... </k>
