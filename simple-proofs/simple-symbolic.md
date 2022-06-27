@@ -20,10 +20,27 @@ module SIMPLE-SYMBOLIC
                                             _:Term ] ~> T:Term =>
             (error) </k>
   requires T =/=K Force
+```
+ Removing the use of syntactic lists somehow makes this claim pass
 
-  // Removing the use of syntactic lists somehow makes this claim pass
+```k
   claim <k> [ ( lam v_0 v_0 ) (T:Term) ] => T ~> [ < lam v_0 v_0 M > _] ... </k>
         <env> M </env>
+```
+
+The following two claims proves that the constant 1 applied to the identity function returns the
+constant integer 1.
+
+```k
+  claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => < con integer 1 > ... </k>
+        <env> RHO => ?_RHO </env>
+        <heap> _ => ?_ </heap>
+  requires allValuesAreList(RHO) andBool (v_0 in_keys(RHO))
+
+  claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => < con integer 1 > ... </k>
+        <env> RHO => ?_RHO </env>
+        <heap> _ => ?_ </heap>
+  requires allValuesAreList(RHO) andBool notBool(v_0 in_keys(RHO))
 
 endmodule
 ```

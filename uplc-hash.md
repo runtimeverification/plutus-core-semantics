@@ -1,16 +1,24 @@
 # UPLC Hash
 
-Caveat: this function is a potential bottleneck. A faster hashing
-scheme will be loocked at, because serializing to Kore is an extra
-process call, and calling `Sha3_256` also takes time. The LLVM
-backend already natively is computing hashes of things, and can do
-that directly if that functionality can be exposed.
 ```k
 requires "domains.md"
 requires "uplc-syntax.md"
 requires "krypto.md"
 
 module UPLC-HASH
+  imports UPLC-HASH-CONCRETE
+  imports UPLC-HASH-SYMBOLIC
+endmodule
+```
+
+Caveat: this function is a potential bottleneck. A faster hashing
+scheme will be loocked at, because serializing to Kore is an extra
+process call, and calling `Sha3_256` also takes time. The LLVM
+backend already natively is computing hashes of things, and can do
+that directly if that functionality can be exposed.
+
+```k
+module UPLC-HASH-CONCRETE [concrete]
   imports INT
   imports STRING
   imports KRYPTO
@@ -19,5 +27,19 @@ module UPLC-HASH
 
   syntax Int ::= #uplcHash(Value) [function]
   rule #uplcHash(V:Value) => String2Base(Sha3_256(#unparseKORE(V)), 16)
+endmodule
+```
+Symbolic hash function:
+
+A symbolic hash function does not need to generate a unique ID because this is simply used as a unique key value in a
+map. Instead of evaluating the actual hash, the K term `#uplcHash(Value)` itself can represent the key in the map.
+```k
+module UPLC-HASH-SYMBOLIC [symbolic]
+  imports INT
+  imports STRING
+  imports UPLC-SYNTAX
+  imports K-EQUAL
+
+  syntax Int ::= #uplcHash(Value) [function, functional, no-evaluators]
 endmodule
 ```
