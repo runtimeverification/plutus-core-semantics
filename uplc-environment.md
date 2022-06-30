@@ -17,9 +17,6 @@ module UPLC-ENVIRONMENT
   imports LIST
   imports K-EQUAL
 
-  syntax List ::= #append(List, Int) [function, functional]
-  rule #append(L:List, I:Int) => L ListItem(I)
-
   syntax Int ::= #last(List) [function]
   rule #last(L:List) => {L[-1]}:>Int
 
@@ -27,11 +24,8 @@ module UPLC-ENVIRONMENT
   rule #lookup(E:Map, X:UplcId, H:Map) => {H[#last({E[X]}:>List)]}:>Value
   requires X in_keys(E)
 
-  syntax Map ::= #push(Map, UplcId, Int) [function]
-  rule #push(E:Map, X:UplcId, I:Int) =>
-       #if X in_keys(E)
-       #then E[X <- #append({E[X] orDefault .List}:>List, I)]
-       #else E[X <- ListItem(I)]
-       #fi
+  syntax Map ::= #push(Map, UplcId, Int) [function, functional]
+  rule #push(E:Map, X:UplcId, I:Int) => E[X <- {E[X] orDefault .List}:>List ListItem(I)]
+
 endmodule
 ```
