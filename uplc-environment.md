@@ -1,7 +1,6 @@
 # UPLC Environment
 
 ```k
-require "domains.md"
 require "uplc-syntax.md"
 
 module UPLC-MAP

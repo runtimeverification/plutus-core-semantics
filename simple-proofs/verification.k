@@ -1,5 +1,4 @@
 requires "uplc.md"
-requires "domains.md"
 
 module VERIFICATION
   imports UPLC
