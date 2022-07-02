@@ -8,17 +8,17 @@ module UPLC-DISCHARGE
   imports LIST
   imports UPLC-SYNTAX
 
-  syntax Term ::= dischargeTerm(Term, Map) [function]
-  syntax Term ::= dischargeTermApp(TermList, Term, Map) [function]
+  syntax Term ::= dischargeTerm(Term, Env) [function]
+  syntax Term ::= dischargeTermApp(TermList, Term, Env) [function]
   syntax Term ::= discharge(Value) [function]
   syntax Term ::= dischargeApp(BuiltinName, List) [function]
   syntax Term ::= dischargeAppAux(Term, List) [function]
   
-  rule discharge(< con T:TypeConstant C:Constant >) => (con T C)  
+  rule discharge(< con T:TypeConstant C:Constant >) => (con T C)
 
-  rule discharge(< lam I:UplcId T:Term RHO:Map >) => (lam I dischargeTerm(T, RHO)) 
+  rule discharge(< lam I:UplcId T:Term RHO:Env >) => (lam I dischargeTerm(T, RHO))
 
-  rule discharge(< delay T:Term RHO:Map >) => (delay dischargeTerm(T, RHO)) 
+  rule discharge(< delay T:Term RHO:Env >) => (delay dischargeTerm(T, RHO))
 
   rule discharge(< builtin BN:BuiltinName L:List _ >) =>
        dischargeApp(BN, L)
@@ -34,7 +34,7 @@ module UPLC-DISCHARGE
        dischargeAppAux([T discharge(V)], L)
 
   rule dischargeTerm(X:UplcId, RHO) => discharge({RHO[X]}:>Value)
-  requires X in_keys(RHO) 
+  requires X in_keys(RHO)
   
   rule dischargeTerm(X:UplcId, RHO) => X
   requires notBool(X in_keys(RHO))
@@ -43,22 +43,21 @@ module UPLC-DISCHARGE
 
   rule dischargeTerm((builtin BN:BuiltinName), _) => (builtin BN)
 
-  rule dischargeTerm((lam X:UplcId T:Term), RHO:Map) => (lam X dischargeTerm(T, RHO))
+  rule dischargeTerm((lam X:UplcId T:Term), RHO:Env) => (lam X dischargeTerm(T, RHO))
 
-  rule dischargeTerm([ T1:Term (T2:Term TL:TermList) ], RHO:Map) =>
+  rule dischargeTerm([ T1:Term (T2:Term TL:TermList) ], RHO:Env) =>
        dischargeTermApp(TL, [dischargeTerm(T1, RHO) dischargeTerm(T2, RHO) ], RHO)
 
-  rule dischargeTermApp(T1:Term TL:TermList, T2:Term, RHO:Map) =>
-  
+  rule dischargeTermApp(T1:Term TL:TermList, T2:Term, RHO:Env) =>
        dischargeTermApp(TL, [T2 dischargeTerm(T1, RHO)], RHO)
 
-  rule dischargeTerm((delay T:Term), RHO:Map) => (delay dischargeTerm(T, RHO))
+  rule dischargeTerm((delay T:Term), RHO:Env) => (delay dischargeTerm(T, RHO))
 
-  rule dischargeTerm((force T:Term), RHO:Map) => (force dischargeTerm(T, RHO))
+  rule dischargeTerm((force T:Term), RHO:Env) => (force dischargeTerm(T, RHO))
   
   rule dischargeTerm((error), _) => (error)
 
-  rule dischargeTerm( T, .Map) => T
+  rule dischargeTerm( T, .Env) => T
 
 endmodule
 ```

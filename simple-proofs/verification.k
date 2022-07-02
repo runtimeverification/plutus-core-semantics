@@ -11,7 +11,7 @@ module VERIFICATION
 
   rule #Ceil({@L:KItem}:>List) => {isList(@L) #Equals true} #And #Ceil(@L) [anywhere, simplification]
 
-  rule #Ceil(#push(@E:Map, @X:UplcId, @I:Int)) =>
+  rule #Ceil(#push(@E:Env, @X:UplcId, @I:Int)) =>
        ({@X in_keys(@E) #Equals false} #Or {isList(@E[@X] orDefault .List) #Equals true})
        #And #Ceil(@E) #And #Ceil(@X) #And #Ceil(@I) [simplification]
 

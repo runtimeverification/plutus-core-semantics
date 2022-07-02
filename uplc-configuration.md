@@ -16,7 +16,7 @@ module UPLC-CONFIGURATION
   imports UPLC-ENVIRONMENT
 
   syntax Frame ::= "Force"
-                 | "[_" Term Map "]"
+                 | "[_" Term Env "]"
                  | "[" Value "_]"
 ```
 
@@ -49,7 +49,7 @@ is used to keep track of the data emitted by the `trace` builtin.
       Int2Bytes( lengthString( INPUT ) /Int 2, String2Base( INPUT, 16 ), BE)
 
   configuration <k> #handleProgram($PGM:Program) </k>
-                <env> .Map </env>
+                <env> .Env </env>
                 <heap> .Map </heap>
                 <trace> .List </trace>
 ```

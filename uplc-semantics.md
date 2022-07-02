@@ -30,11 +30,11 @@ module UPLC-SEMANTICS
 ## Non-interactive application
 
 ```k
-  syntax K ::= #app(Term, TermList, Map) [function]
-  syntax K ::= #appAux(TermList, Map) [function]
-  rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
-  rule #appAux(N:Term, RHO) => [_ N RHO ]
-  rule #appAux(N:Term TL:TermList, RHO) => [_ N RHO ] ~> #appAux(TL, RHO) [owise]
+  syntax K ::= #app(Term, TermList, Env) [function]
+  syntax K ::= #appAux(TermList, Env) [function]
+  rule #app(M:Term, TL:TermList, RHO:Env) => M ~> #appAux(TL, RHO)
+  rule #appAux(N:Term, RHO:Env) => [_ N RHO ]
+  rule #appAux(N:Term TL:TermList, RHO:Env) => [_ N RHO ] ~> #appAux(TL, RHO) [owise]
 
 ```
 
@@ -56,23 +56,23 @@ module UPLC-SEMANTICS
            < con T:TypeConstant C:Constant > ... </k>
 
   rule <k> (lam X:UplcId M:Term) => < lam X M RHO > ... </k>
-       <env> RHO:Map </env>
+       <env> RHO </env>
 
   rule <k> (delay M:Term) => < delay M RHO > ... </k>
-       <env> RHO:Map </env>
+       <env> RHO </env>
 
   rule <k> (force M:Term) => (M ~> Force) ... </k>
 
-  rule <k> < delay M:Term RHO:Map > ~> Force => M ... </k>
-       <env> _ => RHO:Map </env>
-
-  rule <k> [ M:Term TL:TermList ] => #app(M, TL, RHO) ... </k>
-       <env> RHO:Map </env>
-
-  rule <k> V:Value ~> [_ M RHO:Map ] => M ~> [ V _] ... </k>
+  rule <k> < delay M:Term RHO > ~> Force => M ... </k>
        <env> _ => RHO </env>
 
-  rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Map > _] => M ... </k>
+  rule <k> [ M:Term TL:TermList ] => #app(M, TL, RHO) ... </k>
+       <env> RHO </env>
+
+  rule <k> V:Value ~> [_ M RHO ] => M ~> [ V _] ... </k>
+       <env> _ => RHO </env>
+
+  rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Env > _] => M ... </k>
        <env> _ => #push( RHO, X, #uplcHash(V) ) </env>
        <heap> Heap => Heap[ #uplcHash(V) <- V ] </heap>
 
