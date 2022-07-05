@@ -6,17 +6,6 @@ require "uplc-syntax.md"
 module UPLC-ENVIRONMENT
   imports ENV-CONCRETE
   imports ENV-SYMBOLIC
-  imports MAP-SYMBOLIC
-  imports MAP
-  imports INT
-
-  syntax Int ::= #last(List) [function]
-  rule #last(L:List) => {L[-1]}:>Int
-
-  syntax Value ::= #lookup(Env, UplcId, Map) [function]
-  rule #lookup(E:Env, X:UplcId, H:Map) => {H[#last({E[X]}:>List)]}:>Value
-  requires X in_keys(E)
-
 endmodule
 
 module ENV-CONCRETE [concrete]
@@ -32,16 +21,40 @@ module ENV-CONCRETE [concrete]
   syntax Map ::= #push(Env, UplcId, Int) [function]
   rule #push(E:Env, X:UplcId, I:Int) => {E}:>Map[X <- {{E}:>Map[X] orDefault .List}:>List ListItem(I)]
 
+  syntax Int ::= #last(List) [function]
+  rule #last(L:List) => {L[-1]}:>Int
+
+  syntax Value ::= #lookup(Map, UplcId, Map) [function]
+  rule #lookup(E:Map, X:UplcId, H:Map) => { H[ #last( { E[X] }:>List ) ] }:>Value
+  requires X in_keys(E)
+
 endmodule
 
+```
+
+This module implements a separate `#lookup` function. The main difference is the removal of the list cast and the parameter types.
+
+```k
+module ENV-SYMBOLIC [symbolic]
+  imports ENV-SYMBOLIC-CORE
+  imports MAP
+  imports MAP-SYMBOLIC
+
+  syntax Int ::= #last(List) [function]
+  rule #last(L:List) => {L[-1]}:>Int
+
+  syntax Value ::= #lookup(Env, UplcId, Map) [function]
+  rule #lookup(E:Env, X:UplcId, H:Map) => { H[ #last( E[X] ) ] }:>Value
+  requires X in_keys(E)
+
+endmodule
 ```
 
 The Symbolic implementation of Env - a map where keys are UplcId's and the values are lists. Using this implementation makes `#push`
 functional. A regular Map would require a cast to List which can result in bottom.
 
 ```k
-
-module ENV-SYMBOLIC [symbolic]
+module ENV-SYMBOLIC-CORE [symbolic]
   imports INT
   imports STRING
   imports LIST
