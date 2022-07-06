@@ -34,12 +34,10 @@ constant integer 1.
 ```k
   claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => < con integer 1 > ... </k>
         <env> RHO => ?_RHO </env>
-        <heap> _ => ?_ </heap>
   requires allValuesAreList(RHO) andBool (v_0 in_keys(RHO))
 
   claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => < con integer 1 > ... </k>
         <env> RHO => ?_RHO </env>
-        <heap> _ => ?_ </heap>
   requires allValuesAreList(RHO) andBool notBool(v_0 in_keys(RHO))
 
 endmodule

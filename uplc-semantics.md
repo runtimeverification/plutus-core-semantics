@@ -7,7 +7,6 @@ require "uplc-bytestring-builtins.md"
 require "uplc-crypto-builtins.md"
 require "uplc-string-builtins.md"
 require "uplc-data-builtins.md"
-require "uplc-hash.md"
 require "uplc-discharge.md"
 
 module UPLC-SEMANTICS
@@ -19,7 +18,6 @@ module UPLC-SEMANTICS
   imports UPLC-CRYPTO-BUILTINS
   imports UPLC-STRING-BUILTINS
   imports UPLC-DATA-BUILTINS
-  imports UPLC-HASH
   imports UPLC-DISCHARGE
 
   syntax Bindable ::= Value
@@ -43,9 +41,8 @@ module UPLC-SEMANTICS
 ```k
   rule <k> (program _V M) => M </k>
 
-  rule <k> X:UplcId => #lookup(RHO, X, Heap) ... </k>
+  rule <k> X:UplcId => #lookup(RHO, X) ... </k>
        <env> RHO </env>
-       <heap> Heap </heap>
   requires X in_keys(RHO)
 
   rule <k> X:UplcId => (error) ... </k>
@@ -73,8 +70,7 @@ module UPLC-SEMANTICS
        <env> _ => RHO </env>
 
   rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Map > _] => M ... </k>
-       <env> _ => #push( RHO, X, #uplcHash(V) ) </env>
-       <heap> Heap => Heap[ #uplcHash(V) <- V ] </heap>
+       <env> _ => #push( RHO, X, V ) </env>
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
            #eval(BN, (L ListItem(V))) ... </k>

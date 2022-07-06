@@ -12,11 +12,9 @@ module VERIFICATION
 
   rule #Ceil({@L:KItem}:>List) => {isList(@L) #Equals true} #And #Ceil(@L) [anywhere, simplification]
 
-  rule #Ceil(#push(@E:Map, @X:UplcId, @I:Int)) =>
-       ({@X in_keys(@E) #Equals false} #Or {isList(@E[@X] orDefault .List) #Equals true})
-       #And #Ceil(@E) #And #Ceil(@X) #And #Ceil(@I) [simplification]
-
-  rule {#uplcHash(V1:Value) #Equals #uplcHash(V2:Value)} => {V1 #Equals V2} [simplification]
+  rule #Ceil(#push(@E:Map, @X:UplcId, @V:Value)) =>
+       ( { @X in_keys(@E) #Equals false } #Or ( { @X in_keys(@E) #Equals true } #And { isValue(@E[@X]) #Equals true } ) )
+       #And #Ceil(@E) #And #Ceil(@X) #And #Ceil(@V) [simplification]
 
   rule M:Map[K:KItem] orDefault V:KItem => V
   requires notBool(K in_keys(M)) [simplification]
