@@ -28,17 +28,12 @@ module SIMPLE-SYMBOLIC
         <env> M </env>
 ```
 
-The following two claims proves that the constant 1 applied to the identity function returns the
+The following claim proves that the constant 1 applied to the identity function returns the
 constant integer 1.
 
 ```k
   claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => < con integer 1 > ... </k>
-        <env> RHO => ?_RHO </env>
-  requires allValuesAreList(RHO) andBool (v_0 in_keys(RHO))
-
-  claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => < con integer 1 > ... </k>
-        <env> RHO => ?_RHO </env>
-  requires allValuesAreList(RHO) andBool notBool(v_0 in_keys(RHO))
+        <env> _ => ?_ </env>
 
 endmodule
 ```

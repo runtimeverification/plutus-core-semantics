@@ -18,15 +18,8 @@ module UPLC-ENVIRONMENT
   imports LIST
   imports K-EQUAL
 
-  syntax Int ::= #last(List) [function]
-  rule #last(L:List) => {L[-1]}:>Int
-
   syntax Value ::= #lookup(Map, UplcId) [function]
-
-  // We could have a (spurious) case for when V is not a Value instead
-  // of that coercion, but perhaps that is handled by the new Env type?
-  rule [lookup.some]: #lookup(  E:Map,  X:UplcId) => { E[X] }:>Value
-  rule [lookup.none]: #lookup( _E:Map, _X:UplcId) => { < con integer 0 > }:>Value [owise]
+  rule #lookup(E:Map,  X:UplcId) => { E[X] }:>Value
 
   syntax Map ::= #push(Map, UplcId, Value) [function]
   rule #push(E:Map, X:UplcId, V:Value) => E [X <- V]
