@@ -37,6 +37,22 @@ constant integer 1.
 ```k
   claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => < con integer 1 > ... </k>
         <env> _ => .Map </env>
+```
+
+Claims for List sum function
+
+```k
+claim <k>
+  [ FIXED_POINT LIST_SUM (con list(integer) [ .ConstantList ] ) ] => < con integer 0 > </k>
+        <env> .Map => ?_ </env>
+
+claim <k>
+  [ FIXED_POINT LIST_SUM (con list(integer) [ 2, 3, 5 ] ) ] => < con integer 10 > </k>
+        <env> .Map => ?_ </env>
+
+claim <k>
+  [ FIXED_POINT LIST_SUM ( con list(integer) [ X, Y ] ) ] => < con integer X +Int Y > </k>
+        <env> .Map => ?_ </env>
 
 endmodule
 ```
