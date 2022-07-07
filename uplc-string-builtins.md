@@ -20,6 +20,7 @@ module UPLC-STRING-BUILTINS
   rule #typeCheck(ListItem(< con string _ >), encodeUtf8, 1) => true
 
   rule <k> (builtin encodeUtf8) => < builtin encodeUtf8 .List 1 > ... </k>
+       <env> _ => .Map </env>
 
   rule <k> #eval(encodeUtf8, ListItem(< con string S:String >)) =>
            < con bytestring #encodeUtf8(S) > ... </k>
@@ -33,6 +34,7 @@ module UPLC-STRING-BUILTINS
   rule #typeCheck(ListItem(< con bytestring _ >), decodeUtf8, 1) => true
 
   rule <k> (builtin decodeUtf8) => < builtin decodeUtf8 .List 1 > ... </k>
+       <env> _ => .Map </env>
 
   rule <k> #eval(decodeUtf8, ListItem(< con bytestring B:ByteString >)) =>
            < con string #decodeUtf8(B) > ... </k>
@@ -48,6 +50,7 @@ module UPLC-STRING-BUILTINS
   rule #typeCheck(ListItem(< con string _ >)ListItem(< con string _ >), appendString, 2) => true
 
   rule <k> (builtin appendString) => < builtin appendString .List 2 > ... </k>
+       <env> _ => .Map </env>
 
   rule <k> #eval(appendString,
               (ListItem(< con string S1:String >)
@@ -65,6 +68,7 @@ module UPLC-STRING-BUILTINS
   rule #typeCheck(ListItem(< con string _ >)ListItem(< con string _ >), equalsString, 2) => true
 
   rule <k> (builtin equalsString) => < builtin equalsString .List 2 >  ... </k>
+       <env> _ => .Map </env>
 
   rule <k> #eval(equalsString,
               (ListItem(< con string S1:String >)

@@ -42,29 +42,29 @@ module UPLC-SEMANTICS
   rule <k> (program _V M) => M </k>
 
   rule <k> X:UplcId => #lookup(RHO, X) ... </k>
-       <env> RHO </env>
+       <env> RHO => .Map </env>
   requires X in_keys(RHO)
 
   rule <k> X:UplcId => (error) ... </k>
        <env> RHO </env>
   requires notBool(X in_keys(RHO))
 
-  rule <k> (con T:TypeConstant C:Constant) =>
-           < con T:TypeConstant C:Constant > ... </k>
+  rule <k> (con T:TypeConstant C:Constant) => < con T:TypeConstant C:Constant > ... </k>
+       <env> _ => .Map </env>
 
   rule <k> (lam X:UplcId M:Term) => < lam X M RHO > ... </k>
-       <env> RHO:Map </env>
+       <env> RHO => .Map </env>
 
   rule <k> (delay M:Term) => < delay M RHO > ... </k>
-       <env> RHO:Map </env>
+       <env> RHO => .Map </env>
 
   rule <k> (force M:Term) => (M ~> Force) ... </k>
 
   rule <k> < delay M:Term RHO:Map > ~> Force => M ... </k>
-       <env> _ => RHO:Map </env>
+       <env> _ => RHO </env>
 
   rule <k> [ M:Term TL:TermList ] => #app(M, TL, RHO) ... </k>
-       <env> RHO:Map </env>
+       <env> RHO </env>
 
   rule <k> V:Value ~> [_ M RHO:Map ] => M ~> [ V _] ... </k>
        <env> _ => RHO </env>
