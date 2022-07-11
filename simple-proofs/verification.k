@@ -10,11 +10,11 @@ module VERIFICATION
   requires notBool(K in_keys(M)) [simplification]
 
   // The body of the Z combinator
-  syntax Term ::= "ZBody" [macro]
+  syntax Term ::= "ZBody" [alias]
   rule ZBody => (lam x_0 [f_0 (lam y_0 [x_0 x_0 y_0])])
 
   // The Z combinator
-  syntax Term ::= "Z" [macro]
+  syntax Term ::= "Z" [alias]
   rule Z => (lam f_0 [ZBody ZBody])
 
   // Predicate for capturing the sum of an arbitrary symbolic list
@@ -32,20 +32,27 @@ module VERIFICATION
   rule length(_, IS:ConstantList ) => 1 +Int length(IS) [simplification]
 
   // Auxiliary predicate for all-integer lists
-  syntax Bool ::= allInts(ConstantList) [function, functional]
+  syntax Bool ::= allInts(ConstantList) [function]
 
-  rule allInts(              .ConstantList) => true                                 
+  rule allInts(              .ConstantList) => true                              
   rule allInts(C:Constant, IS:ConstantList) => C ==K { C }:>Int andBool allInts(IS) 
 
   // Definedness
   rule #Ceil ( sum ( IS ) ) => { true #Equals allInts(IS) } [simplification]
+
+  // Predicate for capturing longer lists 
+  syntax Constant ::= longerList(ConstantList, ConstantList) [function]
+
+  rule longerList(.ConstantList, _) => False                                        [simplification]
+  rule longerList(_, .ConstantList) => True                                         [simplification]
+  rule longerList((_, XS:ConstantList), (_, YS:ConstantList)) => longerList(XS, YS) [simplification]
  
   //
   // List algorithms
   //
 
   // List-Free Body
-  syntax Term ::= "LIST_FREE_BODY" [macro]
+  syntax Term ::= "LIST_FREE_BODY" [alias]
   rule LIST_FREE_BODY => 
     (lam in_lst (force [ (force (builtin ifThenElse))
         [ (force (builtin nullList)) in_lst ]
@@ -55,12 +62,12 @@ module VERIFICATION
     )
 
   // 1. List-Free Algorithm
-  syntax Term ::= "LIST_FREE" [macro]
+  syntax Term ::= "LIST_FREE" [alias]
     rule LIST_FREE =>
       (lam f_lstFree LIST_FREE_BODY)
 
   // List-Sum Body
-  syntax Term ::= "LIST_SUM_BODY" [macro]
+  syntax Term ::= "LIST_SUM_BODY" [alias]
     rule LIST_SUM_BODY => 
       (lam in_lst (force [ (force (builtin ifThenElse))
           [ (force (builtin nullList)) in_lst ]
@@ -77,12 +84,12 @@ module VERIFICATION
       )
 
   // 2. List-Sum Algorithm
-  syntax Term ::= "LIST_SUM" [macro]
+  syntax Term ::= "LIST_SUM" [alias]
     rule LIST_SUM =>
       (lam f_lstSum LIST_SUM_BODY)
 
   // List-Length Body
-  syntax Term ::= "LIST_LEN_BODY" [macro]
+  syntax Term ::= "LIST_LEN_BODY" [alias]
     rule LIST_LEN_BODY => 
       (lam in_lst (force [ (force (builtin ifThenElse))
           [ (force (builtin nullList)) in_lst ]
@@ -99,12 +106,12 @@ module VERIFICATION
       )
 
   // 3a. List-Length Algorithm
-  syntax Term ::= "LIST_LEN" [macro]
+  syntax Term ::= "LIST_LEN" [alias]
     rule LIST_LEN =>
       (lam f_lstLen LIST_LEN_BODY)
 
   // 3b. Simple List-length Client 
-  syntax Term ::= "TWO_LISTS_LEN_SUM" [macro]
+  syntax Term ::= "TWO_LISTS_LEN_SUM" [alias]
     rule TWO_LISTS_LEN_SUM => 
     (lam in_lst1
       (lam in_lst2
@@ -114,5 +121,43 @@ module VERIFICATION
         ]
       )
     )
+
+  // 3c. List-Longer Algorithm
+  syntax Term ::= "LIST_LONGER" [alias]
+    rule LIST_LONGER =>
+      (lam f_lstLonger LIST_LONGER_BODY)
+
+  // List-Longer body
+  syntax Term ::= "LIST_LONGER_BODY" [alias]
+  rule LIST_LONGER_BODY => 
+    (lam in_lst1 
+      (lam in_lst2
+        LIST_LONGER_LOOP_BODY
+      )
+    )
+
+  // List-longer loop body
+  syntax Term ::= "LIST_LONGER_LOOP_BODY" [alias]
+  rule LIST_LONGER_LOOP_BODY => 
+    (force 
+      [ (force (builtin ifThenElse))
+        [ (force (builtin nullList)) in_lst1 ]
+        ( delay (con bool False) )
+        ( delay 
+          ( force 
+            [ (force (builtin ifThenElse))
+              [ (force (builtin nullList)) in_lst2 ]
+              ( delay (con bool True) )
+              ( delay [ f_lstLonger 
+                          [ (force (builtin tailList)) in_lst1 ] 
+                          [ (force (builtin tailList)) in_lst2 ] ] )
+            ]
+          ) 
+        )
+      ] 
+    )
+
+
+
 
 endmodule
