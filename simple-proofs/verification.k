@@ -35,7 +35,7 @@ module VERIFICATION
   syntax Bool ::= allInts(ConstantList) [function]
 
   rule allInts(              .ConstantList) => true                              
-  rule allInts(C:Constant, IS:ConstantList) => C ==K { C }:>Int andBool allInts(IS) 
+  rule allInts(C:Constant, IS:ConstantList) => isInt(C) andBool allInts(IS) 
 
   // Definedness
   rule #Ceil ( sum ( IS ) ) => { true #Equals allInts(IS) } [simplification]
@@ -51,66 +51,93 @@ module VERIFICATION
   // List algorithms
   //
 
-  // List-Free Body
-  syntax Term ::= "LIST_FREE_BODY" [alias]
-  rule LIST_FREE_BODY => 
-    (lam in_lst (force [ (force (builtin ifThenElse))
-        [ (force (builtin nullList)) in_lst ]
-        ( delay in_lst )
-        ( delay [ f_lstFree [ (force (builtin tailList)) in_lst ] ] )
-      ])
-    )
+  // --------------------------------------------------------
 
   // 1. List-Free Algorithm
   syntax Term ::= "LIST_FREE" [alias]
     rule LIST_FREE =>
       (lam f_lstFree LIST_FREE_BODY)
 
-  // List-Sum Body
-  syntax Term ::= "LIST_SUM_BODY" [alias]
-    rule LIST_SUM_BODY => 
-      (lam in_lst (force [ (force (builtin ifThenElse))
-          [ (force (builtin nullList)) in_lst ]
+  // List-Free Body
+  syntax Term ::= "LIST_FREE_BODY" [alias]
+  rule LIST_FREE_BODY => 
+    (lam in_lst 
+      LIST_FREE_LOOP_BODY
+    )
 
-          ( delay (con integer 0) )
+  // List-Free Loop Body 
+  syntax Term ::= "LIST_FREE_LOOP_BODY" [alias]
+  rule LIST_FREE_LOOP_BODY => 
+    (force 
+      [ (force (builtin ifThenElse))
+        [ (force (builtin nullList)) in_lst ]
+        ( delay in_lst )
+        ( delay [ f_lstFree [ (force (builtin tailList)) in_lst ] ] )
+      ]
+    )
 
-          ( delay
-            [ (builtin addInteger)
-              [ (force (builtin headList)) in_lst ]
-              [ f_lstSum [ (force (builtin tailList)) in_lst ] ]
-            ]
-          )
-        ])
-      )
+  // --------------------------------------------------------
 
   // 2. List-Sum Algorithm
   syntax Term ::= "LIST_SUM" [alias]
     rule LIST_SUM =>
       (lam f_lstSum LIST_SUM_BODY)
 
-  // List-Length Body
-  syntax Term ::= "LIST_LEN_BODY" [alias]
-    rule LIST_LEN_BODY => 
-      (lam in_lst (force [ (force (builtin ifThenElse))
-          [ (force (builtin nullList)) in_lst ]
-
-          ( delay (con integer 0) )
-
-          ( delay
-            [ (builtin addInteger)
-              (con integer 1)
-              [ f_lstLen [ (force (builtin tailList)) in_lst ] ]
-            ]
-          )
-        ])
+  // List-Sum Body
+  syntax Term ::= "LIST_SUM_BODY" [alias]
+    rule LIST_SUM_BODY => 
+      (lam in_lst 
+        LIST_SUM_LOOP_BODY
       )
 
-  // 3a. List-Length Algorithm
-  syntax Term ::= "LIST_LEN" [alias]
-    rule LIST_LEN =>
-      (lam f_lstLen LIST_LEN_BODY)
+  // List-Sum Loop Body
+  syntax Term ::= "LIST_SUM_LOOP_BODY" [alias]
+    rule LIST_SUM_LOOP_BODY => 
+      (force [ (force (builtin ifThenElse))
+          [ (force (builtin nullList)) in_lst ]
+          ( delay (con integer 0) )
+          ( delay
+            [ (builtin addInteger)
+              [ (force (builtin headList)) in_lst ]
+              [ f_lstSum [ (force (builtin tailList)) in_lst ] ]
+            ]
+          )
+        ]
+      )
 
-  // 3b. Simple List-length Client 
+  // --------------------------------------------------------
+
+  // 3. List-Length Algorithm
+  syntax Term ::= "LIST_LEN" [alias]
+  rule LIST_LEN =>
+    (lam f_lstLen LIST_LEN_BODY)
+
+  // List-Length Body
+  syntax Term ::= "LIST_LEN_BODY" [alias]
+  rule LIST_LEN_BODY => 
+    (lam in_lst 
+      LIST_LENGTH_LOOP_BODY
+    )
+
+  // List-length Loop Body 
+  syntax Term ::= "LIST_LENGTH_LOOP_BODY" [alias]
+  rule LIST_LENGTH_LOOP_BODY => 
+  (force 
+    [ (force (builtin ifThenElse))
+      [ (force (builtin nullList)) in_lst ]
+      ( delay (con integer 0) )
+      ( delay
+        [ (builtin addInteger)
+          (con integer 1)
+          [ f_lstLen [ (force (builtin tailList)) in_lst ] ]
+        ]
+      )
+    ]
+  )
+
+  // --------------------------------------------------------
+
+  // 4. Simple List-length Client 
   syntax Term ::= "TWO_LISTS_LEN_SUM" [alias]
     rule TWO_LISTS_LEN_SUM => 
     (lam in_lst1
@@ -122,7 +149,9 @@ module VERIFICATION
       )
     )
 
-  // 3c. List-Longer Algorithm
+  // --------------------------------------------------------
+
+  // 5. List-Longer Algorithm
   syntax Term ::= "LIST_LONGER" [alias]
     rule LIST_LONGER =>
       (lam f_lstLonger LIST_LONGER_BODY)
@@ -156,8 +185,5 @@ module VERIFICATION
         )
       ] 
     )
-
-
-
 
 endmodule
