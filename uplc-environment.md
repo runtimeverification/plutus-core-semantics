@@ -19,7 +19,7 @@ module UPLC-ENVIRONMENT
   imports K-EQUAL
 
   syntax Value ::= #lookup(Map, UplcId) [function]
-  rule #lookup(E:Map,  X:UplcId) => { E[X] }:>Value
+  rule #lookup(E:Map, X:UplcId) => { E[X] }:>Value
 
   syntax Map ::= #push(Map, UplcId, Value) [function]
   rule #push(E:Map, X:UplcId, V:Value) => E [X <- V]
