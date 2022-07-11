@@ -39,15 +39,6 @@ module VERIFICATION
 
   // Definedness
   rule #Ceil ( sum ( IS ) ) => { true #Equals allInts(IS) } [simplification]
-
-  // Predicate for capturing list zipping
-  syntax ConstantList ::= zip(ConstantList, ConstantList) [function]
-
-  rule zip(.ConstantList, .ConstantList) => .ConstantList [simplification]
-  rule zip((C1, L1), (C2, L2)) => (C1, C2), zip(L1, L2)   [simplification]
-
-  rule #Ceil ( zip ( .ConstantList , YS ) ) =>        { YS #Equals .ConstantList }   [simplification]
-  rule #Ceil ( zip (       (_ , _) , YS ) ) => #Not ( { YS #Equals .ConstantList } ) [simplification]
  
   //
   // List algorithms
@@ -107,9 +98,21 @@ module VERIFICATION
         ])
       )
 
-  // 3. List-Length Algorithm
+  // 3a. List-Length Algorithm
   syntax Term ::= "LIST_LEN" [macro]
     rule LIST_LEN =>
       (lam f_lstLen LIST_LEN_BODY)
+
+  // 3b. Simple List-length Client 
+  syntax Term ::= "TWO_LISTS_LEN_SUM" [macro]
+    rule TWO_LISTS_LEN_SUM => 
+    (lam in_lst1
+      (lam in_lst2
+        [ (builtin addInteger)
+          [ Z LIST_LEN in_lst1 ] 
+          [ Z LIST_LEN in_lst2 ] 
+        ]
+      )
+    )
 
 endmodule
