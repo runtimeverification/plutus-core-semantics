@@ -9,7 +9,7 @@ module UPLC-INTEGER-BUILTINS
 
   syntax KItem ::= castToInt(Constant)
   rule <k> castToInt(_:Int)      => .       ... </k>
-  rule <k> castToInt(C:Constant) => (error) ... </k> ensures notBool isInt(C) 
+  rule <k> castToInt(C:Constant) => (error) ... </k> ensures notBool isInt(C) [owise]
 ```
 
 ## `addInteger`
