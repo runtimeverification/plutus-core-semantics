@@ -6,6 +6,10 @@ require "uplc-configuration.md"
 module UPLC-INTEGER-BUILTINS
   imports UPLC-CONFIGURATION
   imports K-EQUAL
+
+  syntax KItem ::= castToInt(Constant)
+  rule <k> castToInt(_:Int)      => .       ... </k>
+  rule <k> castToInt(C:Constant) => (error) ... </k> ensures notBool isInt(C) 
 ```
 
 ## `addInteger`
@@ -20,10 +24,14 @@ module UPLC-INTEGER-BUILTINS
   rule <k> (builtin addInteger) => < builtin addInteger .List 2 > ... </k>
        <env> _ => .Map </env>
 
+
+
   rule <k> #eval(addInteger,
-                     (ListItem(< con integer I1:Int >)
-                      ListItem(< con integer I2:Int >))) =>
-           < con integer I1 +Int I2 > ... </k>
+                     (ListItem(< con integer C1:Constant >)
+                      ListItem(< con integer C2:Constant >))) =>
+                         castToInt(C1) ~> 
+                         castToInt(C2) ~> 
+                              < con integer { C1 }:>Int +Int { C2 }:>Int > ... </k>
 ```
 
 ## `multiplyInteger`
