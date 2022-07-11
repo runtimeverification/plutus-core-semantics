@@ -17,6 +17,9 @@ tests/textual/simple/var.uplc
 # remaining builtins and will not be included until we solve this.
 tests/textual/simple/addInteger-one-arg.uplc
 tests/textual/simple/addInteger-no-args.uplc
+# `uplc` allows `True` and `False` as variables.
+tests/textual/simple/true-var.uplc
+tests/textual/simple/false-var.uplc
 #
 # UPLC examples 
 #
