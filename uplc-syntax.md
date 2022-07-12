@@ -43,8 +43,8 @@ module UPLC-SYNTAX
                     | Term
 
   syntax Value ::= "<" "con" TypeConstant Constant ">"
-                 | "<" "lam" UplcId Term Map ">"
-                 | "<" "delay" Term Map ">"
+                 | "<" "lam" UplcId Term Int ">"
+                 | "<" "delay" Term Int ">"
                  | "<" "builtin" BuiltinName List Int ">"
 
   syntax TypeConstant ::= "integer"

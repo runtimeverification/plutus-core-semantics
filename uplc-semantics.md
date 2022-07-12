@@ -28,11 +28,11 @@ module UPLC-SEMANTICS
 ## Non-interactive application
 
 ```k
-  syntax K ::= #app(Term, TermList, Map) [function]
-  syntax K ::= #appAux(TermList, Map) [function]
-  rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
-  rule #appAux(N:Term, RHO) => [_ N RHO ]
-  rule #appAux(N:Term TL:TermList, RHO) => [_ N RHO ] ~> #appAux(TL, RHO) [owise]
+  syntax K ::= #app(Term, TermList, Int) [function]
+  syntax K ::= #appAux(TermList, Int) [function]
+  rule #app(M:Term, TL:TermList, ID:Int) => M ~> #appAux(TL, ID)
+  rule #appAux(N:Term, ID) => [_ N ID ]
+  rule #appAux(N:Term TL:TermList, ID) => [_ N ID ] ~> #appAux(TL, ID) [owise]
 
 ```
 
@@ -42,35 +42,47 @@ module UPLC-SEMANTICS
   rule <k> (program _V M) => M </k>
 
   rule <k> X:UplcId => #lookup(RHO, X) ... </k>
-       <env> RHO => .Map </env>
+       <currentEnv> ID => 0 </currentEnv>
+       <envID>    ID  </envID>
+       <mappings> RHO </mappings>
   requires X in_keys(RHO)
 
   rule <k> X:UplcId => (error) ... </k>
-       <env> RHO </env>
+       <currentEnv> ID </currentEnv>
+       <envID>    ID  </envID>
+       <mappings> RHO </mappings>
   requires notBool(X in_keys(RHO))
 
   rule <k> (con T:TypeConstant C:Constant) => < con T:TypeConstant C:Constant > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
-  rule <k> (lam X:UplcId M:Term) => < lam X M RHO > ... </k>
-       <env> RHO => .Map </env>
+  rule <k> (lam X:UplcId M:Term) => < lam X M ID > ... </k>
+       <currentEnv> ID => 0 </currentEnv>
 
-  rule <k> (delay M:Term) => < delay M RHO > ... </k>
-       <env> RHO => .Map </env>
+  rule <k> (delay M:Term) => < delay M ID > ... </k>
+       <currentEnv> ID => 0 </currentEnv>
 
   rule <k> (force M:Term) => (M ~> Force) ... </k>
 
-  rule <k> < delay M:Term RHO:Map > ~> Force => M ... </k>
-       <env> _ => RHO </env>
+  rule <k> < delay M:Term ID:Int > ~> Force => M ... </k>
+       <currentEnv> _ => ID </currentEnv>
 
-  rule <k> [ M:Term TL:TermList ] => #app(M, TL, RHO) ... </k>
-       <env> RHO </env>
+  rule <k> [ M:Term TL:TermList ] => #app(M, TL, ID) ... </k>
+       <currentEnv> ID </currentEnv>
 
-  rule <k> V:Value ~> [_ M RHO:Map ] => M ~> [ V _] ... </k>
-       <env> _ => RHO </env>
+  rule <k> V:Value ~> [_ M ID:Int ] => M ~> [ V _] ... </k>
+       <currentEnv> _ => ID </currentEnv>
 
-  rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Map > _] => M ... </k>
-       <env> _ => #push( RHO, X, V ) </env>
+  rule <k> V:Value ~> [ < lam X:UplcId M:Term ID > _] => M ... </k>
+       <currentEnv> _ => !ID </currentEnv>
+       <envs>
+       <env>
+         <envID>    ID  </envID>
+         <mappings> RHO </mappings>
+       </env>
+       ( .Bag => <env> <envID> !ID </envID> <mappings> #push( RHO, X, V ) </mappings> </env> )
+       ...
+       </envs>
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
            #eval(BN, (L ListItem(V))) ... </k>

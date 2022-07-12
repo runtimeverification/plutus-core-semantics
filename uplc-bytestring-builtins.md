@@ -22,7 +22,7 @@ module UPLC-BYTESTRING-BUILTINS
                   appendByteString, 2) => true
 
   rule <k> (builtin appendByteString) => < builtin appendByteString .List 2 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(appendByteString,
                      (ListItem(< con bytestring B1:ByteString >)
@@ -41,7 +41,7 @@ module UPLC-BYTESTRING-BUILTINS
                   ListItem(< con bytestring _ >), consByteString, 2) => true
 
   rule <k> (builtin consByteString) => < builtin consByteString .List 2 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(consByteString,
                      (ListItem(< con integer I:Int >)
@@ -64,7 +64,7 @@ module UPLC-BYTESTRING-BUILTINS
                   ListItem(< con bytestring _ >), sliceByteString, 3) => true
 
   rule <k> (builtin sliceByteString) => < builtin sliceByteString .List 3 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(sliceByteString,
                     (ListItem(< con integer I1:Int >)
@@ -81,7 +81,7 @@ module UPLC-BYTESTRING-BUILTINS
   rule #typeCheck(ListItem(< con bytestring _ >), lengthOfByteString, 1) => true
 
   rule <k> (builtin lengthOfByteString) => < builtin lengthOfByteString .List 1 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(lengthOfByteString,
                      ListItem(< con bytestring B:ByteString >)) =>
@@ -99,7 +99,7 @@ module UPLC-BYTESTRING-BUILTINS
                   ListItem(< con integer _ >), indexByteString, 2) => true
                   
   rule <k> (builtin indexByteString) => < builtin indexByteString .List 2 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(indexByteString,
                      (ListItem(< con bytestring B:ByteString >)
@@ -118,7 +118,7 @@ module UPLC-BYTESTRING-BUILTINS
   rule #typeCheck(ListItem(< con bytestring _ >)ListItem(< con bytestring _ >), equalsByteString, 2) => true
 
   rule <k> (builtin equalsByteString) => < builtin equalsByteString .List 2 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(equalsByteString,
                      (ListItem(< con bytestring B1:ByteString >)
@@ -143,7 +143,7 @@ module UPLC-BYTESTRING-BUILTINS
   rule #typeCheck(ListItem(< con bytestring _ >)ListItem(< con bytestring _ >), lessThanByteString, 2) => true
 
   rule <k> (builtin lessThanByteString) => < builtin lessThanByteString .List 2 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(lessThanByteString,
                      (ListItem(< con bytestring B1:ByteString >)
@@ -168,7 +168,7 @@ module UPLC-BYTESTRING-BUILTINS
   rule #typeCheck(ListItem(< con bytestring _ >)ListItem(< con bytestring _ >), lessThanEqualsByteString, 2) => true
 
   rule <k> (builtin lessThanEqualsByteString) => < builtin lessThanEqualsByteString .List 2 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(lessThanEqualsByteString,
                      (ListItem(< con bytestring B1:ByteString >)

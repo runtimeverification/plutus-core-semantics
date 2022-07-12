@@ -33,7 +33,7 @@ All polymorphic builtins should be arguments to a call to `force`.
          ifThenElse, 3) => true
 
   rule <k> (builtin ifThenElse) ~> Force => < builtin ifThenElse .List 3 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(ifThenElse,
                    (ListItem(< con bool True >)
@@ -56,7 +56,7 @@ All polymorphic builtins should be arguments to a call to `force`.
   rule #typeCheck(ListItem(< con unit () >) ListItem(_:Value) .List, chooseUnit, 2) => true
 
   rule <k> (builtin chooseUnit) ~> Force => < builtin chooseUnit .List 2 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(chooseUnit,
                    (ListItem(< con unit () >)
@@ -77,7 +77,7 @@ return an error if `fstPair`'s argument is not a pair.
                              fstPair, 1) => true
 
   rule <k> (builtin fstPair) ~> Force => < builtin fstPair .List 1 >  ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(fstPair,
               ListItem(< con pair (T1:TypeConstant) (_T2:TypeConstant)
@@ -98,7 +98,7 @@ return an error if `sndPair`'s argument is not a pair.
                              sndPair, 1) => true
 
   rule <k> (builtin sndPair) ~> Force => < builtin sndPair .List 1 >  ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(sndPair,
               ListItem(< con pair (_T1:TypeConstant) (T2:TypeConstant)
@@ -122,7 +122,7 @@ return an error if `sndPair`'s argument is not a pair.
                   chooseList, 3) => true
 
   rule <k> (builtin chooseList) ~> Force => < builtin chooseList .List 3 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(chooseList,
                      (ListItem(< con list(_T:TypeConstant) [ .ConstantList ] >)
@@ -147,7 +147,7 @@ return an error if `sndPair`'s argument is not a pair.
                   ListItem(< con list(T) [ _:ConstantList ] >), mkCons, 2) => true
 
   rule <k> (builtin mkCons) ~> Force => < builtin mkCons .List 2 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(mkCons,
               (ListItem(< con T:TypeConstant C:Constant >)
@@ -163,7 +163,7 @@ return an error if `sndPair`'s argument is not a pair.
   rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), headList, 1) => true
 
   rule <k> (builtin headList) ~> Force => < builtin headList .List 1 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(headList,
               ListItem(< con list(T:TypeConstant)
@@ -179,7 +179,7 @@ return an error if `sndPair`'s argument is not a pair.
   rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), tailList, 1) => true
 
   rule <k> (builtin tailList) ~> Force => < builtin tailList .List 1 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(tailList,
               ListItem(< con list(T:TypeConstant) [ .ConstantList ] >)) =>
@@ -198,7 +198,7 @@ return an error if `sndPair`'s argument is not a pair.
   rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), nullList, 1) => true
 
   rule <k> (builtin nullList) ~> Force => < builtin nullList .List 1 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(nullList,
               ListItem(< con list(_T:TypeConstant) [ .ConstantList ] >)) =>
@@ -221,7 +221,7 @@ return an error if `sndPair`'s argument is not a pair.
                   ListItem(_:Value), trace, 2) => true
 
   rule <k> (builtin trace) ~> Force => < builtin trace .List 2 > ... </k>
-       <env> _ => .Map </env>
+       <currentEnv> _ => 0 </currentEnv>
 
   rule <k> #eval(trace,
               (ListItem(< con string S >)
