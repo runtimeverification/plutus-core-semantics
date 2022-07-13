@@ -24,13 +24,7 @@ All polymorphic builtins should be arguments to a call to `force`.
 
 ```k
   rule #numArgs(ifThenElse) => 3
-
-  rule #typeCheck(ListItem(< con bool _ >), ifThenElse, 1) => true
-
-  rule #typeCheck(_, ifThenElse, 2) => true
-
-  rule #typeCheck(ListItem(< con bool _ >) ListItem(_:Value) ListItem(_:Value) ,
-         ifThenElse, 3) => true
+  rule #typeSignature(ifThenElse) => bool anyValue anyValue
 
   rule <k> #eval(ifThenElse,
                    (ListItem(< con bool True >)
@@ -47,10 +41,7 @@ All polymorphic builtins should be arguments to a call to `force`.
 
 ```k
   rule #numArgs(chooseUnit) => 2
-
-  rule #typeCheck(ListItem(< con unit () >) _, chooseUnit, 1) => true
-
-  rule #typeCheck(ListItem(< con unit () >) ListItem(_:Value) .List, chooseUnit, 2) => true
+  rule #typeSignature(chooseUnit) => unit anyValue
 
   rule <k> #eval(chooseUnit,
                    (ListItem(< con unit () >)
@@ -66,9 +57,7 @@ return an error if `fstPair`'s argument is not a pair.
 
 ```k
   rule #numArgs(fstPair) => 1
-
-  rule #typeCheck(ListItem(< con pair (_:TypeConstant) (_:TypeConstant) (_,_) >),
-                             fstPair, 1) => true
+  rule #typeSignature(fstPair) => anyPair
 
   rule <k> #eval(fstPair,
               ListItem(< con pair (T1:TypeConstant) (_T2:TypeConstant)
@@ -84,9 +73,7 @@ return an error if `sndPair`'s argument is not a pair.
 
 ```k
   rule #numArgs(sndPair) => 1
-
-  rule #typeCheck(ListItem(< con pair (_:TypeConstant) (_:TypeConstant) (_,_) >),
-                             sndPair, 1) => true
+  rule #typeSignature(sndPair) => anyPair
 
   rule <k> #eval(sndPair,
               ListItem(< con pair (_T1:TypeConstant) (T2:TypeConstant)
@@ -97,17 +84,7 @@ return an error if `sndPair`'s argument is not a pair.
 
 ```k
   rule #numArgs(chooseList) => 3
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _ ] >), chooseList, 1) => true
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _ ] >)
-                  ListItem(_:Value),
-                  chooseList, 2) => true
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _ ] >)
-                  ListItem(_:Value)
-                  ListItem(_:Value),
-                  chooseList, 3) => true
+  rule #typeSignature(chooseList) => anyList anyValue anyValue
 
   rule <k> #eval(chooseList,
                      (ListItem(< con list(_T:TypeConstant) [ .ConstantList ] >)
@@ -125,11 +102,7 @@ return an error if `sndPair`'s argument is not a pair.
 
 ```k
   rule #numArgs(mkCons) => 2
-
-  rule #typeCheck(ListItem(< con _:TypeConstant _:Constant >), mkCons, 1) => true
-
-  rule #typeCheck(ListItem(< con T:TypeConstant _:Constant >)
-                  ListItem(< con list(T) [ _:ConstantList ] >), mkCons, 2) => true
+  rule #typeSignature(mkCons) => mkConsCase mkConsCase
 
   rule <k> #eval(mkCons,
               (ListItem(< con T:TypeConstant C:Constant >)
@@ -141,8 +114,7 @@ return an error if `sndPair`'s argument is not a pair.
 
 ```k
   rule #numArgs(headList) => 1
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), headList, 1) => true
+  rule #typeSignature(headList) => anyList
 
   rule <k> #eval(headList,
               ListItem(< con list(T:TypeConstant)
@@ -154,8 +126,7 @@ return an error if `sndPair`'s argument is not a pair.
 
 ```k
   rule #numArgs(tailList) => 1
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), tailList, 1) => true
+  rule #typeSignature(tailList) => anyList
 
   rule <k> #eval(tailList,
               ListItem(< con list(T:TypeConstant) [ .ConstantList ] >)) =>
@@ -170,8 +141,7 @@ return an error if `sndPair`'s argument is not a pair.
 
 ```k
   rule #numArgs(nullList) => 1
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), nullList, 1) => true
+  rule #typeSignature(nullList) => anyList
 
   rule <k> #eval(nullList,
               ListItem(< con list(_T:TypeConstant) [ .ConstantList ] >)) =>
@@ -187,11 +157,7 @@ return an error if `sndPair`'s argument is not a pair.
 
 ```k
   rule #numArgs(trace) => 2
-
-  rule #typeCheck(ListItem(< con string _ >), trace, 1) => true
-
-  rule #typeCheck(ListItem(< con string _ >)
-                  ListItem(_:Value), trace, 2) => true
+  rule #typeSignature(trace) => string anyValue
 
   rule <k> #eval(trace,
               (ListItem(< con string S >)

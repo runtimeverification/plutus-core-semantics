@@ -31,18 +31,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(chooseData) => 6
-
-  rule #typeCheck(ListItem(< con data{ _ } >), chooseData, 1) => true
-  
-  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value ), chooseData, 2) => true
-  
-  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value ), chooseData, 3) => true
-  
-  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 4) => true
-  
-  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 5) => true
-  
-  rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 6) => true
+  rule #typeSignature(chooseData) => data anyValue anyValue anyValue anyValue anyValue
 
   rule <k> #eval(chooseData,
                      (ListItem(< con data { Constr _Ii:Int [ _DL:DataList ] } >)
@@ -89,10 +78,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(constrData) => 2
-
-  rule #typeCheck(ListItem(< con integer _ >), constrData, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con list(data)[ _ ] >), constrData, 2) => true
+  rule #typeSignature(constrData) => integer list(data)
 
   rule <k> #eval(constrData,
                  (ListItem(< con integer I:Int >)
@@ -104,8 +90,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(mapData) => 1
-
-  rule #typeCheck(ListItem(< con list(pair(data)(data))[ _ ] >), mapData, 1) => true
+  rule #typeSignature(mapData) => list(pair(data)(data))
 
   rule <k> #eval(mapData,
                  ListItem(< con list(pair(data)(data)) [ L:ConstantList ] >)) =>
@@ -116,8 +101,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(listData) => 1
-
-  rule #typeCheck(ListItem(< con list(data)[ _ ] >), listData, 1) => true
+  rule #typeSignature(listData) => list(data)
 
   rule <k> #eval(listData,
                  ListItem(< con list(data) [ L:ConstantList ] >)) =>
@@ -128,8 +112,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(iData) => 1
-
-  rule #typeCheck(ListItem(< con integer _ >), iData, 1) => true
+  rule #typeSignature(iData) => integer
 
   rule <k> #eval(iData,
                  ListItem(< con integer I:Int >)) =>
@@ -140,8 +123,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(bData) => 1
-
-  rule #typeCheck(ListItem(< con bytestring _ >), bData, 1) => true
+  rule #typeSignature(bData) => bytestring
 
   rule <k> #eval(bData,
                  ListItem(< con bytestring B:ByteString >)) =>
@@ -152,8 +134,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(unConstrData) => 1
-
-  rule #typeCheck(ListItem(< con data{ _ } >), unConstrData, 1) => true
+  rule #typeSignature(unConstrData) => data
 
   rule <k> #eval(unConstrData,
                  ListItem(< con data { Constr I:Int [ L:DataList ] } >)) =>
@@ -164,8 +145,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(unMapData) => 1
-
-  rule #typeCheck(ListItem(< con data{ _ } >), unMapData, 1) => true
+  rule #typeSignature(unMapData) => data
 
   rule <k> #eval(unMapData,
                  ListItem(< con data { Map [ L:DataPairList ] } >)) =>
@@ -176,8 +156,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(unListData) => 1
-
-  rule #typeCheck(ListItem(< con data{ _ } >), unListData, 1) => true
+  rule #typeSignature(unListData) => data
 
   rule <k> #eval(unListData,
                  ListItem(< con data { List [ L:DataList ] } >)) =>
@@ -188,8 +167,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(unIData) => 1
-
-  rule #typeCheck(ListItem(< con data{ _ } >), unIData, 1) => true
+  rule #typeSignature(unIData) => data
 
   rule <k> #eval(unIData,
                  ListItem(< con data { Integer I:Int } >)) =>
@@ -200,8 +178,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(unBData) => 1
-
-  rule #typeCheck(ListItem(< con data{ _ } >), unBData, 1) => true
+  rule #typeSignature(unBData) => data
 
   rule <k> #eval(unBData,
                  ListItem(< con data { ByteString B:ByteString } >)) =>
@@ -212,10 +189,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(equalsData) => 2
-
-  rule #typeCheck(ListItem(< con data{ _ } >), equalsData, 1) => true
-
-  rule #typeCheck(ListItem(< con data{ _ } >)ListItem(< con data{ _ } >), equalsData, 2) => true
+  rule #typeSignature(equalsData) => data data
 
   rule <k> #eval(equalsData,
                  (ListItem(< con data { T1:TextualData } >)
@@ -234,10 +208,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(mkPairData) => 2
-
-  rule #typeCheck(ListItem(< con data{ _ } >), mkPairData, 1) => true
-
-  rule #typeCheck(ListItem(< con data{ _ } >)ListItem(< con data{ _ } >), mkPairData, 2) => true
+  rule #typeSignature(mkPairData) => data data
 
   rule <k> #eval(mkPairData,
                  (ListItem(< con data { T1:TextualData } >)
@@ -249,8 +220,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(mkNilData) => 1
-
-  rule #typeCheck(ListItem(< con unit _ >), mkNilData, 1) => true
+  rule #typeSignature(mkNilData) => unit
 
   rule <k> #eval(mkNilData,
                  ListItem(< con unit () >)) =>
@@ -261,9 +231,8 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #numArgs(mkNilPairData) => 1
+  rule #typeSignature(mkNilPairData) => unit
   
-  rule #typeCheck(ListItem(< con unit _ >), mkNilPairData, 1) => true
-
   rule <k> #eval(mkNilPairData,
                  ListItem(< con unit () >)) =>
            (con list(pair (data) (data)) [ .ConstantList ]) ... </k>

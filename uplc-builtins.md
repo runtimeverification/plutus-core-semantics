@@ -24,5 +24,14 @@ module UPLC-BUILTINS
   rule <k> (builtin (_::PolyBuiltinName #Or chooseData) #as BN) ~> Force => < builtin BN .List #numArgs(BN) > ... </k>
        <env> _ => .Map </env>
 
+  rule #typeCheck(ListItem(< con T _ >)          L, T:TypeConstant TS:TypeSignature) => #typeCheck(L, TS)
+  rule #typeCheck(ListItem(_:Value)              L, anyValue       TS:TypeSignature) => #typeCheck(L, TS)
+  rule #typeCheck(ListItem(< con list(_) _ >)    L, anyList        TS:TypeSignature) => #typeCheck(L, TS)
+  rule #typeCheck(ListItem(< con pair(_)(_) _ >) L, anyPair        TS:TypeSignature) => #typeCheck(L, TS)
+  rule #typeCheck(ListItem(< con T _ >)          L, mkConsCase     TS:TypeSignature) => #typeCheck(L, list(T))
+
+  rule #typeCheck(.List, _) => true
+  rule #typeCheck(    _, _) => false [owise]
+
 endmodule
 ```

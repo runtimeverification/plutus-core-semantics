@@ -64,14 +64,14 @@ module UPLC-SEMANTICS
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
            #eval(BN, (L ListItem(V))) ... </k>
-  requires #typeCheck(L ListItem(V), BN, #numArgs(BN))
+  requires #typeCheck(L ListItem(V), #typeSignature(BN))
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List I:Int > _] =>
            < builtin BN (L ListItem(V)) (I -Int 1) > ... </k>
-  requires I >Int 1 andBool #typeCheck(L ListItem(V), BN, #numArgs(BN) -Int I +Int 1)
+  requires I >Int 1 andBool #typeCheck(L ListItem(V), #typeSignature(BN))
 
   rule <k> V:Value ~> [ < builtin BN L I > _] ~> _ => (error) </k>
-  requires notBool(#typeCheck(L ListItem(V), BN, #numArgs(BN) -Int I +Int 1))
+  requires notBool #typeCheck(L ListItem(V), #typeSignature(BN))
 
   rule <k> _V:Value ~> [ < con _ _ > _] ~> _ => (error) </k>
 

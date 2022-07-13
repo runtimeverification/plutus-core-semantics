@@ -6,16 +6,14 @@ require "uplc-configuration.md"
 module UPLC-INTEGER-BUILTINS
   imports UPLC-CONFIGURATION
   imports K-EQUAL
+
+  rule #typeSignature(BN::IntegerBuiltinName) => integer integer
 ```
 
 ## `addInteger`
 
 ```k
   rule #numArgs(addInteger) => 2
-
-  rule #typeCheck(ListItem(< con integer _ >), addInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), addInteger, 2) => true
 
   rule <k> #eval(addInteger,
                      (ListItem(< con integer I1:Int >)
@@ -28,10 +26,6 @@ module UPLC-INTEGER-BUILTINS
 ```k
   rule #numArgs(multiplyInteger) => 2
 
-  rule #typeCheck(ListItem(< con integer _ >), multiplyInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), multiplyInteger, 2) => true
-
   rule <k> #eval(multiplyInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -42,10 +36,6 @@ module UPLC-INTEGER-BUILTINS
 
 ```k
   rule #numArgs(subtractInteger) => 2
-
-  rule #typeCheck(ListItem(< con integer _ >), subtractInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), subtractInteger, 2) => true
 
   rule <k> #eval(subtractInteger,
                      (ListItem(< con integer I1:Int >)
@@ -61,10 +51,6 @@ mathematical integer division operation.
 ```k
   rule #numArgs(divideInteger) => 2
 
-  rule #typeCheck(ListItem(< con integer _ >), divideInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), divideInteger, 2) => true
-
   rule <k> #eval(divideInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -79,10 +65,6 @@ According to Plutus specification, `modInteger` implements standard mathematical
 ```k
   rule #numArgs(modInteger) => 2
   
-  rule #typeCheck(ListItem(< con integer _ >), modInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), modInteger, 2) => true
-
   rule <k> #eval(modInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -99,10 +81,6 @@ operator `/Int`  computes the quotient using t-division which rounds towards 0.
 ```k
   rule #numArgs(quotientInteger) => 2
   
-  rule #typeCheck(ListItem(< con integer _ >), quotientInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), quotientInteger, 2) => true
-
   rule <k> #eval(quotientInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -120,10 +98,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ```k
   rule #numArgs(remainderInteger) => 2
 
-  rule #typeCheck(ListItem(< con integer _ >), remainderInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), remainderInteger, 2) => true
-
   rule <k> #eval(remainderInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -135,10 +109,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 
 ```k
   rule #numArgs(lessThanInteger) => 2
-
-  rule #typeCheck(ListItem(< con integer _ >), lessThanInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), lessThanInteger, 2) => true
 
   rule <k> #eval(lessThanInteger,
                      (ListItem(< con integer I1:Int >)
@@ -158,10 +128,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ```k
   rule #numArgs(lessThanEqualsInteger) => 2
 
-  rule #typeCheck(ListItem(< con integer _ >), lessThanEqualsInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), lessThanEqualsInteger, 2) => true
-
   rule <k> #eval(lessThanEqualsInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -179,10 +145,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 
 ```k
   rule #numArgs(equalsInteger) => 2
-
-  rule #typeCheck(ListItem(< con integer _ >), equalsInteger, 1) => true
-
-  rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), equalsInteger, 2) => true
 
   rule <k> #eval(equalsInteger,
                      (ListItem(< con integer I1:Int >)
