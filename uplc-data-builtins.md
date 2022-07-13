@@ -43,9 +43,6 @@ module UPLC-DATA-BUILTINS
   rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 5) => true
   
   rule #typeCheck(ListItem(< con data{ _ } >)ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value )ListItem( _:Value ), chooseData, 6) => true
-  
-  rule <k> (builtin chooseData) ~> Force => < builtin chooseData .List 6 > ... </k>
-       <env> _ => .Map </env>
 
   rule <k> #eval(chooseData,
                      (ListItem(< con data { Constr _Ii:Int [ _DL:DataList ] } >)
@@ -97,9 +94,6 @@ module UPLC-DATA-BUILTINS
 
   rule #typeCheck(ListItem(< con integer _ >)ListItem(< con list(data)[ _ ] >), constrData, 2) => true
 
-  rule <k> (builtin constrData) => < builtin constrData .List 2 > ... </k>
-       <env> _ => .Map </env>
-
   rule <k> #eval(constrData,
                  (ListItem(< con integer I:Int >)
                   ListItem(< con list(data) [ L:ConstantList ] > ))) =>
@@ -113,9 +107,6 @@ module UPLC-DATA-BUILTINS
 
   rule #typeCheck(ListItem(< con list(pair(data)(data))[ _ ] >), mapData, 1) => true
 
-  rule <k> (builtin mapData) => < builtin mapData .List 1 > ... </k>
-       <env> _ => .Map </env>
-
   rule <k> #eval(mapData,
                  ListItem(< con list(pair(data)(data)) [ L:ConstantList ] >)) =>
            (con data { Map [ #mkDataPairList(L) ] }) ... </k>
@@ -127,9 +118,6 @@ module UPLC-DATA-BUILTINS
   rule #numArgs(listData) => 1
 
   rule #typeCheck(ListItem(< con list(data)[ _ ] >), listData, 1) => true
-
-  rule <k> (builtin listData) => < builtin listData .List 1 > ... </k>
-       <env> _ => .Map </env>
 
   rule <k> #eval(listData,
                  ListItem(< con list(data) [ L:ConstantList ] >)) =>
@@ -143,9 +131,6 @@ module UPLC-DATA-BUILTINS
 
   rule #typeCheck(ListItem(< con integer _ >), iData, 1) => true
 
-  rule <k> (builtin iData) => < builtin iData .List 1 > ... </k>
-       <env> _ => .Map </env>
-
   rule <k> #eval(iData,
                  ListItem(< con integer I:Int >)) =>
            (con data { Integer I }) ... </k>
@@ -157,9 +142,6 @@ module UPLC-DATA-BUILTINS
   rule #numArgs(bData) => 1
 
   rule #typeCheck(ListItem(< con bytestring _ >), bData, 1) => true
-
-  rule <k> (builtin bData) => < builtin bData .List 1 > ... </k>
-       <env> _ => .Map </env>
 
   rule <k> #eval(bData,
                  ListItem(< con bytestring B:ByteString >)) =>
@@ -173,9 +155,6 @@ module UPLC-DATA-BUILTINS
 
   rule #typeCheck(ListItem(< con data{ _ } >), unConstrData, 1) => true
 
-  rule <k> (builtin unConstrData) => < builtin unConstrData .List 1 > ... </k>
-       <env> _ => .Map </env>
-
   rule <k> #eval(unConstrData,
                  ListItem(< con data { Constr I:Int [ L:DataList ] } >)) =>
            (con pair(integer)(list(data)) (I, [ #mkConstantList(L) ])) ... </k>
@@ -187,9 +166,6 @@ module UPLC-DATA-BUILTINS
   rule #numArgs(unMapData) => 1
 
   rule #typeCheck(ListItem(< con data{ _ } >), unMapData, 1) => true
-
-  rule <k> (builtin unMapData) => < builtin unMapData .List 1 > ... </k>
-       <env> _ => .Map </env>
 
   rule <k> #eval(unMapData,
                  ListItem(< con data { Map [ L:DataPairList ] } >)) =>
@@ -203,9 +179,6 @@ module UPLC-DATA-BUILTINS
 
   rule #typeCheck(ListItem(< con data{ _ } >), unListData, 1) => true
 
-  rule <k> (builtin unListData) => < builtin unListData .List 1 > ... </k>
-       <env> _ => .Map </env>
-
   rule <k> #eval(unListData,
                  ListItem(< con data { List [ L:DataList ] } >)) =>
            (con list(data) [ #mkConstantList(L) ]) ... </k>
@@ -218,9 +191,6 @@ module UPLC-DATA-BUILTINS
 
   rule #typeCheck(ListItem(< con data{ _ } >), unIData, 1) => true
 
-  rule <k> (builtin unIData) => < builtin unIData .List 1 > ... </k>
-       <env> _ => .Map </env>
-
   rule <k> #eval(unIData,
                  ListItem(< con data { Integer I:Int } >)) =>
            (con integer I) ... </k>
@@ -232,9 +202,6 @@ module UPLC-DATA-BUILTINS
   rule #numArgs(unBData) => 1
 
   rule #typeCheck(ListItem(< con data{ _ } >), unBData, 1) => true
-
-  rule <k> (builtin unBData) => < builtin unBData .List 1 > ... </k>
-       <env> _ => .Map </env>
 
   rule <k> #eval(unBData,
                  ListItem(< con data { ByteString B:ByteString } >)) =>
@@ -249,9 +216,6 @@ module UPLC-DATA-BUILTINS
   rule #typeCheck(ListItem(< con data{ _ } >), equalsData, 1) => true
 
   rule #typeCheck(ListItem(< con data{ _ } >)ListItem(< con data{ _ } >), equalsData, 2) => true
-
-  rule <k> (builtin equalsData) => < builtin equalsData .List 2 > ... </k>
-       <env> _ => .Map </env>
 
   rule <k> #eval(equalsData,
                  (ListItem(< con data { T1:TextualData } >)
@@ -275,9 +239,6 @@ module UPLC-DATA-BUILTINS
 
   rule #typeCheck(ListItem(< con data{ _ } >)ListItem(< con data{ _ } >), mkPairData, 2) => true
 
-  rule <k> (builtin mkPairData) => < builtin mkPairData .List 2 > ... </k>
-       <env> _ => .Map </env>
-
   rule <k> #eval(mkPairData,
                  (ListItem(< con data { T1:TextualData } >)
                   ListItem(< con data { T2:TextualData } >))) =>
@@ -291,9 +252,6 @@ module UPLC-DATA-BUILTINS
 
   rule #typeCheck(ListItem(< con unit _ >), mkNilData, 1) => true
 
-  rule <k> (builtin mkNilData) => < builtin mkNilData .List 1 > ... </k>
-       <env> _ => .Map </env>
-
   rule <k> #eval(mkNilData,
                  ListItem(< con unit () >)) =>
            (con list(data) [ .ConstantList ]) ... </k>
@@ -305,9 +263,6 @@ module UPLC-DATA-BUILTINS
   rule #numArgs(mkNilPairData) => 1
   
   rule #typeCheck(ListItem(< con unit _ >), mkNilPairData, 1) => true
-  
-  rule <k> (builtin mkNilPairData) => < builtin mkNilPairData .List 1 > ... </k>
-       <env> _ => .Map </env>
 
   rule <k> #eval(mkNilPairData,
                  ListItem(< con unit () >)) =>

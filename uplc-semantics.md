@@ -1,23 +1,13 @@
 # UPLC semantics
 
 ```k
-require "uplc-polymorphic-builtins.md"
-require "uplc-integer-builtins.md"
-require "uplc-bytestring-builtins.md"
-require "uplc-crypto-builtins.md"
-require "uplc-string-builtins.md"
-require "uplc-data-builtins.md"
+require "uplc-builtins.md"
 require "uplc-discharge.md"
 
 module UPLC-SEMANTICS
   imports INT
   imports MAP
-  imports UPLC-POLYMORPHIC-BUILTINS
-  imports UPLC-INTEGER-BUILTINS
-  imports UPLC-BYTESTRING-BUILTINS
-  imports UPLC-CRYPTO-BUILTINS
-  imports UPLC-STRING-BUILTINS
-  imports UPLC-DATA-BUILTINS
+  imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
 
   syntax Bindable ::= Value
