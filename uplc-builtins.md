@@ -28,7 +28,7 @@ module UPLC-BUILTINS
   rule #typeCheck(ListItem(_:Value)              L, anyValue       TS:TypeSignature) => #typeCheck(L, TS)
   rule #typeCheck(ListItem(< con list(_) _ >)    L, anyList        TS:TypeSignature) => #typeCheck(L, TS)
   rule #typeCheck(ListItem(< con pair(_)(_) _ >) L, anyPair        TS:TypeSignature) => #typeCheck(L, TS)
-  rule #typeCheck(ListItem(< con T _ >)          L, mkConsCase     TS:TypeSignature) => #typeCheck(L, list(T))
+  rule #typeCheck(ListItem(< con T _ >)          L, mkConsCase    _TS:TypeSignature) => #typeCheck(L, list(T))
 
   rule #typeCheck(.List, _) => true
   rule #typeCheck(    _, _) => false [owise]

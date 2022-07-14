@@ -7,7 +7,7 @@ module UPLC-INTEGER-BUILTINS
   imports UPLC-CONFIGURATION
   imports K-EQUAL
 
-  rule #typeSignature(BN::IntegerBuiltinName) => integer integer
+  rule #typeSignature(_BN::IntegerBuiltinName) => integer integer
 ```
 
 ## `addInteger`

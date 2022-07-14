@@ -70,7 +70,7 @@ module UPLC-SEMANTICS
            < builtin BN (L ListItem(V)) (I -Int 1) > ... </k>
   requires I >Int 1 andBool #typeCheck(L ListItem(V), #typeSignature(BN))
 
-  rule <k> V:Value ~> [ < builtin BN L I > _] ~> _ => (error) </k>
+  rule <k> V:Value ~> [ < builtin BN L _I > _] ~> _ => (error) </k>
   requires notBool #typeCheck(L ListItem(V), #typeSignature(BN))
 
   rule <k> _V:Value ~> [ < con _ _ > _] ~> _ => (error) </k>
