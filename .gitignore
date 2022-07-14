@@ -8,6 +8,7 @@
 **/#*
 *.sh
 unit-tests/verification/
+simple-proofs/verification/
 *.swo
 *.swn
 *.swp

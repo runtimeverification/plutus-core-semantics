@@ -75,6 +75,7 @@ a ByteString.
   rule #typeCheck(ListItem(< con bytestring _ >), sha3_256, 1) => true
 
   rule <k> (builtin sha3_256) => < builtin sha3_256 .List 1 >  ... </k>
+       <env> _ => .Map </env>
 
   rule <k> #eval(sha3_256, ListItem(< con bytestring B:ByteString >)) =>
            < con bytestring unTrimByteString(Sha3_256Wrapper(encode(B))) > ... </k>
@@ -90,6 +91,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
   rule #typeCheck(ListItem(< con bytestring _ >), sha2_256, 1) => true
 
   rule <k> (builtin sha2_256) => < builtin sha2_256 .List 1 >  ... </k>
+       <env> _ => .Map </env>
 
   rule <k> #eval(sha2_256, ListItem(< con bytestring B:ByteString >)) =>
            < con bytestring unTrimByteString(Sha256Wrapper(encode(B))) > ... </k>
@@ -105,6 +107,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
   rule #typeCheck(ListItem(< con bytestring _ >), blake2b_256, 1) => true
 
   rule <k> (builtin blake2b_256) => < builtin blake2b_256 .List 1 > ... </k>
+       <env> _ => .Map </env>
 
   rule <k> #eval(blake2b_256, ListItem(< con bytestring B:ByteString >)) =>
            < con bytestring unTrimByteString(Blake2b256Wrapper(encode(B))) > ... </k>
@@ -122,6 +125,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
   rule #typeCheck(ListItem(< con bytestring _ >)ListItem(< con bytestring _ >)ListItem(< con bytestring _ >), verifySignature, 3) => true
 
   rule <k> (builtin verifySignature) => < builtin verifySignature .List 3 > ... </k>
+       <env> _ => .Map </env>
 
   rule <k> #eval(verifySignature,
                  (ListItem(< con bytestring K:ByteString >)

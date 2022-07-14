@@ -222,8 +222,7 @@ kplutus_files := uplc.md \
                  uplc-polymorphic-builtins.md \
                  uplc-string.md \
                  uplc-data-builtins.md \
-                 uplc-hash.md \
-		 uplc-discharge.md
+                 uplc-discharge.md
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 

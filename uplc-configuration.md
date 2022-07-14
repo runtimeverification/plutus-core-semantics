@@ -50,7 +50,6 @@ is used to keep track of the data emitted by the `trace` builtin.
 
   configuration <k> #handleProgram($PGM:Program) </k>
                 <env> .Map </env>
-                <heap> .Map </heap>
                 <trace> .List </trace>
 ```
 

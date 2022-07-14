@@ -7,13 +7,16 @@ module SIMPLE-SYMBOLIC
 
   claim <k> [ [ (builtin addInteger) (con integer X)] (con integer Y)] =>
             < con integer Y +Int X > ... </k>
+        <env> _ => .Map </env>
 
   claim <k> [ (builtin _:IntegerBuiltinName) (con TN:TypeConstant _) ] =>
             (error) </k>
+        <env> _ => .Map </env>
   requires TN =/=K integer
 
   claim <k> [ [ (builtin _:IntegerBuiltinName) (con integer _) ] (con TN _ )] =>
             (error) </k>
+        <env> _ => .Map </env>
   requires TN =/=K integer
 
   claim <k> [ [ (builtin _:PolyBuiltinName) _:Term ]
@@ -28,19 +31,12 @@ module SIMPLE-SYMBOLIC
         <env> M </env>
 ```
 
-The following two claims proves that the constant 1 applied to the identity function returns the
+The following claim proves that the constant 1 applied to the identity function returns the
 constant integer 1.
 
 ```k
   claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => < con integer 1 > ... </k>
-        <env> RHO => ?_RHO </env>
-        <heap> _ => ?_ </heap>
-  requires allValuesAreList(RHO) andBool (v_0 in_keys(RHO))
-
-  claim <k> [ ( lam v_0 v_0 ) (con integer 1) ] => < con integer 1 > ... </k>
-        <env> RHO => ?_RHO </env>
-        <heap> _ => ?_ </heap>
-  requires allValuesAreList(RHO) andBool notBool(v_0 in_keys(RHO))
+        <env> _ => .Map </env>
 
 endmodule
 ```

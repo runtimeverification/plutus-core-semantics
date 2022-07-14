@@ -16,9 +16,9 @@ endmodule
 module UPLC-SYNTAX
   imports LIST
   imports STRING
+  imports MAP
   imports INT-SYNTAX
   imports UPLC-BYTESTRING
-  imports UPLC-ENVIRONMENT
   imports UPLC-ID
 
   syntax Program ::= ConcreteProgram
