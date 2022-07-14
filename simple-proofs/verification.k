@@ -25,28 +25,52 @@ module VERIFICATION
   rule sum(I:Int, IS:ConstantList ) => I +Int sum(IS) [simplification]
 
   // Predicate for capturing the length of an arbitrary symbolic list
-  syntax Int ::= length(ConstantList) [function]
+  syntax Int ::= length(ConstantList) [function, functional]
 
   // Reduction
-  rule length(     .ConstantList ) => 0                 [simplification]
-  rule length(_, IS:ConstantList ) => 1 +Int length(IS) [simplification]
+  rule length(     .ConstantList ) => 0
+  rule length(_, IS:ConstantList ) => 1 +Int length(IS)
 
   // Auxiliary predicate for all-integer lists
-  syntax Bool ::= allInts(ConstantList) [function]
+  syntax Bool ::= allInts(ConstantList) [function, functional]
 
-  rule allInts(              .ConstantList) => true                              
-  rule allInts(C:Constant, IS:ConstantList) => isInt(C) andBool allInts(IS) 
+  rule allInts(              .ConstantList) => true
+  rule allInts(C:Constant, IS:ConstantList) => isInt(C) andBool allInts(IS)
 
   // Definedness
   rule #Ceil ( sum ( IS ) ) => { true #Equals allInts(IS) } [simplification]
 
-  // Predicate for capturing longer lists 
+  // Predicate for capturing longer lists
   syntax Constant ::= longerList(ConstantList, ConstantList) [function]
 
   rule longerList(.ConstantList, _) => False                                        [simplification]
   rule longerList(_, .ConstantList) => True                                         [simplification]
   rule longerList((_, XS:ConstantList), (_, YS:ConstantList)) => longerList(XS, YS) [simplification]
- 
+
+  //
+  // Map reasoning
+  //
+
+  rule { M:Map [K <- V1] #Equals M [K <- V2] } => { V1 #Equals V2 } [simplification]
+
+  rule
+  { M1:Map [ K1 <- V1  ] [ K2 <- V2  ] #Equals
+    M2:Map [ K1 <- V1' ] [ K2 <- V2' ] } =>
+  {
+    true #Equals
+            V1 ==K V1' andBool V2 ==K V2'
+    andBool M1 [ K1 <- undef ] [ K2 <- undef ] ==K M2 [ K1 <- undef ] [ K2 <- undef ]
+  } [simplification]
+
+  rule
+  { M1:Map [ K1 <- V1  ] [ K2 <- V2  ] [ K3 <- V3  ] #Equals
+    M2:Map [ K1 <- V1' ] [ K2 <- V2' ] [ K3 <- V3' ] } =>
+  {
+    true #Equals
+            V1 ==K V1' andBool V2 ==K V2' andBool V3 ==K V3'
+    andBool M1 [ K1 <- undef ] [ K2 <- undef ] [ K3 <- undef ] ==K M2 [ K1 <- undef ] [ K2 <- undef ] [ K3 <- undef ]
+  } [simplification]
+
   //
   // List algorithms
   //
@@ -56,19 +80,19 @@ module VERIFICATION
   // 1. List-Free Algorithm
   syntax Term ::= "LIST_FREE" [alias]
     rule LIST_FREE =>
-      (lam f_lstFree LIST_FREE_BODY)
+      [ Z (lam f_lstFree LIST_FREE_BODY) ]
 
   // List-Free Body
   syntax Term ::= "LIST_FREE_BODY" [alias]
-  rule LIST_FREE_BODY => 
-    (lam in_lst 
+  rule LIST_FREE_BODY =>
+    (lam in_lst
       LIST_FREE_LOOP_BODY
     )
 
-  // List-Free Loop Body 
+  // List-Free Loop Body
   syntax Term ::= "LIST_FREE_LOOP_BODY" [alias]
-  rule LIST_FREE_LOOP_BODY => 
-    (force 
+  rule LIST_FREE_LOOP_BODY =>
+    (force
       [ (force (builtin ifThenElse))
         [ (force (builtin nullList)) in_lst ]
         ( delay in_lst )
@@ -81,18 +105,18 @@ module VERIFICATION
   // 2. List-Sum Algorithm
   syntax Term ::= "LIST_SUM" [alias]
     rule LIST_SUM =>
-      (lam f_lstSum LIST_SUM_BODY)
+      [ Z (lam f_lstSum LIST_SUM_BODY) ]
 
   // List-Sum Body
   syntax Term ::= "LIST_SUM_BODY" [alias]
-    rule LIST_SUM_BODY => 
-      (lam in_lst 
+    rule LIST_SUM_BODY =>
+      (lam in_lst
         LIST_SUM_LOOP_BODY
       )
 
   // List-Sum Loop Body
   syntax Term ::= "LIST_SUM_LOOP_BODY" [alias]
-    rule LIST_SUM_LOOP_BODY => 
+    rule LIST_SUM_LOOP_BODY =>
       (force [ (force (builtin ifThenElse))
           [ (force (builtin nullList)) in_lst ]
           ( delay (con integer 0) )
@@ -110,19 +134,19 @@ module VERIFICATION
   // 3. List-Length Algorithm
   syntax Term ::= "LIST_LEN" [alias]
   rule LIST_LEN =>
-    (lam f_lstLen LIST_LEN_BODY)
+    [ Z (lam f_lstLen LIST_LEN_BODY) ]
 
   // List-Length Body
   syntax Term ::= "LIST_LEN_BODY" [alias]
-  rule LIST_LEN_BODY => 
-    (lam in_lst 
-      LIST_LENGTH_LOOP_BODY
+  rule LIST_LEN_BODY =>
+    (lam in_lst
+      LIST_LEN_LOOP_BODY
     )
 
-  // List-length Loop Body 
-  syntax Term ::= "LIST_LENGTH_LOOP_BODY" [alias]
-  rule LIST_LENGTH_LOOP_BODY => 
-  (force 
+  // List-length Loop Body
+  syntax Term ::= "LIST_LEN_LOOP_BODY" [alias]
+  rule LIST_LEN_LOOP_BODY =>
+  (force
     [ (force (builtin ifThenElse))
       [ (force (builtin nullList)) in_lst ]
       ( delay (con integer 0) )
@@ -137,14 +161,14 @@ module VERIFICATION
 
   // --------------------------------------------------------
 
-  // 4. Simple List-length Client 
+  // 4. Simple List-length Client
   syntax Term ::= "TWO_LISTS_LEN_SUM" [alias]
-    rule TWO_LISTS_LEN_SUM => 
+    rule TWO_LISTS_LEN_SUM =>
     (lam in_lst1
       (lam in_lst2
         [ (builtin addInteger)
-          [ Z LIST_LEN in_lst1 ] 
-          [ Z LIST_LEN in_lst2 ] 
+          [ LIST_LEN in_lst1 ]
+          [ LIST_LEN in_lst2 ]
         ]
       )
     )
@@ -154,12 +178,12 @@ module VERIFICATION
   // 5. List-Longer Algorithm
   syntax Term ::= "LIST_LONGER" [alias]
     rule LIST_LONGER =>
-      (lam f_lstLonger LIST_LONGER_BODY)
+      [ Z (lam f_lstLonger LIST_LONGER_BODY) ]
 
   // List-Longer body
   syntax Term ::= "LIST_LONGER_BODY" [alias]
-  rule LIST_LONGER_BODY => 
-    (lam in_lst1 
+  rule LIST_LONGER_BODY =>
+    (lam in_lst1
       (lam in_lst2
         LIST_LONGER_LOOP_BODY
       )
@@ -167,23 +191,23 @@ module VERIFICATION
 
   // List-longer loop body
   syntax Term ::= "LIST_LONGER_LOOP_BODY" [alias]
-  rule LIST_LONGER_LOOP_BODY => 
-    (force 
+  rule LIST_LONGER_LOOP_BODY =>
+    (force
       [ (force (builtin ifThenElse))
         [ (force (builtin nullList)) in_lst1 ]
         ( delay (con bool False) )
-        ( delay 
-          ( force 
+        ( delay
+          ( force
             [ (force (builtin ifThenElse))
               [ (force (builtin nullList)) in_lst2 ]
               ( delay (con bool True) )
-              ( delay [ f_lstLonger 
-                          [ (force (builtin tailList)) in_lst1 ] 
+              ( delay [ f_lstLonger
+                          [ (force (builtin tailList)) in_lst1 ]
                           [ (force (builtin tailList)) in_lst2 ] ] )
             ]
-          ) 
+          )
         )
-      ] 
+      ]
     )
 
 endmodule
