@@ -24,7 +24,7 @@ module UPLC-STRING-BUILTINS
 ## `decodeUtf8`
 
 ```k 
-  rule #typeSignature(decodeUtf8) => string
+  rule #typeSignature(decodeUtf8) => bytestring
 
   rule <k> #eval(decodeUtf8, ListItem(< con bytestring B:ByteString >)) =>
            < con string #decodeUtf8(B) > ... </k>
