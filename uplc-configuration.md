@@ -40,7 +40,6 @@ is used to keep track of the data emitted by the `trace` builtin.
                                  | "mkConsCase"
   syntax TypeSignature ::= List{TypeSignatureConstant,""}
 
-  syntax Int  ::= #numArgs(BuiltinName) [function]
   syntax TypeSignature ::= #typeSignature(BuiltinName) [function]
   syntax Bool ::= #typeCheck(List, TypeSignature) [function]
 
