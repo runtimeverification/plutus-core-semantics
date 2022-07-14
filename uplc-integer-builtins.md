@@ -13,8 +13,6 @@ module UPLC-INTEGER-BUILTINS
 ## `addInteger`
 
 ```k
-  rule #numArgs(addInteger) => 2
-
   rule <k> #eval(addInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -24,8 +22,6 @@ module UPLC-INTEGER-BUILTINS
 ## `multiplyInteger`
 
 ```k
-  rule #numArgs(multiplyInteger) => 2
-
   rule <k> #eval(multiplyInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -35,8 +31,6 @@ module UPLC-INTEGER-BUILTINS
 ## `subtractInteger`
 
 ```k
-  rule #numArgs(subtractInteger) => 2
-
   rule <k> #eval(subtractInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -49,8 +43,6 @@ According to Plutus specification, `divideInteger` implements standard
 mathematical integer division operation.
 
 ```k
-  rule #numArgs(divideInteger) => 2
-
   rule <k> #eval(divideInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -63,8 +55,6 @@ mathematical integer division operation.
 According to Plutus specification, `modInteger` implements standard mathematical integer division operation.
 
 ```k
-  rule #numArgs(modInteger) => 2
-  
   rule <k> #eval(modInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -79,8 +69,6 @@ According to https://github.com/kframework/k/blob/master/k-distribution/include/
 operator `/Int`  computes the quotient using t-division which rounds towards 0.
 
 ```k
-  rule #numArgs(quotientInteger) => 2
-  
   rule <k> #eval(quotientInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -96,8 +84,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 
 
 ```k
-  rule #numArgs(remainderInteger) => 2
-
   rule <k> #eval(remainderInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -108,8 +94,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ## `lessThanInteger`
 
 ```k
-  rule #numArgs(lessThanInteger) => 2
-
   rule <k> #eval(lessThanInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -126,8 +110,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ## `lessThanEqualsInteger`
 
 ```k
-  rule #numArgs(lessThanEqualsInteger) => 2
-
   rule <k> #eval(lessThanEqualsInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
@@ -144,8 +126,6 @@ It cooresponds to Haskell rem, according to Plutus specification. From Haskell d
 ## `equalsInteger`
 
 ```k
-  rule #numArgs(equalsInteger) => 2
-
   rule <k> #eval(equalsInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>

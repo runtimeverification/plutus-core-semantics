@@ -30,7 +30,6 @@ module UPLC-DATA-BUILTINS
 ## `chooseData`
 
 ```k
-  rule #numArgs(chooseData) => 6
   rule #typeSignature(chooseData) => data anyValue anyValue anyValue anyValue anyValue
 
   rule <k> #eval(chooseData,
@@ -77,7 +76,6 @@ module UPLC-DATA-BUILTINS
 ## `constrData`
 
 ```k
-  rule #numArgs(constrData) => 2
   rule #typeSignature(constrData) => integer list(data)
 
   rule <k> #eval(constrData,
@@ -89,7 +87,6 @@ module UPLC-DATA-BUILTINS
 ## `mapData`
 
 ```k
-  rule #numArgs(mapData) => 1
   rule #typeSignature(mapData) => list(pair(data)(data))
 
   rule <k> #eval(mapData,
@@ -100,7 +97,6 @@ module UPLC-DATA-BUILTINS
 ## `listData`
 
 ```k
-  rule #numArgs(listData) => 1
   rule #typeSignature(listData) => list(data)
 
   rule <k> #eval(listData,
@@ -111,7 +107,6 @@ module UPLC-DATA-BUILTINS
 ## `iData`
 
 ```k
-  rule #numArgs(iData) => 1
   rule #typeSignature(iData) => integer
 
   rule <k> #eval(iData,
@@ -122,7 +117,6 @@ module UPLC-DATA-BUILTINS
 ## `bData`
 
 ```k
-  rule #numArgs(bData) => 1
   rule #typeSignature(bData) => bytestring
 
   rule <k> #eval(bData,
@@ -133,7 +127,6 @@ module UPLC-DATA-BUILTINS
 ## `unConstrData`
 
 ```k
-  rule #numArgs(unConstrData) => 1
   rule #typeSignature(unConstrData) => data
 
   rule <k> #eval(unConstrData,
@@ -144,7 +137,6 @@ module UPLC-DATA-BUILTINS
 ## `unMapData`
 
 ```k
-  rule #numArgs(unMapData) => 1
   rule #typeSignature(unMapData) => data
 
   rule <k> #eval(unMapData,
@@ -155,7 +147,6 @@ module UPLC-DATA-BUILTINS
 ## `unListData`
 
 ```k
-  rule #numArgs(unListData) => 1
   rule #typeSignature(unListData) => data
 
   rule <k> #eval(unListData,
@@ -166,7 +157,6 @@ module UPLC-DATA-BUILTINS
 ## `unIData`
 
 ```k
-  rule #numArgs(unIData) => 1
   rule #typeSignature(unIData) => data
 
   rule <k> #eval(unIData,
@@ -177,7 +167,6 @@ module UPLC-DATA-BUILTINS
 ## `unBData`
 
 ```k
-  rule #numArgs(unBData) => 1
   rule #typeSignature(unBData) => data
 
   rule <k> #eval(unBData,
@@ -188,7 +177,6 @@ module UPLC-DATA-BUILTINS
 # `equalsData`
 
 ```k
-  rule #numArgs(equalsData) => 2
   rule #typeSignature(equalsData) => data data
 
   rule <k> #eval(equalsData,
@@ -207,7 +195,6 @@ module UPLC-DATA-BUILTINS
 # `mkPairData`
 
 ```k
-  rule #numArgs(mkPairData) => 2
   rule #typeSignature(mkPairData) => data data
 
   rule <k> #eval(mkPairData,
@@ -219,7 +206,6 @@ module UPLC-DATA-BUILTINS
 # `mkNilData`
 
 ```k
-  rule #numArgs(mkNilData) => 1
   rule #typeSignature(mkNilData) => unit
 
   rule <k> #eval(mkNilData,
@@ -230,7 +216,6 @@ module UPLC-DATA-BUILTINS
 # `mkNilPairData`
 
 ```k
-  rule #numArgs(mkNilPairData) => 1
   rule #typeSignature(mkNilPairData) => unit
   
   rule <k> #eval(mkNilPairData,

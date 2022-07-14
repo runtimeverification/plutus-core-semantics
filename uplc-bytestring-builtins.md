@@ -14,7 +14,6 @@ module UPLC-BYTESTRING-BUILTINS
 
 
 ```k
-  rule #numArgs(appendByteString) => 2
   rule #typeSignature(appendByteString) => bytestring bytestring
 
   rule <k> #eval(appendByteString,
@@ -26,7 +25,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `consByteString`
 
 ```k
-  rule #numArgs(consByteString) => 2
   rule #typeSignature(consByteString) => integer bytestring
  
   rule <k> #eval(consByteString,
@@ -38,7 +36,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `sliceByteString`
 
 ```k
-  rule #numArgs(sliceByteString) => 3
   rule #typeSignature(sliceByteString) => integer integer bytestring
  
   rule <k> #eval(sliceByteString,
@@ -51,7 +48,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lengthOfByteString`
 
 ```k
-  rule #numArgs(lengthOfByteString) => 1
   rule #typeSignature(lengthOfByteString) => bytestring
  
   rule <k> #eval(lengthOfByteString,
@@ -62,7 +58,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `indexByteString`
 
 ```k
-  rule #numArgs(indexByteString) => 2
   rule #typeSignature(indexByteString) => bytestring integer
 
   rule <k> #eval(indexByteString,
@@ -75,7 +70,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `equalsByteString`
 
 ```k
-  rule #numArgs(equalsByteString) => 2
   rule #typeSignature(equalsByteString) => bytestring bytestring
 
   rule <k> #eval(equalsByteString,
@@ -94,7 +88,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lessThanByteString`
 
 ```k
-  rule #numArgs(lessThanByteString) => 2
   rule #typeSignature(lessThanByteString) => bytestring bytestring
 
   rule <k> #eval(lessThanByteString,
@@ -113,7 +106,6 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lessThanEqualsByteString`
 
 ```k
-  rule #numArgs(lessThanEqualsByteString) => 2
   rule #typeSignature(lessThanEqualsByteString) => bytestring bytestring
 
   rule <k> #eval(lessThanEqualsByteString,

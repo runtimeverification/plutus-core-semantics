@@ -23,7 +23,6 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `ifThenElse`
 
 ```k
-  rule #numArgs(ifThenElse) => 3
   rule #typeSignature(ifThenElse) => bool anyValue anyValue
 
   rule <k> #eval(ifThenElse,
@@ -40,7 +39,6 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `chooseUnit`
 
 ```k
-  rule #numArgs(chooseUnit) => 2
   rule #typeSignature(chooseUnit) => unit anyValue
 
   rule <k> #eval(chooseUnit,
@@ -56,7 +54,6 @@ might as well simply return `true` now for `fstPair` as `#eval` would
 return an error if `fstPair`'s argument is not a pair.
 
 ```k
-  rule #numArgs(fstPair) => 1
   rule #typeSignature(fstPair) => anyPair
 
   rule <k> #eval(fstPair,
@@ -72,7 +69,6 @@ might as well simply return `true` now for `sndPair` as `#eval` would
 return an error if `sndPair`'s argument is not a pair.
 
 ```k
-  rule #numArgs(sndPair) => 1
   rule #typeSignature(sndPair) => anyPair
 
   rule <k> #eval(sndPair,
@@ -83,7 +79,6 @@ return an error if `sndPair`'s argument is not a pair.
 ## `chooseList`
 
 ```k
-  rule #numArgs(chooseList) => 3
   rule #typeSignature(chooseList) => anyList anyValue anyValue
 
   rule <k> #eval(chooseList,
@@ -101,7 +96,6 @@ return an error if `sndPair`'s argument is not a pair.
 ## `mkCons`
 
 ```k
-  rule #numArgs(mkCons) => 2
   rule #typeSignature(mkCons) => mkConsCase mkConsCase
 
   rule <k> #eval(mkCons,
@@ -113,7 +107,6 @@ return an error if `sndPair`'s argument is not a pair.
 ## `headList`
 
 ```k
-  rule #numArgs(headList) => 1
   rule #typeSignature(headList) => anyList
 
   rule <k> #eval(headList,
@@ -125,7 +118,6 @@ return an error if `sndPair`'s argument is not a pair.
 ## `tailList`
 
 ```k
-  rule #numArgs(tailList) => 1
   rule #typeSignature(tailList) => anyList
 
   rule <k> #eval(tailList,
@@ -140,7 +132,6 @@ return an error if `sndPair`'s argument is not a pair.
 ## `nullList`
 
 ```k
-  rule #numArgs(nullList) => 1
   rule #typeSignature(nullList) => anyList
 
   rule <k> #eval(nullList,
@@ -156,7 +147,6 @@ return an error if `sndPair`'s argument is not a pair.
 ## `trace`
 
 ```k
-  rule #numArgs(trace) => 2
   rule #typeSignature(trace) => string anyValue
 
   rule <k> #eval(trace,

@@ -15,7 +15,6 @@ module UPLC-STRING-BUILTINS
 ## `encodeUtf8`
 
 ```k
-  rule #numArgs(encodeUtf8) => 1
   rule #typeSignature(encodeUtf8) => string
 
   rule <k> #eval(encodeUtf8, ListItem(< con string S:String >)) =>
@@ -25,7 +24,6 @@ module UPLC-STRING-BUILTINS
 ## `decodeUtf8`
 
 ```k 
-  rule #numArgs(decodeUtf8) => 1
   rule #typeSignature(decodeUtf8) => string
 
   rule <k> #eval(decodeUtf8, ListItem(< con bytestring B:ByteString >)) =>
@@ -35,7 +33,6 @@ module UPLC-STRING-BUILTINS
 ## `appendString`
 
 ```k 
-  rule #numArgs(appendString) => 2
   rule #typeSignature(appendString) => string string
 
   rule <k> #eval(appendString,
@@ -47,7 +44,6 @@ module UPLC-STRING-BUILTINS
 ## `equalsString`
 
 ```k 
-  rule #numArgs(equalsString) => 2
   rule #typeSignature(equalsString) => string string
 
   rule <k> #eval(equalsString,

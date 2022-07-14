@@ -70,7 +70,6 @@ a ByteString.
 ## `sha3_256`
 
 ```k
-  rule #numArgs(sha3_256) => 1
   rule #typeSignature(sha3_256) => bytestring
 
   rule <k> #eval(sha3_256, ListItem(< con bytestring B:ByteString >)) =>
@@ -82,7 +81,6 @@ a ByteString.
 The same steps of `sha3_256` are taken to produce the proper string argument for `Sha256`.
 
 ```k
-  rule #numArgs(sha2_256) => 1
   rule #typeSignature(sha2_256) => bytestring
 
   rule <k> #eval(sha2_256, ListItem(< con bytestring B:ByteString >)) =>
@@ -94,7 +92,6 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 The same steps of `sha3_256` are taken to produce the proper string argument for `Blake2b256`.
 
 ```k
-  rule #numArgs(blake2b_256) => 1
   rule #typeSignature(blake2b_256) => bytestring
 
   rule <k> #eval(blake2b_256, ListItem(< con bytestring B:ByteString >)) =>
@@ -104,7 +101,6 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 ## `verifySignature`
 
 ```k
-  rule #numArgs(verifySignature) => 3
   rule #typeSignature(verifySignature) => bytestring bytestring bytestring
 
   rule <k> #eval(verifySignature,

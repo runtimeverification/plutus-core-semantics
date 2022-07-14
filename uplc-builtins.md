@@ -33,5 +33,11 @@ module UPLC-BUILTINS
   rule #typeCheck(.List, _) => true
   rule #typeCheck(    _, _) => false [owise]
 
+  syntax Int ::= lengthTS ( TypeSignature ) [function]
+  rule lengthTS(     .TypeSignature ) => 0
+  rule lengthTS( _ TS:TypeSignature ) => 1 +Int lengthTS(TS)
+
+  rule #numArgs(BN) => lengthTS(#typeSignature(BN))
+
 endmodule
 ```
