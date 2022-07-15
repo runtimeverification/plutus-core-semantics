@@ -372,6 +372,12 @@ unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verificat
 unit-tests/verification/haskell/verification-kompiled/timestamp: unit-tests/verification.k $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory unit-tests/verification/haskell
 
+simple-proofs/list-algorithms/%.md.prove: simple-proofs/list-algorithms/%.md simple-proofs/list-algorithms/list-algorithms/haskell/list-algorithms-kompiled/timestamp
+	$(KPLUTUS) prove --directory simple-proofs/list-algorithms/list-algorithms/haskell $< $(KPROVE_OPTS)
+
+simple-proofs/list-algorithms/list-algorithms/haskell/list-algorithms-kompiled/timestamp: simple-proofs/list-algorithms/list-algorithms.k $(kplutus_includes)
+	$(KOMPILE) --backend haskell $< --directory simple-proofs/list-algorithms/list-algorithms/haskell
+
 simple-proofs/%.md.prove: simple-proofs/%.md simple-proofs/verification/haskell/verification-kompiled/timestamp
 	$(KPLUTUS) prove --directory simple-proofs/verification/haskell $< $(KPROVE_OPTS)
 
