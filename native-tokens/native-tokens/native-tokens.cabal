@@ -1,0 +1,185 @@
+cabal-version:   2.0
+name:            native-tokens
+version:         0.1.0.0
+license:         Apache-2.0
+license-file:    LICENSE NOTICE
+maintainer:      
+author:          
+stability:       experimental
+synopsis:
+
+
+description:
+
+
+category:        Language
+build-type:      Simple
+extra-doc-files: README.md
+
+source-repository head
+  type:     git
+  location: https://github.com/input-output-hk/plutus-apps
+
+flag defer-plugin-errors
+  description:
+    Defer errors from the plugin, useful for things like Haddock that can't handle it.
+
+  default:     False
+  manual:      True
+
+library
+  exposed-modules:
+--    Contracts
+    Contracts.Free
+
+  hs-source-dirs:
+              src
+  default-language:   Haskell2010
+  default-extensions:
+    DeriveFoldable
+    DeriveFunctor
+    DeriveGeneric
+    DeriveLift
+    DeriveTraversable
+    ExplicitForAll
+    GeneralizedNewtypeDeriving
+    ImportQualifiedPost
+    MultiParamTypeClasses
+    ScopedTypeVariables
+    StandaloneDeriving
+
+  -- See Plutus Tx readme for why we need the following flags:
+  -- -fobject-code -fno-ignore-interface-pragmas and -fno-omit-interface-pragmas
+  ghc-options:
+    -Wall -Wnoncanonical-monad-instances -Wunused-packages
+    -Wincomplete-uni-patterns -Wincomplete-record-updates
+    -Wredundant-constraints -Widentities -fobject-code
+    -fno-ignore-interface-pragmas -fno-omit-interface-pragmas
+
+  --------------------
+  -- Local components
+  --------------------
+  build-depends:
+      playground-common
+    , plutus-chain-index-core
+    , plutus-contract
+    , plutus-core
+    , plutus-ledger
+    , plutus-ledger-constraints
+ --   , plutus-script-utils
+
+  --------------------------
+  -- Other IOG dependencies
+  --------------------------
+  build-depends:
+      plutus-ledger-api
+    , plutus-tx
+    , plutus-tx-plugin
+
+  ------------------------
+  -- Non-IOG dependencies
+  ------------------------
+  build-depends:
+      aeson
+    , base
+    , bytestring
+    , containers
+    , freer-simple
+    , hashable
+    , lens
+    , openapi3
+    , prettyprinter
+    , semigroups
+    , streaming
+    , template-haskell
+    , text
+
+  if flag(defer-plugin-errors)
+    ghc-options: -fplugin-opt PlutusTx.Plugin:defer-errors
+
+
+  ------------------------
+  -- Non-IOG dependencies
+  ------------------------
+  build-depends:
+      base              >=4.9     && <5
+    , bytestring
+    , containers
+    , data-default
+    , foldl
+    , freer-simple
+    , lens
+    , mtl
+    , prettyprinter
+    , QuickCheck
+    , streaming
+    , tasty
+    , tasty-golden
+    , tasty-hedgehog    >=0.2.0.0
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+
+-- runs emulator traces from plutus-use-cases-tests and
+-- writes all applied validator scripts to a folder
+executable native-tokens-scripts
+  main-is:            Main.hs
+  hs-source-dirs:     scripts test
+  default-language:   Haskell2010
+  default-extensions: ImportQualifiedPost
+  other-modules:
+    Spec.Free
+
+  -- See Plutus Tx readme for why we need the following flags:
+  -- -fobject-code -fno-ignore-interface-pragmas and -fno-omit-interface-pragmas
+  ghc-options:
+    -Wall -Wnoncanonical-monad-instances -Wincomplete-uni-patterns
+    -Wincomplete-record-updates -Wredundant-constraints -Widentities
+    -rtsopts -fobject-code -fno-ignore-interface-pragmas
+    -fno-omit-interface-pragmas
+
+  --------------------
+  -- Local components
+  --------------------
+  build-depends:
+      freer-extras
+    , plutus-contract
+ --   , plutus-contract-certification
+    , plutus-ledger
+    , plutus-ledger-constraints
+    , native-tokens
+--    , plutus-script-utils
+ --   , plutus-use-cases
+
+  --------------------------
+  -- Other IOG dependencies
+  --------------------------
+  build-depends:
+      cardano-api
+    , plutus-ledger-api
+    , plutus-tx
+
+  if !(impl(ghcjs) || os(ghcjs))
+    build-depends: plutus-tx-plugin
+
+  ------------------------
+  -- Non-IOG dependencies
+  ------------------------
+  build-depends:
+      base                  >=4.9 && <5
+    , bytestring
+    , containers
+    , data-default
+    , foldl
+    , freer-simple
+    , lens
+    , mtl
+    , optparse-applicative
+    , prettyprinter
+    , QuickCheck
+    , streaming
+    , tasty
+    , tasty-golden
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
