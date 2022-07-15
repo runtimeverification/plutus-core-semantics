@@ -78,8 +78,8 @@ shorthand, in that the invariant will always be stated on the main loop
 only, and the body of the algorithm will be present in the environment of 
 the invariant.
 
-The correctness claim for the entire list-free (together with the preamble),
-as this is the first algorithm of this file, is stated as follows:
+The correctness claim for the entire list-free function (together with the 
+preamble, as this is the first claim of this file), is stated as follows:
 
 ```k
 requires "verification.k"
@@ -246,13 +246,13 @@ and comparing it to the list-free invariant, we can see that the only difference
 
 The next algorithm that we consider is the list-length algorithm, 
 `listSum(XS)`, which returns the length of the list `XS`. The 
-implementation of the algorithm is as follows, and encode it split 
-into three terms, as for the previous two algorithm:
+implementation of the algorithm is as follows, and we encode it split 
+into three terms, as for the previous two algorithms:
 
 ```
-  --LIST_SUM------------- [ 
+  --LIST_LEN------------- [ 
   |                        Z (lam f_lstLen       
-  | --LIST_SUM_BODY--------- (lam in_lst 
+  | --LIST_LEN_BODY--------- (lam in_lst 
   |  | --...LOOP_BODY--------- (force [ (force (builtin ifThenElse))
   |  |  |                        [ (force (builtin nullList)) in_lst ]
   |  |  |                        ( delay (con integer 0) )
@@ -400,7 +400,8 @@ algorithm is given as follows:
     <env> _ => .Map </env>
 ```
 
-and the correspondig loop invariant (together with the module epilogue) is as follows:
+and the corresponding loop invariant (together with the module epilogue, 
+as this is the final claim of the file) is as follows:
 
 ```k
   claim 
