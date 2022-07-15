@@ -189,7 +189,7 @@ To express correctness of list-sum, we also have to define a predicate
   rule allInts(C:Constant, IS:ConstantList) => isInt(C) andBool allInts(IS) 
 ```
 
-and a predicate, `sum(XS)`, which sums a given list of integers:
+and an auxiliary function, `sum(XS)`, which sums a given list of integers:
 
 ```
   syntax Int ::= sum(ConstantList) [function]
@@ -198,7 +198,7 @@ and a predicate, `sum(XS)`, which sums a given list of integers:
   rule sum(I:Int, IS:ConstantList ) => I +Int sum(IS) [simplification]
 ```
 
-With these predicates in place, the correctness claim for the list-sum
+With these in place, the correctness claim for the list-sum
 algorithm is formulated as follows:
 
 ```k
@@ -244,11 +244,10 @@ and comparing it to the list-free invariant, we can see that the only difference
 
 ## List-length
 
-The next algorithm that we consider is the list-sum algorithm, 
-`listSum(IS)`, which returns the sum of all of the values 
-provided in the list of integers `IS`. The implementation of the algorithm
-is as follows, and encode it split into three terms, as for the list-free 
-algorithm:
+The next algorithm that we consider is the list-length algorithm, 
+`listSum(XS)`, which returns the length of the list `XS`. The 
+implementation of the algorithm is as follows, and encode it split 
+into three terms, as for the previous two algorithm:
 
 ```
   --LIST_SUM------------- [ 
@@ -270,17 +269,17 @@ algorithm:
 ```
 
 To express correctness of list-length, similarly to the case of list-sum,
-we have to define a predicate that calculates the length of a given list, 
+we have to define an auxiliary function that calculates the length of a given list, 
 `length(XS)`:
 
 ```
-  syntax Int ::= sum(ConstantList) [function]
+  syntax Int ::= length(ConstantList) [function, functional]
 
-  rule sum(         .ConstantList ) => 0              [simplification]
-  rule sum(I:Int, IS:ConstantList ) => I +Int sum(IS) [simplification]
+  rule length(     .ConstantList) => 0
+  rule length(_, IS:ConstantList) => 1 +Int length(IS)
 ```
 
-With this predicates in place, the correctness claim for the list-sum
+With this in place, the correctness claim for the list-length
 algorithm is formulated as follows:
 
 ```k
@@ -293,7 +292,7 @@ algorithm is formulated as follows:
     <env> _ => .Map </env>
 ```
 
-stating that the list-sum algorithm terminates, returning the 
+stating that the list-length algorithm terminates, returning the 
 length of the passed-in list. As for the previous two algorithms, 
 the initial environment is arbitrary. and the final environment 
 is empty.
@@ -376,7 +375,7 @@ our goal, we implement this algorithm using a loop rather than using list-length
   ----------------------- ]
 ```
 
-For this algorithm, we have to define a logical predicate that 
+For this algorithm, we have to define a predicate that 
 captures its behaviour,
 `listLonger(XS, YS)`:
 
@@ -388,7 +387,7 @@ captures its behaviour,
   rule longerList((_, XS:ConstantList), (_, YS:ConstantList)) => longerList(XS, YS) [simplification]
 ```
 
-With this predicates in place, the correctness claim for the list-longer
+With this predicate in place, the correctness claim for the list-longer
 algorithm is given as follows:
 
 ```k
@@ -421,5 +420,5 @@ endmodule
 ```
 
 Comparing this invariant to the previous ones, we can see the the only conceptual difference is that both of the 
-function parameters are in the initial store. This can be generalised to multi-parameter functions in that all of
-the function parameters need to be in the initial store with the appropriate bindings.
+function parameters are in the initial environment. This can be generalised to multi-parameter functions in that all of
+the function parameters need to be in the initial environment with the appropriate bindings.
