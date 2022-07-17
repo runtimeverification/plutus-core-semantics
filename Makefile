@@ -256,14 +256,14 @@ $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin
 	    $(llvm_main_file)                     \
 	    --main-module $(llvm_main_module)     \
 	    --syntax-module $(llvm_syntax_module) \
-	    $(KOMPILE_OPTS)                       \
+	    $(KOMPILE_OPTS)
 
 $(KPLUTUS_LIB)/$(haskell_kompiled): $(kplutus_includes) $(plugin_includes) $(KPLUTUS_BIN)/kplc
 	$(KOMPILE) --backend haskell                     \
 	    $(haskell_main_file) $(HASKELL_KOMPILE_OPTS) \
 	    --main-module $(haskell_main_module)         \
 	    --syntax-module $(haskell_syntax_module)     \
-	    $(KOMPILE_OPTS)                              \
+	    $(KOMPILE_OPTS)
 
 # Coverage Processing
 # -------------------
