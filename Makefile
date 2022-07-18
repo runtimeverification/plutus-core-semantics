@@ -363,7 +363,8 @@ KPROVE_OPTS :=
 unit_tests := $(wildcard unit-tests/*.md)
 test-unit-tests: $(unit_tests:=.prove)
 
-prove_tests := $(wildcard simple-proofs/*.md)
+prove_tests := $(wildcard simple-proofs/[!verification]*.md)
+
 test-prove: $(prove_tests:=.prove)
 
 unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verification-kompiled/timestamp
