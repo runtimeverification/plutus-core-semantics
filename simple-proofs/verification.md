@@ -28,7 +28,7 @@ module RECURSIVE-COMBINATORS
   syntax Term ::= "REC" [alias]
   rule REC => (lam f_0
                 [ (lam s_0 [ s_0 s_0 ])
-                  (lam s_0 (lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ])) ] )
+                  (lam s_0 (lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ])) ])
 ```
 
 ### Helpful shorthand
@@ -83,17 +83,18 @@ for the entire implementation (`LIST_FREE`); one for the body of the function
 (`LIST_FREE_BODY`), and one for the main loop (`LIST_FREE_LOOP`):
 
 ```
-  --LIST_FREE----------- [
-  |                        Z (lam f_lstFree
-  | --LIST_FREE_BODY-------- (lam in_lst
-  |  | --LIST_FREE_LOOP------- (force [ (force (builtin ifThenElse))
-  |  |  |                        [ (force (builtin nullList)) in_lst ]
-  |  |  |                        ( delay in_lst )
-  |  |  |                        ( delay [ f_lstFree [ (force (builtin tailList)) in_lst ] ] )
-  |  | ----------------------- ])
-  |  ----------------------- )
-  |                        )
-  ---------------------- ]
+  --LIST_FREE----------- (lam f_lstFree
+  | --LIST_FREE_BODY------ (lam in_lst
+  | | --LIST_FREE_LOOP------ (force [ (force (builtin ifThenElse))
+  | | |                        [ (force (builtin nullList)) in_lst ]
+  | | |                        ( delay in_lst )
+  | | |                        ( delay [
+  | | |                                  f_lstFree
+  | | |                                  [ (force (builtin tailList)) in_lst ]
+  | | |                                ] )
+  | | ---------------------- ])
+  | ---------------------- )
+  ---------------------- )
 ```
 
 This is a pattern that we will be following throughout---it is simply useful
@@ -139,22 +140,20 @@ is as follows, and we again split it into three terms, as for the list-free
 algorithm:
 
 ```
-  --LIST_SUM------------ [
-  |                        Z (lam f_lstSum
-  | --LIST_SUM_BODY--------- (lam in_lst
-  |  | --LIST_SUM_LOOP-------- (force [ (force (builtin ifThenElse))
-  |  |  |                        [ (force (builtin nullList)) in_lst ]
-  |  |  |                        ( delay (con integer 0) )
-  |  |  |                        ( delay
-  |  |  |                          [ (builtin addInteger)
-  |  |  |                            [ (force (builtin headList)) in_lst ]
-  |  |  |                            [ f_lstSum [ (force (builtin tailList)) in_lst ] ]
-  |  |  |                          ]
-  |  |  |                        )
-  |  | ----------------------- ])
-  |  ----------------------- )
-  |                        )
-  ---------------------- ]
+  --LIST_SUM------------ (lam f_lstSum
+  | --LIST_SUM_BODY------- (lam in_lst
+  |  | --LIST_SUM_LOOP------ (force [ (force (builtin ifThenElse))
+  |  |  |                      [ (force (builtin nullList)) in_lst ]
+  |  |  |                      ( delay (con integer 0) )
+  |  |  |                      ( delay
+  |  |  |                        [ (builtin addInteger)
+  |  |  |                          [ (force (builtin headList)) in_lst ]
+  |  |  |                          [ f_lstSum [ (force (builtin tailList)) in_lst ] ]
+  |  |  |                        ]
+  |  |  |                      )
+  |  | --------------------- ])
+  |  --------------------- )
+  ---------------------- )
 ```
 
 ```k
@@ -197,22 +196,20 @@ implementation of the algorithm is as follows, and we encode it split
 into three terms, as for the previous two algorithms:
 
 ```
-  --LIST_LEN------------ [
-  |                        Z (lam f_lstLen
-  | --LIST_LEN_BODY--------- (lam in_lst
-  |  | --LIST_LEN_LOOP-------- (force [ (force (builtin ifThenElse))
-  |  |  |                        [ (force (builtin nullList)) in_lst ]
-  |  |  |                        ( delay (con integer 0) )
-  |  |  |                        ( delay
-  |  |  |                          [ (builtin addInteger)
-  |  |  |                            (con integer 1)
-  |  |  |                            [ f_lstLen [ (force (builtin tailList)) in_lst ] ]
-  |  |  |                          ]
-  |  |  |                        )
-  |  | ----------------------- ])
-  |  ----------------------- )
-  |                        )
-  ---------------------- ]
+  --LIST_LEN------------ (lam f_lstLen
+  | --LIST_LEN_BODY-------- (lam in_lst
+  |  | --LIST_LEN_LOOP------- (force [ (force (builtin ifThenElse))
+  |  |  |                       [ (force (builtin nullList)) in_lst ]
+  |  |  |                       ( delay (con integer 0) )
+  |  |  |                       ( delay
+  |  |  |                         [ (builtin addInteger)
+  |  |  |                           (con integer 1)
+  |  |  |                           [ f_lstLen [ (force (builtin tailList)) in_lst ] ]
+  |  |  |                         ]
+  |  |  |                       )
+  |  | ---------------------- ])
+  |  ---------------------- )
+  ---------------------- )
 ```
 
 ```k
@@ -275,24 +272,23 @@ we implement, specify, and verify the `listLonger(XS, YS)` algorithm, which take
 our goal, we implement this algorithm using a loop rather than using list-length:
 
 ```
-  --LIST_LONGER---------- [
-  |                         Z (lam f_lstLen
-  | --LIST_LONGER_BODY------- (lam in_lst1
-  |  |  |                       (lam in_lst2
+  --LIST_LONGER---------- (lam f_lstLonger
+  | --LIST_LONGER_BODY----- (lam in_lst1
+  |  |  |                      (lam in_lst2
   |  | --LIST_LONGER_LOOP-------- (force [ (force (builtin ifThenElse))
   |  |  |                           [ (force (builtin nullList)) in_lst ]
   |  |  |                           ( delay (con integer 0) )
   |  |  |                           ( delay
   |  |  |                             [ (builtin addInteger)
   |  |  |                               (con integer 1)
-  |  |  |                               [ f_lstLen [ (force (builtin tailList)) in_lst ] ]
+  |  |  |                               [ f_lstLonger [ (force (builtin tailList)) in_lst ] ]
   |  |  |                             ]
   |  |  |                           )
   |  | -------------------------- ])
   |  |                          )
   |  ------------------------ )
   |                         )
-  ----------------------- ]
+  ----------------------- )
 ```
 
 ```k
