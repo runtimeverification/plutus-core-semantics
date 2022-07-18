@@ -84,7 +84,7 @@ for the entire implementation (`LIST_FREE`); one for the body of the function
 
 ```
   --LIST_FREE----------- [
-  |                        Z (lam f_lstSum
+  |                        Z (lam f_lstFree
   | --LIST_FREE_BODY-------- (lam in_lst
   |  | --LIST_FREE_LOOP------- (force [ (force (builtin ifThenElse))
   |  |  |                        [ (force (builtin nullList)) in_lst ]
