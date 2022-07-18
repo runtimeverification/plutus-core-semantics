@@ -70,7 +70,7 @@ a ByteString.
 ## `sha3_256`
 
 ```k
-  rule #typeSignature(sha3_256) => bytestring
+  rule #typeSignature(sha3_256) => ListItem(bytestring)
 
   rule <k> #eval(sha3_256, ListItem(< con bytestring B:ByteString >)) =>
            < con bytestring unTrimByteString(Sha3_256Wrapper(encode(B))) > ... </k>
@@ -81,7 +81,7 @@ a ByteString.
 The same steps of `sha3_256` are taken to produce the proper string argument for `Sha256`.
 
 ```k
-  rule #typeSignature(sha2_256) => bytestring
+  rule #typeSignature(sha2_256) => ListItem(bytestring)
 
   rule <k> #eval(sha2_256, ListItem(< con bytestring B:ByteString >)) =>
            < con bytestring unTrimByteString(Sha256Wrapper(encode(B))) > ... </k>
@@ -92,7 +92,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 The same steps of `sha3_256` are taken to produce the proper string argument for `Blake2b256`.
 
 ```k
-  rule #typeSignature(blake2b_256) => bytestring
+  rule #typeSignature(blake2b_256) => ListItem(bytestring)
 
   rule <k> #eval(blake2b_256, ListItem(< con bytestring B:ByteString >)) =>
            < con bytestring unTrimByteString(Blake2b256Wrapper(encode(B))) > ... </k>
@@ -101,7 +101,7 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
 ## `verifySignature`
 
 ```k
-  rule #typeSignature(verifySignature) => bytestring bytestring bytestring
+  rule #typeSignature(verifySignature) => ListItem(bytestring) ListItem(bytestring) ListItem(bytestring)
 
   rule <k> #eval(verifySignature,
                  (ListItem(< con bytestring K:ByteString >)

@@ -30,7 +30,7 @@ module UPLC-DATA-BUILTINS
 ## `chooseData`
 
 ```k
-  rule #typeSignature(chooseData) => data anyValue anyValue anyValue anyValue anyValue
+  rule #typeSignature(chooseData) => ListItem(data) ListItem(anyValue) ListItem(anyValue) ListItem(anyValue) ListItem(anyValue) ListItem(anyValue)
 
   rule <k> #eval(chooseData,
                      (ListItem(< con data { Constr _Ii:Int [ _DL:DataList ] } >)
@@ -76,7 +76,7 @@ module UPLC-DATA-BUILTINS
 ## `constrData`
 
 ```k
-  rule #typeSignature(constrData) => integer list(data)
+  rule #typeSignature(constrData) => ListItem(integer) ListItem(list(data))
 
   rule <k> #eval(constrData,
                  (ListItem(< con integer I:Int >)
@@ -87,7 +87,7 @@ module UPLC-DATA-BUILTINS
 ## `mapData`
 
 ```k
-  rule #typeSignature(mapData) => list(pair(data)(data))
+  rule #typeSignature(mapData) => ListItem(list(pair(data)(data)))
 
   rule <k> #eval(mapData,
                  ListItem(< con list(pair(data)(data)) [ L:ConstantList ] >)) =>
@@ -97,7 +97,7 @@ module UPLC-DATA-BUILTINS
 ## `listData`
 
 ```k
-  rule #typeSignature(listData) => list(data)
+  rule #typeSignature(listData) => ListItem(list(data))
 
   rule <k> #eval(listData,
                  ListItem(< con list(data) [ L:ConstantList ] >)) =>
@@ -107,7 +107,7 @@ module UPLC-DATA-BUILTINS
 ## `iData`
 
 ```k
-  rule #typeSignature(iData) => integer
+  rule #typeSignature(iData) => ListItem(integer)
 
   rule <k> #eval(iData,
                  ListItem(< con integer I:Int >)) =>
@@ -117,7 +117,7 @@ module UPLC-DATA-BUILTINS
 ## `bData`
 
 ```k
-  rule #typeSignature(bData) => bytestring
+  rule #typeSignature(bData) => ListItem(bytestring)
 
   rule <k> #eval(bData,
                  ListItem(< con bytestring B:ByteString >)) =>
@@ -127,7 +127,7 @@ module UPLC-DATA-BUILTINS
 ## `unConstrData`
 
 ```k
-  rule #typeSignature(unConstrData) => data
+  rule #typeSignature(unConstrData) => ListItem(data)
 
   rule <k> #eval(unConstrData,
                  ListItem(< con data { Constr I:Int [ L:DataList ] } >)) =>
@@ -137,7 +137,7 @@ module UPLC-DATA-BUILTINS
 ## `unMapData`
 
 ```k
-  rule #typeSignature(unMapData) => data
+  rule #typeSignature(unMapData) => ListItem(data)
 
   rule <k> #eval(unMapData,
                  ListItem(< con data { Map [ L:DataPairList ] } >)) =>
@@ -147,7 +147,7 @@ module UPLC-DATA-BUILTINS
 ## `unListData`
 
 ```k
-  rule #typeSignature(unListData) => data
+  rule #typeSignature(unListData) => ListItem(data)
 
   rule <k> #eval(unListData,
                  ListItem(< con data { List [ L:DataList ] } >)) =>
@@ -157,7 +157,7 @@ module UPLC-DATA-BUILTINS
 ## `unIData`
 
 ```k
-  rule #typeSignature(unIData) => data
+  rule #typeSignature(unIData) => ListItem(data)
 
   rule <k> #eval(unIData,
                  ListItem(< con data { Integer I:Int } >)) =>
@@ -167,7 +167,7 @@ module UPLC-DATA-BUILTINS
 ## `unBData`
 
 ```k
-  rule #typeSignature(unBData) => data
+  rule #typeSignature(unBData) => ListItem(data)
 
   rule <k> #eval(unBData,
                  ListItem(< con data { ByteString B:ByteString } >)) =>
@@ -177,7 +177,7 @@ module UPLC-DATA-BUILTINS
 # `equalsData`
 
 ```k
-  rule #typeSignature(equalsData) => data data
+  rule #typeSignature(equalsData) => ListItem(data) ListItem(data)
 
   rule <k> #eval(equalsData,
                  (ListItem(< con data { T1:TextualData } >)
@@ -195,7 +195,7 @@ module UPLC-DATA-BUILTINS
 # `mkPairData`
 
 ```k
-  rule #typeSignature(mkPairData) => data data
+  rule #typeSignature(mkPairData) => ListItem(data) ListItem(data)
 
   rule <k> #eval(mkPairData,
                  (ListItem(< con data { T1:TextualData } >)
@@ -206,7 +206,7 @@ module UPLC-DATA-BUILTINS
 # `mkNilData`
 
 ```k
-  rule #typeSignature(mkNilData) => unit
+  rule #typeSignature(mkNilData) => ListItem(unit)
 
   rule <k> #eval(mkNilData,
                  ListItem(< con unit () >)) =>
@@ -216,7 +216,7 @@ module UPLC-DATA-BUILTINS
 # `mkNilPairData`
 
 ```k
-  rule #typeSignature(mkNilPairData) => unit
+  rule #typeSignature(mkNilPairData) => ListItem(unit)
   
   rule <k> #eval(mkNilPairData,
                  ListItem(< con unit () >)) =>

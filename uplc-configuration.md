@@ -38,10 +38,9 @@ is used to keep track of the data emitted by the `trace` builtin.
                                  | "anyPair"
                                  | "anyList"
                                  | "mkConsCase"
-  syntax TypeSignature ::= List{TypeSignatureConstant,""}
 
-  syntax TypeSignature ::= #typeSignature(BuiltinName) [function]
-  syntax Bool ::= #typeCheck(List, TypeSignature) [function]
+  syntax List ::= #typeSignature(BuiltinName) [function]
+  syntax Bool ::= #typeCheck(List, List) [function]
 
   syntax Program ::= #handleProgram(Program) [function]
 
