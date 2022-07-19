@@ -1,5 +1,5 @@
 ```k
-requires "verification.k"
+requires "verification.md"
 
 module SIMPLE-SYMBOLIC
   imports VERIFICATION

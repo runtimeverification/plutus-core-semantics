@@ -8,6 +8,12 @@ module UPLC-INTEGER-BUILTINS
   imports K-EQUAL
 ```
 
+```symbolic
+  syntax KItem ::= castToInt(Constant)
+  rule <k> castToInt(_:Int)      => .       ... </k>
+  rule <k> castToInt(C:Constant) => (error) ... </k> ensures notBool isInt(C) [owise]
+```
+
 ## `addInteger`
 
 ```k
@@ -19,11 +25,21 @@ module UPLC-INTEGER-BUILTINS
 
   rule <k> (builtin addInteger) => < builtin addInteger .List 2 > ... </k>
        <env> _ => .Map </env>
+```
 
+```concrete
   rule <k> #eval(addInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
            < con integer I1 +Int I2 > ... </k>
+```
+
+```symbolic
+  rule <k> #eval(addInteger,
+                     (ListItem(< con integer C1:Constant >)
+                      ListItem(< con integer C2:Constant >))) =>
+           castToInt(C1) ~> castToInt(C2) ~>
+               < con integer { C1 }:>Int +Int { C2 }:>Int > ... </k>
 ```
 
 ## `multiplyInteger`
@@ -90,7 +106,7 @@ According to Plutus specification, `modInteger` implements standard mathematical
 
 ```k
   rule #numArgs(modInteger) => 2
-  
+
   rule #typeCheck(ListItem(< con integer _ >), modInteger, 1) => true
 
   rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), modInteger, 2) => true
@@ -113,7 +129,7 @@ operator `/Int`  computes the quotient using t-division which rounds towards 0.
 
 ```k
   rule #numArgs(quotientInteger) => 2
-  
+
   rule #typeCheck(ListItem(< con integer _ >), quotientInteger, 1) => true
 
   rule #typeCheck(ListItem(< con integer _ >)ListItem(< con integer _ >), quotientInteger, 2) => true
