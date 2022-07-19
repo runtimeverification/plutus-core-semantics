@@ -6,6 +6,7 @@ shopt -s extglob
 debug=false
 verbose=false
 flat_format=false
+symbolic=false
 
 notif() {
     if ${verbose}; then
@@ -41,10 +42,17 @@ export K_OPTS="${K_OPTS:--Xmx16G -Xss512m}"
 
 run_kompile() {
     local kompile_opts
+    local execution_type
 
-    kompile_opts=( "${run_file}" --directory "${backend_dir}" --backend "${backend}" )
+    if [[ ${symbolic} == true ]]; then
+        execution_type="symbolic"
+    else
+        execution_type="concrete"
+    fi
+
+    kompile_opts=( "${run_file}" --directory "${backend_dir}" --backend "${backend}"              )
     kompile_opts+=( -I "${INSTALL_INCLUDE}/kframework" -I "${plugin_include}/kframework"          )
-    kompile_opts+=( --md-selector "k | libcrypto-extra"                                           )
+    kompile_opts+=( --md-selector "k | libcrypto-extra | ${execution_type}"                       )
     kompile_opts+=( --hook-namespaces "KRYPTO"                                                    )
     kompile_opts+=( --emit-json                                                                   )
     kompile_opts+=( -ccopt -L${libff_dir}/lib -ccopt -I${libff_dir}/include                       )
@@ -144,6 +152,7 @@ while [[ $# -gt 0 ]]; do
         --result-only)  result_only=true                ; shift   ;;
         --bug-report)   bug_report=true                 ; shift   ;;
         --debugger)     debugger=true                   ; shift   ;;
+        --symbolic)     symbolic=true                   ; shift   ;;
         *)              args+=("$1")                    ; shift   ;;
     esac
 done

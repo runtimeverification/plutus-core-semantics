@@ -10,13 +10,27 @@ module UPLC-INTEGER-BUILTINS
   rule #typeSignature(_BN::IntegerBuiltinName) => ListItem(integer) ListItem(integer)
 ```
 
+```symbolic
+  syntax KItem ::= castToInt(Constant)
+  rule <k> castToInt(_:Int)      => .       ... </k>
+  rule <k> castToInt(C:Constant) => (error) ... </k> ensures notBool isInt(C) [owise]
+```
+
 ## `addInteger`
 
-```k
+```concrete
   rule <k> #eval(addInteger,
                      (ListItem(< con integer I1:Int >)
                       ListItem(< con integer I2:Int >))) =>
            < con integer I1 +Int I2 > ... </k>
+```
+
+```symbolic
+  rule <k> #eval(addInteger,
+                     (ListItem(< con integer C1:Constant >)
+                      ListItem(< con integer C2:Constant >))) =>
+           castToInt(C1) ~> castToInt(C2) ~>
+               < con integer { C1 }:>Int +Int { C2 }:>Int > ... </k>
 ```
 
 ## `multiplyInteger`
