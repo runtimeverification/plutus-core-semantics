@@ -32,16 +32,23 @@ import           Prelude                (IO, Show (..), String)
 import           Text.Printf            (printf)
 import           Wallet.Emulator.Wallet
 
-{-# INLINABLE mkPolicy #-}
+{-# INLINABLE mkPolicyTrue #-}
+{-# INLINABLE mkPolicyFalse #-}
 
-mkPolicy :: () -> ScriptContext -> Bool
-mkPolicy () _ = True
+mkPolicyTrue :: () -> ScriptContext -> Bool
+mkPolicyTrue () _ = True
 
-compiledPolicy :: PlutusTx.CompiledCode (BuiltinData -> BuiltinData -> ())
-compiledPolicy = $$(PlutusTx.compile [|| Scripts.wrapMintingPolicy mkPolicy ||])
+mkPolicyFalse :: () -> ScriptContext -> Bool
+mkPolicyFalse () _ = False
+
+compiledPolicyTrue :: PlutusTx.CompiledCode (BuiltinData -> BuiltinData -> ())
+compiledPolicyTrue = $$(PlutusTx.compile [|| Scripts.wrapMintingPolicy mkPolicyTrue ||])
+
+compiledPolicyFalse :: PlutusTx.CompiledCode (BuiltinData -> BuiltinData -> ())
+compiledPolicyFalse = $$(PlutusTx.compile [|| Scripts.wrapMintingPolicy mkPolicyFalse ||])
 
 policy :: Scripts.MintingPolicy
-policy = mkMintingPolicyScript $$(PlutusTx.compile [|| Scripts.wrapMintingPolicy mkPolicy ||])
+policy = mkMintingPolicyScript $$(PlutusTx.compile [|| Scripts.wrapMintingPolicy mkPolicyTrue ||])
 
 curSymbol :: CurrencySymbol
 curSymbol = scriptCurrencySymbol policy
