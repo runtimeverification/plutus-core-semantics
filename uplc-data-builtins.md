@@ -30,7 +30,7 @@ module UPLC-DATA-BUILTINS
 ## `chooseData`
 
 ```k
-  rule #typeSignature(chooseData) => ListItem(data) ListItem(anyValue) ListItem(anyValue) ListItem(anyValue) ListItem(anyValue) ListItem(anyValue)
+  rule #typeSignature(chooseData) => ListItem(forall.a*) ListItem(data) ListItem(a*) ListItem(a*) ListItem(a*) ListItem(a*) ListItem(a*)
 
   rule <k> #eval(chooseData,
                      (ListItem(< con data { Constr _Ii:Int [ _DL:DataList ] } >)
