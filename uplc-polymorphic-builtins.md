@@ -23,17 +23,7 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `ifThenElse`
 
 ```k
-  rule #numArgs(ifThenElse) => 3
-
-  rule #typeCheck(ListItem(< con bool _ >), ifThenElse, 1) => true
-
-  rule #typeCheck(_, ifThenElse, 2) => true
-
-  rule #typeCheck(ListItem(< con bool _ >) ListItem(_:Value) ListItem(_:Value) ,
-         ifThenElse, 3) => true
-
-  rule <k> (builtin ifThenElse) ~> Force => < builtin ifThenElse .List 3 > ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(ifThenElse) => ListItem(bool) ListItem(anyValue) ListItem(anyValue)
 
   rule <k> #eval(ifThenElse,
                    (ListItem(< con bool True >)
@@ -49,14 +39,7 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `chooseUnit`
 
 ```k
-  rule #numArgs(chooseUnit) => 2
-
-  rule #typeCheck(ListItem(< con unit () >) _, chooseUnit, 1) => true
-
-  rule #typeCheck(ListItem(< con unit () >) ListItem(_:Value) .List, chooseUnit, 2) => true
-
-  rule <k> (builtin chooseUnit) ~> Force => < builtin chooseUnit .List 2 > ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(chooseUnit) => ListItem(unit) ListItem(anyValue)
 
   rule <k> #eval(chooseUnit,
                    (ListItem(< con unit () >)
@@ -71,13 +54,7 @@ might as well simply return `true` now for `fstPair` as `#eval` would
 return an error if `fstPair`'s argument is not a pair.
 
 ```k
-  rule #numArgs(fstPair) => 1
-
-  rule #typeCheck(ListItem(< con pair (_:TypeConstant) (_:TypeConstant) (_,_) >),
-                             fstPair, 1) => true
-
-  rule <k> (builtin fstPair) ~> Force => < builtin fstPair .List 1 >  ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(fstPair) => ListItem(anyPair)
 
   rule <k> #eval(fstPair,
               ListItem(< con pair (T1:TypeConstant) (_T2:TypeConstant)
@@ -92,13 +69,7 @@ might as well simply return `true` now for `sndPair` as `#eval` would
 return an error if `sndPair`'s argument is not a pair.
 
 ```k
-  rule #numArgs(sndPair) => 1
-
-  rule #typeCheck(ListItem(< con pair (_:TypeConstant) (_:TypeConstant) (_,_) >),
-                             sndPair, 1) => true
-
-  rule <k> (builtin sndPair) ~> Force => < builtin sndPair .List 1 >  ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(sndPair) => ListItem(anyPair)
 
   rule <k> #eval(sndPair,
               ListItem(< con pair (_T1:TypeConstant) (T2:TypeConstant)
@@ -108,21 +79,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `chooseList`
 
 ```k
-  rule #numArgs(chooseList) => 3
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _ ] >), chooseList, 1) => true
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _ ] >)
-                  ListItem(_:Value),
-                  chooseList, 2) => true
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _ ] >)
-                  ListItem(_:Value)
-                  ListItem(_:Value),
-                  chooseList, 3) => true
-
-  rule <k> (builtin chooseList) ~> Force => < builtin chooseList .List 3 > ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(chooseList) => ListItem(anyList) ListItem(anyValue) ListItem(anyValue)
 
   rule <k> #eval(chooseList,
                      (ListItem(< con list(_T:TypeConstant) [ .ConstantList ] >)
@@ -139,15 +96,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `mkCons`
 
 ```k
-  rule #numArgs(mkCons) => 2
-
-  rule #typeCheck(ListItem(< con _:TypeConstant _:Constant >), mkCons, 1) => true
-
-  rule #typeCheck(ListItem(< con T:TypeConstant _:Constant >)
-                  ListItem(< con list(T) [ _:ConstantList ] >), mkCons, 2) => true
-
-  rule <k> (builtin mkCons) ~> Force => < builtin mkCons .List 2 > ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(mkCons) => ListItem(mkConsCase) ListItem(mkConsCase)
 
   rule <k> #eval(mkCons,
               (ListItem(< con T:TypeConstant C:Constant >)
@@ -158,12 +107,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `headList`
 
 ```k
-  rule #numArgs(headList) => 1
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), headList, 1) => true
-
-  rule <k> (builtin headList) ~> Force => < builtin headList .List 1 > ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(headList) => ListItem(anyList)
 
   rule <k> #eval(headList,
               ListItem(< con list(T:TypeConstant)
@@ -174,12 +118,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `tailList`
 
 ```k
-  rule #numArgs(tailList) => 1
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), tailList, 1) => true
-
-  rule <k> (builtin tailList) ~> Force => < builtin tailList .List 1 > ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(tailList) => ListItem(anyList)
 
   rule <k> #eval(tailList,
               ListItem(< con list(T:TypeConstant) [ .ConstantList ] >)) =>
@@ -193,12 +132,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `nullList`
 
 ```k
-  rule #numArgs(nullList) => 1
-
-  rule #typeCheck(ListItem(< con list(_:TypeConstant) [ _:ConstantList ] >), nullList, 1) => true
-
-  rule <k> (builtin nullList) ~> Force => < builtin nullList .List 1 > ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(nullList) => ListItem(anyList)
 
   rule <k> #eval(nullList,
               ListItem(< con list(_T:TypeConstant) [ .ConstantList ] >)) =>
@@ -213,15 +147,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `trace`
 
 ```k
-  rule #numArgs(trace) => 2
-
-  rule #typeCheck(ListItem(< con string _ >), trace, 1) => true
-
-  rule #typeCheck(ListItem(< con string _ >)
-                  ListItem(_:Value), trace, 2) => true
-
-  rule <k> (builtin trace) ~> Force => < builtin trace .List 2 > ... </k>
-       <env> _ => .Map </env>
+  rule #typeSignature(trace) => ListItem(string) ListItem(anyValue)
 
   rule <k> #eval(trace,
               (ListItem(< con string S >)
