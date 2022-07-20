@@ -16,12 +16,12 @@ module UPLC-BUILTINS
   imports UPLC-STRING-BUILTINS
   imports UPLC-DATA-BUILTINS
 
-  rule <k> (builtin BN) => < builtin BN .List size(#typeSignature(BN)) > ... </k>
+  rule <k> (builtin BN) => < builtin BN .List size(#expectedArguments(BN)) > ... </k>
        <env> _ => .Map </env>
     requires notBool isPolyBuiltinName(BN)
      andBool notBool BN ==K chooseData
 
-  rule <k> (builtin (_::PolyBuiltinName #Or chooseData) #as BN) ~> Force => < builtin BN .List size(#typeSignature(BN)) > ... </k>
+  rule <k> (builtin (_::PolyBuiltinName #Or chooseData) #as BN) ~> Force => < builtin BN .List size(#expectedArguments(BN)) > ... </k>
        <env> _ => .Map </env>
 
   rule #typeCheck(ListItem(< con T _ >)          L, ListItem(T:TypeConstant) TS:List) => #typeCheck(L, TS)

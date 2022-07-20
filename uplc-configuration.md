@@ -50,7 +50,7 @@ is used to keep track of the data emitted by the `trace` builtin.
                         | "pairTV" "(" TypeVariable "," TypeVariable ")"
   syntax Quantification ::= r"forall.[ab][#*]" [token]
 
-  syntax List ::= #typeSignature(BuiltinName) [function]
+  syntax List ::= #expectedArguments(BuiltinName) [function]
   syntax Bool ::= #typeCheck(List, List) [function]
 
   syntax Program ::= #handleProgram(Program) [function]
