@@ -32,9 +32,15 @@ is used to keep track of the data emitted by the `trace` builtin.
   syntax UValue ::= #eval(BuiltinName, List)
   rule <k> #eval(_,_) ~> _ => (error) </k> [owise]
 
-  syntax Int  ::= #numArgs(BuiltinName) [function]
-  syntax Bool ::= #typeCheck(List, BuiltinName, Int) [function]
-  rule #typeCheck(_,_,_) => false [owise]
+
+  syntax TypeSignatureConstant ::= TypeConstant
+                                 | "anyValue"
+                                 | "anyPair"
+                                 | "anyList"
+                                 | "mkConsCase"
+
+  syntax List ::= #typeSignature(BuiltinName) [function]
+  syntax Bool ::= #typeCheck(List, List) [function]
 
   syntax Program ::= #handleProgram(Program) [function]
 
