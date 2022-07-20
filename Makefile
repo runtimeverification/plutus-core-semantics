@@ -209,6 +209,7 @@ KOMPILE := $(KPLUTUS) kompile
 
 kplutus_files := uplc.md \
                  bitstream.md \
+                 uplc-builtins.md \
                  uplc-bytestring-builtins.md \
                  uplc-crypto-builtins.md  \
                  uplc-integer-builtins.md \

@@ -1,23 +1,13 @@
 # UPLC semantics
 
 ```k
-require "uplc-polymorphic-builtins.md"
-require "uplc-integer-builtins.md"
-require "uplc-bytestring-builtins.md"
-require "uplc-crypto-builtins.md"
-require "uplc-string-builtins.md"
-require "uplc-data-builtins.md"
+require "uplc-builtins.md"
 require "uplc-discharge.md"
 
 module UPLC-SEMANTICS
   imports INT
   imports MAP
-  imports UPLC-POLYMORPHIC-BUILTINS
-  imports UPLC-INTEGER-BUILTINS
-  imports UPLC-BYTESTRING-BUILTINS
-  imports UPLC-CRYPTO-BUILTINS
-  imports UPLC-STRING-BUILTINS
-  imports UPLC-DATA-BUILTINS
+  imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
 
   syntax Bindable ::= Value
@@ -74,14 +64,14 @@ module UPLC-SEMANTICS
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
            #eval(BN, (L ListItem(V))) ... </k>
-  requires #typeCheck(L ListItem(V), BN, #numArgs(BN))
+  requires #typeCheck(L ListItem(V), #typeSignature(BN))
 
   rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List I:Int > _] =>
            < builtin BN (L ListItem(V)) (I -Int 1) > ... </k>
-  requires I >Int 1 andBool #typeCheck(L ListItem(V), BN, #numArgs(BN) -Int I +Int 1)
+  requires I >Int 1 andBool #typeCheck(L ListItem(V), #typeSignature(BN))
 
-  rule <k> V:Value ~> [ < builtin BN L I > _] ~> _ => (error) </k>
-  requires notBool(#typeCheck(L ListItem(V), BN, #numArgs(BN) -Int I +Int 1))
+  rule <k> V:Value ~> [ < builtin BN L _I > _] ~> _ => (error) </k>
+  requires notBool #typeCheck(L ListItem(V), #typeSignature(BN))
 
   rule <k> _V:Value ~> [ < con _ _ > _] ~> _ => (error) </k>
 
