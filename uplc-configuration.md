@@ -39,6 +39,17 @@ is used to keep track of the data emitted by the `trace` builtin.
                                  | "anyList"
                                  | "mkConsCase"
 
+  syntax ConcreteTypeVariable ::= TypeConstant
+  syntax PolyBuiltinTypeVariable ::= r"[ab]#" [token]
+  syntax FullyPolyTypeVariable ::= r"[ab]\\*" [token]
+
+  syntax TypeVariable ::= ConcreteTypeVariable
+                        | PolyBuiltinTypeVariable
+                        | FullyPolyTypeVariable
+                        | "listTV" "(" TypeVariable ")"
+                        | "pairTV" "(" TypeVariable "," TypeVariable ")"
+  syntax Quantification ::= r"forall.[ab][#*]" [token]
+
   syntax List ::= #typeSignature(BuiltinName) [function]
   syntax Bool ::= #typeCheck(List, List) [function]
 
