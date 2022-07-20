@@ -32,13 +32,6 @@ is used to keep track of the data emitted by the `trace` builtin.
   syntax UValue ::= #eval(BuiltinName, List)
   rule <k> #eval(_,_) ~> _ => (error) </k> [owise]
 
-
-  syntax TypeSignatureConstant ::= TypeConstant
-                                 | "anyValue"
-                                 | "anyPair"
-                                 | "anyList"
-                                 | "mkConsCase"
-
   syntax ConcreteTypeVariable ::= TypeConstant
   syntax PolyBuiltinTypeVariable ::= r"[ab]#" [token]
   syntax FullyPolyTypeVariable ::= r"[ab]\\*" [token]
@@ -51,7 +44,6 @@ is used to keep track of the data emitted by the `trace` builtin.
   syntax Quantification ::= r"forall.[ab][#*]" [token]
 
   syntax List ::= #expectedArguments(BuiltinName) [function]
-  syntax Bool ::= #typeCheck(List, List) [function]
 
   syntax Program ::= #handleProgram(Program) [function]
 
