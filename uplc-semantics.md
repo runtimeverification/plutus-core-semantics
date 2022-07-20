@@ -42,6 +42,9 @@ module UPLC-SEMANTICS
   rule <k> (con T:TypeConstant C:Constant) => < con T:TypeConstant C:Constant > ... </k>
        <env> _ => .Map </env>
 
+  rule <k> (builtin BN) => < builtin BN .List | #expectedArguments(BN) > ... </k>
+       <env> _ => .Map </env>
+
   rule <k> (lam X:UplcId M:Term) => < lam X M RHO > ... </k>
        <env> RHO => .Map </env>
 
@@ -62,16 +65,23 @@ module UPLC-SEMANTICS
   rule <k> V:Value ~> [ < lam X:UplcId M:Term RHO:Map > _] => M ... </k>
        <env> _ => #push( RHO, X, V ) </env>
 
-  rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List 1 > _] =>
+  rule <k> < builtin BN:BuiltinName L | ListItem(_:Quantification) E > ~> Force =>
+           < builtin BN L | E > ... </k>
+  requires notBool E ==K .List
+
+  rule <k> < builtin BN:BuiltinName L | ListItem(_:Quantification)   > ~> Force =>
+           #eval(BN, L) ... </k>
+
+  rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List | ListItem(I:TypeVariable) > _] =>
            #eval(BN, (L ListItem(V))) ... </k>
-  requires #typeCheck(L ListItem(V), #expectedArguments(BN))
+  requires V ~ I
 
-  rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List I:Int > _] =>
-           < builtin BN (L ListItem(V)) (I -Int 1) > ... </k>
-  requires I >Int 1 andBool #typeCheck(L ListItem(V), #expectedArguments(BN))
+  rule <k> V:Value ~> [ < builtin BN:BuiltinName L:List | ListItem(I:TypeVariable) E > _] =>
+           < builtin BN (L ListItem(V)) | E > ... </k>
+  requires V ~ I
+   andBool E =/=K .List
 
-  rule <k> V:Value ~> [ < builtin BN L _I > _] ~> _ => (error) </k>
-  requires notBool #typeCheck(L ListItem(V), #expectedArguments(BN))
+  rule <k> _:Value ~> [ < builtin _ _ | _ > _] ~> _ => (error) </k> [owise]
 
   rule <k> _V:Value ~> [ < con _ _ > _] ~> _ => (error) </k>
 

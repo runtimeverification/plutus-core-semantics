@@ -10,16 +10,6 @@ module UPLC-POLYMORPHIC-BUILTINS
   imports BOOL
   imports K-EQUAL
 ```
-
-## General error rule for polymorphic builtins
-
-All polymorphic builtins should be arguments to a call to `force`.
-
-```k
-  rule <k> (builtin _BN:PolyBuiltinName) ~> KI:KItem ~> _ => (error) </k>
-  requires KI =/=K Force
-```
-
 ## `ifThenElse`
 
 ```k

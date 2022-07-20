@@ -16,13 +16,18 @@ module UPLC-BUILTINS
   imports UPLC-STRING-BUILTINS
   imports UPLC-DATA-BUILTINS
 
-  rule <k> (builtin BN) => < builtin BN .List size(#expectedArguments(BN)) > ... </k>
-       <env> _ => .Map </env>
-    requires notBool isPolyBuiltinName(BN)
-     andBool notBool BN ==K chooseData
+  syntax Bool ::= Value        "~" TypeVariable [function, klabel(typeCompatible),    symbol]
+                | TypeConstant "~" TypeVariable [function, klabel(typeCompatibleAux), symbol]
+  rule < con A _ > ~ X                       => A ~ X
+  rule _:Value     ~ _:FullyPolyTypeVariable => true
+  rule _:Value     ~ _                       => false [owise]
 
-  rule <k> (builtin (_::PolyBuiltinName #Or chooseData) #as BN) ~> Force => < builtin BN .List size(#expectedArguments(BN)) > ... </k>
-       <env> _ => .Map </env>
+  rule A:TypeConstant ~ A                         => true
+  rule list(A)        ~ listTV(X)                 => A ~ X
+  rule pair(A)(B)     ~ pairTV(X, Y)              => A ~ X andBool B ~ Y
+  rule _:TypeConstant ~ _:PolyBuiltinTypeVariable => true
+  rule _:TypeConstant ~ _:FullyPolyTypeVariable   => true
+  rule _:TypeConstant ~ _                         => false [owise]
 
   rule #typeCheck(ListItem(< con T _ >)          L, ListItem(T:TypeConstant) TS:List) => #typeCheck(L, TS)
   rule #typeCheck(ListItem(_:Value)              L, ListItem(anyValue)       TS:List) => #typeCheck(L, TS)
