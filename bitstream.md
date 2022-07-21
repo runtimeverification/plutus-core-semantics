@@ -34,12 +34,14 @@ module BITSTREAM
 //-----------------------------------------------------
   rule advancePos(Bs) => BitStream(getBitStreamPos(Bs) +Int 1, getBitStreamBytes(Bs))
 
+  syntax BitStream ::= #advancePosNBits(Int, BitStream) [function]
+//----------------------------------------------------------------
+  rule #advancePosNBits(N, Bs) => BitStream(getBitStreamPos(Bs) +Int N, getBitStreamBytes(Bs))
 
   syntax Int ::= #readNBits(Int, BitStream) [function]
 //----------------------------------------------------
   rule #readNBits(0,  _) => 0
   rule #readNBits(N, Bs) => (getNextBit(Bs) <<Int N -Int 1) |Int #readNBits(N -Int 1, advancePos(Bs)) [owise]
-
 
   syntax Int ::= #nextByteBoundary(Int) [function]
 //------------------------------------------------

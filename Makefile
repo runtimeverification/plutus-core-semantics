@@ -211,6 +211,7 @@ kplutus_files := uplc.md \
                  bitstream.md \
                  uplc-builtins.md \
                  uplc-bytestring-builtins.md \
+                 uplc-cbor-parser.md \
                  uplc-crypto-builtins.md  \
                  uplc-integer-builtins.md \
                  uplc-semantics.md \

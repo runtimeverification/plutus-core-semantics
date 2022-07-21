@@ -3,6 +3,7 @@
 ```k
 require "domains.md"
 require "uplc-syntax.md"
+require "uplc-cbor-parser.md"
 require "uplc-environment.md"
 require "uplc-flat-parser.md"
 
@@ -10,10 +11,10 @@ module UPLC-CONFIGURATION
   imports INT
   imports MAP
   imports LIST
-  imports UPLC-SYNTAX
+  imports UPLC-CBOR-PARSER
+  imports UPLC-ENVIRONMENT
   imports UPLC-FLAT-PARSER
   imports UPLC-SYNTAX
-  imports UPLC-ENVIRONMENT
 
   syntax Frame ::= "Force"
                  | "[_" Term Map "]"
