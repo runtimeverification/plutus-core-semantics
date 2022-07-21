@@ -51,6 +51,25 @@ to the remaining bytestring, the major type and the argument of the head.
   requires N %Int 32 <=Int 23
 ```
 
+DData( S )
+----------
+
+Top-level function that decodes a CBOR bytestring to a pair of BitStream and TextualData. The sepc defines
+this function in a way that's not friendly for K and a straight translation will likely not work. This
+implementation matches on the major type returned by DHead to determine the constructor being decoded.
+
+```k
+  syntax BitStreamTextualPair ::= BTPair( BitStream, TextualData )
+
+  syntax BitStreamTextualPair ::= DData( Bytes ) [function]
+  syntax BitStreamTextualPair ::= DData( DHeadReturnValue ) [function]
+//-----------------------------------------------------------------------------
+  rule DData( CborBytes ) => DData( DHead( CborBytes[0], BitStream( 8, CborBytes ) ) )
+
+  rule DData( DH( S, 0, N ) ) => BTPair( S, Integer N )
+
+```
+
 ```k
 endmodule
 ```
