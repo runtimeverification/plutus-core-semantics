@@ -55,7 +55,7 @@ is used to keep track of the data emitted by the `trace` builtin.
     #in
       Int2Bytes( lengthString( INPUT ) /Int 2, String2Base( INPUT, 16 ), BE)
 
-  configuration <k> #handleProgram($PGM:Program) </k>
+  configuration <k> #decodeCBORBytestrings( #handleProgram( $PGM:Program ) ) </k>
                 <env> .Map </env>
                 <trace> .List </trace>
 ```

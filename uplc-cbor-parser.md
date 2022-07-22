@@ -65,9 +65,51 @@ implementation matches on the major type returned by DHead to determine the cons
   syntax BitStreamTextualPair ::= DData( DHeadReturnValue ) [function]
 //-----------------------------------------------------------------------------
   rule DData( CborBytes ) => DData( DHead( CborBytes[0], BitStream( 8, CborBytes ) ) )
-
   rule DData( DH( S, 0, N ) ) => BTPair( S, Integer N )
+```
 
+DecodeCborData( Bs )
+--------------------
+
+This function converts the input ByteString to a Bytes sort and calls `DData` with Bytes as the parameter.
+
+```k
+  syntax TextualData ::= DecodeCborData( ByteString ) [function]
+  rule DecodeCborData( Bs ) =>
+    #let
+      INPUT = trimByteString( Bs )
+    #in
+      #let
+        BTPair( _, T ) = DData( Int2Bytes( lengthString( INPUT ) /Int 2, String2Base( INPUT, 16 ), BE) )
+      #in
+        T
+```
+
+#DecodeCborByteStrings( Program )
+---------------------------------
+
+Decode function called after program load. This function traverses the entire input program and decodes
+any CBOR data constants to the textualData format. By the time the rewrite rules are applied, all data
+constants would be expressed as TextualData.
+
+```k
+  syntax Program ::= #decodeCBORBytestrings( Program ) [function]
+  syntax Term ::= #decodeCBORBytestrings( Term ) [function]
+
+  rule #decodeCBORBytestrings( ( program V:Version T:Term ) ) => ( program V #decodeCBORBytestrings( T ) )
+
+  rule #decodeCBORBytestrings( ( con data Bs:ByteString ) ) => ( con data { DecodeCborData(Bs) } )
+  rule #decodeCBORBytestrings( ( con T:TypeConstant C:Constant ) ) => ( con T C ) [owise]
+  rule #decodeCBORBytestrings( U:UplcId ) => U
+  rule #decodeCBORBytestrings( ( error ) ) => ( error )
+  rule #decodeCBORBytestrings( ( delay T ) ) => ( delay #decodeCBORBytestrings( T ) )
+  rule #decodeCBORBytestrings( ( force T ) ) => ( force #decodeCBORBytestrings( T ) )
+  rule #decodeCBORBytestrings( ( builtin Bn:BuiltinName ) ) => ( builtin Bn )
+  rule #decodeCBORBytestrings( ( lam U:UplcId T:Term ) ) => ( lam U #decodeCBORBytestrings( T ) )
+  rule #decodeCBORBytestrings( [ T Ts ] ) => [ #decodeCBORBytestrings( T ) #decodeCBORBytestrings( Ts ) ]
+
+  syntax TermList ::= #decodeCBORBytestrings( TermList ) [function]
+  rule #decodeCBORBytestrings( T:Term Ts:TermList ) => #decodeCBORBytestrings( T ) #decodeCBORBytestrings( Ts )
 ```
 
 ```k
