@@ -264,6 +264,40 @@ calculating the two lengths using the two different implementations:
     )
 ```
 
+#### Tail-recursive list-length
+
+We also implement a tail-recursive version of list-length, as follows:
+
+```k
+  syntax Term ::= "LIST_LEN_TAIL_REC" [alias]
+  rule LIST_LEN_TAIL_REC => [ REC LIST_LEN_TAIL ]
+
+  syntax Term ::= "LIST_LEN_TAIL" [alias]
+  rule LIST_LEN_TAIL => (lam f_lstLenTail LIST_LEN_TAIL_BODY)
+
+  syntax Term ::= "LIST_LEN_TAIL_BODY" [alias]
+  rule LIST_LEN_TAIL_BODY => (lam ac_0 (lam rest_0 LIST_LEN_TAIL_LOOP))
+
+  syntax Term ::= "LIST_LEN_TAIL_LOOP" [alias]
+  rule LIST_LEN_TAIL_LOOP =>
+  (force
+    [ (force (builtin ifThenElse))
+      [ (force (builtin nullList)) rest_0 ]
+      ( delay ac_0 )
+      ( delay
+          [ f_lstLenTail
+              [
+                (builtin addInteger)
+                ac_0
+                (con integer 1)
+              ]
+              [ (force (builtin tailList)) rest_0 ]
+          ]
+      )
+    ]
+  )
+```
+
 ### List-longer
 
 Finally, to demonstrate what invariants look like for functions with multiple parameters,
