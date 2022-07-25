@@ -59,13 +59,22 @@ this function in a way that's not friendly for K and a straight translation will
 implementation matches on the major type returned by DHead to determine the constructor being decoded.
 
 ```k
+  syntax Int ::= "UNSIGNED_INT_TYPE" [macro]
+               | "NEGATIVE_INT_TYPE" [macro]
+
+  rule UNSIGNED_INT_TYPE => 0
+  rule NEGATIVE_INT_TYPE => 1
+```
+
+```k
   syntax BitStreamTextualPair ::= BTPair( BitStream, TextualData )
 
   syntax BitStreamTextualPair ::= DData( Bytes ) [function]
   syntax BitStreamTextualPair ::= DData( DHeadReturnValue ) [function]
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------
   rule DData( CborBytes ) => DData( DHead( CborBytes[0], BitStream( 8, CborBytes ) ) )
-  rule DData( DH( S, 0, N ) ) => BTPair( S, Integer N )
+  rule DData( DH( S, UNSIGNED_INT_TYPE, N ) ) => BTPair( S, Integer N )
+  rule DData( DH( S, NEGATIVE_INT_TYPE, N ) ) => BTPair( S, Integer (-1 *Int N -Int 1) )
 ```
 
 DecodeCborData( Bs )
