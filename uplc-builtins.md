@@ -16,18 +16,13 @@ module UPLC-BUILTINS
   imports UPLC-STRING-BUILTINS
   imports UPLC-DATA-BUILTINS
 
-  syntax Bool ::= Value        "~" TypeVariable [function, klabel(typeCompatible),    symbol]
-                | TypeConstant "~" TypeVariable [function, klabel(typeCompatibleAux), symbol]
-  rule < con A _ > ~ X                       => A ~ X
-  rule _:Value     ~ _:FullyPolyTypeVariable => true
-  rule _:Value     ~ _                       => false [owise]
-
-  rule A:TypeConstant ~ A                         => true
-  rule list(A)        ~ listTV(X)                 => A ~ X
-  rule pair(A)(B)     ~ pairTV(X, Y)              => A ~ X andBool B ~ Y
-  rule _:TypeConstant ~ _:PolyBuiltinTypeVariable => true
-  rule _:TypeConstant ~ _:FullyPolyTypeVariable   => true
-  rule _:TypeConstant ~ _                         => false [owise]
+  syntax Bool ::= Value "~" TypeVariable [function, klabel(typeCompatible), symbol]
+  rule < con A _ > ~ A                         => true           // $\iota \in U$ and $V \in C_{\iota}$
+  rule _:Value     ~ _:PolyBuiltinTypeVariable => true           // $\iota \in V_{#}$
+  rule _:Value     ~ listTV(_)                 => true           // $\iota \in V_{#}$
+  rule _:Value     ~ pairTV(_,_)               => true           // $\iota \in V_{#}$
+  rule _:Value     ~ _:FullyPolyTypeVariable   => true           // $\iota \in V_{*}$
+  rule _:Value     ~ _                         => false [owise]
 
 endmodule
 ```
