@@ -72,11 +72,11 @@ invariants:
 
 which, in comparison with the [list-free invariants](list-free.md#invariants),
 exhibit only minor differences:
-- `< con integer sum(XS) >` instead of `< con list(integer) [ .ConstantList ] >`
+- `< con integer length(XS) >` instead of `< con list(integer) [ .ConstantList ] >`
    (semantic difference, as the two functions behave differently);
-- `f_lstSum` instead of `f_lstFree` (syntactic difference);
-- `LIST_SUM_LOOP` instead of `LIST_FREE_LOOP` (syntactic difference); and
-- `LIST_SUM_BODY` instead of `LIST_FREE_BODY` (syntactic difference).
+- `f_lstLen` instead of `f_lstFree` (syntactic difference);
+- `LIST_LEN_LOOP` instead of `LIST_FREE_LOOP` (syntactic difference); and
+- `LIST_LEN_BODY` instead of `LIST_FREE_BODY` (syntactic difference).
 
 This leads us to believe that the most part of `Z`- and `REC`-related
 invariants could be synthesised automatically, with the user only having
@@ -96,6 +96,38 @@ which takes two lists of integers and returns the sum of their lengths:
       < con integer length(XS) +Int length(YS) > ...
     </k>
     <env> _ => .Map </env>
+```
+
+## Tail-recursive list-length
+
+We also prove correctness of the tail-recursive list-length algorithm:
+
+```k
+  claim
+    <k>
+      [ LIST_LEN_TAIL_REC (con integer 0) (con list(integer) [ XS:ConstantList ]) ]
+        =>
+      < con integer length(XS) > ...
+    </k>
+    <env> _ => .Map </env>
+```
+
+using the appropriate invariant
+
+```k
+  claim
+    <k>
+      LIST_LEN_TAIL_LOOP
+        =>
+      < con integer AC +Int length(XS) > ...
+    </k>
+    <env>
+      RHO:Map
+        [ f_lstLenTail <- < lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ] RHO_1 [ s_0 <- REC_BODY_V RHO_1 ] > ]
+        [ ac_0 <- < con integer AC:Int > ]
+        [ rest_0 <- < con list ( integer ) [ XS:ConstantList ] > ] => .Map
+    </env>
+    requires RHO_1 ==K RHO [ f_0 <- < lam f_lstLenTail LIST_LEN_TAIL_BODY RHO > ]
 ```
 
 ```k
