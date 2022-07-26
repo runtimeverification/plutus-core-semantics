@@ -7,7 +7,7 @@ module UPLC-INTEGER-BUILTINS
   imports UPLC-CONFIGURATION
   imports K-EQUAL
 
-  rule #typeSignature(_BN::IntegerBuiltinName) => ListItem(integer) ListItem(integer)
+  rule #expectedArguments(_BN::IntegerBuiltinName) => ListItem(integer) ListItem(integer)
 ```
 
 ```symbolic

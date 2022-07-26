@@ -20,7 +20,7 @@ module UPLC-DISCHARGE
 
   rule discharge(< delay T:Term RHO:Map >) => (delay dischargeTerm(T, RHO)) 
 
-  rule discharge(< builtin BN:BuiltinName L:List _ >) =>
+  rule discharge(< builtin BN:BuiltinName L:List | _ >) =>
        dischargeApp(BN, L)
 
   rule dischargeApp(BN:PolyBuiltinName, ListItem(V:Value) L) =>

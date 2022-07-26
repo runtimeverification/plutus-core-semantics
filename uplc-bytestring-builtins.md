@@ -14,7 +14,7 @@ module UPLC-BYTESTRING-BUILTINS
 
 
 ```k
-  rule #typeSignature(appendByteString) => ListItem(bytestring) ListItem(bytestring)
+  rule #expectedArguments(appendByteString) => ListItem(bytestring) ListItem(bytestring)
 
   rule <k> #eval(appendByteString,
                      (ListItem(< con bytestring B1:ByteString >)
@@ -25,7 +25,7 @@ module UPLC-BYTESTRING-BUILTINS
 ## `consByteString`
 
 ```k
-  rule #typeSignature(consByteString) => ListItem(integer) ListItem(bytestring)
+  rule #expectedArguments(consByteString) => ListItem(integer) ListItem(bytestring)
  
   rule <k> #eval(consByteString,
                      (ListItem(< con integer I:Int >)
@@ -36,7 +36,7 @@ module UPLC-BYTESTRING-BUILTINS
 ## `sliceByteString`
 
 ```k
-  rule #typeSignature(sliceByteString) => ListItem(integer) ListItem(integer) ListItem(bytestring)
+  rule #expectedArguments(sliceByteString) => ListItem(integer) ListItem(integer) ListItem(bytestring)
  
   rule <k> #eval(sliceByteString,
                     (ListItem(< con integer I1:Int >)
@@ -48,7 +48,7 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lengthOfByteString`
 
 ```k
-  rule #typeSignature(lengthOfByteString) => ListItem(bytestring)
+  rule #expectedArguments(lengthOfByteString) => ListItem(bytestring)
  
   rule <k> #eval(lengthOfByteString,
                      ListItem(< con bytestring B:ByteString >)) =>
@@ -58,7 +58,7 @@ module UPLC-BYTESTRING-BUILTINS
 ## `indexByteString`
 
 ```k
-  rule #typeSignature(indexByteString) => ListItem(bytestring) ListItem(integer)
+  rule #expectedArguments(indexByteString) => ListItem(bytestring) ListItem(integer)
 
   rule <k> #eval(indexByteString,
                      (ListItem(< con bytestring B:ByteString >)
@@ -70,7 +70,7 @@ module UPLC-BYTESTRING-BUILTINS
 ## `equalsByteString`
 
 ```k
-  rule #typeSignature(equalsByteString) => ListItem(bytestring) ListItem(bytestring)
+  rule #expectedArguments(equalsByteString) => ListItem(bytestring) ListItem(bytestring)
 
   rule <k> #eval(equalsByteString,
                      (ListItem(< con bytestring B1:ByteString >)
@@ -88,7 +88,7 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lessThanByteString`
 
 ```k
-  rule #typeSignature(lessThanByteString) => ListItem(bytestring) ListItem(bytestring)
+  rule #expectedArguments(lessThanByteString) => ListItem(bytestring) ListItem(bytestring)
 
   rule <k> #eval(lessThanByteString,
                      (ListItem(< con bytestring B1:ByteString >)
@@ -106,7 +106,7 @@ module UPLC-BYTESTRING-BUILTINS
 ## `lessThanEqualsByteString`
 
 ```k
-  rule #typeSignature(lessThanEqualsByteString) => ListItem(bytestring) ListItem(bytestring)
+  rule #expectedArguments(lessThanEqualsByteString) => ListItem(bytestring) ListItem(bytestring)
 
   rule <k> #eval(lessThanEqualsByteString,
                      (ListItem(< con bytestring B1:ByteString >)

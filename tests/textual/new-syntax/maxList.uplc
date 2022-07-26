@@ -2,7 +2,7 @@
   [ (lam maxList [ maxList (con list(integer) [ 1, 2, 24, 6, 3, 12, 3, 18, 100, 4 ] ) ])
     [ (lam f [(lam x [f (lam y [x x y])]) (lam x [f (lam y [x x y])])])
       (lam max (lam l
-        (force [ (force (builtin chooseList)) l
+        (force [ (force (force (builtin chooseList))) l
           (delay (con integer 0))
           (delay [ (lam hd (lam maxtail
                    [ (force (builtin ifThenElse))

@@ -10,20 +10,10 @@ module UPLC-POLYMORPHIC-BUILTINS
   imports BOOL
   imports K-EQUAL
 ```
-
-## General error rule for polymorphic builtins
-
-All polymorphic builtins should be arguments to a call to `force`.
-
-```k
-  rule <k> (builtin _BN:PolyBuiltinName) ~> KI:KItem ~> _ => (error) </k>
-  requires KI =/=K Force
-```
-
 ## `ifThenElse`
 
 ```k
-  rule #typeSignature(ifThenElse) => ListItem(bool) ListItem(anyValue) ListItem(anyValue)
+  rule #expectedArguments(ifThenElse) => ListItem(forall.a*) ListItem(bool) ListItem(a*) ListItem(a*)
 
   rule <k> #eval(ifThenElse,
                    (ListItem(< con bool True >)
@@ -39,7 +29,7 @@ All polymorphic builtins should be arguments to a call to `force`.
 ## `chooseUnit`
 
 ```k
-  rule #typeSignature(chooseUnit) => ListItem(unit) ListItem(anyValue)
+  rule #expectedArguments(chooseUnit) => ListItem(forall.a*) ListItem(unit) ListItem(a*)
 
   rule <k> #eval(chooseUnit,
                    (ListItem(< con unit () >)
@@ -54,7 +44,7 @@ might as well simply return `true` now for `fstPair` as `#eval` would
 return an error if `fstPair`'s argument is not a pair.
 
 ```k
-  rule #typeSignature(fstPair) => ListItem(anyPair)
+  rule #expectedArguments(fstPair) => ListItem(forall.a#) ListItem(forall.b#) ListItem(pairTV(a#, b#))
 
   rule <k> #eval(fstPair,
               ListItem(< con pair (T1:TypeConstant) (_T2:TypeConstant)
@@ -69,7 +59,7 @@ might as well simply return `true` now for `sndPair` as `#eval` would
 return an error if `sndPair`'s argument is not a pair.
 
 ```k
-  rule #typeSignature(sndPair) => ListItem(anyPair)
+  rule #expectedArguments(sndPair) => ListItem(forall.a#) ListItem(forall.b#) ListItem(pairTV(a#, b#))
 
   rule <k> #eval(sndPair,
               ListItem(< con pair (_T1:TypeConstant) (T2:TypeConstant)
@@ -79,7 +69,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `chooseList`
 
 ```k
-  rule #typeSignature(chooseList) => ListItem(anyList) ListItem(anyValue) ListItem(anyValue)
+  rule #expectedArguments(chooseList) => ListItem(forall.a#) ListItem(forall.b*) ListItem(listTV(a#)) ListItem(b*) ListItem(b*)
 
   rule <k> #eval(chooseList,
                      (ListItem(< con list(_T:TypeConstant) [ .ConstantList ] >)
@@ -96,7 +86,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `mkCons`
 
 ```k
-  rule #typeSignature(mkCons) => ListItem(mkConsCase) ListItem(mkConsCase)
+  rule #expectedArguments(mkCons) => ListItem(forall.a#) ListItem(a#) ListItem(listTV(a#))
 
   rule <k> #eval(mkCons,
               (ListItem(< con T:TypeConstant C:Constant >)
@@ -107,7 +97,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `headList`
 
 ```k
-  rule #typeSignature(headList) => ListItem(anyList)
+  rule #expectedArguments(headList) => ListItem(forall.a#) ListItem(listTV(a#))
 
   rule <k> #eval(headList,
               ListItem(< con list(T:TypeConstant)
@@ -118,7 +108,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `tailList`
 
 ```k
-  rule #typeSignature(tailList) => ListItem(anyList)
+  rule #expectedArguments(tailList) => ListItem(forall.a#) ListItem(listTV(a#))
 
   rule <k> #eval(tailList,
               ListItem(< con list(T:TypeConstant) [ .ConstantList ] >)) =>
@@ -132,7 +122,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `nullList`
 
 ```k
-  rule #typeSignature(nullList) => ListItem(anyList)
+  rule #expectedArguments(nullList) => ListItem(forall.a#) ListItem(listTV(a#))
 
   rule <k> #eval(nullList,
               ListItem(< con list(_T:TypeConstant) [ .ConstantList ] >)) =>
@@ -147,7 +137,7 @@ return an error if `sndPair`'s argument is not a pair.
 ## `trace`
 
 ```k
-  rule #typeSignature(trace) => ListItem(string) ListItem(anyValue)
+  rule #expectedArguments(trace) => ListItem(forall.a*) ListItem(string) ListItem(a*)
 
   rule <k> #eval(trace,
               (ListItem(< con string S >)

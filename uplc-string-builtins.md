@@ -15,7 +15,7 @@ module UPLC-STRING-BUILTINS
 ## `encodeUtf8`
 
 ```k
-  rule #typeSignature(encodeUtf8) => ListItem(string)
+  rule #expectedArguments(encodeUtf8) => ListItem(string)
 
   rule <k> #eval(encodeUtf8, ListItem(< con string S:String >)) =>
            < con bytestring #encodeUtf8(S) > ... </k>
@@ -24,7 +24,7 @@ module UPLC-STRING-BUILTINS
 ## `decodeUtf8`
 
 ```k 
-  rule #typeSignature(decodeUtf8) => ListItem(bytestring)
+  rule #expectedArguments(decodeUtf8) => ListItem(bytestring)
 
   rule <k> #eval(decodeUtf8, ListItem(< con bytestring B:ByteString >)) =>
            < con string #decodeUtf8(B) > ... </k>
@@ -33,7 +33,7 @@ module UPLC-STRING-BUILTINS
 ## `appendString`
 
 ```k 
-  rule #typeSignature(appendString) => ListItem(string) ListItem(string)
+  rule #expectedArguments(appendString) => ListItem(string) ListItem(string)
 
   rule <k> #eval(appendString,
               (ListItem(< con string S1:String >)
@@ -44,7 +44,7 @@ module UPLC-STRING-BUILTINS
 ## `equalsString`
 
 ```k 
-  rule #typeSignature(equalsString) => ListItem(string) ListItem(string)
+  rule #expectedArguments(equalsString) => ListItem(string) ListItem(string)
 
   rule <k> #eval(equalsString,
               (ListItem(< con string S1:String >)

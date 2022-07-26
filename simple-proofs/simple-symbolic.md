@@ -18,11 +18,6 @@ module SIMPLE-SYMBOLIC
             (error) </k>
         <env> _ => .Map </env>
   requires TN =/=K integer
-
-  claim <k> [ [ (builtin _:PolyBuiltinName) _:Term ]
-                                            _:Term ] ~> T:Term =>
-            (error) </k>
-  requires T =/=K Force
 ```
  Removing the use of syntactic lists somehow makes this claim pass
 

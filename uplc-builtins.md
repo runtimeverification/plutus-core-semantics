@@ -16,22 +16,13 @@ module UPLC-BUILTINS
   imports UPLC-STRING-BUILTINS
   imports UPLC-DATA-BUILTINS
 
-  rule <k> (builtin BN) => < builtin BN .List size(#typeSignature(BN)) > ... </k>
-       <env> _ => .Map </env>
-    requires notBool isPolyBuiltinName(BN)
-     andBool notBool BN ==K chooseData
-
-  rule <k> (builtin (_::PolyBuiltinName #Or chooseData) #as BN) ~> Force => < builtin BN .List size(#typeSignature(BN)) > ... </k>
-       <env> _ => .Map </env>
-
-  rule #typeCheck(ListItem(< con T _ >)          L, ListItem(T:TypeConstant) TS:List) => #typeCheck(L, TS)
-  rule #typeCheck(ListItem(_:Value)              L, ListItem(anyValue)       TS:List) => #typeCheck(L, TS)
-  rule #typeCheck(ListItem(< con list(_) _ >)    L, ListItem(anyList)        TS:List) => #typeCheck(L, TS)
-  rule #typeCheck(ListItem(< con pair(_)(_) _ >) L, ListItem(anyPair)        TS:List) => #typeCheck(L, TS)
-  rule #typeCheck(ListItem(< con T _ >)          L, ListItem(mkConsCase)    _TS:List) => #typeCheck(L, ListItem(list(T)))
-
-  rule #typeCheck(.List, _) => true
-  rule #typeCheck(    _, _) => false [owise]
+  syntax Bool ::= Value "~" TypeVariable [function, klabel(typeCompatible), symbol]
+  rule < con A _ > ~ A                         => true           // $\iota \in U$ and $V \in C_{\iota}$
+  rule _:Value     ~ _:PolyBuiltinTypeVariable => true           // $\iota \in V_{#}$
+  rule _:Value     ~ listTV(_)                 => true           // $\iota \in V_{#}$
+  rule _:Value     ~ pairTV(_,_)               => true           // $\iota \in V_{#}$
+  rule _:Value     ~ _:FullyPolyTypeVariable   => true           // $\iota \in V_{*}$
+  rule _:Value     ~ _                         => false [owise]
 
 endmodule
 ```

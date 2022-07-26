@@ -3,7 +3,7 @@
     [ (lam maxListAux (lam l [ maxListAux l (con integer 0) ]))
       [ (lam f [(lam x [f (lam y [x x y])]) (lam x [f (lam y [x x y])])])
         (lam max (lam l (lam cont
-          (force [ (force (builtin chooseList))
+          (force [ (force (force (builtin chooseList)))
                    l
           (delay   cont)
           (delay   [ max
