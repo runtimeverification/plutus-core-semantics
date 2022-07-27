@@ -149,6 +149,39 @@ Top-level parsing function for bytestrings.
     [owise]
 ```
 
+DZ( S )
+-------
+
+Decode an integer.
+
+```k
+  syntax BitStreamIntPair ::= DZ( BitStream ) [function]
+//------------------------------------------------------
+  rule DZ( S ) => DZ( DHead( #readNBits( 8, S ), #advancePosNBits( 8, S ) ) )
+
+  syntax BitStreamIntPair ::= DZ( DHeadReturnValue ) [function]
+//------------------------------------------------------
+
+  rule DZ( DH( S, UNSIGNED_INT_TYPE, N ) ) => BIPair( S, N )
+  rule DZ( DH( S, NEGATIVE_INT_TYPE, N ) ) => BIPair( S, -1 *Int N -Int 1 )
+```
+
+Integers that span over 64 bits.
+
+```k
+  rule DZ( DH( S, TAG_TYPE, POSITIVE_INT_TAG_NUMBER) ) =>
+    #let
+      BBPair( S1, B ) = DBStar( S )
+    #in
+      BIPair( S1, Bytes2Int( B, BE, Unsigned ) )
+
+  rule DZ( DH( S, TAG_TYPE, NEGATIVE_INT_TAG_NUMBER ) ) =>
+    #let
+      BBPair( S1, B ) = DBStar( S )
+    #in
+      BIPair( S1, -1 *Int Bytes2Int( B, BE, Unsigned ) -Int 1 )
+```
+
 DData( S )
 ----------
 
@@ -170,7 +203,7 @@ implementation matches on the major type returned by DHead to determine the cons
 
 TAG_TYPE has a "tag number"
 
-```
+```k
   syntax Int ::= "POSITIVE_INT_TAG_NUMBER" [macro]
                | "NEGATIVE_INT_TAG_NUMBER" [macro]
 
@@ -183,31 +216,22 @@ TAG_TYPE has a "tag number"
 
   syntax BitStreamTextualPair ::= DData( Bytes ) [function]
   syntax BitStreamTextualPair ::= DData( DHeadReturnValue ) [function]
-//--------------------------------------------------------------------
+//---------------------------------------------------------------------------
   rule DData( CborBytes ) => DData( DHead( CborBytes[0], BitStream( 8, CborBytes ) ) )
 ```
 
-Integers that span less than 64 bits.
+Matches that indicate that an integer should be parsed:
 
 ```k
-  rule DData( DH( S, UNSIGNED_INT_TYPE, N ) ) => BTPair( S, Integer N )
-  rule DData( DH( S, NEGATIVE_INT_TYPE, N ) ) => BTPair( S, Integer ( -1 *Int N -Int 1 ) )
-```
-
-Integers that span over 64 bits.
-
-```k
-  rule DData( DH( S, TAG_TYPE, POSITIVE_INT_TAG_NUMBER) ) =>
+  rule DData( DH( BitStream( _ , Bs ), MAJOR_TYPE, ARGUMENT ) ) =>
     #let
-      BBPair( S1, B ) = DBStar( S )
+      BIPair( S1, N ) = DZ( BitStream( 0, Bs ) )
     #in
-      BTPair( S1, Integer Bytes2Int( B, BE, Unsigned ) )
-
-  rule DData( DH( S, TAG_TYPE, NEGATIVE_INT_TAG_NUMBER ) ) =>
-    #let
-      BBPair( S1, B ) = DBStar( S )
-    #in
-      BTPair( S1, Integer (-1 *Int Bytes2Int( B, BE, Unsigned ) -Int 1 ) )
+      BTPair( S1, Integer N )
+  requires MAJOR_TYPE ==Int UNSIGNED_INT_TYPE orBool
+           MAJOR_TYPE ==Int NEGATIVE_INT_TYPE orBool
+           (MAJOR_TYPE ==Int TAG_TYPE andBool ARGUMENT ==Int POSITIVE_INT_TAG_NUMBER) orBool
+           (MAJOR_TYPE ==Int TAG_TYPE andBool ARGUMENT ==Int NEGATIVE_INT_TAG_NUMBER)
 ```
 
 DecodeCborData( Bs )
