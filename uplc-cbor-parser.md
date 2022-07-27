@@ -160,10 +160,22 @@ implementation matches on the major type returned by DHead to determine the cons
   syntax Int ::= "UNSIGNED_INT_TYPE" [macro]
                | "NEGATIVE_INT_TYPE" [macro]
                | "BYTESTRING_TYPE"   [macro]
+               | "TAG_TYPE"          [macro]
 
   rule UNSIGNED_INT_TYPE => 0
   rule NEGATIVE_INT_TYPE => 1
   rule BYTESTRING_TYPE   => 2
+  rule TAG_TYPE          => 6
+```
+
+TAG_TYPE has a "tag number"
+
+```
+  syntax Int ::= "POSITIVE_INT_TAG_NUMBER" [macro]
+               | "NEGATIVE_INT_TAG_NUMBER" [macro]
+
+  rule POSITIVE_INT_TAG_NUMBER => 2
+  rule NEGATIVE_INT_TAG_NUMBER => 3
 ```
 
 ```k
@@ -173,8 +185,29 @@ implementation matches on the major type returned by DHead to determine the cons
   syntax BitStreamTextualPair ::= DData( DHeadReturnValue ) [function]
 //--------------------------------------------------------------------
   rule DData( CborBytes ) => DData( DHead( CborBytes[0], BitStream( 8, CborBytes ) ) )
+```
+
+Integers that span less than 64 bits.
+
+```k
   rule DData( DH( S, UNSIGNED_INT_TYPE, N ) ) => BTPair( S, Integer N )
   rule DData( DH( S, NEGATIVE_INT_TYPE, N ) ) => BTPair( S, Integer ( -1 *Int N -Int 1 ) )
+```
+
+Integers that span over 64 bits.
+
+```k
+  rule DData( DH( S, TAG_TYPE, POSITIVE_INT_TAG_NUMBER) ) =>
+    #let
+      BBPair( S1, B ) = DBStar( S )
+    #in
+      BTPair( S1, Integer Bytes2Int( B, BE, Unsigned ) )
+
+  rule DData( DH( S, TAG_TYPE, NEGATIVE_INT_TAG_NUMBER ) ) =>
+    #let
+      BBPair( S1, B ) = DBStar( S )
+    #in
+      BTPair( S1, Integer (-1 *Int Bytes2Int( B, BE, Unsigned ) -Int 1 ) )
 ```
 
 DecodeCborData( Bs )

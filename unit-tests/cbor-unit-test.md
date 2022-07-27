@@ -40,5 +40,16 @@ ByteStrings longer than 64 bytes
 
   claim <k> simplify( DBStar( BitStream( 0, #65_BYTES_OF_0_WITH_HEAD ) ) ) =>
             simplified( BBPair( BitStream ( 560, #65_BYTES_OF_0_WITH_HEAD ), Int2Bytes( 65, 0, BE ) ) ) </k>
+```
+
+Integers with size larger than 64 bits.
+
+```k
+  claim <k> simplify( DData( #LARGE_POSITIVE_INT ) ) =>
+            simplified( BTPair( BitStream( lengthBytes( #LARGE_POSITIVE_INT ) *Int 8 , #LARGE_POSITIVE_INT ),
+                                Integer 18446744073709551616 ) ) </k>
+  claim <k> simplify( DData( #LARGE_NEGATIVE_INT ) ) =>
+            simplified( BTPair( BitStream( lengthBytes( #LARGE_NEGATIVE_INT ) *Int 8 , #LARGE_NEGATIVE_INT ),
+                                Integer -18446744073709551617 ) ) </k>
 endmodule
 ```
