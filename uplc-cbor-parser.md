@@ -187,7 +187,8 @@ DData( S )
 
 Top-level function that decodes a CBOR bytestring to a pair of BitStream and TextualData. The sepc defines
 this function in a way that's not friendly for K and a straight translation will likely not work. This
-implementation matches on the major type returned by DHead to determine the constructor being decoded.
+implementation matches on the major type and their argument returned by DHead to determine the constructor
+to decode.
 
 ```k
   syntax Int ::= "UNSIGNED_INT_TYPE" [macro]
@@ -220,7 +221,7 @@ TAG_TYPE has a "tag number"
   rule DData( CborBytes ) => DData( DHead( CborBytes[0], BitStream( 8, CborBytes ) ) )
 ```
 
-Matches that indicate that an integer should be parsed:
+Parsing an Integer data:
 
 ```k
   rule DData( DH( BitStream( _ , Bs ), MAJOR_TYPE, ARGUMENT ) ) =>
