@@ -74,7 +74,7 @@ implementation matches on the major type returned by DHead to determine the cons
 //--------------------------------------------------------------------
   rule DData( CborBytes ) => DData( DHead( CborBytes[0], BitStream( 8, CborBytes ) ) )
   rule DData( DH( S, UNSIGNED_INT_TYPE, N ) ) => BTPair( S, Integer N )
-  rule DData( DH( S, NEGATIVE_INT_TYPE, N ) ) => BTPair( S, Integer (-1 *Int N -Int 1) )
+  rule DData( DH( S, NEGATIVE_INT_TYPE, N ) ) => BTPair( S, Integer ( -1 *Int N -Int 1 ) )
 ```
 
 DecodeCborData( Bs )
@@ -89,7 +89,7 @@ This function converts the input ByteString to a Bytes sort and calls `DData` wi
       INPUT = trimByteString( Bs )
     #in
       #let
-        BTPair( _, T ) = DData( Int2Bytes( lengthString( INPUT ) /Int 2, String2Base( INPUT, 16 ), BE) )
+        BTPair( _, T ) = DData( Int2Bytes( lengthString( INPUT ) /Int 2, String2Base( INPUT, 16 ), BE ) )
       #in
         T
 ```
