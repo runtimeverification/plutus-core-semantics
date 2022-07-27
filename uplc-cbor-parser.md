@@ -51,6 +51,104 @@ to the remaining bytestring, the major type and the argument of the head.
   requires N %Int 32 <=Int 23
 ```
 
+DIndef( N, S )
+--------------
+
+Decode heads for indefinite items.
+
+```k
+  syntax BitStreamIntPair ::= DIndef( Int, BitStream ) [function]
+//---------------------------------------------------------------
+  rule DIndef( N, S ) =>
+    #let
+      M = ( N -Int 31 ) /Int 32
+    #in
+      BIPair( S, M )
+  requires 2 <=Int ( N -Int 31 ) /Int 32
+   andBool ( N -Int 31 ) /Int 32 <=Int 5
+```
+
+DnBytes( N, S )
+---------------
+
+Read N bytes from S.
+
+```k
+  syntax BitStreamBytesPair ::= BBPair( BitStream, Bytes )
+
+  syntax BitStreamBytesPair ::= DnBytes( Int, BitStream ) [function]
+//------------------------------------------------------------------
+  rule DnBytes( N, S ) =>
+    #let
+      BitLen = N *Int 8
+    #in
+      #let
+        Data = #readNBits( BitLen, S )
+      #in
+        BBPair( #advancePosNBits(BitLen, S), Int2Bytes(N, Data, BE) )
+```
+
+DBlock( S )
+-----------
+
+Extract a bytestring of length at most 64.
+
+```k
+  syntax BitStreamBytesPair ::= DBlock( BitStream ) [function]
+//------------------------------------------------------------
+  rule DBlock( S ) => DBlock( DHead( #readNBits( 8, S ), #advancePosNBits( 8, S ) ) )
+
+  syntax BitStreamBytesPair ::= DBlock( DHeadReturnValue ) [function]
+//-------------------------------------------------------------------
+  rule DBlock( DH( S1, BYTESTRING_TYPE, N ) ) => DnBytes( N, S1 )
+    requires N <=Int 64
+```
+
+DBlocks( S )
+------------
+
+Decode a sequence of blocks.
+
+```k
+  syntax BitStreamBytesPair ::= DBlocks( BitStream ) [function]
+//-------------------------------------------------------------
+  rule DBlocks( S ) => DBlocks( S, .Bytes )
+
+  syntax BitStreamBytesPair ::= DBlocks( BitStream, Bytes ) [function]
+//--------------------------------------------------------------------
+  rule DBlocks( S, Bs ) =>
+    #let
+      BBPair( Bits, DataBytes ) = DBlock( S )
+    #in
+      DBlocks( Bits, Bs +Bytes DataBytes )
+
+  rule DBlocks( S, Bs ) => BBPair( #advancePosNBits( 8, S ) , Bs +Bytes .Bytes )
+    requires #readNBits( 8, S ) ==Int BYTESTRING_TERMINATOR
+
+  syntax Int ::= "BYTESTRING_TERMINATOR" [macro]
+  rule BYTESTRING_TERMINATOR => 255
+```
+
+
+DBStar( S )
+-----------
+
+Top-level parsing function for bytestrings.
+
+```k
+  syntax BitStreamBytesPair ::= DBStar( BitStream ) [function]
+//------------------------------------------------------------
+  rule DBStar( Bs ) => DBStar( #readNBits( 8, Bs ), Bs )
+
+  syntax BitStreamBytesPair ::= DBStar( Int,  BitStream ) [function]
+//------------------------------------------------------------------
+  rule DBStar( Head, Bs ) => DBlocks( #advancePosNBits( 8, Bs ) )
+    requires ( Head -Int 31 ) /Int 32 ==Int 2
+
+  rule DBStar( _, Bs ) => DBlock( Bs )
+    [owise]
+```
+
 DData( S )
 ----------
 
@@ -61,9 +159,11 @@ implementation matches on the major type returned by DHead to determine the cons
 ```k
   syntax Int ::= "UNSIGNED_INT_TYPE" [macro]
                | "NEGATIVE_INT_TYPE" [macro]
+               | "BYTESTRING_TYPE"   [macro]
 
   rule UNSIGNED_INT_TYPE => 0
   rule NEGATIVE_INT_TYPE => 1
+  rule BYTESTRING_TYPE   => 2
 ```
 
 ```k

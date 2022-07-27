@@ -18,6 +18,27 @@ module CBOR-UNIT-TEST
 
   claim <k> simplify( DData( String2Bytes( "\x3a\x3a\xde\x68\xb0" ) ) ) =>
     simplified( BTPair( BitStream ( 40 , b"::\xdeh\xb0" ) , Integer -987654321 ) ) </k>
+```
 
+ByteStrings of length 0 - 64
+
+```k
+  claim <k> simplify( DBlock( BitStream( 0, String2Bytes( "\x40" ) ) ) ) =>
+    simplified( BBPair( BitStream ( 8 , b"\x40" ) , String2Bytes("") ) ) </k>
+
+  claim <k> simplify( DBlock( BitStream( 0, String2Bytes( "\x58\x40" ) +Bytes Int2Bytes( 64, 1234567890, BE ) ) ) ) =>
+    simplified( BBPair(
+                  BitStream( 528 , String2Bytes( "\x58\x40" ) +Bytes Int2Bytes( 64, 1234567890, BE )),
+                  Int2Bytes( 64, 1234567890, BE ) ) ) </k>
+```
+
+ByteStrings longer than 64 bytes
+
+```k
+  claim <k> simplify( DBlocks( BitStream( 0, #65_BYTES_OF_0 ) ) ) =>
+            simplified( BBPair( BitStream ( 552 , #65_BYTES_OF_0 ), Int2Bytes( 65, 0, BE ) ) ) </k>
+
+  claim <k> simplify( DBStar( BitStream( 0, #65_BYTES_OF_0_WITH_HEAD ) ) ) =>
+            simplified( BBPair( BitStream ( 560, #65_BYTES_OF_0_WITH_HEAD ), Int2Bytes( 65, 0, BE ) ) ) </k>
 endmodule
 ```
