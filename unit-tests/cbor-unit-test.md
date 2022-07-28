@@ -48,8 +48,17 @@ Integers with size larger than 64 bits.
   claim <k> simplify( DData( #LARGE_POSITIVE_INT ) ) =>
             simplified( BTPair( BitStream( lengthBytes( #LARGE_POSITIVE_INT ) *Int 8 , #LARGE_POSITIVE_INT ),
                                 Integer 18446744073709551616 ) ) </k>
+
   claim <k> simplify( DData( #LARGE_NEGATIVE_INT ) ) =>
             simplified( BTPair( BitStream( lengthBytes( #LARGE_NEGATIVE_INT ) *Int 8 , #LARGE_NEGATIVE_INT ),
                                 Integer -18446744073709551617 ) ) </k>
+```
+
+ByteString constructors
+
+```k
+  claim <k> simplify( DData( #BYTESTRING_BYTES ) ) =>
+            simplified( BTPair( BitStream( lengthBytes( #BYTESTRING_BYTES ) *Int 8 , #BYTESTRING_BYTES ),
+                                ByteString String2ByteString( "#000102030405060708090a0b0c0d0e0f" ) ) ) </k>
 endmodule
 ```

@@ -2,11 +2,13 @@
 
 ```k
 requires "bitstream.md"
+requires "uplc-flat-parser.md"
 requires "uplc-syntax.md"
 
 module UPLC-CBOR-PARSER
   imports BITSTREAM
   imports BYTES
+  imports FLAT-STRING-HELPER
   imports INT
   imports UPLC-SYNTAX
 ```
@@ -233,6 +235,18 @@ Parsing an Integer data:
            MAJOR_TYPE ==Int NEGATIVE_INT_TYPE orBool
            (MAJOR_TYPE ==Int TAG_TYPE andBool ARGUMENT ==Int POSITIVE_INT_TAG_NUMBER) orBool
            (MAJOR_TYPE ==Int TAG_TYPE andBool ARGUMENT ==Int NEGATIVE_INT_TAG_NUMBER)
+```
+
+Parsing a ByteString data:
+
+```k
+  rule DData( DH( BitStream( _ , Bs ), MAJOR_TYPE, _ ) ) =>
+    #let
+      BBPair( S1, B ) = DBStar( BitStream( 0, Bs ) )
+    #in
+      BTPair( S1, ByteString String2ByteString( "#" +String Bytes2StringBase16( B ) ) )
+  requires MAJOR_TYPE ==Int BYTESTRING_TYPE orBool
+           ( Bs[0] -Int 31 ) /Int 32 ==Int 2
 ```
 
 DecodeCborData( Bs )
