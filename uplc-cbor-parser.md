@@ -217,18 +217,18 @@ TAG_TYPE has a "tag number"
 ```k
   syntax BitStreamTextualPair ::= BTPair( BitStream, TextualData )
 
-  syntax BitStreamTextualPair ::= DData( Bytes ) [function]
-  syntax BitStreamTextualPair ::= DData( DHeadReturnValue ) [function]
+  syntax BitStreamTextualPair ::= DData( BitStream ) [function]
+  syntax BitStreamTextualPair ::= DData( DHeadReturnValue, BitStream ) [function]
 //---------------------------------------------------------------------------
-  rule DData( CborBytes ) => DData( DHead( CborBytes[0], BitStream( 8, CborBytes ) ) )
+  rule DData( S ) => DData( DHead( #readNBits( 8 , S ), #advancePosNBits( 8, S ) ), S )
 ```
 
 Parsing an Integer data:
 
 ```k
-  rule DData( DH( BitStream( _ , Bs ), MAJOR_TYPE, ARGUMENT ) ) =>
+  rule DData( DH(  _, MAJOR_TYPE, ARGUMENT ), S ) =>
     #let
-      BIPair( S1, N ) = DZ( BitStream( 0, Bs ) )
+      BIPair( S1, N ) = DZ( S )
     #in
       BTPair( S1, Integer N )
   requires MAJOR_TYPE ==Int UNSIGNED_INT_TYPE orBool
@@ -240,13 +240,13 @@ Parsing an Integer data:
 Parsing a ByteString data:
 
 ```k
-  rule DData( DH( BitStream( _ , Bs ), MAJOR_TYPE, _ ) ) =>
+  rule DData( DH(  _, MAJOR_TYPE, _ ), S ) =>
     #let
-      BBPair( S1, B ) = DBStar( BitStream( 0, Bs ) )
+      BBPair( S1, B ) = DBStar( S )
     #in
       BTPair( S1, ByteString String2ByteString( "#" +String Bytes2StringBase16( B ) ) )
   requires MAJOR_TYPE ==Int BYTESTRING_TYPE orBool
-           ( Bs[0] -Int 31 ) /Int 32 ==Int 2
+           ( #readNBits( 8, S ) -Int 31 ) /Int 32 ==Int 2
 ```
 
 DecodeCborData( Bs )
@@ -261,9 +261,12 @@ This function converts the input ByteString to a Bytes sort and calls `DData` wi
       INPUT = trimByteString( Bs )
     #in
       #let
-        BTPair( _, T ) = DData( Int2Bytes( lengthString( INPUT ) /Int 2, String2Base( INPUT, 16 ), BE ) )
+        INPUT_BYTES = Int2Bytes( lengthString( INPUT ) /Int 2, String2Base( INPUT, 16 ), BE )
       #in
-        T
+        #let
+          BTPair( _, T ) = DData( BitStream( 0, INPUT_BYTES ) )
+        #in
+          T
 ```
 
 #DecodeCborByteStrings( Program )
