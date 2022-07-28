@@ -10,13 +10,13 @@ module CBOR-UNIT-TEST
   claim <k> simplify( DHead( 25 , BitStream( 8, String2Bytes( "\x19\x01\x00" ) ) ) ) =>
     simplified( DH( BitStream( 24 , b"\x19\x01\x00" ) , 0 , 256 ) ) </k>
 
-  claim <k> simplify( DData( String2Bytes( "\x00" ) ) ) =>
+  claim <k> simplify( DData( BitStream( 0, String2Bytes( "\x00" ) ) ) ) =>
     simplified( BTPair( BitStream ( 8 , b"\x00" ) , Integer 0 ) ) </k>
 
-  claim <k> simplify( DData( String2Bytes( "\x19\x01\x00" ) ) ) =>
+  claim <k> simplify( DData( BitStream( 0, String2Bytes( "\x19\x01\x00" ) ) ) ) =>
     simplified( BTPair( BitStream ( 24 , b"\x19\x01\x00" ) , Integer 256 ) ) </k>
 
-  claim <k> simplify( DData( String2Bytes( "\x3a\x3a\xde\x68\xb0" ) ) ) =>
+  claim <k> simplify( DData( BitStream( 0, String2Bytes( "\x3a\x3a\xde\x68\xb0" ) ) ) ) =>
     simplified( BTPair( BitStream ( 40 , b"::\xdeh\xb0" ) , Integer -987654321 ) ) </k>
 ```
 
@@ -45,11 +45,11 @@ ByteStrings longer than 64 bytes
 Integers with size larger than 64 bits.
 
 ```k
-  claim <k> simplify( DData( #LARGE_POSITIVE_INT ) ) =>
+  claim <k> simplify( DData( BitStream( 0, #LARGE_POSITIVE_INT ) ) ) =>
             simplified( BTPair( BitStream( lengthBytes( #LARGE_POSITIVE_INT ) *Int 8 , #LARGE_POSITIVE_INT ),
                                 Integer 18446744073709551616 ) ) </k>
 
-  claim <k> simplify( DData( #LARGE_NEGATIVE_INT ) ) =>
+  claim <k> simplify( DData( BitStream( 0, #LARGE_NEGATIVE_INT ) ) ) =>
             simplified( BTPair( BitStream( lengthBytes( #LARGE_NEGATIVE_INT ) *Int 8 , #LARGE_NEGATIVE_INT ),
                                 Integer -18446744073709551617 ) ) </k>
 ```
@@ -57,7 +57,7 @@ Integers with size larger than 64 bits.
 ByteString constructors
 
 ```k
-  claim <k> simplify( DData( #BYTESTRING_BYTES ) ) =>
+  claim <k> simplify( DData( BitStream( 0, #BYTESTRING_BYTES ) ) ) =>
             simplified( BTPair( BitStream( lengthBytes( #BYTESTRING_BYTES ) *Int 8 , #BYTESTRING_BYTES ),
                                 ByteString String2ByteString( "#000102030405060708090a0b0c0d0e0f" ) ) ) </k>
 endmodule
