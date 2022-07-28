@@ -21,4 +21,7 @@ module VERIFICATION
 
   syntax Bytes ::= "#LARGE_NEGATIVE_INT" [macro]
   rule #LARGE_NEGATIVE_INT => String2Bytes( "\xc3\x49\x01\x00\x00\x00\x00\x00\x00\x00\x00" )
+
+  syntax Bytes ::= "#BYTESTRING_BYTES" [macro]
+  rule #BYTESTRING_BYTES => String2Bytes( "\x50\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f" )
 endmodule
