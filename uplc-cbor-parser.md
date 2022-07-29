@@ -196,11 +196,13 @@ to decode.
   syntax Int ::= "UNSIGNED_INT_TYPE" [macro]
                | "NEGATIVE_INT_TYPE" [macro]
                | "BYTESTRING_TYPE"   [macro]
+               | "ARRAY_TYPE"        [macro]
                | "TAG_TYPE"          [macro]
 
   rule UNSIGNED_INT_TYPE => 0
   rule NEGATIVE_INT_TYPE => 1
   rule BYTESTRING_TYPE   => 2
+  rule ARRAY_TYPE        => 4
   rule TAG_TYPE          => 6
 ```
 
@@ -247,6 +249,70 @@ Parsing a ByteString data:
       BTPair( S1, ByteString String2ByteString( "#" +String Bytes2StringBase16( B ) ) )
   requires MAJOR_TYPE ==Int BYTESTRING_TYPE orBool
            ( #readNBits( 8, S ) -Int 31 ) /Int 32 ==Int 2
+```
+
+DDataStar( S )
+--------------
+
+Decode a `List` constructor.
+
+```k
+  syntax BitStreamTextualPair ::= DDataStar( BitStream ) [function]
+//-----------------------------------------------------------------
+  rule DDataStar( S ) =>
+  #let
+    HEAD_INT = #readNBits( 8, S )
+  #in
+    #let
+      REST = #advancePosNBits( 8, S )
+    #in
+      DDataStar( DHead( HEAD_INT, REST ), DIndef( HEAD_INT, REST ) )
+
+  syntax BitStreamTextualPair ::= DDataStar( DHeadReturnValue, BitStreamIntPair ) [function]
+//------------------------------------------------------------------------------------------
+  rule DDataStar( DH( S1, ARRAY_TYPE, N ), _ ) => DDataNStar( N, S1 )
+  rule DDataStar( _, BIPair( S1, 4 ) ) => DDataIndefStar( S1 )
+```
+
+DDataNStar( N, S )
+------------------
+
+Decode a list of N items
+
+```k
+  syntax BitStreamTextualPair ::= DDataNStar( Int, BitStream ) [function]
+//-----------------------------------------------------------------------
+  rule DDataNStar( 0, S ) => BTPair( S, List [ .DataList ] )
+
+  rule DDataNStar( N, S ) =>
+    #let
+      BTPair( S1, D ) = DData( S )
+    #in
+      #let
+        BTPair( S2, List [ L ]  ) = DDataNStar( N -Int 1, S1 )
+      #in
+        BTPair( S2, List [ D , L ] )
+```
+
+DDataIndefStar( S )
+-------------------
+
+Decode a list of indefinite items.
+
+```k
+  syntax BitStreamTextualPair ::= DDataIndefStar( BitStream ) [function]
+//----------------------------------------------------------------------
+  rule DDataIndefStar( S ) => BTPair( S, List [ .DataList ] )
+    requires #readNBits( 8, S ) ==Int INDEF_TERMINATOR
+
+  rule DDataIndefStar( S ) =>
+    #let
+      BTPair( S1, D ) = DData( S )
+    #in
+      #let
+        BTPair( S2, List [ L ]  ) = DDataIndefStar( S1 )
+      #in
+        BTPair( S2, List [ D , L ] )
 ```
 
 DecodeCborData( Bs )
