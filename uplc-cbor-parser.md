@@ -125,10 +125,10 @@ Decode a sequence of blocks.
       DBlocks( Bits, Bs +Bytes DataBytes )
 
   rule DBlocks( S, Bs ) => BBPair( #advancePosNBits( 8, S ) , Bs +Bytes .Bytes )
-    requires #readNBits( 8, S ) ==Int BYTESTRING_TERMINATOR
+    requires #readNBits( 8, S ) ==Int INDEF_TERMINATOR
 
-  syntax Int ::= "BYTESTRING_TERMINATOR" [macro]
-  rule BYTESTRING_TERMINATOR => 255
+  syntax Int ::= "INDEF_TERMINATOR" [macro]
+  rule INDEF_TERMINATOR => 255
 ```
 
 
