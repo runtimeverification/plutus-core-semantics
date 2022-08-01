@@ -315,6 +315,29 @@ Decode a list of indefinite items.
         BTPair( S2, List [ D , L ] )
 ```
 
+DData2NStar( N, S )
+-------------------
+
+Decode a Map where each element is a pair of data.
+
+```k
+  syntax BitStreamTextualPair ::= DData2NStar( Int, BitStream ) [function]
+//------------------------------------------------------------------------
+  rule DData2NStar( 0, S ) => BTPair( S, Map [ .DataPairList ] )
+
+  rule DData2NStar( N, S ) =>
+    #let
+      BTPair( S1, K ) = DData( S )
+    #in
+      #let
+        BTPair( S2, D ) = DData( S1 )
+      #in
+        #let
+          BTPair( S3, Map [ DataPair ] ) = DData2NStar( N -Int 1, S2)
+        #in
+          BTPair( S3, Map [ ( K, D ) , DataPair ] )
+```
+
 DecodeCborData( Bs )
 --------------------
 
