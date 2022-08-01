@@ -197,12 +197,14 @@ to decode.
                | "NEGATIVE_INT_TYPE" [macro]
                | "BYTESTRING_TYPE"   [macro]
                | "ARRAY_TYPE"        [macro]
+               | "MAP_TYPE"          [macro]
                | "TAG_TYPE"          [macro]
 
   rule UNSIGNED_INT_TYPE => 0
   rule NEGATIVE_INT_TYPE => 1
   rule BYTESTRING_TYPE   => 2
   rule ARRAY_TYPE        => 4
+  rule MAP_TYPE          => 5
   rule TAG_TYPE          => 6
 ```
 
@@ -223,6 +225,35 @@ TAG_TYPE has a "tag number"
   syntax BitStreamTextualPair ::= DData( DHeadReturnValue, BitStream ) [function]
 //---------------------------------------------------------------------------
   rule DData( S ) => DData( DHead( #readNBits( 8 , S ), #advancePosNBits( 8, S ) ), S )
+```
+
+Parsing a Map data:
+
+```k
+  rule DData( DH(  S1, MAJOR_TYPE, N ), _ ) => DData2NStar( N, S1 )
+  requires MAJOR_TYPE ==Int MAP_TYPE
+```
+
+Parsing a List data:
+
+```k
+  rule DData( DH(  _, MAJOR_TYPE, _ ), S ) => DDataStar( S )
+  requires MAJOR_TYPE ==Int ARRAY_TYPE
+    orBool ( #readNBits( 8, S ) -Int 31 ) /Int 32 ==Int 4
+```
+
+Parsing a Constr data:
+
+```k
+  rule DData( DH(  _, MAJOR_TYPE, _ ), S ) =>
+    #let
+      BIPair( S1, I ) = DCTag( S )
+    #in
+      #let
+        BTPair( S2, List [ L ] ) = DDataStar( S1 )
+      #in
+        BTPair( S2, Constr I [ L ] )
+  requires MAJOR_TYPE ==Int TAG_TYPE
 ```
 
 Parsing an Integer data:
