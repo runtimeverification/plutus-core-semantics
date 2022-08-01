@@ -338,6 +338,37 @@ Decode a Map where each element is a pair of data.
           BTPair( S3, Map [ ( K, D ) , DataPair ] )
 ```
 
+DCTag( S )
+----------
+
+Decode a `Contr Int [ Data ]` constructor.
+
+```k
+  syntax BitStreamIntPair ::= DCTag( BitStream ) [function]
+//---------------------------------------------------------
+  rule DCTag( S ) => DCTag( DHead( #readNBits( 8, S ), #advancePosNBits( 8, S ) ) )
+
+  syntax BitStreamIntPair ::= DCTag( DHeadReturnValue ) [function]
+//----------------------------------------------------------------
+  rule DCTag( DH( S1, TAG_TYPE, I ) ) => BIPair( S1, I -Int 121 )
+    requires 121 <=Int I
+     andBool I <=Int 127
+
+  rule DCTag( DH( S1, TAG_TYPE, I ) ) => BIPair( S1, I -Int 1280 +Int 7 )
+    requires 1280 <=Int I
+     andBool I <=Int 1400
+
+  rule DCTag( DH( S1, TAG_TYPE, 102 ) ) => DCTag( DHead( #readNBits( 8, S1 ), #advancePosNBits( 8, S1 ) ) )
+
+  rule DCTag( DH( S2, ARRAY_TYPE, 2 ) ) => DCTag( DZ( S2 ) )
+
+  syntax BitStreamIntPair ::= DCTag( BitStreamIntPair ) [function]
+//----------------------------------------------------------------
+  rule DCTag( BIPair( S3, I ) ) => BIPair( S3, I )
+    requires 0 <=Int I
+     andBool I <=Int (2 ^Int 64) -Int 1
+```
+
 DecodeCborData( Bs )
 --------------------
 
