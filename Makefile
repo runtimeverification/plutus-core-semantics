@@ -137,7 +137,7 @@ distclean:
 libff_out := $(KPLUTUS_LIB)/libff/lib/libff.a
 libcryptopp_out  := $(KPLUTUS_LIB)/cryptopp/lib/libcryptopp.a
 
-LIBFF_CMAKE_FLAGS :=
+LIBFF_CMAKE_FLAGS := -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
 ifeq ($(UNAME_S),Linux)
     LIBFF_CMAKE_FLAGS +=
@@ -185,6 +185,10 @@ k-deps:
 	cd $(K_SUBMODULE)                                                                                                                                                                            \
 	    && mvn --batch-mode package -DskipTests -Dllvm.backend.prefix=$(INSTALL_LIB)/kframework -Dllvm.backend.destdir=$(CURDIR)/$(BUILD_DIR) -Dproject.build.type=$(K_BUILD_TYPE) $(K_MVN_ARGS) \
 	    && DESTDIR=$(CURDIR)/$(BUILD_DIR) PREFIX=$(INSTALL_LIB)/kframework package/package
+
+k-deps-profiling: K_MVN_ARGS += -Dhaskell.backend.skip=true
+k-deps-profiling: K_BUILD_TYPE := RelWithDebInfo
+k-deps-profiling: k-deps
 
 plugin_include    := $(KPLUTUS_LIB)/blockchain-k-plugin/include
 plugin_k          := krypto.md
@@ -251,6 +255,9 @@ KOMPILE_OPTS += --no-exc-wrap
 ifndef NOBUILD_CRYPTOPP
   $(KPLUTUS_LIB)/$(llvm_kompiled): $(libcryptopp_out)
 endif
+
+build-llvm-profiling: KOMPILE_OPTS += -O3 -ccopt -g
+build-llvm-profiling: $(KPLUTUS_LIB)/$(llvm_kompiled)
 
 $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(libff_out) $(KPLUTUS_BIN)/kplc
 	$(KOMPILE) --backend llvm                 \
