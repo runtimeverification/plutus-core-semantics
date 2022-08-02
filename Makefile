@@ -187,7 +187,7 @@ k-deps:
 	    && DESTDIR=$(CURDIR)/$(BUILD_DIR) PREFIX=$(INSTALL_LIB)/kframework package/package
 
 k-deps-profiling: K_MVN_ARGS += -Dhaskell.backend.skip=true
-k-deps-profiling: K_BUILD_TYPE := RelWithDebInfo
+k-deps-profiling: K_BUILD_TYPE := FastBuild
 k-deps-profiling: export CMAKE_CXX_FLAGS='-O2 -DNDEBUG -fno-omit-frame-pointer'
 k-deps-profiling: k-deps
 
