@@ -188,6 +188,7 @@ k-deps:
 
 k-deps-profiling: K_MVN_ARGS += -Dhaskell.backend.skip=true
 k-deps-profiling: K_BUILD_TYPE := RelWithDebInfo
+k-deps-profiling: export CMAKE_CXX_FLAGS='-O2 -DNDEBUG -fno-omit-frame-pointer'
 k-deps-profiling: k-deps
 
 plugin_include    := $(KPLUTUS_LIB)/blockchain-k-plugin/include
@@ -256,7 +257,7 @@ ifndef NOBUILD_CRYPTOPP
   $(KPLUTUS_LIB)/$(llvm_kompiled): $(libcryptopp_out)
 endif
 
-build-llvm-profiling: KOMPILE_OPTS += -O3 -ccopt -g
+build-llvm-profiling: KOMPILE_OPTS += -O3 -ccopt -fno-omit-frame-pointer
 build-llvm-profiling: $(KPLUTUS_LIB)/$(llvm_kompiled)
 
 $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(libff_out) $(KPLUTUS_BIN)/kplc
