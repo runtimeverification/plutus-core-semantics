@@ -81,4 +81,14 @@ make build-llvm-profiling
 
 This will build kplc with optimizations but debug info left in so perf can collect more meaningful data.
 
-You can then run `perf record -g -- kplc run ...` to collect perf data.
+Here's an example of steps you can follow to generate and view a report:
+```
+perf record -g -- kplc run tests/textual/nofib-exe-examples/lastpiece.uplc
+```
+lastpiece.uplc is a very long running program. You can kill it after about one minute and perf will have collected
+a sizeable amount of data.
+
+View the report with
+```
+perf report -g -c interpreter
+```
