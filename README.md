@@ -68,3 +68,17 @@ After running `make fresh-test-coverage`, the execution of
 in the last execution of `make fresh-test-coverage`. (By executing
 `./no-hits.py -t`, a Python 3 dictionary containing file names and
 line numbers is pretty-printed. This dictionary denotes the same as the rules printed with option `-r`.)
+
+Profiling with perf
+-------------------
+
+There are build targets for profiling the semantics with perf.
+
+```
+make k-deps-profiling
+make build-llvm-profiling
+```
+
+This will build kplc with optimizations but debug info left in so perf can collect more meaningful data.
+
+You can then run `perf record -g -- kplc run ...` to collect perf data.
