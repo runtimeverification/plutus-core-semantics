@@ -81,6 +81,9 @@ make build-llvm-profiling
 
 This will build kplc with optimizations but debug info left in so perf can collect more meaningful data.
 
+You can install perf on ubuntu by installing the `linux-tools-common` package. Information about perf and how to use it
+can be found on the [perf wiki](https://perf.wiki.kernel.org/index.php/Main_Page).
+
 Here's an example of steps you can follow to generate and view a report:
 ```
 perf record -g -- kplc run tests/textual/nofib-exe-examples/lastpiece.uplc
