@@ -391,7 +391,7 @@ Decode a list of indefinite items.
 //---------------------------------------------------------------------------
   rule DDataIndefStar( INDEF_TERMINATOR, S ) => BTPair( #advancePosNBits(8, S ), List [ .DataList ] )
 
-  rule DDataIndefStar( _, S ) =>
+  rule DDataIndefStar( B, S ) =>
     #let
       BTPair( S1, D ) = DData( S )
     #in
@@ -399,7 +399,7 @@ Decode a list of indefinite items.
         BTPair( S2, List [ L ]  ) = DDataIndefStar( S1 )
       #in
         BTPair( S2, List [ D , L ] )
-    [owise]
+    requires B =/=Int INDEF_TERMINATOR
 ```
 
 DData2NStar( N, S )
