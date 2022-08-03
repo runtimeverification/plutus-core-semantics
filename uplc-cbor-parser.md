@@ -146,7 +146,7 @@ Top-level parsing function for bytestrings.
   syntax BitStreamBytesPair ::= DBStar( Int,  BitStream ) [function]
 //------------------------------------------------------------------
   rule DBStar( Head, Bs ) => DBlocks( #advancePosNBits( 8, Bs ) )
-    requires ( Head -Int 31 ) /Int 32 ==Int 2
+    requires HasMValue( Head, 2 )
 
   rule DBStar( _, Bs ) => DBlock( Bs )
     [owise]
@@ -185,13 +185,10 @@ Integers that span over 64 bits.
       BIPair( S1, -1 *Int Bytes2Int( B, BE, Unsigned ) -Int 1 )
 ```
 
-DData( S )
-----------
+Major Types and Arguments
+-------------------------
 
-Top-level function that decodes a CBOR bytestring to a pair of BitStream and TextualData. The sepc defines
-this function in a way that's not friendly for K and a straight translation will likely not work. This
-implementation matches on the major type and their argument returned by DHead to determine the constructor
-to decode.
+These values are defined in the CBOR specification and are used in decoding data.
 
 ```k
   syntax Int ::= "UNSIGNED_INT_TYPE" [macro]
@@ -219,34 +216,58 @@ TAG_TYPE has a "tag number"
   rule NEGATIVE_INT_TAG_NUMBER => 3
 ```
 
+Helper functions used to match on Major types and M (used for indefine-length objects).
+
+```k
+  syntax Bool ::= HasMajorType( Int, Int ) [function]
+//------------------------------------------------------
+  rule HasMajorType( N, Mt ) => N /Int 32 ==Int Mt
+
+  syntax Bool ::= HasMValue ( Int, Int ) [function]
+//------------------------------------------------------
+  rule HasMValue( N, MValue ) => ( ( N -Int 31 ) %Int 32 ==Int 0 ) andBool (( N -Int 31 ) /Int 32 ==Int MValue )
+```
+
+DData( S )
+----------
+
+Top-level function that decodes a CBOR bytestring to a pair of BitStream and TextualData. The sepc defines
+this function in a way that's not friendly for K and a straight translation will likely not work. This
+implementation matches on the major type and their argument returned by DHead to determine the constructor
+to decode.
+
 ```k
   syntax BitStreamTextualPair ::= BTPair( BitStream, TextualData )
 
   syntax BitStreamTextualPair ::= DData( BitStream ) [function]
-  syntax BitStreamTextualPair ::= DData( DHeadReturnValue, BitStream ) [function]
-//---------------------------------------------------------------------------
-  rule DData( S ) => DData( DHead( #readNBits( 8 , S ), #advancePosNBits( 8, S ) ), S )
+  syntax BitStreamTextualPair ::= DData( Int, BitStream ) [function]
+//------------------------------------------------------------------
+  rule DData( S ) => DData( #readNBits( 8 , S ), S )
 ```
 
 Parsing a Map data:
 
 ```k
-  rule DData( DH(  S1, MAJOR_TYPE, N ), _ ) => DData2NStar( N, S1 )
-  requires MAJOR_TYPE ==Int MAP_TYPE
+  rule DData( HeadByte, S ) =>
+    #let
+      DH( S1, MAP_TYPE, N ) = DHead( HeadByte, #advancePosNBits( 8, S ) )
+    #in
+      DData2NStar( N, S1 )
+    requires HasMajorType( HeadByte, MAP_TYPE )
 ```
 
 Parsing a List data:
 
 ```k
-  rule DData( DH(  _, MAJOR_TYPE, _ ), S ) => DDataStar( S )
-  requires MAJOR_TYPE ==Int ARRAY_TYPE
-    orBool ( #readNBits( 8, S ) -Int 31 ) /Int 32 ==Int 4
+  rule DData( HeadByte,  S ) => DDataStar( S )
+    requires HasMajorType( HeadByte, ARRAY_TYPE )
+      orBool HasMValue( HeadByte, 4 )
 ```
 
 Parsing a Constr data:
 
 ```k
-  rule DData( DH(  _, MAJOR_TYPE, _ ), S ) =>
+  rule DData( HeadByte, S ) =>
     #let
       BIPair( S1, I ) = DCTag( S )
     #in
@@ -254,33 +275,45 @@ Parsing a Constr data:
         BTPair( S2, List [ L ] ) = DDataStar( S1 )
       #in
         BTPair( S2, Constr I [ L ] )
-  requires MAJOR_TYPE ==Int TAG_TYPE
+    requires HasMajorType( HeadByte, TAG_TYPE )
 ```
 
 Parsing an Integer data:
 
 ```k
-  rule DData( DH(  _, MAJOR_TYPE, ARGUMENT ), S ) =>
+  rule DData( HeadByte, S ) =>
     #let
       BIPair( S1, N ) = DZ( S )
     #in
       BTPair( S1, Integer N )
-  requires MAJOR_TYPE ==Int UNSIGNED_INT_TYPE orBool
-           MAJOR_TYPE ==Int NEGATIVE_INT_TYPE orBool
-           (MAJOR_TYPE ==Int TAG_TYPE andBool ARGUMENT ==Int POSITIVE_INT_TAG_NUMBER) orBool
-           (MAJOR_TYPE ==Int TAG_TYPE andBool ARGUMENT ==Int NEGATIVE_INT_TAG_NUMBER)
+  requires HasMajorType( HeadByte, UNSIGNED_INT_TYPE )
+    orBool HasMajorType( HeadByte, NEGATIVE_INT_TYPE )
+    orBool (HasMajorType( HeadByte, TAG_TYPE ) andBool GetMajorTypeArg( S ) ==Int POSITIVE_INT_TAG_NUMBER )
+    orBool (HasMajorType( HeadByte, TAG_TYPE ) andBool GetMajorTypeArg( S ) ==Int NEGATIVE_INT_TAG_NUMBER )
+```
+
+Utility function to get the MajorType's Argument. Only used for decoding Integers.
+
+```k
+  syntax Int ::= GetMajorTypeArg( BitStream ) [function]
+//--------------------------------------------------------------
+  rule GetMajorTypeArg( S ) =>
+    #let
+      DH( _, _, ARG ) = DHead( #readNBits( 8, S ), #advancePosNBits( 8, S ))
+    #in
+      ARG
 ```
 
 Parsing a ByteString data:
 
 ```k
-  rule DData( DH(  _, MAJOR_TYPE, _ ), S ) =>
+  rule DData( HeadByte, S ) =>
     #let
       BBPair( S1, B ) = DBStar( S )
     #in
       BTPair( S1, ByteString String2ByteString( "#" +String Bytes2StringBase16( B ) ) )
-  requires MAJOR_TYPE ==Int BYTESTRING_TYPE orBool
-           ( #readNBits( 8, S ) -Int 31 ) /Int 32 ==Int 2
+    requires HasMajorType( HeadByte, BYTESTRING_TYPE )
+      orBool HasMValue( HeadByte, 2 )
 ```
 
 DDataStar( S )
@@ -292,18 +325,26 @@ Decode a `List` constructor.
   syntax BitStreamTextualPair ::= DDataStar( BitStream ) [function]
 //-----------------------------------------------------------------
   rule DDataStar( S ) =>
-  #let
-    HEAD_INT = #readNBits( 8, S )
-  #in
     #let
-      REST = #advancePosNBits( 8, S )
+      N = #readNBits( 8, S )
     #in
-      DDataStar( DHead( HEAD_INT, REST ), DIndef( HEAD_INT, REST ) )
+      DDataStar( N, S )
 
-  syntax BitStreamTextualPair ::= DDataStar( DHeadReturnValue, BitStreamIntPair ) [function]
-//------------------------------------------------------------------------------------------
-  rule DDataStar( DH( S1, ARRAY_TYPE, N ), _ ) => DDataNStar( N, S1 )
-  rule DDataStar( _, BIPair( S1, 4 ) ) => DDataIndefStar( S1 )
+  syntax BitStreamTextualPair ::= DDataStar( Int, BitStream ) [function]
+//----------------------------------------------------------------------
+  rule DDataStar( HeadByte, S ) => DDataStar( DHead( HeadByte, #advancePosNBits( 8, S ) ) )
+    requires HasMajorType( HeadByte, ARRAY_TYPE )
+
+  rule DDataStar( HeadByte, S ) =>
+    #let
+      BIPair( S1, _ ) = DIndef( HeadByte, #advancePosNBits(8, S ) )
+    #in
+      DDataIndefStar( S1 )
+    requires HasMValue( HeadByte, 4 )
+
+  syntax BitStreamTextualPair ::= DDataStar( DHeadReturnValue ) [function]
+//------------------------------------------------------------------------
+  rule DDataStar( DH( S1, ARRAY_TYPE, N ) ) => DDataNStar( N, S1 )
 ```
 
 DDataNStar( N, S )
@@ -324,7 +365,7 @@ Decode a list of N items
         BTPair( S2, List [ L ]  ) = DDataNStar( N -Int 1, S1 )
       #in
         BTPair( S2, List [ D , L ] )
-  requires N =/=Int 0
+    requires N =/=Int 0
 ```
 
 DDataIndefStar( S )
@@ -335,10 +376,13 @@ Decode a list of indefinite items.
 ```k
   syntax BitStreamTextualPair ::= DDataIndefStar( BitStream ) [function]
 //----------------------------------------------------------------------
-  rule DDataIndefStar( S ) => BTPair( S, List [ .DataList ] )
-    requires #readNBits( 8, S ) ==Int INDEF_TERMINATOR
+  rule DDataIndefStar( S ) => DDataIndefStar( #readNBits( 8, S ), S )
 
-  rule DDataIndefStar( S ) =>
+  syntax BitStreamTextualPair ::= DDataIndefStar( Int, BitStream ) [function]
+//---------------------------------------------------------------------------
+  rule DDataIndefStar( INDEF_TERMINATOR, S ) => BTPair( #advancePosNBits(8, S ), List [ .DataList ] )
+
+  rule DDataIndefStar( _, S ) =>
     #let
       BTPair( S1, D ) = DData( S )
     #in
@@ -370,7 +414,7 @@ Decode a Map where each element is a pair of data.
           BTPair( S3, Map [ DataPair ] ) = DData2NStar( N -Int 1, S2)
         #in
           BTPair( S3, Map [ ( K, D ) , DataPair ] )
-  requires N =/=Int 0
+    requires N =/=Int 0
 ```
 
 DCTag( S )
