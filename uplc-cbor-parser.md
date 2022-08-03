@@ -276,6 +276,8 @@ Parsing a Constr data:
       #in
         BTPair( S2, Constr I [ L ] )
     requires HasMajorType( HeadByte, TAG_TYPE )
+     andBool GetMajorTypeArg( S ) =/=Int POSITIVE_INT_TAG_NUMBER
+     andBool GetMajorTypeArg( S ) =/=Int NEGATIVE_INT_TAG_NUMBER
 ```
 
 Parsing an Integer data:
