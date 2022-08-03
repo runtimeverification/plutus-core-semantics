@@ -123,6 +123,7 @@ Decode a sequence of blocks.
       BBPair( Bits, DataBytes ) = DBlock( S )
     #in
       DBlocks( Bits, Bs +Bytes DataBytes )
+  [owise]
 
   rule DBlocks( S, Bs ) => BBPair( #advancePosNBits( 8, S ) , Bs +Bytes .Bytes )
     requires #readNBits( 8, S ) ==Int INDEF_TERMINATOR
@@ -323,6 +324,7 @@ Decode a list of N items
         BTPair( S2, List [ L ]  ) = DDataNStar( N -Int 1, S1 )
       #in
         BTPair( S2, List [ D , L ] )
+  requires N =/=Int 0
 ```
 
 DDataIndefStar( S )
@@ -344,6 +346,7 @@ Decode a list of indefinite items.
         BTPair( S2, List [ L ]  ) = DDataIndefStar( S1 )
       #in
         BTPair( S2, List [ D , L ] )
+    [owise]
 ```
 
 DData2NStar( N, S )
@@ -367,6 +370,7 @@ Decode a Map where each element is a pair of data.
           BTPair( S3, Map [ DataPair ] ) = DData2NStar( N -Int 1, S2)
         #in
           BTPair( S3, Map [ ( K, D ) , DataPair ] )
+  requires N =/=Int 0
 ```
 
 DCTag( S )
