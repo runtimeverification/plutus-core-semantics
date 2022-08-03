@@ -39,6 +39,10 @@ to the remaining bytestring, the major type and the argument of the head.
 ```k
   syntax DHeadReturnValue ::= DH( CborData:BitStream, MajorType:Int, Arg:Int)
 
+  syntax DHeadReturnValue ::= DHead( BitStream ) [function]
+//---------------------------------------------------------
+  rule DHead( S ) => DHead( #readNBits( 8, S ), #advancePosNBits( 8, S ) )
+
   syntax DHeadReturnValue ::= DHead( Int, BitStream ) [function]
 //--------------------------------------------------------------
   rule DHead( N , S ) =>
@@ -98,7 +102,7 @@ Extract a bytestring of length at most 64.
 ```k
   syntax BitStreamBytesPair ::= DBlock( BitStream ) [function]
 //------------------------------------------------------------
-  rule DBlock( S ) => DBlock( DHead( #readNBits( 8, S ), #advancePosNBits( 8, S ) ) )
+  rule DBlock( S ) => DBlock( DHead( S ) )
 
   syntax BitStreamBytesPair ::= DBlock( DHeadReturnValue ) [function]
 //-------------------------------------------------------------------
@@ -160,11 +164,10 @@ Decode an integer.
 ```k
   syntax BitStreamIntPair ::= DZ( BitStream ) [function]
 //------------------------------------------------------
-  rule DZ( S ) => DZ( DHead( #readNBits( 8, S ), #advancePosNBits( 8, S ) ) )
+  rule DZ( S ) => DZ( DHead( S ) )
 
   syntax BitStreamIntPair ::= DZ( DHeadReturnValue ) [function]
 //------------------------------------------------------
-
   rule DZ( DH( S, UNSIGNED_INT_TYPE, N ) ) => BIPair( S, N )
   rule DZ( DH( S, NEGATIVE_INT_TYPE, N ) ) => BIPair( S, -1 *Int N -Int 1 )
 ```
@@ -250,7 +253,7 @@ Parsing a Map data:
 ```k
   rule DData( HeadByte, S ) =>
     #let
-      DH( S1, MAP_TYPE, N ) = DHead( HeadByte, #advancePosNBits( 8, S ) )
+      DH( S1, MAP_TYPE, N ) = DHead( S )
     #in
       DData2NStar( N, S1 )
     requires HasMajorType( HeadByte, MAP_TYPE )
@@ -301,7 +304,7 @@ Utility function to get the MajorType's Argument. Only used for decoding Integer
 //--------------------------------------------------------------
   rule GetMajorTypeArg( S ) =>
     #let
-      DH( _, _, ARG ) = DHead( #readNBits( 8, S ), #advancePosNBits( 8, S ))
+      DH( _, _, ARG ) = DHead( S )
     #in
       ARG
 ```
@@ -334,7 +337,7 @@ Decode a `List` constructor.
 
   syntax BitStreamTextualPair ::= DDataStar( Int, BitStream ) [function]
 //----------------------------------------------------------------------
-  rule DDataStar( HeadByte, S ) => DDataStar( DHead( HeadByte, #advancePosNBits( 8, S ) ) )
+  rule DDataStar( HeadByte, S ) => DDataStar( DHead( S ) )
     requires HasMajorType( HeadByte, ARRAY_TYPE )
 
   rule DDataStar( HeadByte, S ) =>
@@ -427,7 +430,7 @@ Decode a `Contr Int [ Data ]` constructor.
 ```k
   syntax BitStreamIntPair ::= DCTag( BitStream ) [function]
 //---------------------------------------------------------
-  rule DCTag( S ) => DCTag( DHead( #readNBits( 8, S ), #advancePosNBits( 8, S ) ) )
+  rule DCTag( S ) => DCTag( DHead( S ) )
 
   syntax BitStreamIntPair ::= DCTag( DHeadReturnValue ) [function]
 //----------------------------------------------------------------
@@ -439,7 +442,7 @@ Decode a `Contr Int [ Data ]` constructor.
     requires 1280 <=Int I
      andBool I <=Int 1400
 
-  rule DCTag( DH( S1, TAG_TYPE, 102 ) ) => DCTag( DHead( #readNBits( 8, S1 ), #advancePosNBits( 8, S1 ) ) )
+  rule DCTag( DH( S1, TAG_TYPE, 102 ) ) => DCTag( DHead( S1 ) )
 
   rule DCTag( DH( S2, ARRAY_TYPE, 2 ) ) => DCTag( DZ( S2 ) )
 
