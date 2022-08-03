@@ -137,7 +137,13 @@ distclean:
 libff_out := $(KPLUTUS_LIB)/libff/lib/libff.a
 libcryptopp_out  := $(KPLUTUS_LIB)/cryptopp/lib/libcryptopp.a
 
-LIBFF_CMAKE_FLAGS := -DCMAKE_TOOLCHAIN_FILE=$(dir $(shell which kompile))../lib/cmake/kframework/LLVMKompilePrelude.cmake
+ifneq (,$(wildcard $(KPLUTUS_K_BIN)/../lib/cmake/kframework/LLVMKompilePrelude.cmake))
+	llvm_kompile_prelude := $(realpath $(KPLUTUS_K_BIN)/../lib/cmake/kframework/LLVMKompilePrelude.cmake)
+else
+	llvm_kompile_prelude := $(dir $(shell which kompile))../lib/cmake/kframework/LLVMKompilePrelude.cmake
+endif
+
+LIBFF_CMAKE_FLAGS = -DCMAKE_TOOLCHAIN_FILE=$(llvm_kompile_prelude)
 
 ifeq ($(UNAME_S),Linux)
     LIBFF_CMAKE_FLAGS +=
