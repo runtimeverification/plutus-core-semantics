@@ -1,5 +1,8 @@
 # CBOR Decoder for UPLC's Data Constant
 
+This file is based off appendix D of the Plutus Core Specification. The decoder function names
+in this file are based on the decoder functions found in the specification.
+
 ```k
 requires "bitstream.md"
 requires "uplc-flat-parser.md"
@@ -21,8 +24,8 @@ A function which decodes a k-byte natural number from the start of a bytestring.
 ```k
   syntax BitStreamIntPair ::= BIPair( BitStream, Int )
 
-  syntax BitStreamIntPair ::= d(k:Int, s:BitStream) [function]
-//------------------------------------------------------------
+  syntax BitStreamIntPair ::= d( Int, BitStream ) [function]
+//----------------------------------------------------------
   rule d( K, S ) =>
     #let
       BitLen = K *Int 8
@@ -37,7 +40,7 @@ A function which decodes the head of a cbor encoding. Takes the first byte N and
 to the remaining bytestring, the major type and the argument of the head.
 
 ```k
-  syntax DHeadReturnValue ::= DH( CborData:BitStream, MajorType:Int, Arg:Int)
+  syntax DHeadReturnValue ::= DH( CborData:BitStream, MajorType:Int, Arg:Int )
 
   syntax DHeadReturnValue ::= DHead( BitStream ) [function]
 //---------------------------------------------------------
@@ -127,9 +130,9 @@ Decode a sequence of blocks.
       BBPair( Bits, DataBytes ) = DBlock( S )
     #in
       DBlocks( Bits, Bs +Bytes DataBytes )
-  [owise]
+    requires #readNBits( 8, S ) =/=Int INDEF_TERMINATOR
 
-  rule DBlocks( S, Bs ) => BBPair( #advancePosNBits( 8, S ) , Bs +Bytes .Bytes )
+  rule DBlocks( S, Bs ) => BBPair( #advancePosNBits( 8, S ) , Bs )
     requires #readNBits( 8, S ) ==Int INDEF_TERMINATOR
 ```
 
@@ -149,8 +152,8 @@ Top-level parsing function for bytestrings.
   rule DBStar( Head, Bs ) => DBlocks( #advancePosNBits( 8, Bs ) )
     requires HasMValue( Head, 2 )
 
-  rule DBStar( _, Bs ) => DBlock( Bs )
-    [owise]
+  rule DBStar( Head, Bs ) => DBlock( Bs )
+    requires notBool HasMValue( Head, 2 )
 ```
 
 DZ( S )
@@ -164,7 +167,7 @@ Decode an integer.
   rule DZ( S ) => DZ( DHead( S ) )
 
   syntax BitStreamIntPair ::= DZ( DHeadReturnValue ) [function]
-//------------------------------------------------------
+//-------------------------------------------------------------
   rule DZ( DH( S, UNSIGNED_INT_TYPE, N ) ) => BIPair( S, N )
   rule DZ( DH( S, NEGATIVE_INT_TYPE, N ) ) => BIPair( S, -1 *Int N -Int 1 )
 ```
@@ -227,21 +230,21 @@ Helper functions used to match on Major types and M (used for indefine-length ob
 
 ```k
   syntax Bool ::= HasMajorType( Int, Int ) [function]
-//------------------------------------------------------
+//---------------------------------------------------
   rule HasMajorType( N, Mt ) => N /Int 32 ==Int Mt
 
   syntax Bool ::= HasMValue ( Int, Int ) [function]
-//------------------------------------------------------
+//-------------------------------------------------
   rule HasMValue( N, MValue ) => ( ( N -Int 31 ) %Int 32 ==Int 0 ) andBool (( N -Int 31 ) /Int 32 ==Int MValue )
 ```
 
 DData( S )
 ----------
 
-Top-level function that decodes a CBOR bytestring to a pair of BitStream and TextualData. The sepc defines
-this function in a way that's not friendly for K and a straight translation will likely not work. This
-implementation matches on the major type and their argument returned by DHead to determine the constructor
-to decode.
+Top-level function that decodes a CBOR bytestring to a pair of BitStream and TextualData. The sepc
+defines this function in a way that's not friendly for K and a straight translation does not work.
+This implementation matches on the first byte of the current bitStream position called the head.
+The head is matched for the major type and the `M` value to determine the constructor to decode.
 
 ```k
   syntax BitStreamTextualPair ::= BTPair( BitStream, TextualData )
@@ -305,7 +308,7 @@ Utility function to get the MajorType's Argument. Only used for decoding Integer
 
 ```k
   syntax Int ::= GetMajorTypeArg( BitStream ) [function]
-//--------------------------------------------------------------
+//------------------------------------------------------
   rule GetMajorTypeArg( S ) =>
     #let
       DH( _, _, ARG ) = DHead( S )
@@ -346,7 +349,7 @@ Decode a `List` constructor.
 
   rule DDataStar( HeadByte, S ) =>
     #let
-      BIPair( S1, _ ) = DIndef( HeadByte, #advancePosNBits(8, S ) )
+      BIPair( S1, _ ) = DIndef( HeadByte, #advancePosNBits( 8, S ) )
     #in
       DDataIndefStar( S1 )
     requires HasMValue( HeadByte, 4 )
@@ -502,8 +505,5 @@ constants would be expressed as TextualData.
 
   syntax TermList ::= #decodeCBORBytestrings( TermList ) [function]
   rule #decodeCBORBytestrings( T:Term Ts:TermList ) => #decodeCBORBytestrings( T ) #decodeCBORBytestrings( Ts )
-```
-
-```k
 endmodule
 ```
