@@ -131,9 +131,6 @@ Decode a sequence of blocks.
 
   rule DBlocks( S, Bs ) => BBPair( #advancePosNBits( 8, S ) , Bs +Bytes .Bytes )
     requires #readNBits( 8, S ) ==Int INDEF_TERMINATOR
-
-  syntax Int ::= "INDEF_TERMINATOR" [macro]
-  rule INDEF_TERMINATOR => 255
 ```
 
 
@@ -217,6 +214,13 @@ TAG_TYPE has a "tag number"
 
   rule POSITIVE_INT_TAG_NUMBER => 2
   rule NEGATIVE_INT_TAG_NUMBER => 3
+```
+
+Constructors encoded with indefinite-length end has a byte value that indicates the end of the list.
+
+```k
+  syntax Int ::= "INDEF_TERMINATOR" [macro]
+  rule INDEF_TERMINATOR => 255
 ```
 
 Helper functions used to match on Major types and M (used for indefine-length objects).
