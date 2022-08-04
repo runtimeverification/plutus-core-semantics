@@ -3,12 +3,14 @@
 ```k
 require "uplc-builtins.md"
 require "uplc-discharge.md"
+require "uplc-genvironment-instance.md"
 
 module UPLC-SEMANTICS
   imports INT
   imports MAP
   imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
+  imports UPLC-GENVIRONMENT-INSTANCE
 
   syntax Bindable ::= Value
 
@@ -23,7 +25,6 @@ module UPLC-SEMANTICS
   rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
   rule #appAux(N:Term, RHO) => [_ N RHO ]
   rule #appAux(N:Term TL:TermList, RHO) => [_ N RHO ] ~> #appAux(TL, RHO) [owise]
-
 ```
 
 ## CEK machine
@@ -35,9 +36,15 @@ module UPLC-SEMANTICS
        <env> RHO => .Map </env>
   requires X in_keys(RHO)
 
+  rule <k> X:UplcId => #gLookup(X) ... </k>
+       <env> RHO => .Map </env>
+  requires #inKeysgEnv(X)
+   andBool notBool(X in_keys(RHO))
+
   rule <k> X:UplcId => (error) ... </k>
        <env> RHO </env>
-  requires notBool(X in_keys(RHO))
+  requires notBool(#inKeysgEnv(X))
+   andBool notBool(X in_keys(RHO))
 
   rule <k> (con T:TypeConstant C:Constant) => < con T:TypeConstant C:Constant > ... </k>
        <env> _ => .Map </env>

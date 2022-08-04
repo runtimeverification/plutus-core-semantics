@@ -217,6 +217,8 @@ kplutus_files := uplc.md \
                  uplc-syntax.md \
                  uplc-bytestring.md \
                  uplc-environment.md \
+                 uplc-genvironment.md \
+				 uplc-genvironment-instance.md \
                  uplc-string-builtins.md \
                  uplc-configuration.md \
                  uplc-flat-parser.md \
