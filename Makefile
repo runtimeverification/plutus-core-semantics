@@ -137,7 +137,13 @@ distclean:
 libff_out := $(KPLUTUS_LIB)/libff/lib/libff.a
 libcryptopp_out  := $(KPLUTUS_LIB)/cryptopp/lib/libcryptopp.a
 
-LIBFF_CMAKE_FLAGS :=
+ifneq (,$(wildcard $(KPLUTUS_K_BIN)/../lib/cmake/kframework/LLVMKompilePrelude.cmake))
+	llvm_kompile_prelude := $(realpath $(KPLUTUS_K_BIN)/../lib/cmake/kframework/LLVMKompilePrelude.cmake)
+else
+	llvm_kompile_prelude := $(dir $(shell which kompile))../lib/cmake/kframework/LLVMKompilePrelude.cmake
+endif
+
+LIBFF_CMAKE_FLAGS = -DCMAKE_TOOLCHAIN_FILE=$(llvm_kompile_prelude)
 
 ifeq ($(UNAME_S),Linux)
     LIBFF_CMAKE_FLAGS +=
@@ -186,6 +192,11 @@ k-deps:
 	    && mvn --batch-mode package -DskipTests -Dllvm.backend.prefix=$(INSTALL_LIB)/kframework -Dllvm.backend.destdir=$(CURDIR)/$(BUILD_DIR) -Dproject.build.type=$(K_BUILD_TYPE) $(K_MVN_ARGS) \
 	    && DESTDIR=$(CURDIR)/$(BUILD_DIR) PREFIX=$(INSTALL_LIB)/kframework package/package
 
+k-deps-profiling: K_MVN_ARGS += -Dhaskell.backend.skip=true
+k-deps-profiling: K_BUILD_TYPE := FastBuild
+k-deps-profiling: export CMAKE_CXX_FLAGS='-O2 -DNDEBUG -fno-omit-frame-pointer'
+k-deps-profiling: k-deps
+
 plugin_include    := $(KPLUTUS_LIB)/blockchain-k-plugin/include
 plugin_k          := krypto.md
 plugin_c          := plugin_util.cpp crypto.cpp hash_ext.cpp blake2.cpp plugin_util.h blake2.h
@@ -211,6 +222,7 @@ kplutus_files := uplc.md \
                  bitstream.md \
                  uplc-builtins.md \
                  uplc-bytestring-builtins.md \
+                 uplc-cbor-parser.md \
                  uplc-crypto-builtins.md  \
                  uplc-integer-builtins.md \
                  uplc-semantics.md \
@@ -253,6 +265,9 @@ KOMPILE_OPTS += --no-exc-wrap
 ifndef NOBUILD_CRYPTOPP
   $(KPLUTUS_LIB)/$(llvm_kompiled): $(libcryptopp_out)
 endif
+
+build-llvm-profiling: KOMPILE_OPTS += -O3 -ccopt -fno-omit-frame-pointer
+build-llvm-profiling: $(KPLUTUS_LIB)/$(llvm_kompiled)
 
 $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(libff_out) $(KPLUTUS_BIN)/kplc
 	$(KOMPILE) --backend llvm                 \

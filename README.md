@@ -68,3 +68,30 @@ After running `make fresh-test-coverage`, the execution of
 in the last execution of `make fresh-test-coverage`. (By executing
 `./no-hits.py -t`, a Python 3 dictionary containing file names and
 line numbers is pretty-printed. This dictionary denotes the same as the rules printed with option `-r`.)
+
+Profiling with perf
+-------------------
+
+There are build targets for profiling the semantics with perf.
+
+```
+make k-deps-profiling
+make build-llvm-profiling
+```
+
+This will build kplc with optimizations but debug info left in so perf can collect more meaningful data.
+
+You can install perf on ubuntu by installing the `linux-tools-common` package. Information about perf and how to use it
+can be found on the [perf wiki](https://perf.wiki.kernel.org/index.php/Main_Page).
+
+Here's an example of steps you can follow to generate and view a report:
+```
+perf record -g -- kplc run tests/textual/nofib-exe-examples/lastpiece.uplc
+```
+lastpiece.uplc is a very long running program. You can kill it after about one minute and perf will have collected
+a sizeable amount of data.
+
+View the report with
+```
+perf report -g -c interpreter
+```
