@@ -5,6 +5,7 @@ require "domains.md"
 
 module UPLC-BYTESTRING-SYNTAX
   syntax ByteString ::= r"#([a-fA-F0-9][a-fA-F0-9])*" [token]
+
 endmodule
 ```
 
@@ -21,7 +22,7 @@ module UPLC-HEXADECIMAL
   syntax String ::= head(String) [function]
   rule head(S) => substrString(S, 0, 1)
 
-  syntax String ::= tail(String) [function]   
+  syntax String ::= tail(String) [function]
   rule tail(S) => substrString(S, 1, lengthString(S))
 
   syntax Int ::= hexString2Int(String) [function]
@@ -55,7 +56,7 @@ module UPLC-BYTESTRING
   imports BYTES
 
   syntax String ::= ByteString2String (ByteString) [function, functional, hook(STRING.token2string)]
-  
+
   syntax ByteString ::= String2ByteString (String) [function, functional, hook(STRING.string2token)]
 
   syntax String ::= trimByteString(ByteString) [function]
@@ -82,16 +83,16 @@ module UPLC-BYTESTRING
   rule mkHexStringList(S) => mkHexStringListAux(S, .List)
   requires (lengthString(S) modInt 2) ==Int 0
 
-  syntax List ::= mkHexStringListAux(String, List) [function]   
+  syntax List ::= mkHexStringListAux(String, List) [function]
   rule mkHexStringListAux("", L) => L
 
   rule mkHexStringListAux(S, L) =>
        mkHexStringListAux(tail(tail(S)), L ListItem(head(S) +String head(tail(S)))) [owise]
-       
+
   syntax String ::= mkHexString(List) [function]
   rule mkHexString(L) => mkHexStringAux(L, "")
 
-  syntax String ::= mkHexStringAux(List, String) [function]   
+  syntax String ::= mkHexStringAux(List, String) [function]
   rule mkHexStringAux(.List, S) => S
 
   rule mkHexStringAux(ListItem(S1) L, S2) =>
@@ -123,7 +124,7 @@ module UPLC-BYTESTRING
                              mkHexStringList(trimByteString(B))))
 
   syntax String ::= getHexStringFromHexList(List, Int) [function]
-  rule getHexStringFromHexList(L, I) => {L[I]}:>String 
+  rule getHexStringFromHexList(L, I) => {L[I]}:>String
 
   syntax Int ::= #indexByteString(ByteString, Int) [function]
   rule #indexByteString(B, I) =>
@@ -142,4 +143,3 @@ module UPLC-BYTESTRING
        hexString2Int(trimByteString(B1)) <=Int hexString2Int(trimByteString(B2))
 endmodule
 ```
-

@@ -12,7 +12,7 @@ module UPLC-GENVIRONMENT
   syntax Bool ::= #inKeysgEnv(UplcId) [function, functional]
 
   // Lookup in the global environment
-  syntax Value ::= #gLookup(UplcId) [function]
+  syntax Value ::= gLookup(UplcId) [function, functional]
 
 endmodule
 ```

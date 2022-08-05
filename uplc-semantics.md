@@ -32,14 +32,14 @@ module UPLC-SEMANTICS
 ```k
   rule <k> (program _V M) => M </k>
 
+  rule <k> X:UplcId => gLookup(X) ... </k>
+       <env> _ => .Map </env>
+  requires #inKeysgEnv(X)
+
   rule <k> X:UplcId => #lookup(RHO, X) ... </k>
        <env> RHO => .Map </env>
-  requires X in_keys(RHO)
-
-  rule <k> X:UplcId => #gLookup(X) ... </k>
-       <env> RHO => .Map </env>
-  requires #inKeysgEnv(X)
-   andBool notBool(X in_keys(RHO))
+  requires notBool(#inKeysgEnv(X))
+   andBool X in_keys(RHO)
 
   rule <k> X:UplcId => (error) ... </k>
        <env> RHO </env>

@@ -2,174 +2,120 @@
 
 ```k
 require "uplc-genvironment.md"
+require "uplc-rw-helpers.md"
 
 module UPLC-GENVIRONMENT-INSTANCE
   imports SET
   imports UPLC-ID
   imports UPLC-MAP
-  imports UPLC-SYNTAX
+  imports UPLC-RW-HELPERS
   imports UPLC-GENVIRONMENT
 
-  // Error throwing with lambda
-  syntax Term ::= "THROW_ERROR_LAM" [alias]
-  rule THROW_ERROR_LAM =>
-    (lam err_id
-      (lam ds_0
-        [
-          (lam thunk_0 (error))
-          [
-            (force [ unit_match [ (force (builtin trace)) err_id unit_id ] ])
-            unitval_id
-          ]
-        ]
-      )
-    )
+  // Available keys
+  syntax Set ::= "GENV_KEYS" [alias]
+  rule GENV_KEYS =>
+    SetItem(fix1_id:UplcId)
+    SetItem(reconstructCaseError_id:UplcId)
+    SetItem(tuple2_id:UplcId)
+    SetItem(tuple2_match:UplcId)
+    SetItem(unit_id:UplcId)
+    SetItem(unit_match:UplcId)
+    SetItem(unitval_id:UplcId)
+    SetItem(pubKeyCredential_id:UplcId)
+    SetItem(scriptCredential_id:UplcId)
+    SetItem(credential_match:UplcId)
+    SetItem(stakingHash_id:UplcId)
+    SetItem(stakingPtr_id:UplcId)
+    SetItem(stakingCredential_match:UplcId)
+    SetItem(dCertDelegDeRegKey_id:UplcId)
+    SetItem(dCertDelegDelegate_id:UplcId)
+    SetItem(dCertDelegRegKey_id:UplcId)
+    SetItem(dCertGenesis_id:UplcId)
+    SetItem(dCertMir_id:UplcId)
+    SetItem(dCertPoolRegister_id:UplcId)
+    SetItem(dCertPoolRetire_id:UplcId)
+    SetItem(dCert_match:UplcId)
+    SetItem(true_id:UplcId)
+    SetItem(false_id:UplcId)
+    SetItem(bool_match:UplcId)
+    SetItem(finite_id:UplcId)
+    SetItem(negInf_id:UplcId)
+    SetItem(posInf_id:UplcId)
+    SetItem(extended_match:UplcId)
+    SetItem(txOutRef_id:UplcId)
+    SetItem(txOutRef_match:UplcId)
+    SetItem(just_id:UplcId)
+    SetItem(nothing_id:UplcId)
+    SetItem(maybe_match:UplcId)
+    SetItem(nil_id:UplcId)
+    SetItem(cons_id:UplcId)
+    SetItem(nil_match:UplcId)
+    SetItem(address_id:UplcId)
+    SetItem(address_match:UplcId)
+    SetItem(txOut_id:UplcId)
+    SetItem(txOut_match:UplcId)
+    SetItem(certifying_id:UplcId)
+    SetItem(minting_id:UplcId)
+    SetItem(rewarding_id:UplcId)
+    SetItem(spending_id:UplcId)
+    SetItem(scriptPurpose_match:UplcId)
+    SetItem(lowerBound_id:UplcId)
+    SetItem(lowerBound_match:UplcId)
+    SetItem(upperBound_id:UplcId)
+    SetItem(upperBound_match:UplcId)
+    SetItem(interval_id:UplcId)
+    SetItem(interval_match:UplcId)
+    SetItem(txInInfo_id:UplcId)
+    SetItem(txInInfo_match:UplcId)
+    SetItem(txInfo_id:UplcId)
+    SetItem(txInfo_match:UplcId)
+    SetItem(scriptContext_id:UplcId)
+    SetItem(scriptContext_match:UplcId)
 
-  // Error throwing with delay
-  syntax Term ::= "THROW_ERROR_DELAY" [alias]
-  rule THROW_ERROR_DELAY =>
-    (lam err_id
-      (delay
-        [
-          (lam thunk_0 (error))
-          [
-            (force [ unit_match [ (force (builtin trace)) err_id unit_id ] ])
-            unitval_id
-          ]
-        ]
-      )
-    )
+    SetItem(fUnsafeFromDatatuple2_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataCredential_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataDCert_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataBool_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataExtended_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataTxId_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataMaybe_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataMap_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataValue_id:UplcId)
+    SetItem(fUnsafeFromDataNil_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataAddress_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataTxOut_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataLowerBound_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataUpperBound_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataInterval_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataTxInInfo_cunsafeFromBuiltinData:UplcId)
+    SetItem(fUnsafeFromDataTxInfo_cunsafeFromBuiltinData:UplcId)
 
-  // Global environment
-  rule #inKeysgEnv(X) =>
-    X in
-      SetItem(fix1_id:UplcId)
-      SetItem(reconstructCaseError_id:UplcId)
-      SetItem(tuple2_id:UplcId)
-      SetItem(tuple2_match:UplcId)
-      SetItem(unit_id:UplcId)
-      SetItem(unit_match:UplcId)
-      SetItem(unitval_id:UplcId)
-      SetItem(pubKeyCredential_id:UplcId)
-      SetItem(scriptCredential_id:UplcId)
-      SetItem(credential_match:UplcId)
-      SetItem(stakingHash_id:UplcId)
-      SetItem(stakingPtr_id:UplcId)
-      SetItem(stakingCredential_match:UplcId)
-      SetItem(dCertDelegDeRegKey_id:UplcId)
-      SetItem(dCertDelegDelegate_id:UplcId)
-      SetItem(dCertDelegRegKey_id:UplcId)
-      SetItem(dCertGenesis_id:UplcId)
-      SetItem(dCertMir_id:UplcId)
-      SetItem(dCertPoolRegister_id:UplcId)
-      SetItem(dCertPoolRetire_id:UplcId)
-      SetItem(dCert_match:UplcId)
-      SetItem(true_id:UplcId)
-      SetItem(false_id:UplcId)
-      SetItem(bool_match:UplcId)
-      SetItem(finite_id:UplcId)
-      SetItem(negInf_id:UplcId)
-      SetItem(posInf_id:UplcId)
-      SetItem(extended_match:UplcId)
-      SetItem(txOutRef_id:UplcId)
-      SetItem(txOutRef_match:UplcId)
-      SetItem(just_id:UplcId)
-      SetItem(nothing_id:UplcId)
-      SetItem(maybe_match:UplcId)
-      SetItem(nil_id:UplcId)
-      SetItem(cons_id:UplcId)
-      SetItem(nil_match:UplcId)
-      SetItem(address_id:UplcId)
-      SetItem(address_match:UplcId)
-      SetItem(txOut_id:UplcId)
-      SetItem(txOut_match:UplcId)
-      SetItem(certifying_id:UplcId)
-      SetItem(minting_id:UplcId)
-      SetItem(rewarding_id:UplcId)
-      SetItem(spending_id:UplcId)
-      SetItem(scriptPurpose_match:UplcId)
-      SetItem(lowerBound_id:UplcId)
-      SetItem(lowerBound_match:UplcId)
-      SetItem(upperBound_id:UplcId)
-      SetItem(upperBound_match:UplcId)
-      SetItem(interval_id:UplcId)
-      SetItem(interval_match:UplcId)
-      SetItem(txInInfo_id:UplcId)
-      SetItem(txInInfo_match:UplcId)
-      SetItem(txInfo_id:UplcId)
-      SetItem(txInfo_match:UplcId)
-      SetItem(scriptContext_id:UplcId)
-      SetItem(scriptContext_match:UplcId)
+  // Global environment domain
+  rule #inKeysgEnv(X) => X in GENV_KEYS
 
-      SetItem(fUnsafeFromDatatuple2_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataCredential_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataDCert_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataBool_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataExtended_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataMaybe_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataMap_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataValue_id:UplcId)
-      SetItem(fUnsafeFromDataNil_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataAddress_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataTxOut_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataLowerBound_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataUpperBound_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataInterval_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataTxInInfo_cunsafeFromBuiltinData:UplcId)
-      SetItem(fUnsafeFromDataTxInfo_cunsafeFromBuiltinData:UplcId)
-
-    [simplification]
 ```
-
-
-
 
 ## Global Lookup: Constructors and Matchers
 
-```
-  rule #gLookup(ID) => < delay (delay (lam f_0 [ (lam s_0 [ s_0 s_0 ]) (lam s_0 (lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ])) ])) .Map >
-    requires ID ==K fix1_id:UplcId
+```k
+  rule gLookup(fix1_id) => < delay (delay (lam f_0 [ (lam s_0 [ s_0 s_0 ]) (lam s_0 (lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ])) ])) .Map >
+  rule gLookup(reconstructCaseError_id) => < con string "PT1" >
+  rule gLookup(tuple2_id) => < delay (delay (lam arg_0 (lam arg_1 (delay (lam case_Tuple2 [ case_Tuple2 arg_0 arg_1 ]))))) .Map >
+  rule gLookup(tuple2_match_id) => < delay (delay (lam x_0 x_0)) .Map >
+  rule gLookup(unit_id) => < delay (lam case_Unit case_Unit) .Map >
+  rule gLookup(unit_match) => < lam x_0 x_0 .Map >
+  rule gLookup(unitval_id) => < con unit () >
+  rule gLookup(pubKeyCredential_id) => < lam arg_0 (delay (lam case_PubKeyCredential (lam case_ScriptCredential [ case_PubKeyCredential arg_0 ]))) .Map >
+  rule gLookup(scriptCredential_id) => < lam arg_0 (delay (lam case_PubKeyCredential (lam case_ScriptCredential [ case_ScriptCredential arg_0 ]))) .Map >
+  rule gLookup(credential_match) => < lam x_0 x_0 .Map >
+  rule gLookup(stakingHash_id) => < lam arg_0 (delay (lam case_StakingHash (lam case_StakingPtr [ case_StakingHash arg_0 ]))) .Map >
+  rule gLookup(stakingPtr_id) => < lam arg_0 (lam arg_1 (lam arg_2 (delay (lam case_StakingHash (lam case_StakingPtr [ case_StakingPtr arg_0 arg_1 arg_2 ]))))) .Map >
+  rule gLookup(stakingCredential_match) => < lam x_0 x_0 .Map >
 
-  rule #gLookup(ID) => < con string "PT1" >
-    requires ID ==K reconstructCaseError_id:UplcId
-
-  rule #gLookup(ID) => < delay (delay (lam arg_0 (lam arg_1 (delay (lam case_Tuple2 [ case_Tuple2 arg_0 arg_1 ]))))) .Map >
-    requires ID ==K tuple2_id:UplcId
-
-  rule #gLookup(ID) => < delay (delay (lam x_0 x_0)) .Map >
-    requires ID ==K tuple2_match_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam case_Unit case_Unit) .Map >
-    requires ID ==K unit_id:UplcId
-
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K unit_match:UplcId
-
-  rule #gLookup(ID) => < con unit () >
-    requires ID ==K unitval_id:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (delay (lam case_PubKeyCredential (lam case_ScriptCredential [ case_PubKeyCredential arg_0 ]))) .Map >
-    requires ID ==K pubKeyCredential_id:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (delay (lam case_PubKeyCredential (lam case_ScriptCredential [ case_ScriptCredential arg_0 ]))) .Map >
-    requires ID ==K scriptCredential_id:UplcId
-
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K credential_match:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (delay (lam case_StakingHash (lam case_StakingPtr [ case_StakingHash arg_0 ]))) .Map >
-    requires ID ==K stakingHash_id:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (lam arg_1 (lam arg_2 (delay (lam case_StakingHash (lam case_StakingPtr [ case_StakingPtr arg_0 arg_1 arg_2 ]))))) .Map >
-    requires ID ==K stakingPtr_id:UplcId
-
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K stakingCredential_match:UplcId
-
-  rule #gLookup(ID) =>
+  rule gLookup(dCertDelegDeRegKey_id) =>
     < lam arg_0
       (delay
         (lam case_DCertDelegDeRegKey
@@ -190,9 +136,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K dCertDelegDeRegKey_id:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(dCertDelegDelegate_id) =>
     < lam arg_0
       (lam arg_1
         (delay
@@ -215,9 +160,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K dCertDelegDelegate_id:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(dCertDelegRegKey_id) =>
     < lam arg_0
       (delay
         (lam case_DCertDelegDeRegKey
@@ -238,9 +182,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K dCertDelegRegKey_id:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(dCertGenesis_id) =>
     < delay
       (lam case_DCertDelegDeRegKey
         (lam case_DCertDelegDelegate
@@ -259,9 +202,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K dCertGenesis_id:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(dCertMir_id) =>
     < delay
       (lam case_DCertDelegDeRegKey
         (lam case_DCertDelegDelegate
@@ -280,9 +222,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K dCertMir_id:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(dCertPoolRegister_id) =>
     < lam arg_0
       (lam arg_1
         (delay
@@ -305,9 +246,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K dCertPoolRegister_id:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(dCertPoolRetire_id) =>
     < lam arg_0
       (lam arg_1
         (delay
@@ -330,130 +270,55 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K dCertPoolRetire_id:UplcId
 
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K dCert_match:UplcId
-
-  rule #gLookup(ID) => < delay (lam case_True (lam case_False case_True)) .Map >
-    requires ID ==K true_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam case_True (lam case_False case_False)) .Map >
-    requires ID ==K false_id:UplcId
-
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K bool_match:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (delay (lam case_Finite (lam case_NegInf (lam case_PosInf [ case_Finite arg_0 ])))) .Map >
-    requires ID ==K finite_id:UplcId
-
-  rule #gLookup(ID) => < delay (delay (lam case_Finite (lam case_NegInf (lam case_PosInf case_NegInf)))) .Map >
-    requires ID ==K negInf_id:UplcId
-
-  rule #gLookup(ID) => < delay (delay (lam case_Finite (lam case_NegInf (lam case_PosInf case_PosInf)))) .Map >
-    requires ID ==K posInf_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam x_0 x_0) .Map >
-    requires ID ==K extended_match:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (lam arg_1 (delay (lam case_TxOutRef [ case_TxOutRef arg_0 arg_1 ]))) .Map >
-    requires ID ==K txOutRef_id:UplcId
-
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K txOutRef_match:UplcId
-
-  rule #gLookup(ID) => < delay (lam arg_0 (delay (lam case_Just (lam case_Nothing [ case_Just arg_0 ] )))) .Map >
-    requires ID ==K just_id:UplcId
-
-  rule #gLookup(ID) => < delay (delay (lam case_Just (lam case_Nothing case_Nothing))) .Map >
-    requires ID ==K nothing_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam x_0 x_0) .Map >
-    requires ID ==K maybe_match:UplcId
-
-  rule #gLookup(ID) => < delay (delay (lam case_Nil (lam case_Cons case_Nil))) .Map >
-    requires ID ==K nil_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam arg_0 (lam arg_1 (delay (lam case_Nil (lam case_Cons [ case_Cons arg_0 arg_1 ]))))) .Map >
-    requires ID ==K cons_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam x_0 x_0) .Map >
-    requires ID ==K nil_match:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (lam arg_1 (delay (lam case_Address [ case_Address arg_0 arg_1 ]))) .Map >
-    requires ID ==K address_id:UplcId
-
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K address_match:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (lam arg_1 (lam arg_2 (delay (lam case_TxOut [ case_TxOut arg_0 arg_1 arg_2 ])))) .Map >
-    requires ID ==K txOut_id:UplcId
-
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K txOut_match:UplcId
-
-
-  rule #gLookup(ID) => < lam arg_0 (delay (lam case_Certifying (lam case_Minting (lam case_Rewarding (lam case_Spending [ case_Certifying arg_0 ] ))))) .Map >
-    requires ID ==K certifying_id:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (delay (lam case_Certifying (lam case_Minting (lam case_Rewarding (lam case_Spending [ case_Minting arg_0 ] ))))) .Map >
-    requires ID ==K minting_id:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (delay (lam case_Certifying (lam case_Minting (lam case_Rewarding (lam case_Spending [ case_Rewarding arg_0 ] ))))) .Map >
-    requires ID ==K rewarding_id:UplcId
-
-  rule #gLookup(ID) => < lam arg_0 (delay (lam case_Certifying (lam case_Minting (lam case_Rewarding (lam case_Spending [ case_Spending arg_0 ] ))))) .Map >
-    requires ID ==K spending_id:UplcId
-
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K scriptPurpose_match:UplcId
-
-  rule #gLookup(ID) => < delay (lam arg_0 (lam arg_1 (delay (lam case_LowerBound [ case_LowerBound arg_0 arg_1 ])))) .Map >
-    requires ID ==K lowerBound_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam x_0 x_0) >
-    requires ID ==K lowerBound_match:UplcId
-
-  rule #gLookup(ID) => < delay (lam arg_0 (lam arg_1 (delay (lam case_UpperBound [ case_UpperBound arg_0 arg_1 ])))) .Map >
-    requires ID ==K upperBound_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam x_0 x_0) >
-    requires ID ==K upperBound_match:UplcId
-
-  rule #gLookup(ID) => < delay (lam arg_0 (lam arg_1 (delay (lam case_Interval [ case_Interval arg_0 arg_1 ])))) .Map >
-    requires ID ==K interval_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam x_0 x_0) >
-    requires ID ==K interval_match:UplcId
-
-  rule #gLookup(ID) => < delay (lam arg_0 (lam arg_1 (delay (lam case_TxInInfo [ case_TxInInfo arg_0 arg_1 ])))) .Map >
-    requires ID ==K txInInfo_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam x_0 x_0) >
-    requires ID ==K txInInfo_match:UplcId
-
-  rule #gLookup(ID) =>
+  rule gLookup(dCert_match) => < lam x_0 x_0 .Map >
+  rule gLookup(true_id) => < delay (lam case_True (lam case_False case_True)) .Map >
+  rule gLookup(false_id) => < delay (lam case_True (lam case_False case_False)) .Map >
+  rule gLookup(bool_match) => < lam x_0 x_0 .Map >
+  rule gLookup(finite_id) => < lam arg_0 (delay (lam case_Finite (lam case_NegInf (lam case_PosInf [ case_Finite arg_0 ])))) .Map >
+  rule gLookup(negInf_id) => < delay (delay (lam case_Finite (lam case_NegInf (lam case_PosInf case_NegInf)))) .Map >
+  rule gLookup(posInf_id) => < delay (delay (lam case_Finite (lam case_NegInf (lam case_PosInf case_PosInf)))) .Map >
+  rule gLookup(extended_match) => < delay (lam x_0 x_0) .Map >
+  rule gLookup(txOutRef_id) => < lam arg_0 (lam arg_1 (delay (lam case_TxOutRef [ case_TxOutRef arg_0 arg_1 ]))) .Map >
+  rule gLookup(txOutRef_match) => < lam x_0 x_0 .Map >
+  rule gLookup(just_id) => < delay (lam arg_0 (delay (lam case_Just (lam case_Nothing [ case_Just arg_0 ] )))) .Map >
+  rule gLookup(nothing_id) => < delay (delay (lam case_Just (lam case_Nothing case_Nothing))) .Map >
+  rule gLookup(maybe_match) => < delay (lam x_0 x_0) .Map >
+  rule gLookup(nil_id) => < delay (delay (lam case_Nil (lam case_Cons case_Nil))) .Map >
+  rule gLookup(cons_id) => < delay (lam arg_0 (lam arg_1 (delay (lam case_Nil (lam case_Cons [ case_Cons arg_0 arg_1 ]))))) .Map >
+  rule gLookup(nil_match) => < delay (lam x_0 x_0) .Map >
+  rule gLookup(address_id) => < lam arg_0 (lam arg_1 (delay (lam case_Address [ case_Address arg_0 arg_1 ]))) .Map >
+  rule gLookup(address_match) => < lam x_0 x_0 .Map >
+  rule gLookup(txOut_id) => < lam arg_0 (lam arg_1 (lam arg_2 (delay (lam case_TxOut [ case_TxOut arg_0 arg_1 arg_2 ])))) .Map >
+  rule gLookup(txOut_match) => < lam x_0 x_0 .Map >
+  rule gLookup(certifying_id) => < lam arg_0 (delay (lam case_Certifying (lam case_Minting (lam case_Rewarding (lam case_Spending [ case_Certifying arg_0 ] ))))) .Map >
+  rule gLookup(minting_id) => < lam arg_0 (delay (lam case_Certifying (lam case_Minting (lam case_Rewarding (lam case_Spending [ case_Minting arg_0 ] ))))) .Map >
+  rule gLookup(rewarding_id) => < lam arg_0 (delay (lam case_Certifying (lam case_Minting (lam case_Rewarding (lam case_Spending [ case_Rewarding arg_0 ] ))))) .Map >
+  rule gLookup(spending_id) => < lam arg_0 (delay (lam case_Certifying (lam case_Minting (lam case_Rewarding (lam case_Spending [ case_Spending arg_0 ] ))))) .Map >
+  rule gLookup(scriptPurpose_match) => < lam x_0 x_0 .Map >
+  rule gLookup(lowerBound_id) => < delay (lam arg_0 (lam arg_1 (delay (lam case_LowerBound [ case_LowerBound arg_0 arg_1 ])))) .Map >
+  rule gLookup(lowerBound_match) => < delay (lam x_0 x_0) .Map >
+  rule gLookup(upperBound_id) => < delay (lam arg_0 (lam arg_1 (delay (lam case_UpperBound [ case_UpperBound arg_0 arg_1 ])))) .Map >
+  rule gLookup(upperBound_match) => < delay (lam x_0 x_0) .Map >
+  rule gLookup(interval_id) => < delay (lam arg_0 (lam arg_1 (delay (lam case_Interval [ case_Interval arg_0 arg_1 ])))) .Map >
+  rule gLookup(interval_match) => < delay (lam x_0 x_0) .Map >
+  rule gLookup(txInInfo_id) => < delay (lam arg_0 (lam arg_1 (delay (lam case_TxInInfo [ case_TxInInfo arg_0 arg_1 ])))) .Map >
+  rule gLookup(txInInfo_match) => < delay (lam x_0 x_0) .Map >
+  rule gLookup(txInfo_id) =>
     < lam arg_0 (lam arg_1 (lam arg_2 (lam arg_3 (lam arg_4 (lam arg_5 (lam arg_6 (lam arg_7 (lam arg_8 (lam arg_9
-        (delay (lam case_TxInfo [ case_TxInfo arg_0 arg_1 arg_2 arg_3 arg_4 arg_5 arg_6 arg_7 arg_8 arg_9 ])
+        (delay (lam case_TxInfo [ case_TxInfo arg_0 arg_1 arg_2 arg_3 arg_4 arg_5 arg_6 arg_7 arg_8 arg_9 ]))
       )))))))))
       .Map
     >
-    requires ID ==K txInfo_id:UplcId
-
-  rule #gLookup(ID) => < delay (lam x_0 x_0) >
-    requires ID ==K txInfo_match:UplcId
-
-  rule #gLookup(ID) => < delay (lam arg_0 (lam arg_1 (delay (lam case_ScriptContext [ case_ScriptContext arg_0 arg_1 ])))) .Map >
-    requires ID ==K scriptContext_id:UplcId
-
-  rule #gLookup(ID) => < lam x_0 x_0 .Map >
-    requires ID ==K scriptContext_match:UplcId
+  rule gLookup(txInfo_match) => < delay (lam x_0 x_0) .Map >
+  rule gLookup(scriptContext_id) => < delay (lam arg_0 (lam arg_1 (delay (lam case_ScriptContext [ case_ScriptContext arg_0 arg_1 ])))) .Map >
+  rule gLookup(scriptContext_match) => < lam x_0 x_0 .Map >
 ```
 
 ## Global Lookup: Decoders
 
 ```k
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDatatuple2_cunsafeFromBuiltinData) =>
     < delay
       (delay
         (lam dUnsafeFromData_0
@@ -503,9 +368,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K fUnsafeFromDatatuple2_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataCredential_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -581,9 +445,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataCredential_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -666,9 +529,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataDCert_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -843,9 +705,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataDCert_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataBool_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam index_0
@@ -886,9 +747,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataBool_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataExtended_cunsafeFromBuiltinData) =>
     < delay
       (lam dUnsafeFromData_0
         (lam d_0
@@ -963,9 +823,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K fUnsafeFromDataExtended_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataTxId_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1000,9 +859,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       ]
       .Map
     >
-  requires ID ==K fUnsafeFromDataTxId_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1049,9 +907,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataMaybe_cunsafeFromBuiltinData) =>
     < delay
       (lam dUnsafeFromData_0
         (lam d_0
@@ -1107,9 +964,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K fUnsafeFromDataMaybe_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataMap_cunsafeFromBuiltinData) =>
     < delay
       (delay
         (lam dUnsafeFromData_0
@@ -1171,9 +1027,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       )
       .Map
     >
-    requires ID ==K fUnsafeFromDataMap_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataValue_id) =>
     < delay
       [
         (force (force fUnsafeFromDataMap_cunsafeFromBuiltinData))
@@ -1182,9 +1037,8 @@ module UPLC-GENVIRONMENT-INSTANCE
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataValue_id:UplcId
 
-rule #gLookup(ID) =>
+rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1242,9 +1096,8 @@ rule #gLookup(ID) =>
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataNil_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataAddress_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1291,9 +1144,8 @@ rule #gLookup(ID) =>
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataAddress_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataTxOut_cunsafeFromBuiltinData) =>
     < delay
       (lam dUnsafeFromData_0
         [
@@ -1339,9 +1191,8 @@ rule #gLookup(ID) =>
       )
       .Map
     >
-    requires ID ==K fUnsafeFromDataTxOut_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1454,9 +1305,8 @@ rule #gLookup(ID) =>
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataLowerBound_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1501,9 +1351,8 @@ rule #gLookup(ID) =>
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataLowerBound_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataUpperBound_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1548,9 +1397,8 @@ rule #gLookup(ID) =>
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataUpperBound_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataInterval_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1597,9 +1445,8 @@ rule #gLookup(ID) =>
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataInterval_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataTxInInfo_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1649,9 +1496,8 @@ rule #gLookup(ID) =>
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataTxInInfo_cunsafeFromBuiltinData:UplcId
 
-  rule #gLookup(ID) =>
+  rule gLookup(fUnsafeFromDataTxInfo_cunsafeFromBuiltinData) =>
     < lam d_0
       [
         (lam tup_0
@@ -1791,7 +1637,96 @@ rule #gLookup(ID) =>
       ]
       .Map
     >
-    requires ID ==K fUnsafeFromDataTxInfo_cunsafeFromBuiltinData:UplcId
+```
+
+## Datatype Aliases
+
+```k
+
+  syntax Value ::= PubKeyCredential(ByteString) [function, functional]
+  rule PubKeyCredential(BS) =>
+    < delay
+      (lam case_PubKeyCredential (lam case_ScriptCredential [ case_PubKeyCredential arg_0 ]))
+      arg_0 |-> < con bytestring BS >
+    >
+
+  syntax Value ::= ScriptCredential(ByteString) [function, functional]
+  rule ScriptCredential(BS) =>
+    < delay
+      (lam case_PubKeyCredential (lam case_ScriptCredential [ case_ScriptCredential arg_0 ]))
+      arg_0 |-> < con bytestring BS >
+    >
+
+  syntax Bool ::= DataCredentialDef(Int) [function]
+  rule DataCredentialDef(I) => (I ==Int 0 orBool I ==Int 1) [simplification]
+
+  syntax Value ::= DataCredential(Int, ByteString) [function]
+  rule DataCredential(0, BS) => PubKeyCredential(BS) [simplification]
+  rule DataCredential(1, BS) => ScriptCredential(BS) [simplification]
+  rule #Ceil(DataCredential(I, _)) => { true #Equals DataCredentialDef(I) } [simplification]
+
+  syntax Value ::= StakingHash(Int, ByteString) [function]
+  rule StakingHash(I, BS) =>
+    < delay
+      (lam case_StakingHash (lam case_StakingPtr [ case_StakingHash arg_0 ]))
+      arg_0 |-> DataCredential(I, BS)
+    >
+    rule #Ceil(StakingHash(I, BS)) => #Ceil(DataCredential(I, BS)) [simplification]
+
+  syntax Value ::= StakingPtr(Int, Int, Int) [function, functional]
+  rule StakingPtr(I1, I2, I3) =>
+    < delay
+      (lam case_StakingHash (lam case_StakingPtr [ case_StakingPtr arg_0 arg_1 arg_2 ]))
+      arg_0 |-> < con integer I1 >
+      arg_1 |-> < con integer I2 >
+      arg_2 |-> < con integer I3 >
+    >
+
+  syntax Value ::= TxOut(ByteString, Int) [function, functional]
+  rule TxOut(BS, I) =>
+    < delay
+      (lam case_TxOutRef [ case_TxOutRef arg_0 arg_1 ])
+      arg_0 |-> < con bytestring BS >
+      arg_1 |-> < con integer I >
+    >
+
+  syntax Value ::= ScriptPurposeSpending(ByteString, Int) [function, functional]
+  rule ScriptPurposeSpending(BS, I) =>
+    < delay
+      (lam case_Certifying
+        (lam case_Minting
+          (lam case_Rewarding
+            (lam case_Spending
+              [ case_Spending arg_0 ]
+            )
+          )
+        )
+      )
+      arg_0 |-> TxOut(BS, I)
+    >
+
+  syntax Value ::= ScriptPurposeMinting(ByteString) [function, functional]
+  rule ScriptPurposeMinting(BS) =>
+    < delay
+      (lam case_Certifying
+        (lam case_Minting
+          (lam case_Rewarding
+            (lam case_Spending
+              [ case_Minting arg_0 ]
+            )
+          )
+        )
+      )
+      arg_0 |-> < con bytestring BS >
+    >
+
+```
+
+## Default
+
+```k
+rule gLookup(ID) => < con integer 0 >
+  requires notBool #inKeysgEnv(ID)
 
 endmodule
 ```

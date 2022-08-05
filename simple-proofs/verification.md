@@ -2,6 +2,7 @@
 
 ```k
 requires "uplc.md"
+requires "uplc-rw-helpers.md"
 ```
 
 ## Recursive combinators
@@ -19,8 +20,6 @@ module RECURSIVE-COMBINATORS
               [ (lam s_0 [ f_0 (lam x_0 [ s_0 s_0 x_0 ]) ])
                 (lam s_0 [ f_0 (lam x_0 [ s_0 s_0 x_0 ]) ]) ])
 ```
-
-
 
 ### Variation of the Z combinator used in the Plutus pipeline
 
@@ -455,94 +454,99 @@ endmodule
 
 ## Trivial False-returning Policy
 
-```
-  syntax TERM ::= "TRIVIAL_POLICY_FALSE" [alias]
+```k
+module POLICIES
+  imports UPLC-RW-HELPERS
+
+  syntax Term ::= "TRIVIAL_POLICY_FALSE" [macro]
   rule TRIVIAL_POLICY_FALSE =>
-  (lam r_0
-    (lam p_0
-      [
-        (lam tup_0
-          [
-            (lam t_0
-              (force
-                [
+    (lam r_0
+      (lam p_0
+        [
+          (lam tup_0
+            [
+              (lam t_0
+                (force
                   [
-                    (force
-                      [
-                        bool_match
+                    [
+                      (force
                         [
+                          bool_match
                           [
-                            (lam ds_0
+                            [
                               (lam ds_0
-                                [
-                                  (force [ unit_match ds_0 ])
-                                  false_id
-                                ]
+                                (lam ds_0
+                                  [
+                                    (force [ unit_match ds_0 ])
+                                    false_id
+                                  ]
+                                )
                               )
-                            )
+                              [
+                                [
+                                  (force (builtin ifThenElse))
+                                  [
+                                    (builtin equalsInteger)
+                                    [
+                                      (force (force (builtin fstPair)))
+                                      [ (builtin unConstrData) r_0 ]
+                                    ]
+                                    (con integer 0)
+                                  ]
+                                  (lam ds_0 unit_id)
+                                  [ THROW_ERROR_LAM reconstructCaseError_id ]
+                                ]
+                                unitval_id
+                              ]
+                            ]
                             [
                               [
-                                (force (builtin ifThenElse))
                                 [
-                                  (builtin equalsInteger)
+                                  (force (builtin ifThenElse))
                                   [
-                                    (force (force (builtin fstPair)))
-                                    [ (builtin unConstrData) r_0 ]
+                                    (builtin equalsInteger)
+                                    [ (force (force (builtin fstPair))) (force tup_0) ]
+                                    (con integer 0)
                                   ]
-                                  (con integer 0)
+                                  (lam ds_0
+                                    [
+                                      scriptContext_id
+                                      [
+                                        fUnsafeFromDataTxInfo_cunsafeFromBuiltinData
+                                        [ (force (builtin headList)) (force t_0) ]
+                                      ]
+                                      [
+                                        fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData
+                                        [
+                                          (force (builtin headList))
+                                          [ (force (builtin tailList)) (force t_0) ]
+                                        ]
+                                      ]
+                                    ]
+                                  )
                                 ]
-                                (lam ds_0 unit_id)
                                 [ THROW_ERROR_LAM reconstructCaseError_id ]
                               ]
                               unitval_id
                             ]
                           ]
-                          [
-                            [
-                              [
-                                (force (builtin ifThenElse))
-                                [
-                                  (builtin equalsInteger)
-                                  [ (force (force (builtin fstPair))) (force tup_0) ]
-                                  (con integer 0)
-                                ]
-                                (lam ds_0
-                                  [
-                                    scriptContext_id
-                                    [
-                                      fUnsafeFromDataTxInfo_cunsafeFromBuiltinData
-                                      [ (force (builtin headList)) (force t_0) ]
-                                    ]
-                                    [
-                                      fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData
-                                      [
-                                        (force (builtin headList))
-                                        [ (force (builtin tailList)) (force t_0) ]
-                                      ]
-                                    ]
-                                  ]
-                                )
-                              ]
-                              [ THROW_ERROR_LAM reconstructCaseError_id ]
-                            ]
-                            unitval_id
-                          ]
                         ]
-                      ]
-                    )
-                    (delay unit_id)
+                      )
+                      (delay unit_id)
+                    ]
+                    [ THROW_ERROR_DELAY (con string "PT5" ) ]
                   ]
-                  [ THROW_ERROR_DELAY (con string "PT5" ) ]
-                ]
+                )
               )
-            )
-            (delay [ (force (force (builtin sndPair))) (force tup_0) ])
-          ]
-        )
-        (delay [ (builtin unConstrData) p_0 ])
-      ]
+              (delay [ (force (force (builtin sndPair))) (force tup_0) ])
+            ]
+          )
+          (delay [ (builtin unConstrData) p_0 ])
+        ]
+      )
     )
-  )
+
+endmodule
 ```
 
 ## Main module
@@ -552,6 +556,7 @@ module VERIFICATION
   imports AUXILIARIES
   imports LIST-ALGORITHMS-SYNTAX
   imports SIMPLIFICATIONS
+  imports POLICIES
   imports UPLC
 
 endmodule

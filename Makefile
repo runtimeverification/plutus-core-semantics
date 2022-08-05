@@ -231,6 +231,7 @@ kplutus_files := uplc.md \
                  uplc-environment.md \
                  uplc-genvironment.md \
 				 uplc-genvironment-instance.md \
+				 uplc-rw-helpers.md \
                  uplc-string-builtins.md \
                  uplc-configuration.md \
                  uplc-flat-parser.md \
