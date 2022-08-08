@@ -382,7 +382,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                       (force (builtin ifThenElse))
                       [
                         (builtin equalsInteger)
-                        (force index_0)
+                        index_0
                         (con integer 1)
                       ]
                     ]
@@ -393,7 +393,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                           (builtin unBData)
                           [
                             (force (builtin headList))
-                            [ (force (force (builtin sndPair))) (force tup_0) ]
+                            [ (force (force (builtin sndPair))) tup_0 ]
                           ]
                         ]
                       ]
@@ -405,7 +405,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                         (force (builtin ifThenElse))
                         [
                           (builtin equalsInteger)
-                          (force index_0)
+                          index_0
                           (con integer 0)
                         ]
                         (lam ds_0
@@ -415,7 +415,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                               (builtin unBData)
                               [
                                 (force (builtin headList))
-                                [ (force (force (builtin sndPair))) (force tup_0) ]
+                                [ (force (force (builtin sndPair))) tup_0 ]
                               ]
                             ]
                           ]
@@ -429,19 +429,10 @@ module UPLC-GENVIRONMENT-INSTANCE
                 unitval_id
               ]
             )
-            (delay
-              [
-                (force (force (builtin fstPair)))
-                (force tup_0)
-              ]
-            )
+            [ (force (force (builtin fstPair))) tup_0 ]
           ]
         )
-        (delay
-          [
-            (builtin unConstrData) d_0
-          ]
-        )
+        [ (builtin unConstrData) d_0 ]
       ]
       .Map
     >
@@ -461,7 +452,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                           (force (builtin ifThenElse))
                           [
                             (builtin equalsInteger)
-                            (force index_0)
+                            index_0
                             (con integer 1)
                           ]
                           (lam ds_0
@@ -469,7 +460,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                               stakingPtr_id
                               [
                                 (builtin unIData)
-                                [ (force (builtin headList)) (force t_0) ]
+                                [ (force (builtin headList)) t_0 ]
                               ]
                               [
                                 (builtin unIData)
@@ -491,7 +482,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                                   (force (builtin ifThenElse))
                                   [
                                     (builtin equalsInteger)
-                                    (force index_0)
+                                    index_0
                                     (con integer 0)
                                   ]
                                   (lam ds_0
@@ -499,10 +490,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                                       stakingHash_id
                                       [
                                         fUnsafeFromDataCredential_cunsafeFromBuiltinData
-                                        [
-                                          (force (builtin headList))
-                                          [ (force (force (builtin sndPair))) (force tup_0) ]
-                                        ]
+                                        [ (force (builtin headList)) t_0 ]
                                       ]
                                     ]
                                   )
@@ -516,16 +504,16 @@ module UPLC-GENVIRONMENT-INSTANCE
                         unitval_id
                       ]
                     )
-                    (delay [ (force (force (builtin fstPair))) (force tup_0) ])
+                    [ (force (force (builtin fstPair))) tup_0 ]
                   ]
                 )
-                (delay [ (force (builtin tailList)) (force t_0) ])
+                (delay [ (force (builtin tailList)) t_0 ])
               ]
             )
-            (delay [ (force (force (builtin sndPair))) (force tup_0) ])
+            [ (force (force (builtin sndPair))) tup_0 ]
           ]
         )
-        (delay [ (builtin unConstrData) d_0 ])
+        [ (builtin unConstrData) d_0 ]
       ]
       .Map
     >
@@ -834,7 +822,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                 (force (builtin ifThenElse))
                 [
                   (builtin equalsInteger)
-                  [ (force (force (builtin fstPair))) (force tup_0) ]
+                  [ (force (force (builtin fstPair))) tup_0 ]
                   (con integer 0)
                 ]
                 (lam ds_0
@@ -842,10 +830,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                     (builtin unBData)
                     [
                       (force (builtin headList))
-                      [
-                        (force (force (builtin sndPair)))
-                        (force tup_0)
-                      ]
+                      [ (force (force (builtin sndPair))) tup_0 ]
                     ]
                   ]
                 )
@@ -855,7 +840,7 @@ module UPLC-GENVIRONMENT-INSTANCE
             unitval_id
           ]
         )
-        (delay [ (builtin unConstrData) d_0 ])
+        [ (builtin unConstrData) d_0 ]
       ]
       .Map
     >
@@ -871,7 +856,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                   (force (builtin ifThenElse))
                   [
                     (builtin equalsInteger)
-                    [ (force (force (builtin fstPair))) (force tup_0) ]
+                    [ (force (force (builtin fstPair))) tup_0 ]
                     (con integer 0)
                   ]
                   (lam ds_0
@@ -879,13 +864,13 @@ module UPLC-GENVIRONMENT-INSTANCE
                       txOutRef_id
                       [
                         fUnsafeFromDataTxId_cunsafeFromBuiltinData
-                        [  (force (builtin headList)) (force t_0)]
+                        [  (force (builtin headList)) t_0 ]
                       ]
                       [
                         (builtin unIData)
                         [
                           (force (builtin headList))
-                          [ (force (builtin tailList)) (force t_0) ]
+                          [ (force (builtin tailList)) t_0 ]
                         ]
                       ]
                     ]
@@ -895,15 +880,10 @@ module UPLC-GENVIRONMENT-INSTANCE
                 unitval_id
               ]
             )
-            (delay
-              [
-                (force (force (builtin sndPair)))
-                (force tup_0)
-              ]
-            )
+            [ (force (force (builtin sndPair))) tup_0 ]
           ]
         )
-        (delay [ (builtin unConstrData) d_0 ])
+        [ (builtin unConstrData) d_0 ]
       ]
       .Map
     >
@@ -1203,7 +1183,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                   (force (builtin ifThenElse))
                   [
                     (builtin equalsInteger)
-                    (force index_0)
+                    index_0
                     (con integer 3)
                   ]
                   (lam ds_0
@@ -1213,7 +1193,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                         fUnsafeFromDataDCert_cunsafeFromBuiltinData
                         [
                           (force (builtin headList))
-                          [ (force (force (builtin sndPair))) (force tup_0) ]
+                          [ (force (force (builtin sndPair))) tup_0 ]
                         ]
                       ]
                     ]
@@ -1224,7 +1204,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                         (force (builtin ifThenElse))
                         [
                           (builtin equalsInteger)
-                          (force index_0)
+                          index_0
                           (con integer 2)
                         ]
                         (lam ds_0
@@ -1234,7 +1214,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                               fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData
                               [
                                 (force (builtin headList))
-                                [ (force (force (builtin sndPair))) (force tup_0) ]
+                                [ (force (force (builtin sndPair))) tup_0 ]
                               ]
                             ]
                           ]
@@ -1245,7 +1225,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                               (force (builtin ifThenElse))
                               [
                                 (builtin equalsInteger)
-                                (force index_0)
+                                index_0
                                 (con integer 1)
                               ]
                               (lam ds_0
@@ -1255,7 +1235,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                                     fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData
                                     [
                                       (force (builtin headList))
-                                      [ (force (force (builtin sndPair))) (force tup_0) ]
+                                      [ (force (force (builtin sndPair))) tup_0 ]
                                     ]
                                   ]
                                 ]
@@ -1266,7 +1246,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                                     (force (builtin ifThenElse))
                                     [
                                       (builtin equalsInteger)
-                                      (force index_0)
+                                      index_0
                                       (con integer 0)
                                     ]
                                     (lam ds_0
@@ -1276,7 +1256,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                                           (builtin unBData)
                                           [
                                             (force (builtin headList))
-                                            [ (force (force (builtin sndPair))) (force tup_0) ]
+                                            [ (force (force (builtin sndPair))) tup_0 ]
                                           ]
                                         ]
                                       ]
@@ -1298,10 +1278,10 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                 unitval_id
               ]
             )
-            (delay [ (force (force (builtin fstPair))) (force tup_0) ])
+            [ (force (force (builtin fstPair))) tup_0 ]
           ]
         )
-        (delay [ (builtin unConstrData) d_0 ])
+        [ (builtin unConstrData) d_0 ]
       ]
       .Map
     >
@@ -1691,7 +1671,6 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
       (lam case_StakingHash (lam case_StakingPtr [ case_StakingHash arg_0 ]))
       arg_0 |-> Credential(C, PARAMS)
     >
-    requires CredentialDef(C, PARAMS)
 
   syntax Bool ::= StakingHashDef(List) [function, functional]
   rule StakingHashDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => CredentialDef(C, PARAMS)
@@ -1769,7 +1748,6 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
       arg_0 |-> TxId(C, PARAMS)
       arg_1 |-> < con integer I >
     >
-    requires TxIdDef(C, PARAMS)
 
   // Definedness
   syntax Bool ::= TxOutRefDef(Int, List) [function, functional]
@@ -1778,6 +1756,24 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
 
   // #Ceil
   rule #Ceil(TxOutRef(I, PARAMS)) => { true #Equals TxOutRefDef(I, PARAMS) } [simplification]
+```
+
+### DCert
+
+TODO: WRITE DEFINITIONS
+
+```k
+  // Textual Data
+  syntax TextualData ::= DCertData(Int, List) [function, injective, no-evaluators]
+
+  // Definition
+  syntax Value ::= DCert(Int, List) [function, injective, no-evaluators]
+
+  // Definedness
+  syntax Bool ::= DCertDef(Int, List) [function, no-evaluators]
+
+  // #Ceil
+  rule #Ceil(DCert(C, PARAMS)) => { true #Equals DCertDef(C, PARAMS) } [simplification]
 ```
 
 ### ScriptPurpose
@@ -1814,7 +1810,6 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
       )
       arg_0 |-> TxOutRef(C, PARAMS)
     >
-    requires TxOutRefDef(C, PARAMS)
 
   syntax Bool ::= ScriptPurposeSpendingDef(List) [function, functional]
   rule ScriptPurposeSpendingDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => TxOutRefDef(C, PARAMS)
@@ -1822,6 +1817,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
 
   rule #Ceil(ScriptPurposeSpending(PARAMS)) => { true #Equals ScriptPurposeSpendingDef(PARAMS) } [simplification]
 
+  // Constructor: 2: Rewarding
   syntax Value ::= ScriptPurposeRewarding(List) [function]
   rule ScriptPurposeRewarding(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
     < delay
@@ -1836,13 +1832,63 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
       )
       arg_0 |-> StakingCredential(C, PARAMS)
     >
-    requires StakingCredentialDef(C, PARAMS)
 
   syntax Bool ::= ScriptPurposeRewardingDef(List) [function, functional]
   rule ScriptPurposeRewardingDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => StakingCredentialDef(C, PARAMS)
   rule ScriptPurposeRewardingDef(_) => false [owise]
 
   rule #Ceil(ScriptPurposeRewarding(PARAMS)) => { true #Equals ScriptPurposeRewardingDef(PARAMS) } [simplification]
+
+  // Constructor: 3: Certifying
+  syntax Value ::= ScriptPurposeCertifying(List) [function]
+  rule ScriptPurposeCertifying(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    < delay
+      (lam case_Certifying
+        (lam case_Minting
+          (lam case_Rewarding
+            (lam case_Spending
+              [ case_Certifying arg_0 ]
+            )
+          )
+        )
+      )
+      arg_0 |-> DCert(C, PARAMS)
+    >
+
+  syntax Bool ::= ScriptPurposeCertifyingDef(List) [function, functional]
+  rule ScriptPurposeCertifyingDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => DCertDef(C, PARAMS)
+  rule ScriptPurposeCertifyingDef(_) => false [owise]
+
+  rule #Ceil(ScriptPurposeCertifying(PARAMS)) => { true #Equals ScriptPurposeCertifyingDef(PARAMS) } [simplification]
+
+  // Textual data
+  syntax TextualData ::= ScriptPurposeData(Int, List) [function, injective]
+  rule ScriptPurposeData(0, ListItem(BS:ByteString)) =>
+    Constr 0 [ ByteString BS ]
+  rule ScriptPurposeData(1, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    Constr 1 [ TxOutRefData(C, PARAMS) ]
+  rule ScriptPurposeData(2, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    Constr 2 [ StakingCredentialData(C, PARAMS) ]
+  rule ScriptPurposeData(2, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    Constr 3 [ DCertData(C, PARAMS) ]
+
+  // Definition
+  syntax Value ::= ScriptPurpose(Int, List) [function, injective]
+  rule ScriptPurpose(0, ListItem(BS:ByteString)) => ScriptPurposeMinting(BS)
+  rule ScriptPurpose(1, ListItem(L:List)) => ScriptPurposeSpending(L)
+  rule ScriptPurpose(2, ListItem(L:List)) => ScriptPurposeRewarding(L)
+  rule ScriptPurpose(3, ListItem(L:List)) => ScriptPurposeCertifying(L)
+
+  // Definedness
+  syntax Bool ::= ScriptPurposeDef(Int, List) [function, functional]
+  rule ScriptPurposeDef(0, ListItem(_:ByteString)) => true
+  rule ScriptPurposeDef(1, ListItem(L:List)) => ScriptPurposeSpendingDef(L)
+  rule ScriptPurposeDef(2, ListItem(L:List)) => ScriptPurposeRewardingDef(L)
+  rule ScriptPurposeDef(3, ListItem(L:List)) => ScriptPurposeCertifyingDef(L)
+  rule ScriptPurposeDef(_, _) => false [owise]
+
+  // #Ceil
+  rule #Ceil(ScriptPurpose(C, PARAMS)) => { true #Equals ScriptPurposeDef(C, PARAMS) } [simplification]
 ```
 
 ## Default

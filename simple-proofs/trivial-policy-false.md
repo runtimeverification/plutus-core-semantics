@@ -12,7 +12,7 @@ module TRIVIAL-POLICY-FALSE
 ### Credential
 
 ```
-  // Constructor: 0: PubKeyCredential [151 steps]
+  // Constructor: 0: PubKeyCredential [151/115 steps]
   claim
     <k>
       ( con data { CredentialData(0, ListItem(BS:ByteString)) } ) ~>
@@ -21,7 +21,7 @@ module TRIVIAL-POLICY-FALSE
       Credential(0, ListItem(BS:ByteString)) ... </k>
     <env> _ => .Map </env>
 
-  // Constructor: 1: ScriptCredential [99 steps]
+  // Constructor: 1: ScriptCredential [99/84 steps]
   claim
     <k>
       ( con data { CredentialData(1, ListItem(BS:ByteString)) } ) ~>
@@ -47,7 +47,7 @@ module TRIVIAL-POLICY-FALSE
 ### Staking Credential
 
 ```
-  // StakingCredential: 0: StakingHash [157 steps]
+  // StakingCredential: 0: StakingHash [157/121 steps]
   claim
     <k>
       ( con data { Constr 0 [ CredentialData(C, PARAMS) ] } ) ~>
@@ -57,7 +57,7 @@ module TRIVIAL-POLICY-FALSE
     <env> _ => .Map </env>
     requires CredentialDef(C, PARAMS)
 
-  // StakingCredential: 1: StakingPtr [215 steps]
+  // StakingCredential: 1: StakingPtr [215/155 steps]
   claim
     <k>
       ( con data { Constr 1 [ Integer I1, Integer I2, Integer I3 ] } ) ~>
@@ -83,7 +83,7 @@ module TRIVIAL-POLICY-FALSE
 ### TxId
 
 ```
-  // TxId: 0 [90 steps]
+  // TxId: 0 [90/78 steps]
   claim
     <k>
       ( con data { Constr 0 [ ByteString BS ] } ) ~>
@@ -109,7 +109,7 @@ module TRIVIAL-POLICY-FALSE
 ### TxOutRef
 
 ```
-  // TxOutRef: 0 [145 steps]
+  // TxOutRef: 0 [145/109 steps]
   claim
     <k>
       ( con data { Constr 0 [ TxIdData(C, PARAMS), Integer I ] } ) ~>
@@ -133,40 +133,82 @@ module TRIVIAL-POLICY-FALSE
     [trusted]
 ```
 
-### Rest
+### DCert
+
+TODO: WRITE PER-CONSTRUCTOR CLAIMS
 
 ```k
-  // ScriptPurpose: 0: Minting [243 steps]
+  // General claim [??? steps]
+  claim
+    <k>
+      ( con data { DCertData(C, PARAMS) } ) ~>
+      [ gLookup(fUnsafeFromDataDCert_cunsafeFromBuiltinData) _]
+      =>
+      DCert(C, PARAMS) ... </k>
+    <env> _ => .Map </env>
+    requires DCertDef(C, PARAMS)
+    [trusted]
+```
+
+### ScriptPurpose
+
+```
+  // ScriptPurpose: 0: Minting [243/165 steps]
   claim
     <k>
       ( con data { Constr 0 [ ByteString BS:ByteString ] } ) ~>
       [ gLookup(fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData) _]
       =>
-      ScriptPurposeMinting(BS)
+      ScriptPurpose(0, ListItem(BS))
       ... </k>
     <env> _ => .Map </env>
 
-  // ScriptPurpose: 1: Spending [188 steps]
+  // ScriptPurpose: 1: Spending [188/131 steps]
   claim
     <k>
       ( con data { Constr 1 [ TxOutRefData(C, PARAMS) ] } ) ~>
       [ gLookup(fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData) _]
       =>
-      ScriptPurposeSpending(ListItem(ListItem(C) ListItem(PARAMS)))
+      ScriptPurpose(1, ListItem(ListItem(ListItem(C) ListItem(PARAMS))))
       ... </k>
     <env> _ => .Map </env>
     requires TxOutRefDef(C, PARAMS)
 
-  // ScriptPurpose: 2: Rewarding [141 steps]
+  // ScriptPurpose: 2: Rewarding [141/105 steps]
   claim
     <k>
       ( con data { Constr 2 [ StakingCredentialData(C, PARAMS) ] } ) ~>
       [ gLookup(fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData) _]
       =>
-      ScriptPurposeRewarding(ListItem(ListItem(C) ListItem(PARAMS)))
+      ScriptPurpose(2, ListItem(ListItem(ListItem(C) ListItem(PARAMS))))
       ... </k>
     <env> _ => .Map </env>
     requires StakingCredentialDef(C, PARAMS)
+
+  // ScriptPurpose: 3: Certifying [94/79 steps]
+  claim
+    <k>
+      ( con data { Constr 3 [ DCertData(C, PARAMS) ] } ) ~>
+      [ gLookup(fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData) _]
+      =>
+      ScriptPurpose(3, ListItem(ListItem(ListItem(C) ListItem(PARAMS))))
+      ... </k>
+    <env> _ => .Map </env>
+    requires DCertDef(C, PARAMS)
+```
+
+```k
+  // General claim [??? steps]
+  claim
+    <k>
+      ( con data { ScriptPurposeData(C, PARAMS) } ) ~>
+      [ gLookup(fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData) _]
+      =>
+      ScriptPurpose(C, PARAMS)
+      ... </k>
+    <env> _ => .Map </env>
+    requires ScriptPurposeDef(C, PARAMS)
+    [trusted]
 ```
 
 ```k
