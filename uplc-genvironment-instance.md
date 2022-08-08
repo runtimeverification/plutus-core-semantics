@@ -1641,39 +1641,66 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
 
 ## Datatype Aliases
 
-```k
+### Credential
 
-  syntax Value ::= PubKeyCredential(ByteString) [function, functional]
+```k
+  // Constructor: 0: PubKeyCredential
+  syntax Value ::= PubKeyCredential(ByteString) [function, functional, injective]
   rule PubKeyCredential(BS) =>
     < delay
       (lam case_PubKeyCredential (lam case_ScriptCredential [ case_PubKeyCredential arg_0 ]))
       arg_0 |-> < con bytestring BS >
     >
 
-  syntax Value ::= ScriptCredential(ByteString) [function, functional]
+  // Constructor: 1: ScriptCredential
+  syntax Value ::= ScriptCredential(ByteString) [function, functional, injective]
   rule ScriptCredential(BS) =>
     < delay
       (lam case_PubKeyCredential (lam case_ScriptCredential [ case_ScriptCredential arg_0 ]))
       arg_0 |-> < con bytestring BS >
     >
 
-  syntax Bool ::= DataCredentialDef(Int) [function]
-  rule DataCredentialDef(I) => (I ==Int 0 orBool I ==Int 1) [simplification]
+  // Textual data
+  syntax TextualData ::= CredentialData(Int, List) [function, injective]
+  rule CredentialData(0, ListItem(BS:ByteString)) => Constr 0 [ ByteString BS ]
+  rule CredentialData(1, ListItem(BS:ByteString)) => Constr 1 [ ByteString BS ]
 
-  syntax Value ::= DataCredential(Int, ByteString) [function]
-  rule DataCredential(0, BS) => PubKeyCredential(BS) [simplification]
-  rule DataCredential(1, BS) => ScriptCredential(BS) [simplification]
-  rule #Ceil(DataCredential(I, _)) => { true #Equals DataCredentialDef(I) } [simplification]
+  // Definition
+  syntax Value ::= Credential(Int, List) [function]
+  rule Credential(0, ListItem(BS:ByteString)) => PubKeyCredential(BS) [simplification]
+  rule Credential(1, ListItem(BS:ByteString)) => ScriptCredential(BS) [simplification]
 
-  syntax Value ::= StakingHash(Int, ByteString) [function]
-  rule StakingHash(I, BS) =>
+  // Definedness
+  syntax Bool ::= CredentialDef(Int, List) [function, functional]
+  rule CredentialDef(0, ListItem(_:ByteString)) => true
+  rule CredentialDef(1, ListItem(_:ByteString)) => true
+  rule CredentialDef(_, _) => false [owise]
+
+  // #Ceil
+  rule #Ceil(CredentialData(I, PARAMS)) => { true #Equals CredentialDef(I, PARAMS) } [simplification]
+  rule #Ceil(Credential(I, PARAMS)) => { true #Equals CredentialDef(I, PARAMS) } [simplification]
+```
+
+### Staking Credential
+
+```k
+  // Constructor : 0 : StakingHash
+  syntax Value ::= StakingHash(List) [function, injective]
+  rule StakingHash(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
     < delay
       (lam case_StakingHash (lam case_StakingPtr [ case_StakingHash arg_0 ]))
-      arg_0 |-> DataCredential(I, BS)
+      arg_0 |-> Credential(C, PARAMS)
     >
-    rule #Ceil(StakingHash(I, BS)) => #Ceil(DataCredential(I, BS)) [simplification]
+    requires CredentialDef(C, PARAMS)
 
-  syntax Value ::= StakingPtr(Int, Int, Int) [function, functional]
+  syntax Bool ::= StakingHashDef(List) [function, functional]
+  rule StakingHashDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => CredentialDef(C, PARAMS)
+  rule StakingHashDef(_) => false [owise]
+
+  rule #Ceil(StakingHash(PARAMS)) => { true #Equals StakingHashDef(PARAMS) } [simplification]
+
+  // Constructor : 1 : StakingPtr
+  syntax Value ::= StakingPtr(Int, Int, Int) [function, functional, injective]
   rule StakingPtr(I1, I2, I3) =>
     < delay
       (lam case_StakingHash (lam case_StakingPtr [ case_StakingPtr arg_0 arg_1 arg_2 ]))
@@ -1682,30 +1709,82 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
       arg_2 |-> < con integer I3 >
     >
 
-  syntax Value ::= TxOut(ByteString, Int) [function, functional]
-  rule TxOut(BS, I) =>
+  // Textual data
+  syntax TextualData ::= StakingCredentialData(Int, List) [function, injective]
+  rule StakingCredentialData(0, ListItem(ListItem(C:Int) ListItem(ListItem(BS:ByteString)))) =>
+    Constr 0 [ CredentialData(C, ListItem(BS)) ]
+  rule StakingCredentialData(1, ListItem(I1:Int) ListItem(I2:Int) ListItem(I3:Int)) =>
+    Constr 1 [ Integer I1, Integer I2, Integer I3 ]
+
+  // Definition
+  syntax Value ::= StakingCredential(Int, List) [function, injective]
+  rule StakingCredential(0, ListItem(ListItem(C:Int) ListItem(PARAMS))) => StakingHash(ListItem(ListItem(C) ListItem(PARAMS)))
+  rule StakingCredential(1, ListItem(I1:Int) ListItem(I2:Int) ListItem(I3:Int)) => StakingPtr(I1, I2, I3)
+
+  // Definedness
+  syntax Bool ::= StakingCredentialDef(Int, List) [function, functional]
+  rule StakingCredentialDef(0, ListItem(ListItem(C:Int) ListItem(PARAMS))) => CredentialDef(C, PARAMS)
+  rule StakingCredentialDef(1, ListItem(_:Int) ListItem(_:Int) ListItem(_:Int)) => true
+  rule StakingCredentialDef(_, _) => false [owise]
+
+  // #Ceil
+  rule #Ceil(StakingCredential(C, PARAMS)) => { true #Equals StakingCredentialDef(C, PARAMS) } [simplification]
+```
+
+### TxId
+
+```k
+  // Textual Data
+  syntax TextualData ::= TxIdData(Int, List) [function, injective]
+  rule TxIdData(0, ListItem(BS:ByteString)) =>
+    Constr 0 [ ByteString BS ]
+
+  // Definition
+  syntax Value ::= TxId(Int, List) [function, injective]
+  rule TxId(0, ListItem(BS:ByteString)) =>
+    < con bytestring BS >
+
+  // Definedness
+  syntax Bool ::= TxIdDef(Int, List) [function, functional]
+  rule TxIdDef(0, ListItem(_:ByteString)) => true
+  rule TxIdDef(_, _) => false [owise]
+
+  // #Ceil
+  rule #Ceil(TxId(C, PARAMS)) => { true #Equals TxIdDef(C, PARAMS) } [simplification]
+```
+
+### TxOutRef
+
+```k
+  // Textual data
+  syntax TextualData ::= TxOutRefData(Int, List) [function, injective]
+  rule TxOutRefData(0, ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(I:Int)) =>
+    Constr 0 [ TxIdData(C, PARAMS), Integer I ]
+
+  // Definition
+  syntax Value ::= TxOutRef(Int, List) [function, injective]
+  rule TxOutRef(0, ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(I:Int)) =>
     < delay
       (lam case_TxOutRef [ case_TxOutRef arg_0 arg_1 ])
-      arg_0 |-> < con bytestring BS >
+      arg_0 |-> TxId(C, PARAMS)
       arg_1 |-> < con integer I >
     >
+    requires TxIdDef(C, PARAMS)
 
-  syntax Value ::= ScriptPurposeSpending(ByteString, Int) [function, functional]
-  rule ScriptPurposeSpending(BS, I) =>
-    < delay
-      (lam case_Certifying
-        (lam case_Minting
-          (lam case_Rewarding
-            (lam case_Spending
-              [ case_Spending arg_0 ]
-            )
-          )
-        )
-      )
-      arg_0 |-> TxOut(BS, I)
-    >
+  // Definedness
+  syntax Bool ::= TxOutRefDef(Int, List) [function, functional]
+  rule TxOutRefDef(0, ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(_:Int)) => TxIdDef(C, PARAMS)
+  rule TxOutRefDef(_, _) => false [owise]
 
-  syntax Value ::= ScriptPurposeMinting(ByteString) [function, functional]
+  // #Ceil
+  rule #Ceil(TxOutRef(I, PARAMS)) => { true #Equals TxOutRefDef(I, PARAMS) } [simplification]
+```
+
+### ScriptPurpose
+
+```k
+  // Constructor: 0: Minting
+  syntax Value ::= ScriptPurposeMinting(ByteString) [function, functional, injective]
   rule ScriptPurposeMinting(BS) =>
     < delay
       (lam case_Certifying
@@ -1720,6 +1799,50 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
       arg_0 |-> < con bytestring BS >
     >
 
+  // Constructor: 1: Spending
+  syntax Value ::= ScriptPurposeSpending(List) [function, injective]
+  rule ScriptPurposeSpending(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    < delay
+      (lam case_Certifying
+        (lam case_Minting
+          (lam case_Rewarding
+            (lam case_Spending
+              [ case_Spending arg_0 ]
+            )
+          )
+        )
+      )
+      arg_0 |-> TxOutRef(C, PARAMS)
+    >
+    requires TxOutRefDef(C, PARAMS)
+
+  syntax Bool ::= ScriptPurposeSpendingDef(List) [function, functional]
+  rule ScriptPurposeSpendingDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => TxOutRefDef(C, PARAMS)
+  rule ScriptPurposeSpendingDef(_) => false [owise]
+
+  rule #Ceil(ScriptPurposeSpending(PARAMS)) => { true #Equals ScriptPurposeSpendingDef(PARAMS) } [simplification]
+
+  syntax Value ::= ScriptPurposeRewarding(List) [function]
+  rule ScriptPurposeRewarding(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    < delay
+      (lam case_Certifying
+        (lam case_Minting
+          (lam case_Rewarding
+            (lam case_Spending
+              [ case_Rewarding arg_0 ]
+            )
+          )
+        )
+      )
+      arg_0 |-> StakingCredential(C, PARAMS)
+    >
+    requires StakingCredentialDef(C, PARAMS)
+
+  syntax Bool ::= ScriptPurposeRewardingDef(List) [function, functional]
+  rule ScriptPurposeRewardingDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => StakingCredentialDef(C, PARAMS)
+  rule ScriptPurposeRewardingDef(_) => false [owise]
+
+  rule #Ceil(ScriptPurposeRewarding(PARAMS)) => { true #Equals ScriptPurposeRewardingDef(PARAMS) } [simplification]
 ```
 
 ## Default
