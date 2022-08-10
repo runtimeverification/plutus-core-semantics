@@ -1,5 +1,3 @@
-# UPLC Global Environment Instance
-
 ```k
 require "uplc-genvironment.md"
 require "uplc-rw-helpers.md"
@@ -382,7 +380,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                       (force (builtin ifThenElse))
                       [
                         (builtin equalsInteger)
-                        index_0
+                        (force index_0)
                         (con integer 1)
                       ]
                     ]
@@ -393,7 +391,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                           (builtin unBData)
                           [
                             (force (builtin headList))
-                            [ (force (force (builtin sndPair))) tup_0 ]
+                            [ (force (force (builtin sndPair))) (force tup_0) ]
                           ]
                         ]
                       ]
@@ -405,7 +403,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                         (force (builtin ifThenElse))
                         [
                           (builtin equalsInteger)
-                          index_0
+                          (force index_0)
                           (con integer 0)
                         ]
                         (lam ds_0
@@ -415,7 +413,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                               (builtin unBData)
                               [
                                 (force (builtin headList))
-                                [ (force (force (builtin sndPair))) tup_0 ]
+                                [ (force (force (builtin sndPair))) (force tup_0) ]
                               ]
                             ]
                           ]
@@ -429,10 +427,19 @@ module UPLC-GENVIRONMENT-INSTANCE
                 unitval_id
               ]
             )
-            [ (force (force (builtin fstPair))) tup_0 ]
+            (delay
+              [
+                (force (force (builtin fstPair)))
+                (force tup_0)
+              ]
+            )
           ]
         )
-        [ (builtin unConstrData) d_0 ]
+        (delay
+          [
+            (builtin unConstrData) d_0
+          ]
+        )
       ]
       .Map
     >
@@ -452,7 +459,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                           (force (builtin ifThenElse))
                           [
                             (builtin equalsInteger)
-                            index_0
+                            (force index_0)
                             (con integer 1)
                           ]
                           (lam ds_0
@@ -460,7 +467,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                               stakingPtr_id
                               [
                                 (builtin unIData)
-                                [ (force (builtin headList)) t_0 ]
+                                [ (force (builtin headList)) (force t_0) ]
                               ]
                               [
                                 (builtin unIData)
@@ -482,7 +489,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                                   (force (builtin ifThenElse))
                                   [
                                     (builtin equalsInteger)
-                                    index_0
+                                    (force index_0)
                                     (con integer 0)
                                   ]
                                   (lam ds_0
@@ -490,7 +497,10 @@ module UPLC-GENVIRONMENT-INSTANCE
                                       stakingHash_id
                                       [
                                         fUnsafeFromDataCredential_cunsafeFromBuiltinData
-                                        [ (force (builtin headList)) t_0 ]
+                                        [
+                                          (force (builtin headList))
+                                          [ (force (force (builtin sndPair))) (force tup_0) ]
+                                        ]
                                       ]
                                     ]
                                   )
@@ -504,16 +514,16 @@ module UPLC-GENVIRONMENT-INSTANCE
                         unitval_id
                       ]
                     )
-                    [ (force (force (builtin fstPair))) tup_0 ]
+                    (delay [ (force (force (builtin fstPair))) (force tup_0) ])
                   ]
                 )
-                (delay [ (force (builtin tailList)) t_0 ])
+                (delay [ (force (builtin tailList)) (force t_0) ])
               ]
             )
-            [ (force (force (builtin sndPair))) tup_0 ]
+            (delay [ (force (force (builtin sndPair))) (force tup_0) ])
           ]
         )
-        [ (builtin unConstrData) d_0 ]
+        (delay [ (builtin unConstrData) d_0 ])
       ]
       .Map
     >
@@ -683,7 +693,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                     (delay [ (force (force (builtin fstPair))) (force tup_0) ])
                   ]
                 )
-                (delay [ (force (force (builtin sndPair))) (force t_0) ])
+                (delay [ (force (builtin tailList)) (force t_0) ])
               ]
             )
             (delay [ (force (force (builtin sndPair))) (force tup_0) ])
@@ -822,7 +832,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                 (force (builtin ifThenElse))
                 [
                   (builtin equalsInteger)
-                  [ (force (force (builtin fstPair))) tup_0 ]
+                  [ (force (force (builtin fstPair))) (force tup_0) ]
                   (con integer 0)
                 ]
                 (lam ds_0
@@ -830,7 +840,10 @@ module UPLC-GENVIRONMENT-INSTANCE
                     (builtin unBData)
                     [
                       (force (builtin headList))
-                      [ (force (force (builtin sndPair))) tup_0 ]
+                      [
+                        (force (force (builtin sndPair)))
+                        (force tup_0)
+                      ]
                     ]
                   ]
                 )
@@ -840,7 +853,7 @@ module UPLC-GENVIRONMENT-INSTANCE
             unitval_id
           ]
         )
-        [ (builtin unConstrData) d_0 ]
+        (delay [ (builtin unConstrData) d_0 ])
       ]
       .Map
     >
@@ -856,7 +869,7 @@ module UPLC-GENVIRONMENT-INSTANCE
                   (force (builtin ifThenElse))
                   [
                     (builtin equalsInteger)
-                    [ (force (force (builtin fstPair))) tup_0 ]
+                    [ (force (force (builtin fstPair))) (force tup_0) ]
                     (con integer 0)
                   ]
                   (lam ds_0
@@ -864,13 +877,13 @@ module UPLC-GENVIRONMENT-INSTANCE
                       txOutRef_id
                       [
                         fUnsafeFromDataTxId_cunsafeFromBuiltinData
-                        [  (force (builtin headList)) t_0 ]
+                        [  (force (builtin headList)) (force t_0)]
                       ]
                       [
                         (builtin unIData)
                         [
                           (force (builtin headList))
-                          [ (force (builtin tailList)) t_0 ]
+                          [ (force (builtin tailList)) (force t_0) ]
                         ]
                       ]
                     ]
@@ -880,10 +893,15 @@ module UPLC-GENVIRONMENT-INSTANCE
                 unitval_id
               ]
             )
-            [ (force (force (builtin sndPair))) tup_0 ]
+            (delay
+              [
+                (force (force (builtin sndPair)))
+                (force tup_0)
+              ]
+            )
           ]
         )
-        [ (builtin unConstrData) d_0 ]
+        (delay [ (builtin unConstrData) d_0 ])
       ]
       .Map
     >
@@ -1183,7 +1201,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                   (force (builtin ifThenElse))
                   [
                     (builtin equalsInteger)
-                    index_0
+                    (force index_0)
                     (con integer 3)
                   ]
                   (lam ds_0
@@ -1193,7 +1211,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                         fUnsafeFromDataDCert_cunsafeFromBuiltinData
                         [
                           (force (builtin headList))
-                          [ (force (force (builtin sndPair))) tup_0 ]
+                          [ (force (force (builtin sndPair))) (force tup_0) ]
                         ]
                       ]
                     ]
@@ -1204,7 +1222,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                         (force (builtin ifThenElse))
                         [
                           (builtin equalsInteger)
-                          index_0
+                          (force index_0)
                           (con integer 2)
                         ]
                         (lam ds_0
@@ -1214,7 +1232,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                               fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData
                               [
                                 (force (builtin headList))
-                                [ (force (force (builtin sndPair))) tup_0 ]
+                                [ (force (force (builtin sndPair))) (force tup_0) ]
                               ]
                             ]
                           ]
@@ -1225,7 +1243,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                               (force (builtin ifThenElse))
                               [
                                 (builtin equalsInteger)
-                                index_0
+                                (force index_0)
                                 (con integer 1)
                               ]
                               (lam ds_0
@@ -1235,7 +1253,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                                     fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData
                                     [
                                       (force (builtin headList))
-                                      [ (force (force (builtin sndPair))) tup_0 ]
+                                      [ (force (force (builtin sndPair))) (force tup_0) ]
                                     ]
                                   ]
                                 ]
@@ -1246,7 +1264,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                                     (force (builtin ifThenElse))
                                     [
                                       (builtin equalsInteger)
-                                      index_0
+                                      (force index_0)
                                       (con integer 0)
                                     ]
                                     (lam ds_0
@@ -1256,7 +1274,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                                           (builtin unBData)
                                           [
                                             (force (builtin headList))
-                                            [ (force (force (builtin sndPair))) tup_0 ]
+                                            [ (force (force (builtin sndPair))) (force tup_0) ]
                                           ]
                                         ]
                                       ]
@@ -1278,10 +1296,10 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                 unitval_id
               ]
             )
-            [ (force (force (builtin fstPair))) tup_0 ]
+            (delay [ (force (force (builtin fstPair))) (force tup_0) ])
           ]
         )
-        [ (builtin unConstrData) d_0 ]
+        (delay [ (builtin unConstrData) d_0 ])
       ]
       .Map
     >
@@ -1624,47 +1642,72 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
 ### Credential
 
 ```k
-  // Constructor: 0: PubKeyCredential
-  syntax Value ::= PubKeyCredential(ByteString) [function, functional, injective]
-  rule PubKeyCredential(BS) =>
+  // Definition
+  syntax Value ::= Credential(Int, List) [function, injective]
+  rule Credential(0, L:List) => PubKeyCredential(L) [simplification]
+  rule Credential(1, L:List) => ScriptCredential(L) [simplification]
+
+  // Definedness
+  syntax Bool ::= CredentialDef(Int, List) [function, functional]
+  rule CredentialDef(0, L:List) => PubKeyCredentialDef(L)
+  rule CredentialDef(1, L:List) => ScriptCredentialDef(L)
+  rule CredentialDef(_, _) => false [owise]
+
+  rule #Ceil(Credential(C, PARAMS)) => { true #Equals CredentialDef(C, PARAMS) } [simplification]
+
+  // Constructor 0: PubKeyCredential
+  syntax Value ::= PubKeyCredential(List) [function, injective]
+  rule PubKeyCredential(ListItem(BS:ByteString)) =>
     < delay
       (lam case_PubKeyCredential (lam case_ScriptCredential [ case_PubKeyCredential arg_0 ]))
       arg_0 |-> < con bytestring BS >
     >
 
-  // Constructor: 1: ScriptCredential
-  syntax Value ::= ScriptCredential(ByteString) [function, functional, injective]
-  rule ScriptCredential(BS) =>
+  syntax Bool ::= PubKeyCredentialDef(List) [function, functional]
+  rule PubKeyCredentialDef(ListItem(_:ByteString)) => true
+  rule PubKeyCredentialDef(_) => false [owise]
+
+  rule #Ceil(PubKeyCredential(PARAMS)) => { true #Equals PubKeyCredentialDef(PARAMS) } [simplification]
+
+  // Constructor 1: ScriptCredential
+  syntax Value ::= ScriptCredential(List) [function, injective]
+  rule ScriptCredential(ListItem(BS:ByteString)) =>
     < delay
       (lam case_PubKeyCredential (lam case_ScriptCredential [ case_ScriptCredential arg_0 ]))
       arg_0 |-> < con bytestring BS >
     >
+
+  syntax Bool ::= ScriptCredentialDef(List) [function, functional]
+  rule ScriptCredentialDef(ListItem(_:ByteString)) => true
+  rule ScriptCredentialDef(_) => false [owise]
+
+  rule #Ceil(ScriptCredential(PARAMS)) => { true #Equals ScriptCredentialDef(PARAMS) } [simplification]
 
   // Textual data
   syntax TextualData ::= CredentialData(Int, List) [function, injective]
   rule CredentialData(0, ListItem(BS:ByteString)) => Constr 0 [ ByteString BS ]
   rule CredentialData(1, ListItem(BS:ByteString)) => Constr 1 [ ByteString BS ]
 
-  // Definition
-  syntax Value ::= Credential(Int, List) [function]
-  rule Credential(0, ListItem(BS:ByteString)) => PubKeyCredential(BS) [simplification]
-  rule Credential(1, ListItem(BS:ByteString)) => ScriptCredential(BS) [simplification]
-
-  // Definedness
-  syntax Bool ::= CredentialDef(Int, List) [function, functional]
-  rule CredentialDef(0, ListItem(_:ByteString)) => true
-  rule CredentialDef(1, ListItem(_:ByteString)) => true
-  rule CredentialDef(_, _) => false [owise]
-
-  // #Ceil
-  rule #Ceil(CredentialData(I, PARAMS)) => { true #Equals CredentialDef(I, PARAMS) } [simplification]
-  rule #Ceil(Credential(I, PARAMS)) => { true #Equals CredentialDef(I, PARAMS) } [simplification]
+  rule #Ceil(CredentialData(C, PARAMS)) => { true #Equals CredentialDef(C, PARAMS) } [simplification]
 ```
 
 ### Staking Credential
 
 ```k
-  // Constructor : 0 : StakingHash
+  // Definition
+  syntax Value ::= StakingCredential(Int, List) [function, injective]
+  rule StakingCredential(0, L:List) => StakingHash(L)
+  rule StakingCredential(1, L:List) => StakingPtr(L)
+
+  // Definedness
+  syntax Bool ::= StakingCredentialDef(Int, List) [function, functional]
+  rule StakingCredentialDef(0, L:List) => StakingHashDef(L)
+  rule StakingCredentialDef(1, L:List) => StakingPtrDef(L)
+  rule StakingCredentialDef(_, _) => false [owise]
+
+  rule #Ceil(StakingCredential(C, PARAMS)) => { true #Equals StakingCredentialDef(C, PARAMS) } [simplification]
+
+  // Constructor 0: StakingHash
   syntax Value ::= StakingHash(List) [function, injective]
   rule StakingHash(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
     < delay
@@ -1678,9 +1721,9 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
 
   rule #Ceil(StakingHash(PARAMS)) => { true #Equals StakingHashDef(PARAMS) } [simplification]
 
-  // Constructor : 1 : StakingPtr
-  syntax Value ::= StakingPtr(Int, Int, Int) [function, functional, injective]
-  rule StakingPtr(I1, I2, I3) =>
+  // Constructor 1: StakingPtr
+  syntax Value ::= StakingPtr(List) [function, injective]
+  rule StakingPtr(ListItem(I1:Int) ListItem(I2:Int) ListItem(I3:Int)) =>
     < delay
       (lam case_StakingHash (lam case_StakingPtr [ case_StakingPtr arg_0 arg_1 arg_2 ]))
       arg_0 |-> < con integer I1 >
@@ -1688,100 +1731,356 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
       arg_2 |-> < con integer I3 >
     >
 
+  syntax Bool ::= StakingPtrDef(List) [function, functional]
+  rule StakingPtrDef(ListItem(_:Int) ListItem(_:Int) ListItem(_:Int)) => true
+  rule StakingPtrDef(_) => false [owise]
+
+  rule #Ceil(StakingPtr(PARAMS)) => { true #Equals StakingPtrDef(PARAMS) } [simplification]
+
   // Textual data
   syntax TextualData ::= StakingCredentialData(Int, List) [function, injective]
-  rule StakingCredentialData(0, ListItem(ListItem(C:Int) ListItem(ListItem(BS:ByteString)))) =>
-    Constr 0 [ CredentialData(C, ListItem(BS)) ]
+  rule StakingCredentialData(0, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    Constr 0 [ CredentialData(C, PARAMS) ]
   rule StakingCredentialData(1, ListItem(I1:Int) ListItem(I2:Int) ListItem(I3:Int)) =>
     Constr 1 [ Integer I1, Integer I2, Integer I3 ]
 
-  // Definition
-  syntax Value ::= StakingCredential(Int, List) [function, injective]
-  rule StakingCredential(0, ListItem(ListItem(C:Int) ListItem(PARAMS))) => StakingHash(ListItem(ListItem(C) ListItem(PARAMS)))
-  rule StakingCredential(1, ListItem(I1:Int) ListItem(I2:Int) ListItem(I3:Int)) => StakingPtr(I1, I2, I3)
-
-  // Definedness
-  syntax Bool ::= StakingCredentialDef(Int, List) [function, functional]
-  rule StakingCredentialDef(0, ListItem(ListItem(C:Int) ListItem(PARAMS))) => CredentialDef(C, PARAMS)
-  rule StakingCredentialDef(1, ListItem(_:Int) ListItem(_:Int) ListItem(_:Int)) => true
-  rule StakingCredentialDef(_, _) => false [owise]
-
-  // #Ceil
-  rule #Ceil(StakingCredential(C, PARAMS)) => { true #Equals StakingCredentialDef(C, PARAMS) } [simplification]
+  rule #Ceil(StakingCredentialData(C, PARAMS)) => { true #Equals StakingCredentialDef(C, PARAMS) } [simplification]
 ```
 
 ### TxId
 
 ```k
+  // Definition
+  syntax Value ::= TxId(Int, List) [function, injective]
+  rule TxId(0, L:List) => TxOutIdConstr(L)
+
+  // Definedness
+  syntax Bool ::= TxIdDef(Int, List) [function, functional]
+  rule TxIdDef(0, L:List) => TxOutIdConstrDef(L)
+  rule TxIdDef(_, _) => false [owise]
+
+  rule #Ceil(TxId(C, PARAMS)) => { true #Equals TxIdDef(C, PARAMS) } [simplification]
+
+  // Constructor 0: TxOutIdConstr
+  syntax Value ::= TxOutIdConstr(List) [function, injective]
+  rule TxOutIdConstr(ListItem(BS:ByteString)) =>
+    < con bytestring BS >
+
+  syntax Bool ::= TxOutIdConstrDef(List) [function, functional]
+  rule TxOutIdConstrDef(ListItem(_:ByteString)) => true
+  rule TxOutIdConstrDef(_) => false [owise]
+
+  rule #Ceil(TxOutIdConstr(PARAMS)) => { true #Equals TxOutIdConstrDef(PARAMS) } [simplification]
+
   // Textual Data
   syntax TextualData ::= TxIdData(Int, List) [function, injective]
   rule TxIdData(0, ListItem(BS:ByteString)) =>
     Constr 0 [ ByteString BS ]
 
-  // Definition
-  syntax Value ::= TxId(Int, List) [function, injective]
-  rule TxId(0, ListItem(BS:ByteString)) =>
-    < con bytestring BS >
-
-  // Definedness
-  syntax Bool ::= TxIdDef(Int, List) [function, functional]
-  rule TxIdDef(0, ListItem(_:ByteString)) => true
-  rule TxIdDef(_, _) => false [owise]
-
-  // #Ceil
-  rule #Ceil(TxId(C, PARAMS)) => { true #Equals TxIdDef(C, PARAMS) } [simplification]
+  rule #Ceil(TxIdData(C, PARAMS)) => { true #Equals TxIdDef(C, PARAMS) } [simplification]
 ```
 
 ### TxOutRef
 
 ```k
-  // Textual data
-  syntax TextualData ::= TxOutRefData(Int, List) [function, injective]
-  rule TxOutRefData(0, ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(I:Int)) =>
-    Constr 0 [ TxIdData(C, PARAMS), Integer I ]
-
   // Definition
   syntax Value ::= TxOutRef(Int, List) [function, injective]
-  rule TxOutRef(0, ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(I:Int)) =>
+  rule TxOutRef(0, L:List) => TxOutRefConstr(L)
+
+  // Definedness
+  syntax Bool ::= TxOutRefDef(Int, List) [function, functional]
+  rule TxOutRefDef(0, L:List) => TxOutRefConstrDef(L)
+  rule TxOutRefDef(_, _) => false [owise]
+
+  rule #Ceil(TxOutRef(C, PARAMS)) => { true #Equals TxOutRefDef(C, PARAMS) } [simplification]
+
+  // Constructor 0: TxOutRefConstr
+  syntax Value ::= TxOutRefConstr(List) [function, injective]
+  rule TxOutRefConstr(ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(I:Int)) =>
     < delay
       (lam case_TxOutRef [ case_TxOutRef arg_0 arg_1 ])
       arg_0 |-> TxId(C, PARAMS)
       arg_1 |-> < con integer I >
     >
 
-  // Definedness
-  syntax Bool ::= TxOutRefDef(Int, List) [function, functional]
-  rule TxOutRefDef(0, ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(_:Int)) => TxIdDef(C, PARAMS)
-  rule TxOutRefDef(_, _) => false [owise]
+  syntax Bool ::= TxOutRefConstrDef(List) [function, functional]
+  rule TxOutRefConstrDef(ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(_:Int)) => TxIdDef(C, PARAMS)
+  rule TxOutRefConstrDef(_) => false [owise]
 
-  // #Ceil
-  rule #Ceil(TxOutRef(I, PARAMS)) => { true #Equals TxOutRefDef(I, PARAMS) } [simplification]
+  rule #Ceil(TxOutRefConstr(PARAMS)) => { true #Equals TxOutRefConstrDef(PARAMS) } [simplification]
+
+  // Textual data
+  syntax TextualData ::= TxOutRefData(Int, List) [function, injective]
+  rule TxOutRefData(0, ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(I:Int)) =>
+    Constr 0 [ TxIdData(C, PARAMS), Integer I ]
 ```
 
 ### DCert
 
-TODO: WRITE DEFINITIONS
-
 ```k
-  // Textual Data
-  syntax TextualData ::= DCertData(Int, List) [function, injective, no-evaluators]
-
   // Definition
-  syntax Value ::= DCert(Int, List) [function, injective, no-evaluators]
+  syntax Value ::= DCert(Int, List) [function, injective]
+  rule DCert(0, L) => DCertDelegRegKey(L)
+  rule DCert(1, L) => DCertDelegDeRegKey(L)
+  rule DCert(2, L) => DCertDelegDelegate(L)
+  rule DCert(3, L) => DCertPoolRegister(L)
+  rule DCert(4, L) => DCertPoolRetire(L)
+  rule DCert(5, L) => DCertGenesis(L)
+  rule DCert(6, L) => DCertMir(L)
 
   // Definedness
-  syntax Bool ::= DCertDef(Int, List) [function, no-evaluators]
+  syntax Bool ::= DCertDef(Int, List) [function, functional]
+  rule DCertDef(0, L) => DCertDelegRegKeyDef(L)
+  rule DCertDef(1, L) => DCertDelegDeRegKeyDef(L)
+  rule DCertDef(2, L) => DCertDelegDelegateDef(L)
+  rule DCertDef(3, L) => DCertPoolRegisterDef(L)
+  rule DCertDef(4, L) => DCertPoolRetireDef(L)
+  rule DCertDef(5, L) => DCertGenesisDef(L)
+  rule DCertDef(6, L) => DCertMirDef(L)
+  rule DCertDef(_, _) => false [owise]
 
-  // #Ceil
   rule #Ceil(DCert(C, PARAMS)) => { true #Equals DCertDef(C, PARAMS) } [simplification]
+
+  // Constructor 0: DCertDelegRegKey
+  syntax Value ::= DCertDelegRegKey(List) [function, injective]
+  rule DCertDelegRegKey(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    < delay
+      (lam case_DCertDelegDeRegKey
+        (lam case_DCertDelegDelegate
+          (lam case_DCertDelegRegKey
+            (lam case_DCertGenesis
+              (lam case_DCertMir
+                (lam case_DCertPoolRegister
+                  (lam case_DCertPoolRetire
+                    [ case_DCertDelegRegKey arg_0 ]
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+      arg_0 |-> StakingCredential(C, PARAMS)
+    >
+
+  syntax Bool ::= DCertDelegRegKeyDef(List) [function, functional]
+  rule DCertDelegRegKeyDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => StakingCredentialDef(C, PARAMS)
+  rule DCertDelegRegKeyDef(_) => false [owise]
+
+  rule #Ceil(DCertDelegRegKeyDef(PARAMS)) => { true #Equals DCertDelegRegKeyDef(PARAMS) } [simplification]
+
+  // Constructor 1: DCertDelegDeRegKey
+  syntax Value ::= DCertDelegDeRegKey(List) [function, injective]
+  rule DCertDelegDeRegKey(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    < delay
+      (lam case_DCertDelegDeRegKey
+        (lam case_DCertDelegDelegate
+          (lam case_DCertDelegRegKey
+            (lam case_DCertGenesis
+              (lam case_DCertMir
+                (lam case_DCertPoolRegister
+                  (lam case_DCertPoolRetire
+                    [ case_DCertDelegDeRegKey arg_0 ]
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+      arg_0 |-> StakingCredential(C, PARAMS)
+    >
+
+  syntax Bool ::= DCertDelegDeRegKeyDef(List) [function, functional]
+  rule DCertDelegDeRegKeyDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => StakingCredentialDef(C, PARAMS)
+  rule DCertDelegDeRegKeyDef(_) => false [owise]
+
+  rule #Ceil(DCertDelegDeRegKeyDef(PARAMS)) => { true #Equals DCertDelegDeRegKeyDef(PARAMS) } [simplification]
+
+  // Constructor 2: DCertDelegDelegate
+  syntax Value ::= DCertDelegDelegate(List) [function, injective]
+  rule DCertDelegDelegate(ListItem(ListItem(C:Int) ListItem(PARAMS:List)) ListItem(BS:ByteString)) =>
+    < delay
+      (lam case_DCertDelegDeRegKey
+        (lam case_DCertDelegDelegate
+          (lam case_DCertDelegRegKey
+            (lam case_DCertGenesis
+              (lam case_DCertMir
+                (lam case_DCertPoolRegister
+                  (lam case_DCertPoolRetire
+                    [ case_DCertDelegDelegate arg_0 arg_1 ]
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+      arg_0 |-> StakingCredential(C, PARAMS)
+      arg_1 |-> < con bytestring BS >
+    >
+
+  syntax Bool ::= DCertDelegDelegateDef(List) [function, functional]
+  rule DCertDelegDelegateDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List)) ListItem(_:ByteString)) => StakingCredentialDef(C, PARAMS)
+  rule DCertDelegDelegateDef(_) => false [owise]
+
+  rule #Ceil(DCertDelegDelegateDef(PARAMS)) => { true #Equals DCertDelegDelegateDef(PARAMS) } [simplification]
+
+  // Constructor 3: DCertPoolRegister
+  syntax Value ::= DCertPoolRegister(List) [function, injective]
+  rule DCertPoolRegister(ListItem(BS1:ByteString) ListItem(BS2:ByteString)) =>
+    < delay
+      (lam case_DCertDelegDeRegKey
+        (lam case_DCertDelegDelegate
+          (lam case_DCertDelegRegKey
+            (lam case_DCertGenesis
+              (lam case_DCertMir
+                (lam case_DCertPoolRegister
+                  (lam case_DCertPoolRetire
+                    [ case_DCertPoolRegister arg_0 arg_1 ]
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+      arg_0 |-> < con bytestring BS1 >
+      arg_1 |-> < con bytestring BS2 >
+    >
+
+  syntax Bool ::= DCertPoolRegisterDef(List) [function, functional]
+  rule DCertPoolRegisterDef(ListItem(_:ByteString) ListItem(_:ByteString)) => true
+  rule DCertPoolRegisterDef(_) => false [owise]
+
+  rule #Ceil(DCertPoolRegisterDef(PARAMS)) => { true #Equals DCertPoolRegisterDef(PARAMS) } [simplification]
+
+  // Constructor 4: DCertPoolRetire
+  syntax Value ::= DCertPoolRetire(List) [function, injective]
+  rule DCertPoolRetire(ListItem(BS:ByteString) ListItem(I:Int)) =>
+    < delay
+      (lam case_DCertDelegDeRegKey
+        (lam case_DCertDelegDelegate
+          (lam case_DCertDelegRegKey
+            (lam case_DCertGenesis
+              (lam case_DCertMir
+                (lam case_DCertPoolRegister
+                  (lam case_DCertPoolRetire
+                    [ case_DCertPoolRetire arg_0 arg_1 ]
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+      arg_0 |-> < con bytestring BS >
+      arg_1 |-> < con integer I >
+    >
+
+  syntax Bool ::= DCertPoolRetireDef(List) [function, functional]
+  rule DCertPoolRetireDef(ListItem(_:ByteString) ListItem(_:Int)) => true
+  rule DCertPoolRetireDef(_) => false [owise]
+
+  rule #Ceil(DCertPoolRetireDef(PARAMS)) => { true #Equals DCertPoolRetireDef(PARAMS) } [simplification]
+
+  // Constructor 5: DCertGenesis
+  syntax Value ::= DCertGenesis(List) [function, injective]
+  rule DCertGenesis(.List) =>
+    < delay
+      (lam case_DCertDelegDeRegKey
+        (lam case_DCertDelegDelegate
+          (lam case_DCertDelegRegKey
+            (lam case_DCertGenesis
+              (lam case_DCertMir
+                (lam case_DCertPoolRegister
+                  (lam case_DCertPoolRetire
+                    case_DCertGenesis
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+      .Map
+    >
+
+  syntax Bool ::= DCertGenesisDef(List) [function, functional]
+  rule DCertGenesisDef(.List) => true
+  rule DCertGenesisDef(_) => false [owise]
+
+  rule #Ceil(DCertGenesisDef(PARAMS)) => { true #Equals DCertGenesisDef(PARAMS) } [simplification]
+
+  // Constructor 6: DCertMir
+  syntax Value ::= DCertMir(List) [function, injective]
+  rule DCertMir(.List) =>
+    < delay
+      (lam case_DCertDelegDeRegKey
+        (lam case_DCertDelegDelegate
+          (lam case_DCertDelegRegKey
+            (lam case_DCertGenesis
+              (lam case_DCertMir
+                (lam case_DCertPoolRegister
+                  (lam case_DCertPoolRetire
+                    case_DCertMir
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+      .Map
+    >
+
+  syntax Bool ::= DCertMirDef(List) [function, functional]
+  rule DCertMirDef(.List) => true
+  rule DCertMirDef(_) => false [owise]
+
+  rule #Ceil(DCertMirDef(PARAMS)) => { true #Equals DCertMirDef(PARAMS) } [simplification]
+
+  // Textual Data
+  syntax TextualData ::= DCertData(Int, List) [function, injective]
+  rule DCertData(0, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    Constr 0 [ StakingCredentialData(C, PARAMS) ]
+  rule DCertData(1, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+    Constr 1 [ StakingCredentialData(C, PARAMS) ]
+  rule DCertData(2, ListItem(ListItem(C:Int) ListItem(PARAMS:List)) ListItem(BS:ByteString)) =>
+    Constr 2 [ StakingCredentialData(C, PARAMS), ByteString BS ]
+  rule DCertData(3, ListItem(BS1:ByteString) ListItem(BS2:ByteString)) =>
+    Constr 3 [ ByteString BS1, ByteString BS2 ]
+  rule DCertData(4, ListItem(BS:ByteString) ListItem(I:Int)) =>
+    Constr 4 [ ByteString BS, Integer I ]
+  rule DCertData(5, .List) =>
+    Constr 5 [ .DataList ]
+  rule DCertData(6, .List) =>
+    Constr 6 [ .DataList ]
 ```
 
 ### ScriptPurpose
 
 ```k
+  // Definition
+  syntax Value ::= ScriptPurpose(Int, List) [function, injective]
+  rule ScriptPurpose(0, L:List) => ScriptPurposeMinting(L)
+  rule ScriptPurpose(1, L:List) => ScriptPurposeSpending(L)
+  rule ScriptPurpose(2, L:List) => ScriptPurposeRewarding(L)
+  rule ScriptPurpose(3, L:List) => ScriptPurposeCertifying(L)
+
+  // Definedness
+  syntax Bool ::= ScriptPurposeDef(Int, List) [function, functional]
+  rule ScriptPurposeDef(0, L:List) => ScriptPurposeMintingDef(L)
+  rule ScriptPurposeDef(1, L:List) => ScriptPurposeSpendingDef(L)
+  rule ScriptPurposeDef(2, L:List) => ScriptPurposeRewardingDef(L)
+  rule ScriptPurposeDef(3, L:List) => ScriptPurposeCertifyingDef(L)
+  rule ScriptPurposeDef(_, _) => false [owise]
+
+  rule #Ceil(ScriptPurpose(C, PARAMS)) => { true #Equals ScriptPurposeDef(C, PARAMS) } [simplification]
+
   // Constructor: 0: Minting
-  syntax Value ::= ScriptPurposeMinting(ByteString) [function, functional, injective]
-  rule ScriptPurposeMinting(BS) =>
+  syntax Value ::= ScriptPurposeMinting(List) [function, injective]
+  rule ScriptPurposeMinting(ListItem(BS:ByteString)) =>
     < delay
       (lam case_Certifying
         (lam case_Minting
@@ -1794,6 +2093,12 @@ TODO: WRITE DEFINITIONS
       )
       arg_0 |-> < con bytestring BS >
     >
+
+  syntax Bool ::= ScriptPurposeMintingDef(List) [function, functional]
+  rule ScriptPurposeMintingDef(ListItem(_:ByteString)) => true
+  rule ScriptPurposeMintingDef(_) => false [owise]
+
+  rule #Ceil(ScriptPurposeMintingDef(PARAMS)) => { true #Equals ScriptPurposeMintingDef(PARAMS) } [simplification]
 
   // Constructor: 1: Spending
   syntax Value ::= ScriptPurposeSpending(List) [function, injective]
@@ -1869,26 +2174,8 @@ TODO: WRITE DEFINITIONS
     Constr 1 [ TxOutRefData(C, PARAMS) ]
   rule ScriptPurposeData(2, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
     Constr 2 [ StakingCredentialData(C, PARAMS) ]
-  rule ScriptPurposeData(2, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
+  rule ScriptPurposeData(3, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) =>
     Constr 3 [ DCertData(C, PARAMS) ]
-
-  // Definition
-  syntax Value ::= ScriptPurpose(Int, List) [function, injective]
-  rule ScriptPurpose(0, ListItem(BS:ByteString)) => ScriptPurposeMinting(BS)
-  rule ScriptPurpose(1, ListItem(L:List)) => ScriptPurposeSpending(L)
-  rule ScriptPurpose(2, ListItem(L:List)) => ScriptPurposeRewarding(L)
-  rule ScriptPurpose(3, ListItem(L:List)) => ScriptPurposeCertifying(L)
-
-  // Definedness
-  syntax Bool ::= ScriptPurposeDef(Int, List) [function, functional]
-  rule ScriptPurposeDef(0, ListItem(_:ByteString)) => true
-  rule ScriptPurposeDef(1, ListItem(L:List)) => ScriptPurposeSpendingDef(L)
-  rule ScriptPurposeDef(2, ListItem(L:List)) => ScriptPurposeRewardingDef(L)
-  rule ScriptPurposeDef(3, ListItem(L:List)) => ScriptPurposeCertifyingDef(L)
-  rule ScriptPurposeDef(_, _) => false [owise]
-
-  // #Ceil
-  rule #Ceil(ScriptPurpose(C, PARAMS)) => { true #Equals ScriptPurposeDef(C, PARAMS) } [simplification]
 ```
 
 ## Default
