@@ -1,4 +1,4 @@
-# Verifying the Trivial Policy
+# Verification of trivial policies
 
 ```k
 requires "verification.md"
@@ -33,7 +33,7 @@ module DATATYPE-ABSTRACTIONS
     requires CredentialDef(0, ListItem(BS))
 ```
 
-```k
+```
   rule { true #Equals CredentialDef(C, PARAMS) } =>
        ({ C #Equals 0 } #And (#Exists BS:ByteString. { PARAMS #Equals ListItem(BS) }) ) #Or
        ({ C #Equals 1 } #And (#Exists BS:ByteString. { PARAMS #Equals ListItem(BS) }) ) [simplification, unboundVariables(BS) ]
@@ -49,6 +49,7 @@ module DATATYPE-ABSTRACTIONS
       Credential(C, PARAMS) ... </k>
     <env> _ => .Map </env>
     requires CredentialDef(C, PARAMS)
+    [trusted]
 ```
 
 ### Staking Credential
@@ -296,6 +297,59 @@ module DATATYPE-ABSTRACTIONS
     <env> _ => .Map </env>
     requires ScriptPurposeDef(C, PARAMS)
     [trusted]
+```
+
+### TxInfo: TODO
+
+```k
+  // General claim [??? steps]
+  claim
+    <k>
+      ( con data { TxInfoData(C, PARAMS) } ) ~>
+      [ gLookup(fUnsafeFromDataTxInfo_cunsafeFromBuiltinData) _]
+      =>
+      TxInfo(C, PARAMS)
+      ... </k>
+    <env> _ => .Map </env>
+    requires TxInfoDef(C, PARAMS)
+    [trusted]
+```
+
+## Trivial policy: True
+
+```k
+  // True trivial policy returns the delayed identity
+  claim
+    <k>
+        [
+          TRIVIAL_POLICY_TRUE
+          (con data { Constr 0 [ _ ] } )
+          (con data { Constr 0 [ TxInfoData(C1, PARAMS1), ScriptPurposeData(C2, PARAMS2) ] })
+        ]
+      =>  < delay ( lam case_Unit case_Unit ) .Map >
+    ... </k>
+    <env> _ => .Map </env>
+    requires TxInfoDef(C1, PARAMS1)
+     andBool ScriptPurposeDef(C2, PARAMS2)
+```
+
+## Trivial policy: False
+
+```k
+  // False trivial policy throws an error
+  claim
+    <k>
+        [
+          TRIVIAL_POLICY_FALSE
+          (con data { Constr 0 [ _ ] } )
+          (con data { Constr 0 [ TxInfoData(C1, PARAMS1), ScriptPurposeData(C2, PARAMS2) ] })
+        ]
+      => (error)
+    ... </k>
+    <env> _ => ?_ </env>
+    <trace> TRACE => TRACE ListItem("PT5") </trace>
+    requires TxInfoDef(C1, PARAMS1)
+     andBool ScriptPurposeDef(C2, PARAMS2)
 ```
 
 ```k

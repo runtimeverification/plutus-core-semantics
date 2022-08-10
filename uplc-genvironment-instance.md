@@ -300,16 +300,16 @@ module UPLC-GENVIRONMENT-INSTANCE
   rule gLookup(upperBound_match) => < delay (lam x_0 x_0) .Map >
   rule gLookup(interval_id) => < delay (lam arg_0 (lam arg_1 (delay (lam case_Interval [ case_Interval arg_0 arg_1 ])))) .Map >
   rule gLookup(interval_match) => < delay (lam x_0 x_0) .Map >
-  rule gLookup(txInInfo_id) => < delay (lam arg_0 (lam arg_1 (delay (lam case_TxInInfo [ case_TxInInfo arg_0 arg_1 ])))) .Map >
-  rule gLookup(txInInfo_match) => < delay (lam x_0 x_0) .Map >
+  rule gLookup(txInInfo_id) => < lam arg_0 (lam arg_1 (delay (lam case_TxInInfo [ case_TxInInfo arg_0 arg_1 ]))) .Map >
+  rule gLookup(txInInfo_match) => < lam x_0 x_0 .Map >
   rule gLookup(txInfo_id) =>
     < lam arg_0 (lam arg_1 (lam arg_2 (lam arg_3 (lam arg_4 (lam arg_5 (lam arg_6 (lam arg_7 (lam arg_8 (lam arg_9
         (delay (lam case_TxInfo [ case_TxInfo arg_0 arg_1 arg_2 arg_3 arg_4 arg_5 arg_6 arg_7 arg_8 arg_9 ]))
       )))))))))
       .Map
     >
-  rule gLookup(txInfo_match) => < delay (lam x_0 x_0) .Map >
-  rule gLookup(scriptContext_id) => < delay (lam arg_0 (lam arg_1 (delay (lam case_ScriptContext [ case_ScriptContext arg_0 arg_1 ])))) .Map >
+  rule gLookup(txInfo_match) => < lam x_0 x_0 .Map >
+  rule gLookup(scriptContext_id) => < lam arg_0 (lam arg_1 (delay (lam case_ScriptContext [ case_ScriptContext arg_0 arg_1 ]))) .Map >
   rule gLookup(scriptContext_match) => < lam x_0 x_0 .Map >
 ```
 
@@ -1635,9 +1635,12 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
       ]
       .Map
     >
+
+rule gLookup(ID) => < con integer 0 >
+  requires notBool #inKeysgEnv(ID)
 ```
 
-## Datatype Aliases
+## Datatype Abstractions
 
 ### Credential
 
@@ -2178,11 +2181,28 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
     Constr 3 [ DCertData(C, PARAMS) ]
 ```
 
-## Default
+### TxInfo: Axiomatic for now
 
 ```k
-rule gLookup(ID) => < con integer 0 >
-  requires notBool #inKeysgEnv(ID)
+  // Definition
+  syntax Value ::= TxInfo(Int, List) [function, injective, no-evaluators]
 
+  // Definedness
+  syntax Bool ::= TxInfoDef(Int, List) [function, functional, no-evaluators]
+
+  rule #Ceil(TxInfo(C, PARAMS)) => { true #Equals TxInfoDef(C, PARAMS) } [simplification]
+
+  // Constructor 0: TxInfoConstr
+  syntax Value ::= TxInfoConstr(List) [function, injective, no-evaluators]
+
+  syntax Bool ::= TxInfoConstrDef(List) [function, functional, no-evaluators]
+
+  rule #Ceil(TxInfoConstr(PARAMS)) => { true #Equals TxInfoConstrDef(PARAMS) } [simplification]
+
+  // Textual data
+  syntax TextualData ::= TxInfoData(Int, List) [function, injective, no-evaluators]
+```
+
+```k
 endmodule
 ```
