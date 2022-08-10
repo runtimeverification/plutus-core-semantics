@@ -458,7 +458,95 @@ endmodule
 module POLICIES
   imports UPLC-RW-HELPERS
 
-  syntax Term ::= "TRIVIAL_POLICY_FALSE" [macro]
+  syntax Term ::= "TRIVIAL_POLICY_TRUE" [macro]
+  rule TRIVIAL_POLICY_TRUE =>
+    (lam r_0
+      (lam p_0
+        [
+          (lam tup_0
+            [
+              (lam t_0
+                (force
+                  [
+                    [
+                      (force
+                        [
+                          bool_match
+                          [
+                            [
+                              (lam ds_0
+                                (lam ds_1
+                                  [
+                                    (force [ unit_match ds_0 ])
+                                    true_id
+                                  ]
+                                )
+                              )
+                              [
+                                [
+                                  (force (builtin ifThenElse))
+                                  [
+                                    (builtin equalsInteger)
+                                    [
+                                      (force (force (builtin fstPair)))
+                                      [ (builtin unConstrData) r_0 ]
+                                    ]
+                                    (con integer 0)
+                                  ]
+                                  (lam ds_0 unit_id)
+                                  [ THROW_ERROR_LAM reconstructCaseError_id ]
+                                ]
+                                unitval_id
+                              ]
+                            ]
+                            [
+                              [
+                                [
+                                  (force (builtin ifThenElse))
+                                  [
+                                    (builtin equalsInteger)
+                                    [ (force (force (builtin fstPair))) (force tup_0) ]
+                                    (con integer 0)
+                                  ]
+                                  (lam ds_0
+                                    [
+                                      scriptContext_id
+                                      [
+                                        fUnsafeFromDataTxInfo_cunsafeFromBuiltinData
+                                        [ (force (builtin headList)) (force t_0) ]
+                                      ]
+                                      [
+                                        fUnsafeFromDataScriptPurpose_cunsafeFromBuiltinData
+                                        [
+                                          (force (builtin headList))
+                                          [ (force (builtin tailList)) (force t_0) ]
+                                        ]
+                                      ]
+                                    ]
+                                  )
+                                ]
+                                [ THROW_ERROR_LAM reconstructCaseError_id ]
+                              ]
+                              unitval_id
+                            ]
+                          ]
+                        ]
+                      )
+                      (delay unit_id)
+                    ]
+                    [ THROW_ERROR_DELAY (con string "PT5" ) ]
+                  ]
+                )
+              )
+              (delay [ (force (force (builtin sndPair))) (force tup_0) ])
+            ]
+          )
+          (delay [ (builtin unConstrData) p_0 ])
+        ]
+      )
+    )
+
+syntax Term ::= "TRIVIAL_POLICY_FALSE" [macro]
   rule TRIVIAL_POLICY_FALSE =>
     (lam r_0
       (lam p_0
@@ -475,7 +563,7 @@ module POLICIES
                           [
                             [
                               (lam ds_0
-                                (lam ds_0
+                                (lam ds_1
                                   [
                                     (force [ unit_match ds_0 ])
                                     false_id

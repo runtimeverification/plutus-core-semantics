@@ -577,7 +577,78 @@ and is defined as follows for `StakingCredential`:
 
 ## Semantic summaries
 
-More details to follow...
+Given the above abstractions, we can also automatically generate per-constructor
+correctness claims for each datatype, which are of the form:
+
+```k
+  // Constructor I: << C_I >>
+  claim
+    <k>
+      ( con data { << T >>Data(I, ListItem(PARAM_0) ... ListItem(PARAMS_MI)) } ) ~>
+      [ gLookup(fUnsafeFromData<< T >>_cunsafeFromBuiltinData) _]
+      =>
+      << T >>(I, ListItem(PARAM_0) ... ListItem(PARAMS_MI))
+      ... </k>
+    <env> _ => .Map </env>
+    requires << T >>Def(I, ListItem(PARAM_0) ... ListItem(PARAMS_MI))
+```
+
+as well as a general claim of the form:
+
+```k
+  claim
+    <k>
+      ( con data { << T >>Data(C, PARAMS) } ) ~>
+      [ gLookup(fUnsafeFromData<< T >>_cunsafeFromBuiltinData) _]
+      =>
+      << T >>(C, PARAMS)
+      ... </k>
+    <env> _ => .Map </env>
+    requires << T >>Def(C, PARAMS)
+```
+
+As an example, these claims for the `StakingCredential` constructor are as
+follows:
+
+```k
+  // Constructor 0: StakingHash
+  claim
+    <k>
+      ( con data { StakingCredentialData(0, ListItem(ListItem(C:Int) ListItem(PARAMS:List))) } ) ~>
+      [ gLookup(fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData) _]
+      =>
+      StakingCredential(0, ListItem(ListItem(C) ListItem(PARAMS))) ... </k>
+    <env> _ => .Map </env>
+    requires StakingCredentialDef(0, ListItem(ListItem(C) ListItem(PARAMS)))
+
+  // Constructor 1: StakingPtr
+  claim
+    <k>
+      ( con data { StakingCredentialData(1, ListItem(I1:Int) ListItem(I2:Int) ListItem(I3:Int)) } ) ~>
+      [ gLookup(fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData) _]
+      =>
+      StakingCredential(1, ListItem(I1) ListItem(I2) ListItem(I3)) ... </k>
+    <env> _ => .Map </env>
+    requires StakingCredentialDef(1, ListItem(I1) ListItem(I2) ListItem(I3))
+
+  // General claim
+  claim
+    <k>
+      ( con data { StakingCredentialData(C, PARAMS) } ) ~>
+      [ gLookup(fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData) _]
+      =>
+      StakingCredential(C, PARAMS) ... </k>
+    <env> _ => .Map </env>
+    requires StakingCredentialDef(C, PARAMS)
+```
+
+Currently, the per-constructor claims can be proven assuming the general claims
+of all nested datatypes, and the general claims cannot be proven due to some
+(identified) limitations in the Haskell backend and are therefore marked as
+trusted.
+
+These claims can, once proven, be converted to semantic rules that can then
+be used to shortcut the semantics and accelerate the verification process.
 
 # Leveraging closed terms
 
