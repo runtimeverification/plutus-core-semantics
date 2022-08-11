@@ -50,11 +50,11 @@ functions. We start from the invariant for `LIST_FREE_Z`:
       < con list(integer) [ .ConstantList ] > ...
     </k>
     <env>
-      RHO:Map
-        [ f_lstFree <- < lam x_0 [ s_0 s_0 x_0 ] RHO_1 [ s_0 <- Z_BODY_V RHO_1 ] > ]
+      .Map
+        [ f_lstFree <- < lam x_0 [ s_0 s_0 x_0 ] .Map [ s_0 <- Z_BODY_V RHO ] > ]
         [ in_lst <- < con list ( integer ) [ _XS:ConstantList ] > ] => .Map
     </env>
-    requires RHO_1 ==K RHO [ f_0 <- < lam f_lstFree LIST_FREE_BODY RHO > ]
+    requires RHO ==K .Map [ f_0 <- < lam f_lstFree LIST_FREE_BODY .Map > ]
 ```
 
 which states that the execution of the list-free loop
@@ -105,11 +105,11 @@ The invariant for the `LIST_FREE_REC` implementation is as follows:
       < con list(integer) [ .ConstantList ] > ...
     </k>
     <env>
-      RHO:Map
-        [ f_lstFree <- < lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ] RHO_1 [ s_0 <- REC_BODY_V RHO_1 ] > ]
+      .Map
+        [ f_lstFree <- < lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ] RHO [ s_0 <- REC_BODY_V RHO ] > ]
         [ in_lst <- < con list ( integer ) [ _XS:ConstantList ] > ] => .Map
     </env>
-    requires RHO_1 ==K RHO [ f_0 <- < lam f_lstFree LIST_FREE_BODY RHO > ]
+    requires RHO ==K .Map [ f_0 <- < lam f_lstFree LIST_FREE_BODY .Map > ]
 ```
 
 and differs from the one for `LIST_FREE_Z` *only* in the binding
