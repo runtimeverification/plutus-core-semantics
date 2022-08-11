@@ -125,7 +125,7 @@ library
 -- writes all applied validator scripts to a folder
 executable native-tokens-scripts
   main-is:            Main.hs
-  hs-source-dirs:     scripts test
+  hs-source-dirs:     test
   default-language:   Haskell2010
   default-extensions: ImportQualifiedPost
   other-modules:

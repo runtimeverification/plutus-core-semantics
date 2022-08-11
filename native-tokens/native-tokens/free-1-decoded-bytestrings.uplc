@@ -5270,11 +5270,83 @@
           )
         )
       ]
-      (con data #d87980)
+      (con data { Constr 0 [] } )
     ]
     (con
       data
-      #d8799fd8799f9fd8799fd8799fd8799f582098d5fbcefe21113b3f0390c1441e075b8a870cc5a8fa2a56dcde1d8247e41715ff02ffd8799fd8799fd8799f581c80a4f45b56b88d1139da23bc4c3c75ec6d32943c087f250b86193ca7ffd87a80ffa140a1401a05f5e100d87a80ffffff9fd8799fd8799fd8799f581c80a4f45b56b88d1139da23bc4c3c75ec6d32943c087f250b86193ca7ffd87a80ffa240a1401a05d7529b581c983cf28fd53484a220dc42c0ae430b0c1c16b210a72975c5a98dec63a0d87a80ffd8799fd8799fd8799f581c80a4f45b56b88d1139da23bc4c3c75ec6d32943c087f250b86193ca7ffd87a80ffa2581c983cf28fd53484a220dc42c0ae430b0c1c16b210a72975c5a98dec63a1434142431901bc40a1401a001e8480d87a80ffffa140a1401909e5a1581c983cf28fd53484a220dc42c0ae430b0c1c16b210a72975c5a98dec63a1434142431901bc8080d8799fd8799fd87980d87a80ffd8799fd87b80d87a80ffff9f581c80a4f45b56b88d1139da23bc4c3c75ec6d32943c087f250b86193ca7ff80d8799f582088af065d723e87beb6cdce342594729cbb62c5bb8a440df29d6359a479f8bfacffffd8799f581c983cf28fd53484a220dc42c0ae430b0c1c16b210a72975c5a98dec63ffff
-    )
+      {
+  Constr 0
+  [
+    Constr 0 
+    [
+      List
+      [
+        Constr 0
+        [
+          Constr 0
+          [
+            Constr 0 [ ByteString #98D5FBCEFE21113B3F0390C1441E075B8A870CC5A8FA2A56DCDE1D8247E41715 ], Integer 2
+          ],
+          Constr 0
+          [
+            Constr 0
+            [
+              Constr 0 [ ByteString #80A4F45B56B88D1139DA23BC4C3C75EC6D32943C087F250B86193CA7 ],
+              Constr 1 []
+            ],
+            Map[ ( ByteString # , Map[ (ByteString # , Integer 100000000 ) ] ) ],
+            Constr 1 []
+          ]
+        ]
+      ],
+      List
+      [
+        Constr 0
+        [
+          Constr 0
+          [
+            Constr 0 [ ByteString #80A4F45B56B88D1139DA23BC4C3C75EC6D32943C087F250B86193CA7 ],
+            Constr 1 []
+          ],
+          Map[ (ByteString # , Map[ ( ByteString # , Integer 97997467 ) ]), (ByteString #983CF28FD53484A220DC42C0AE430B0C1C16B210A72975C5A98DEC63 , Map[])],
+          Constr 1 []
+        ],
+        Constr 0
+        [
+          Constr 0 
+          [
+            Constr 0 [ByteString #80A4F45B56B88D1139DA23BC4C3C75EC6D32943C087F250B86193CA7],
+            Constr 1 []
+          ],
+          Map
+          [
+            ( ByteString #983CF28FD53484A220DC42C0AE430B0C1C16B210A72975C5A98DEC63 , Map[ ( ByteString #414243 , Integer 444 ) ] ),
+            ( ByteString # , Map[( ByteString # , Integer 2000000 )])
+          ],
+          Constr 1 []
+        ]
+      ],
+      Map [ ( ByteString # , Map[ (ByteString # , Integer 2533)]) ],
+      Map [ ( ByteString #983CF28FD53484A220DC42C0AE430B0C1C16B210A72975C5A98DEC63 , Map[ ( ByteString #414243 , Integer 444 ) ] ) ],
+      List [],
+      List [],
+      Constr 0
+      [
+        Constr 0 
+        [
+          Constr 0 [], Constr 1 []
+        ],
+        Constr 0
+        [
+          Constr 2 [], Constr 1 []
+        ]
+      ],
+      List [ ByteString #80A4F45B56B88D1139DA23BC4C3C75EC6D32943C087F250B86193CA7 ],
+      List [],
+      Constr 0 [ ByteString #88AF065D723E87BEB6CDCE342594729CBB62C5BB8A440DF29D6359A479F8BFAC ]
+    ],
+    Constr 0 [ ByteString #983CF28FD53484A220DC42C0AE430B0C1C16B210A72975C5A98DEC63 ]
+  ]
+}    )
   ]
 )

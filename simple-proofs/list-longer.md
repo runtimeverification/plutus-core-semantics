@@ -51,12 +51,12 @@ invariants:
       < con bool longer(XS, YS) > ...
     </k>
     <env>
-      RHO:Map
-        [ f_lstLonger <- < lam x_0 [ s_0 s_0 x_0 ] RHO_1 [ s_0 <- Z_BODY_V RHO_1 ] > ]
+      .Map:Map
+        [ f_lstLonger <- < lam x_0 [ s_0 s_0 x_0 ] .Map [ s_0 <- Z_BODY_V RHO ] > ]
         [ in_lst1 <- < con list ( integer ) [ XS:ConstantList ] > ]
         [ in_lst2 <- < con list ( integer ) [ YS:ConstantList ] > ] => .Map
     </env>
-    requires RHO_1 ==K RHO [ f_0 <- < lam f_lstLonger LIST_LONGER_BODY RHO > ]
+    requires RHO ==K .Map [ f_0 <- < lam f_lstLonger LIST_LONGER_BODY .Map > ]
 
   claim
     <k>
@@ -65,12 +65,12 @@ invariants:
       < con bool longer(XS, YS) > ...
     </k>
     <env>
-      RHO:Map
-        [ f_lstLonger <- < lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ] RHO_1 [ s_0 <- REC_BODY_V RHO_1 ] > ]
+      .Map:Map
+        [ f_lstLonger <- < lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ] RHO [ s_0 <- REC_BODY_V RHO ] > ]
         [ in_lst1 <- < con list ( integer ) [ XS:ConstantList ] > ]
         [ in_lst2 <- < con list ( integer ) [ YS:ConstantList ] > ] => .Map
     </env>
-    requires RHO_1 ==K RHO [ f_0 <- < lam f_lstLonger LIST_LONGER_BODY RHO > ]
+    requires RHO ==K .Map [ f_0 <- < lam f_lstLonger LIST_LONGER_BODY .Map > ]
 ```
 
 which follow the same structure as the previously shown invariants for
