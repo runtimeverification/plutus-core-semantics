@@ -50,11 +50,11 @@ invariants:
       < con integer length(XS) > ...
     </k>
     <env>
-      RHO:Map
-        [ f_lstLen <- < lam x_0 [ s_0 s_0 x_0 ] RHO_1 [ s_0 <- Z_BODY_V RHO_1 ] > ]
+      .Map
+        [ f_lstLen <- < lam x_0 [ s_0 s_0 x_0 ] RHO [ s_0 <- Z_BODY_V RHO ] > ]
         [ in_lst <- < con list ( integer ) [ XS:ConstantList ] > ] => .Map
     </env>
-    requires RHO_1 ==K RHO [ f_0 <- < lam f_lstLen LIST_LEN_BODY RHO > ]
+    requires RHO ==K .Map [ f_0 <- < lam f_lstLen LIST_LEN_BODY .Map > ]
 
   claim
     <k>
@@ -63,11 +63,11 @@ invariants:
       < con integer length(XS) > ...
     </k>
     <env>
-      RHO:Map
-        [ f_lstLen <- < lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ] RHO_1 [ s_0 <- REC_BODY_V RHO_1 ] > ]
+      .Map
+        [ f_lstLen <- < lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ] RHO [ s_0 <- REC_BODY_V RHO ] > ]
         [ in_lst <- < con list ( integer ) [ XS:ConstantList ] > ] => .Map
     </env>
-    requires RHO_1 ==K RHO [ f_0 <- < lam f_lstLen LIST_LEN_BODY RHO > ]
+    requires RHO ==K .Map [ f_0 <- < lam f_lstLen LIST_LEN_BODY .Map > ]
 ```
 
 which, in comparison with the [list-free invariants](list-free.md#invariants),
@@ -122,12 +122,12 @@ using the appropriate invariant
       < con integer AC +Int length(XS) > ...
     </k>
     <env>
-      RHO:Map
-        [ f_lstLenTail <- < lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ] RHO_1 [ s_0 <- REC_BODY_V RHO_1 ] > ]
+      .Map
+        [ f_lstLenTail <- < lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ] RHO [ s_0 <- REC_BODY_V RHO ] > ]
         [ ac_0 <- < con integer AC:Int > ]
         [ rest_0 <- < con list ( integer ) [ XS:ConstantList ] > ] => .Map
     </env>
-    requires RHO_1 ==K RHO [ f_0 <- < lam f_lstLenTail LIST_LEN_TAIL_BODY RHO > ]
+    requires RHO ==K .Map [ f_0 <- < lam f_lstLenTail LIST_LEN_TAIL_BODY .Map > ]
 ```
 
 ```k
