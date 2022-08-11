@@ -3,7 +3,7 @@
 ```k
 requires "verification.md"
 
-module DATATYPE-ABSTRACTIONS
+module TRIVIAL-POLICIES
   imports VERIFICATION
 ```
 
