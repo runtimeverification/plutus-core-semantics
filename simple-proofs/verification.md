@@ -450,6 +450,8 @@ module SIMPLIFICATIONS
     andBool M1 [ K1 <- undef ] [ K2 <- undef ] [ K3 <- undef ] ==K M2 [ K1 <- undef ] [ K2 <- undef ] [ K3 <- undef ]
   } [simplification]
 
+  rule removeAll(RHO, keys(RHO)) => .Map [simplification]
+
 endmodule
 ```
 

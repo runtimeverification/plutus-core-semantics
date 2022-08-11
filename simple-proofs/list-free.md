@@ -51,7 +51,7 @@ functions. We start from the invariant for `LIST_FREE_Z`:
     </k>
     <env>
       .Map
-        [ f_lstFree <- < lam x_0 [ s_0 s_0 x_0 ] RHO [ s_0 <- Z_BODY_V RHO ] > ]
+        [ f_lstFree <- < lam x_0 [ s_0 s_0 x_0 ] .Map [ s_0 <- Z_BODY_V RHO ] > ]
         [ in_lst <- < con list ( integer ) [ _XS:ConstantList ] > ] => .Map
     </env>
     requires RHO ==K .Map [ f_0 <- < lam f_lstFree LIST_FREE_BODY .Map > ]

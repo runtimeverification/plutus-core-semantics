@@ -52,7 +52,7 @@ invariants:
     </k>
     <env>
       .Map:Map
-        [ f_lstLonger <- < lam x_0 [ s_0 s_0 x_0 ] RHO [ s_0 <- Z_BODY_V RHO ] > ]
+        [ f_lstLonger <- < lam x_0 [ s_0 s_0 x_0 ] .Map [ s_0 <- Z_BODY_V RHO ] > ]
         [ in_lst1 <- < con list ( integer ) [ XS:ConstantList ] > ]
         [ in_lst2 <- < con list ( integer ) [ YS:ConstantList ] > ] => .Map
     </env>

@@ -23,12 +23,8 @@ module SIMPLE-SYMBOLIC
 
 ```k
   claim <k> [ ( lam v_0 v_0 ) (T:Term) ] => T ~> [ < lam v_0 v_0 .Map > _] ... </k>
-        <env> _ => .Map </env>
+        <env> M => #cutEnv(M, T) </env>
         requires #closed(T)
-
-  claim <k> [ ( lam v_0 v_0 ) (T:Term) ] => T ~> [ < lam v_0 v_0 .Map > _] ... </k>
-        <env> _ </env>
-        requires notBool #closed(T)
 ```
 
 The following claim proves that the constant 1 applied to the identity function returns the

@@ -41,16 +41,21 @@ module UPLC-SEMANTICS
   rule #closed(Term) => #FV(Term) ==K .Set
 ```
 
+## Environment cutting
+
+```k
+  syntax Map ::= #cutEnv(Map, Term) [function, functional]
+  rule #cutEnv(RHO, T) => removeAll(RHO, keys(RHO) -Set #FV(T))
+```
+
 ## Non-interactive application
 
 ```k
   syntax K ::= #app(Term, TermList, Map) [function, functional]
   syntax K ::= #appAux(TermList, Map) [function, functional]
   rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
-  rule #appAux(N:Term,   _) => [_ N .Map ] requires #closed(N)
-  rule #appAux(N:Term, RHO) => [_ N  RHO ] requires notBool #closed(N)
-  rule #appAux(N:Term TL:TermList, RHO) => [_ N .Map ] ~> #appAux(TL, RHO) requires #closed(N)
-  rule #appAux(N:Term TL:TermList, RHO) => [_ N  RHO ] ~> #appAux(TL, RHO) requires notBool #closed(N)
+  rule #appAux(N:Term, RHO) => [_ N #cutEnv(RHO, N) ]
+  rule #appAux(N:Term TL:TermList, RHO) => [_ N #cutEnv(RHO, N) ] ~> #appAux(TL, RHO)
 ```
 
 ## CEK machine
@@ -72,21 +77,11 @@ module UPLC-SEMANTICS
   rule <k> (builtin BN) => < builtin BN .List | #expectedArguments(BN) > ... </k>
        <env> _ => .Map </env>
 
-  rule <k> (lam X:UplcId M:Term) => < lam X M .Map > ... </k>
-       <env> _ => .Map </env>
-       requires #closed( (lam X M) )
-
-  rule <k> (lam X:UplcId M:Term) => < lam X M RHO > ... </k>
+  rule <k> (lam X:UplcId M:Term) => < lam X M #cutEnv(RHO, (lam X M)) > ... </k>
        <env> RHO => .Map </env>
-       requires notBool #closed( (lam X M) )
 
-  rule <k> (delay M:Term) => < delay M .Map > ... </k>
-       <env> _ => .Map </env>
-       requires #closed(M)
-
-  rule <k> (delay M:Term) => < delay M RHO > ... </k>
+  rule <k> (delay M:Term) => < delay M #cutEnv(RHO, M) > ... </k>
        <env> RHO => .Map </env>
-       requires notBool #closed(M)
 
   rule <k> (force M:Term) => (M ~> Force) ... </k>
 

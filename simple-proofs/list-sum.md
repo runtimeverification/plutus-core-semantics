@@ -57,7 +57,7 @@ invariants:
     </k>
     <env>
       .Map:Map
-        [ f_lstSum <- < lam x_0 [ s_0 s_0 x_0 ] RHO [ s_0 <- Z_BODY_V RHO ] > ]
+        [ f_lstSum <- < lam x_0 [ s_0 s_0 x_0 ] .Map [ s_0 <- Z_BODY_V RHO ] > ]
         [ in_lst <- < con list ( integer ) [ XS:ConstantList ] > ] => .Map
     </env>
     requires RHO ==K .Map [ f_0 <- < lam f_lstSum LIST_SUM_BODY .Map > ]
