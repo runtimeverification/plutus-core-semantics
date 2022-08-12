@@ -19,7 +19,7 @@ module UPLC-SEMANTICS
 ## Free variables
 
 ```k
-  syntax Set ::= #FV(Term) [function, functional]
+  syntax Set ::= #FV(Term) [function, functional, memo]
 
   rule #FV( X:UplcId ) => SetItem(X)
   rule #FV( [ T TL ] ) => #FV(T) |Set #FVL(TL)
@@ -28,7 +28,7 @@ module UPLC-SEMANTICS
   rule #FV( (force T) ) => #FV(T)
   rule #FV( _ ) => .Set [owise]
 
-  syntax Set ::= #FVL(TermList) [function, functional, memo]
+  syntax Set ::= #FVL(TermList) [function, functional]
 
   rule #FVL(T:Term) => #FV(T)
   rule #FVL(T:Term TL:TermList) => #FV(T) |Set #FVL(TL)
