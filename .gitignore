@@ -13,3 +13,7 @@ simple-proofs/verification/
 *.swn
 *.swp
 /tests/**/*.flat.hex
+/native-tokens/distnewstyle
+/native-tokens/native-tokens/shell.nix
+/stablecoin/distnewstyle
+/stablecoin/stablecoin/shell.nix
