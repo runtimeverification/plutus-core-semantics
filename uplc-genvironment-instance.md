@@ -1528,37 +1528,39 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                                                   (lam ds_0
                                                     [
                                                       txInfo_id
+                                                      // Param 1: txInfoInputs :: [TxInInfo]
                                                       [
                                                         (force fUnsafeFromDataNil_cunsafeFromBuiltinData)
                                                         fUnsafeFromDataTxInInfo_cunsafeFromBuiltinData
                                                         [ (force (builtin headList)) (force t_0) ]
                                                       ]
+                                                      // Param 2: txInfoOutputs :: [TxOut]
                                                       [
                                                         (force fUnsafeFromDataNil_cunsafeFromBuiltinData)
                                                         fUnsafeFromDataTxOut_cunsafeFromBuiltinData
                                                         [ (force (builtin headList)) (force t_1) ]
                                                       ]
-                                                      // Param 3
+                                                      // Param 3: txInfoFee :: Value
                                                       [
                                                         (force (force fUnsafeFromDataMap_cunsafeFromBuiltinData))
                                                         (builtin unBData)
                                                         (force fUnsafeFromDataValue_id)
                                                         [ (force (builtin headList)) (force t_2) ]
                                                       ]
-                                                      // Param 4
+                                                      // Param 4: txInfoMint :: Value
                                                       [
                                                         (force (force fUnsafeFromDataMap_cunsafeFromBuiltinData))
                                                         (builtin unBData)
                                                         (force fUnsafeFromDataValue_id)
                                                         [ (force (builtin headList)) (force t_3) ]
                                                       ]
-                                                      // Param 5
+                                                      // Param 5: txInfoDCert :: [DCert]
                                                       [
                                                         (force fUnsafeFromDataNil_cunsafeFromBuiltinData)
                                                         fUnsafeFromDataDCert_cunsafeFromBuiltinData
                                                         [ (force (builtin headList)) (force t_4) ]
                                                       ]
-                                                      // Param 6
+                                                      // Param 6: txInfoWdrl :: [(StakingCredential, Integer)]
                                                       [
                                                         (force fUnsafeFromDataNil_cunsafeFromBuiltinData)
                                                         [
@@ -1568,18 +1570,18 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                                                         ]
                                                         [ (force (builtin headList)) (force t_5) ]
                                                       ]
-                                                      // Param 7
+                                                      // Param 7: txInfoValidRange :: POSIXTimeRange
                                                       [
                                                         fUnsafeFromDataInterval_cunsafeFromBuiltinData
                                                         [ (force (builtin headList)) (force t_6) ]
                                                       ]
-                                                      // Param 8
+                                                      // Param 8: txInfoSignatories :: [PubKeyHash]
                                                       [
                                                         (force fUnsafeFromDataNil_cunsafeFromBuiltinData)
                                                         (builtin unBData)
                                                         [ (force (builtin headList)) (force t_7) ]
                                                       ]
-                                                      // Param 9
+                                                      // Param 9: txInfoData :: [(DatumHash, Datum)]
                                                       [
                                                         (force fUnsafeFromDataNil_cunsafeFromBuiltinData)
                                                         [
@@ -1589,7 +1591,7 @@ rule gLookup(fUnsafeFromDataNil_cunsafeFromBuiltinData) =>
                                                         ]
                                                         [ (force (builtin headList)) (force t_8) ]
                                                       ]
-                                                      // Param 10
+                                                      // Param 10: txInfoId :: TxId
                                                       [
                                                         fUnsafeFromDataTxId_cunsafeFromBuiltinData
                                                         [
