@@ -18,14 +18,14 @@ import qualified Data.Map               as Map
 import           Data.Text              (Text)
 import           Data.Void              (Void)
 import           GHC.Generics           (Generic)
-import           Plutus.Contract        as Contract
-import           Plutus.Trace.Emulator  as Emulator
-import qualified PlutusTx
-import           PlutusTx.Prelude       hiding (Semigroup(..), unless)
 import           Ledger                 hiding (mint, singleton)
 import           Ledger.Constraints     as Constraints
 import qualified Ledger.Typed.Scripts   as Scripts
 import           Ledger.Value           as Value
+import           Plutus.Contract        as Contract
+import           Plutus.Trace.Emulator  as Emulator
+import qualified PlutusTx
+import           PlutusTx.Prelude       hiding (Semigroup (..), unless)
 import           Prelude                (IO, Semigroup (..), Show (..), String)
 import           Text.Printf            (printf)
 import           Wallet.Emulator.Wallet
@@ -45,6 +45,8 @@ mkPolicy oref tn () ctx = traceIfFalse "UTxO not consumed"   hasUTxO           &
     checkMintedAmount = case flattenValue (txInfoMint info) of
         [(_, tn', amt)] -> tn' == tn && amt == 1
         _               -> False
+
+cPolicy = $$(PlutusTx.compile [|| \oref' tn' -> Scripts.wrapMintingPolicy $ mkPolicy oref' tn' ||])
 
 policy :: TxOutRef -> TokenName -> Scripts.MintingPolicy
 policy oref tn = mkMintingPolicyScript $
