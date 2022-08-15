@@ -14,11 +14,11 @@
    ] ++ (lib.optionals (!stdenv.isDarwin) [ rPackages.plotly R ]));
    ```
 1. Change to `native-tokens/native-tokens`.
-1. Create a symbolic link from `plutus/shell.nix` to `native-tokens/native-tokens`.
-1. Run `nix-shell --command 'cabal build'`.
-1. Run `nix-shell --command 'cabal run native-tokens-scripts out_scripts scripts'`.
-1. There will be 5 flat format files in `out_scripts`.
-1. In bash, run the following command. (Make sure 
+2. Create a symbolic link from `plutus/shell.nix` to `native-tokens/native-tokens`.
+3. Run `nix-shell --command 'cabal build'`.
+4. Run `nix-shell --command 'cabal run native-tokens-scripts out_scripts scripts'`.
+5. There will be 5 flat format files in `out_scripts`.
+6. In bash, run the following command. (Make sure 
    `plutus/dist-newstyle/build/x86_64-linux/ghc-8.10.4.20210212/plutus-core-0.1.0.0/x/uplc/build/uplc/uplc` is in your `PATH`.)
    ```shell
    for i in out_scripts/*.flat ; do uplc convert --if flat --of textual --print-mode Debug -i $i -o $i.debug.uplc ; done   
