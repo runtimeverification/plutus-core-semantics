@@ -118,13 +118,14 @@ export PLUGIN_SUBMODULE
         test-nofib-exe-examples            \
         conformance-test update-results    \
         test-prove test-unit-tests         \
-        fresh-test-coverage
+        fresh-test-coverage                \
+        venv venv-clean
 
 .SECONDARY:
 
 all: build
 
-clean:
+clean: venv-clean
 	rm -rf $(KPLUTUS_BIN) $(KPLUTUS_LIB)
 
 distclean:
@@ -300,6 +301,15 @@ coverage:
 	$(KPLUTUS_BIN)/kplutus-covr $(KPLUTUS_LIB)/$(llvm_kompiled_dir) \
         -- $(kplutus_includes) \
         -ig $(covr_ignore_includes) $(k_builtin_ignore_includes) > $(BUILD_DIR)/coverage.xml
+
+# kplutus_pyk
+# -----------
+
+venv-clean:
+	$(MAKE) -C ./kplutus_pyk clean
+
+venv:
+	$(MAKE) -C ./kplutus_pyk
 
 # Installing
 # ----------
