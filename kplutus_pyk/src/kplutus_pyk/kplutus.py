@@ -1,5 +1,7 @@
 import sys
+from pathlib import Path
 from subprocess import CalledProcessError
+from typing import List
 
 from pyk.cli_utils import run_process
 
@@ -8,8 +10,11 @@ from pyk.cli_utils import run_process
 class KPlutus():
 
     @staticmethod
-    def kompile() -> None:
-        command = ['kompile']
+    def kompile(main_file: Path, args: List[str] = None) -> None:
+        if args == None:
+            args = []
+
+        command = ['kompile', str(main_file)] + args
         try:
             run_process(command)
         except CalledProcessError as err:
