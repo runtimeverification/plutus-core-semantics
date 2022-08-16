@@ -14,11 +14,12 @@ ACTIVATE_VENV := . $(MAKEFILE_DIR)$(VENV_DIR)/bin/activate
 $(VENV):
 	   virtualenv -p python3 $(VENV_DIR)    \
 	&& $(ACTIVATE_VENV)                     \
-	&& pip install -r requirements/base.txt
+	&& pip install -r requirements/base.txt \
+	&& pip install --editable . --no-deps
 
 $(VENV_DIR): $(VENV)
 	@echo $(ACTIVATE_VENV)
 
 clean:
-	rm -rf $(VENV_DIR)
+	rm -rf $(VENV_DIR) src/kplutus_pyk.egg-info
 	find -type d -name __pycache__ -prune -exec rm -rf {} \;
