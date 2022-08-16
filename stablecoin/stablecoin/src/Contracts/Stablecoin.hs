@@ -55,7 +55,8 @@ We use the 'Ratio' type for all calculations in the script, using 'round' to
 obtain 'Integer' values at the very end.
 
 -}
-module Contracts.Stablecoin(
+module Contracts.Stablecoin
+  (
   SC(..)
   , RC(..)
   , BC(..)
@@ -77,6 +78,7 @@ module Contracts.Stablecoin(
   , stableCoins
   , reserveCoins
   , checkValidState
+  , compiledTypedValidator
   ) where
 
 import           Control.Lens                 (makeClassyPrisms)
@@ -371,6 +373,8 @@ typedValidator stablecoin =
         validator d = SM.mkValidator (stablecoinStateMachine d)
         wrap = Scripts.mkUntypedValidator @BankState @Input
     in Scripts.mkTypedValidator @(StateMachine BankState Input) val $$(PlutusTx.compile [|| wrap ||])
+
+compiledTypedValidator = $$(PlutusTx.compile [|| \stablecoin' -> mkValidator typedValidator stablecoin' ||])
 
 machineClient ::
     Scripts.TypedValidator (StateMachine BankState Input)
