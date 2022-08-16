@@ -40,6 +40,10 @@ export K_OPTS="${K_OPTS:--Xmx16G -Xss512m}"
 # Runners
 # -------
 
+run_kplutus_pyk() {
+    notif_exec python3 -m kplutus_pyk "$@"
+}
+
 run_kompile() {
     local kompile_opts
     local execution_type
@@ -73,7 +77,11 @@ run_kompile() {
         kompile_opts+=( -ccopt -I${libcryptopp_dir}/include -ccopt -L/${libcryptopp_dir}/lib )
     fi
 
-    notif_exec kompile "${kompile_opts[@]}" "$@"
+    if ${pyk}; then
+        run_kplutus_pyk kompile "${kompile_opts[@]}" "$@"
+    else
+        notif_exec kompile "${kompile_opts[@]}" "$@"
+    fi
 }
 
 run_interpreter() {
@@ -140,6 +148,7 @@ result_only=false
 backend='llvm'
 bug_report=false
 debugger=false
+pyk=false
 
 args=()
 while [[ $# -gt 0 ]]; do
@@ -153,6 +162,7 @@ while [[ $# -gt 0 ]]; do
         --bug-report)   bug_report=true                 ; shift   ;;
         --debugger)     debugger=true                   ; shift   ;;
         --symbolic)     symbolic=true                   ; shift   ;;
+        --pyk)          pyk=true                        ; shift   ;;
         *)              args+=("$1")                    ; shift   ;;
     esac
 done
