@@ -13,3 +13,5 @@ simple-proofs/verification/
 *.swn
 *.swp
 /tests/**/*.flat.hex
+kplutus_pyk/src/kplutus_pyk.egg-info/
+kplutus_pyk/src/kplutus_pyk/__pycache__/
