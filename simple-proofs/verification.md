@@ -380,10 +380,11 @@ module AUXILIARIES
 ### `allInts(XS)`: capturing that `XS` is a list of integers
 
 ```k
-  syntax Bool ::= allInts(ConstantList) [function, functional]
+  syntax Bool ::= allInts(ConstantList) [function, functional, no-evaluators]
 
-  rule allInts(              .ConstantList) => true
-  rule allInts(C:Constant, XS:ConstantList) => isInt(C) andBool allInts(XS)
+  rule { true #Equals allInts(              .ConstantList) } => #Top [simplification]
+  rule { true #Equals allInts(C:Constant, XS:ConstantList) } => #Exists I:Int. { C #Equals I } #And { true #Equals allInts(XS) }
+    [simplification, unboundVariables(I)]
 ```
 
 ### `sum(XS)`: calculating the sum of a given list of integers `XS`
