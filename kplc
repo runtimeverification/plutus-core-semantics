@@ -56,7 +56,7 @@ run_kompile() {
                  kompile_opts+=( -ccopt ${plugin_include}/c/crypto.cpp                                         )
                  kompile_opts+=( -ccopt ${plugin_include}/c/hash_ext.cpp                                       )
                  kompile_opts+=( -ccopt ${plugin_include}/c/blake2.cpp                                         )
-                 kompile_opts+=( -ccopt -g -ccopt -std=c++14                                                   )
+                 kompile_opts+=( -ccopt -std=c++14                                                             )
                  kompile_opts+=( -ccopt -lff -ccopt -lcryptopp -ccopt -lsecp256k1 -ccopt -lssl -ccopt -lcrypto )
                  if [[ "$(uname -s)" == 'Linux' ]]; then
                      kompile_opts+=( -ccopt -lprocps )
