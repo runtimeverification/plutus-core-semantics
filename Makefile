@@ -403,7 +403,7 @@ simple-proofs/%.md.prove: simple-proofs/%.md simple-proofs/verification/haskell/
 	$(KPLUTUS) prove --directory simple-proofs/verification/haskell $< $(KPROVE_OPTS)
 
 simple-proofs/verification/haskell/verification-kompiled/timestamp: simple-proofs/verification.md $(kplutus_includes)
-	$(KOMPILE) --symbolic --backend haskell $< --directory simple-proofs/verification/haskell
+	$(KOMPILE) --backend haskell $< --directory simple-proofs/verification/haskell
 
 
 # Testing

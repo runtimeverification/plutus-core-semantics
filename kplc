@@ -43,7 +43,7 @@ run_kompile() {
     local kompile_opts
     local execution_type
 
-    if [[ ${symbolic} == true ]]; then
+    if [[ ${backend} == 'haskell' ]]; then
         execution_type="symbolic"
     else
         execution_type="concrete"
@@ -147,7 +147,6 @@ pyk=false
 debug=false
 verbose=false
 flat_format=false
-symbolic=false
 
 args=()
 while [[ $# -gt 0 ]]; do
@@ -160,7 +159,6 @@ while [[ $# -gt 0 ]]; do
         --result-only)  result_only=true                ; shift   ;;
         --bug-report)   bug_report=true                 ; shift   ;;
         --debugger)     debugger=true                   ; shift   ;;
-        --symbolic)     symbolic=true                   ; shift   ;;
         --pyk)          pyk=true                        ; shift   ;;
         *)              args+=("$1")                    ; shift   ;;
     esac
