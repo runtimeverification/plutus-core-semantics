@@ -3,11 +3,6 @@
 set -euo pipefail
 shopt -s extglob
 
-debug=false
-verbose=false
-flat_format=false
-symbolic=false
-
 notif() {
     if ${verbose}; then
         echo "== $0 [$(date)]: $@" >&2
@@ -149,6 +144,10 @@ backend='llvm'
 bug_report=false
 debugger=false
 pyk=false
+debug=false
+verbose=false
+flat_format=false
+symbolic=false
 
 args=()
 while [[ $# -gt 0 ]]; do
