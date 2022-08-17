@@ -133,12 +133,6 @@ if [[ "$run_command" == 'help' ]] || [[ "$run_command" == '--help' ]] ; then
     exit 0
 fi
 
-if [[ "$run_command" == 'version' ]] || [[ "$run_command" == '--version' ]]; then
-    notif 'KPlutus Version'
-    cat $INSTALL_LIB/version
-    exit 0
-fi
-
 result_only=false
 backend='llvm'
 bug_report=false
@@ -163,6 +157,12 @@ while [[ $# -gt 0 ]]; do
         *)              args+=("$1")                    ; shift   ;;
     esac
 done
+
+if [[ "$run_command" == 'version' ]] || [[ "$run_command" == '--version' ]]; then
+    notif 'KPlutus Version'
+    cat $INSTALL_LIB/version
+    exit 0
+fi
 
 [[ "${#args[@]}" -le 0 ]] || set -- "${args[@]}"
 backend_dir="${backend_dir:-$INSTALL_LIB/$backend}"
