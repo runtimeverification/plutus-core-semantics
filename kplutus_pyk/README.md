@@ -25,21 +25,16 @@ The final line of output from the above `make` command should look something lik
 ```
 
 This is the command to enter the environment with the kplutus_pyk library. Simply copy and paste it
-into your shell and press enter. You will notice `(venv)` prefixed to your prompt. You can leave
-the environment by running `deactivate`.
+into your shell and press enter. Verify you're in the environment with `which python` and you should
+see a path to `kplutus_pyk/venv/bin`. Running `deactivate` will exit the environment and bring you
+back you the one you were in before.
 
 ## Invoke kplutus_pyk with kplc
 
 `kplc` has the parameter `--pyk` which will tell it to use `kplutus_pyk` wherever it can.
 Currently, only `kompile` is implemented. You can see it in action by building the semantics
-with it:
+with it while in the kplutus_pyk environment:
 
 ```bash
-(venv) $ make build KOMPILE_OPTS=--pyk
-```
-
-## Invoke kplutus_pyk from the command line
-
-```bash
-(venv) $ python3 -m kplutus_pyk
+$ make build KOMPILE_OPTS=--pyk
 ```
