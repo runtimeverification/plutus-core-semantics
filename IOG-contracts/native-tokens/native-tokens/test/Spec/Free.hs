@@ -1,6 +1,6 @@
-{-# LANGUAGE TypeApplications   #-}
-{-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE TypeApplications  #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Spec.Free where
 
