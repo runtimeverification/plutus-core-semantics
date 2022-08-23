@@ -77,7 +77,7 @@ uplcNFTPolicy =
 
 -- pirNFTPolicy :: String
 pirNFTPolicy =
-    PlutusCore.Pretty.pretty $ PlutusTx.getPir compiledNFTPolicy
+    PlutusCore.Pretty.prettyClassicDebug $ PlutusTx.getPir compiledNFTPolicy
 -- KPLC
 
 curSymbol :: TxOutRef -> TokenName -> CurrencySymbol

@@ -401,7 +401,7 @@ unDeBruijnProgram (Program ann ver term) = Program ann ver Haskell.<$> unDeBruij
 uplcStableCoinPolicy :: Haskell.String
 uplcStableCoinPolicy = either display displayPlcDebug $ runQuoteT $ unDeBruijnProgram $ PlutusTx.getPlc typedValidator'
 
-pirStableCoinPolicy = pretty $ PlutusTx.getPir typedValidator'
+pirStableCoinPolicy = prettyClassicDebug $ PlutusTx.getPir typedValidator'
 -- KPLC
 
                        

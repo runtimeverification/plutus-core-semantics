@@ -63,7 +63,7 @@ uplcTruePolicy =
     getPlc compiledPolicyTrue
 
 pirTruePolicy =
-  pretty $ getPir $ compiledPolicyTrue
+  prettyClassicDebug $ getPir $ compiledPolicyTrue
   
 compiledPolicyFalse :: PlutusTx.CompiledCode (BuiltinData -> BuiltinData -> ())
 compiledPolicyFalse = $$(PlutusTx.compile
@@ -76,7 +76,7 @@ uplcFalsePolicy =
     getPlc compiledPolicyFalse
 
 pirFalsePolicy =
-  pretty $ getPir $ compiledPolicyFalse
+  prettyClassicDebug $ getPir $ compiledPolicyFalse
 -- KPLC
 
 policy :: Scripts.MintingPolicy
