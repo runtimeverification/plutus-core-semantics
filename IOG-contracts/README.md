@@ -1,14 +1,14 @@
 # Native tokens and Stablecoin contracts 
 
-This directory contains Haskell files implement represent native tokens and
-a stablecoin contracts in PlutusTx. There are two subdirectories named
+This directory contains Haskell files that implement native tokens and
+a stablecoin contract in PlutusTx. There are two subdirectories named
 after each kind of contract. Assuming a proper installation of `nix`,
 `plutus` and `plutus-apps`, the files and instructions here should be
 enough to generate UPLC scripts from the minting/validation policy of
 each contract and from particular executions of each contract. 
 
 The general directory structure is as follows, where `dir` is either
-native-tokens or stablecoin and `contract` is either `Freee.hs`,
+native-tokens or stablecoin and `contract` is either `Free.hs`,
 `NFT.hs` or `Stablecoin.hs`:
 ```
 dir
@@ -22,11 +22,11 @@ dir
 ``` 
 
 A `Contracts/contract` file contain the PlutusTx implementation of its
-associated contract. A `Spec/contract` contains code related with the
+associated contract. A `Spec/contract` file contains code related to the
 generation of UPLC code for traces of the contract or for the
 contract's policy. 
 
-File `Main.hs` is a driver script in Haskell to the UPLC code
+The file `Main.hs` is a driver script in Haskell to the UPLC code
 generation process that essentially pretty-prints the compilation of
 the contract's policy to UPLC. This file was adapted from the [one](
 https://github.com/input-output-hk/plutus-apps/blob/main/plutus-use-cases/scripts/Main.hs)
@@ -34,8 +34,8 @@ available for the `plutus-use-cases` apps in the `plutus-apps`
 repository, which generates UPLC code from particular traces of the
 contracts encoded in `Spec` directory.
 
-In the following we describe the contracts leaving to the
-`README.md` files on each subdirectory the responsibility to explain how to
+In the following, we describe the contracts, leaving to the
+`README.md` files in each subdirectory the responsibility to explain how to
 generate UPLC code from their associated contracts.
 
 ## Native tokens
@@ -53,6 +53,8 @@ always returns true. As opposed to the one implemented in `NFT.hs`
 which deals with [non-fungible tokens](https://developers.cardano.org/docs/native-tokens/minting-nfts/). 
 
 ## Stablecoin
+
+[README.md](stablecoin/README.md)
 
 This contract implements MiniDJED, an algorithmic stablecoin
 prototype, described [here](https://developers.cardano.org/docs/native-tokens/minting-nfts/). 
@@ -84,7 +86,7 @@ compiledNFTPolicy = $$(PlutusTx.compile [|| \oref' tn' -> Scripts.wrapMintingPol
 
 The contract's policy is bound to `mkPolicy` variable. We have added a
 new binding, not present in the original contract, to the variable
-`compiledNFTPolicy`, that has the compiled version of `mkPolicy`. This
+`compiledNFTPolicy`, which has the compiled version of `mkPolicy`. This
 variable is then pretty-printed to UPLC code by the associated
 `Main.hs` script.
 
@@ -96,8 +98,8 @@ as follows.
 ### Nix-shell
 
 Currently, before running any `cabal` command, it's necessary to start
-`nix-shell` _from `plutus-apps`_, and this is very important. Only
-then the cabal commands can be executed from within the `nix-shell`.
+`nix-shell` _from `plutus-apps`_. This is very important. Only
+then can the cabal commands be executed from within the `nix-shell`.
 
 ### Compiler options
 
@@ -105,8 +107,8 @@ The following options should either be added to the contract's Haskell
 file header or to the `ghc-options` of the target that generates the
 UPLC code in contract's cabal file.
 
-They prevent simplifications to take place and their absence may
-produce UPLC incorrect.
+They prevent simplifications from taking place and their absence may
+produce incorrect UPLC code.
 ```
 -fplugin-opt PlutusTx.Plugin:no-simplifier-inline
 -fplugin-opt PlutusTx.Plugin:no-simplifier-beta
@@ -114,7 +116,7 @@ produce UPLC incorrect.
 
 ### Haskell language extension
 
-The `TypeApplications` language extension is necessary to the UPLC code
+The `TypeApplications` language extension is necessary for the UPLC code
 generation function. Should the code generation process be started in
 the cabal repl, it is then necessary to set this option with:
 ```

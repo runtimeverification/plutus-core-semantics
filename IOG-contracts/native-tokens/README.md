@@ -3,18 +3,18 @@
 ## Introduction
 
 The contracts in this directory implement minting policies for native
-tokens. Contract `Free.hs` implements the trivial policy that
-generates true to every input. Contract `NFT.hs` is a more elaborated
+tokens. The contract `Free.hs` implements the trivial policy that
+generates true to every input whereas contract `NFT.hs` is a more elaborated
 one for non-fungible native tokens. They are originally available from
 the Plutus Pioneer Program. 
 
 ## How to generate policies for native tokens
 
-1. Follow instructions at issue
+1. Follow instructions in issue
    [#285](https://github.com/runtimeverification/plutus-core-semantics/issues/285)
    to get `nix`, `plutus` and `plutus-apps` up and running in your
    system, if necessary.
-2. Change to `plutus-semantics/native-tokens/native-tokens`.
+2. Change to `plutus-semantics/IOG-contracts/native-tokens/native-tokens`.
 3. Run `cabal build`.
 4. Run `cabal run native-tokens-scripts out_scripts scripts`. There
    will be 9 files in total. 
