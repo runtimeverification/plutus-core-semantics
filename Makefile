@@ -118,13 +118,14 @@ export PLUGIN_SUBMODULE
         test-nofib-exe-examples            \
         conformance-test update-results    \
         test-prove test-unit-tests         \
-        fresh-test-coverage
+        fresh-test-coverage                \
+        venv venv-clean
 
 .SECONDARY:
 
 all: build
 
-clean:
+clean: venv-clean
 	rm -rf $(KPLUTUS_BIN) $(KPLUTUS_LIB)
 
 distclean:
@@ -263,6 +264,13 @@ haskell_kompiled       := $(haskell_dir)/$(haskell_main_filename)-kompiled/defin
 
 KOMPILE_OPTS += --no-exc-wrap
 
+ifneq ($(RELEASE),)
+    KOMPILE_OPTS += -O3
+    LLVM_KOMPILE_OPTS += -ccopt -O3
+else
+    LLVM_KOMPILE_OPTS += -ccopt -g
+endif
+
 ifndef NOBUILD_CRYPTOPP
   $(KPLUTUS_LIB)/$(llvm_kompiled): $(libcryptopp_out)
 endif
@@ -275,7 +283,7 @@ $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin
 	    $(llvm_main_file)                     \
 	    --main-module $(llvm_main_module)     \
 	    --syntax-module $(llvm_syntax_module) \
-	    $(KOMPILE_OPTS)
+	    $(KOMPILE_OPTS) $(LLVM_KOMPILE_OPTS)
 
 $(KPLUTUS_LIB)/$(haskell_kompiled): $(kplutus_includes) $(plugin_includes) $(KPLUTUS_BIN)/kplc
 	$(KOMPILE) --backend haskell                     \
@@ -303,6 +311,15 @@ coverage:
 	$(KPLUTUS_BIN)/kplutus-covr $(KPLUTUS_LIB)/$(llvm_kompiled_dir) \
         -- $(kplutus_includes) \
         -ig $(covr_ignore_includes) $(k_builtin_ignore_includes) > $(BUILD_DIR)/coverage.xml
+
+# kplutus_pyk
+# -----------
+
+venv-clean:
+	$(MAKE) -C ./kplutus_pyk clean
+
+venv:
+	$(MAKE) -C ./kplutus_pyk
 
 # Installing
 # ----------
@@ -396,7 +413,7 @@ simple-proofs/%.md.prove: simple-proofs/%.md simple-proofs/verification/haskell/
 	$(KPLUTUS) prove --directory simple-proofs/verification/haskell $< $(KPROVE_OPTS)
 
 simple-proofs/verification/haskell/verification-kompiled/timestamp: simple-proofs/verification.md $(kplutus_includes)
-	$(KOMPILE) --symbolic --backend haskell $< --directory simple-proofs/verification/haskell
+	$(KOMPILE) --backend haskell $< --directory simple-proofs/verification/haskell
 
 
 # Testing

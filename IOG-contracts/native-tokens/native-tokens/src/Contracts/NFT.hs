@@ -30,6 +30,13 @@ import           Prelude                (IO, Semigroup (..), Show (..), String)
 import           Text.Printf            (printf)
 import           Wallet.Emulator.Wallet
 
+-- KPLC These imports were added to allow for the UPLC code generation of
+-- KPLC the contract's minting policies.
+import UntypedPlutusCore
+import PlutusCore.Quote
+import PlutusCore.Pretty
+-- KPLC
+
 {-# INLINABLE mkPolicy #-}
 mkPolicy :: TxOutRef -> TokenName -> () -> ScriptContext -> Bool
 mkPolicy oref tn () ctx = traceIfFalse "UTxO not consumed"   hasUTxO           &&
@@ -48,11 +55,30 @@ mkPolicy oref tn () ctx = traceIfFalse "UTxO not consumed"   hasUTxO           &
 
 policy :: TxOutRef -> TokenName -> Scripts.MintingPolicy
 policy oref tn = mkMintingPolicyScript $
-    $$(PlutusTx.compile [|| \oref' tn' -> Scripts.wrapMintingPolicy $ mkPolicy oref' tn' ||])
+    $$(PlutusTx.compile
+       [|| \oref' tn' -> Scripts.wrapMintingPolicy $ mkPolicy oref' tn' ||])
     `PlutusTx.applyCode`
     PlutusTx.liftCode oref
     `PlutusTx.applyCode`
     PlutusTx.liftCode tn
+
+-- KPLC These variables were added to allow for the UPLC code generation of
+-- KPLC the contract's minting policies.
+compiledNFTPolicy :: (PlutusTx.CompiledCode
+                        (TxOutRef -> TokenName -> Scripts.WrappedMintingPolicyType))
+compiledNFTPolicy = $$(PlutusTx.compile
+  [|| \oref' tn' -> Scripts.wrapMintingPolicy $ mkPolicy oref' tn' ||])
+
+uplcNFTPolicy :: String
+uplcNFTPolicy =
+  either display displayPlcDebug $ runQuoteT $
+  unDeBruijnProgram @(QuoteT (Either FreeVariableError)) $
+    PlutusTx.getPlc compiledNFTPolicy
+
+-- pirNFTPolicy :: String
+pirNFTPolicy =
+    PlutusCore.Pretty.prettyClassicDebug $ PlutusTx.getPir compiledNFTPolicy
+-- KPLC
 
 curSymbol :: TxOutRef -> TokenName -> CurrencySymbol
 curSymbol oref tn = scriptCurrencySymbol $ policy oref tn

@@ -19,18 +19,27 @@ import           Data.Void              (Void)
 import           GHC.Generics           (Generic)
 import           Plutus.Contract        as Contract
 import           Plutus.Trace.Emulator  as Emulator
-import qualified PlutusTx
+-- import qualified PlutusTx
 import           PlutusTx.Prelude       hiding (Semigroup(..), unless)
 import           Ledger                 hiding (mint, singleton)
 import           Ledger.Constraints     as Constraints
 import qualified Ledger.Typed.Scripts   as Scripts
 import           Ledger.Value           as Value
-import           Playground.Contract    (printJson, printSchemas, ensureKnownCurrencies, stage, ToSchema)
+import           Playground.Contract    (ToSchema)
+-- import           Playground.Contract    (printJson, printSchemas, ensureKnownCurrencies, stage, ToSchema)
 import           Playground.TH          (mkKnownCurrencies, mkSchemaDefinitions)
 import           Playground.Types       (KnownCurrency (..))
 import           Prelude                (IO, Show (..), String)
 import           Text.Printf            (printf)
 import           Wallet.Emulator.Wallet
+
+-- KPLC These imports were added to allow for the UPLC code generation of
+-- KPLC the contract's minting policies.
+import PlutusTx
+import UntypedPlutusCore
+import PlutusCore.Quote
+import PlutusCore.Pretty
+-- KPLC
 
 {-# INLINABLE mkPolicyTrue #-}
 {-# INLINABLE mkPolicyFalse #-}
@@ -41,14 +50,38 @@ mkPolicyTrue () _ = True
 mkPolicyFalse :: () -> ScriptContext -> Bool
 mkPolicyFalse () _ = False
 
+-- KPLC These variables were added to allow for the UPLC code generation of
+-- KPLC the contract's minting policies.
 compiledPolicyTrue :: PlutusTx.CompiledCode (BuiltinData -> BuiltinData -> ())
-compiledPolicyTrue = $$(PlutusTx.compile [|| Scripts.wrapMintingPolicy mkPolicyTrue ||])
+compiledPolicyTrue = $$(PlutusTx.compile
+  [|| Scripts.wrapMintingPolicy mkPolicyTrue ||])
 
+uplcTruePolicy :: String
+uplcTruePolicy =
+  either display displayPlcDebug $ runQuoteT $
+    unDeBruijnProgram @(QuoteT (Either FreeVariableError)) $
+    getPlc compiledPolicyTrue
+
+pirTruePolicy =
+  prettyClassicDebug $ getPir $ compiledPolicyTrue
+  
 compiledPolicyFalse :: PlutusTx.CompiledCode (BuiltinData -> BuiltinData -> ())
-compiledPolicyFalse = $$(PlutusTx.compile [|| Scripts.wrapMintingPolicy mkPolicyFalse ||])
+compiledPolicyFalse = $$(PlutusTx.compile
+  [|| Scripts.wrapMintingPolicy mkPolicyFalse ||])
+
+uplcFalsePolicy :: String
+uplcFalsePolicy =
+  either display displayPlcDebug $ runQuoteT $
+    unDeBruijnProgram @(QuoteT (Either FreeVariableError)) $
+    getPlc compiledPolicyFalse
+
+pirFalsePolicy =
+  prettyClassicDebug $ getPir $ compiledPolicyFalse
+-- KPLC
 
 policy :: Scripts.MintingPolicy
-policy = mkMintingPolicyScript $$(PlutusTx.compile [|| Scripts.wrapMintingPolicy mkPolicyTrue ||])
+policy = mkMintingPolicyScript $$(PlutusTx.compile
+  [|| Scripts.wrapMintingPolicy mkPolicyTrue ||])
 
 curSymbol :: CurrencySymbol
 curSymbol = scriptCurrencySymbol policy

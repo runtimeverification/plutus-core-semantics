@@ -1,6 +1,7 @@
-{-# LANGUAGE TypeApplications   #-}
-{-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE TypeApplications  #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Spec.NFT where
 
