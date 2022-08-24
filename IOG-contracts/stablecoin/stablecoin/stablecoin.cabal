@@ -1,8 +1,8 @@
 cabal-version:   2.0
-name:            native-tokens
+name:            stablecoin
 version:         0.1.0.0
-license:         Apache-2.0
-license-file:    LICENSE NOTICE
+license:         
+license-file:    
 maintainer:      
 author:          
 stability:       experimental
@@ -29,12 +29,9 @@ flag defer-plugin-errors
 
 library
   exposed-modules:
---    Contracts
-    Contracts.Free
-    Contracts.NFT
+    Contracts.Stablecoin
 
-  hs-source-dirs:
-              src
+  hs-source-dirs:     src
   default-language:   Haskell2010
   default-extensions:
     DeriveFoldable
@@ -48,7 +45,8 @@ library
     MultiParamTypeClasses
     ScopedTypeVariables
     StandaloneDeriving
-
+    TypeApplications
+    
   -- See Plutus Tx readme for why we need the following flags:
   -- -fobject-code -fno-ignore-interface-pragmas and -fno-omit-interface-pragmas
   ghc-options:
@@ -61,13 +59,15 @@ library
   -- Local components
   --------------------
   build-depends:
-      playground-common
-    , plutus-chain-index-core
-    , plutus-contract
+--      playground-common
+--  ,
+--      plutus-chain-index-core
+--    ,
+    plutus-contract
     , plutus-core
     , plutus-ledger
     , plutus-ledger-constraints
- --   , plutus-script-utils
+    , plutus-script-utils
 
   --------------------------
   -- Other IOG dependencies
@@ -83,55 +83,33 @@ library
   build-depends:
       aeson
     , base
-    , bytestring
+--    , bytestring
     , containers
-    , freer-simple
-    , hashable
+--    , freer-simple
+--    , hashable
     , lens
-    , openapi3
-    , prettyprinter
-    , semigroups
-    , streaming
+--    , openapi3
+--    , prettyprinter
+--    , semigroups
+--    , streaming
     , template-haskell
     , text
+--    , tasty >=1.4.2
 
   if flag(defer-plugin-errors)
     ghc-options: -fplugin-opt PlutusTx.Plugin:defer-errors
 
 
-  ------------------------
-  -- Non-IOG dependencies
-  ------------------------
-  build-depends:
-      base              >=4.9     && <5
-    , bytestring
-    , containers
-    , data-default
-    , foldl
-    , freer-simple
-    , lens
-    , mtl
-    , prettyprinter
-    , QuickCheck
-    , streaming
-    , tasty
-    , tasty-golden
-    , tasty-hedgehog    >=0.2.0.0
-    , tasty-hunit
-    , tasty-quickcheck
-    , text
-
 -- runs emulator traces from plutus-use-cases-tests and
 -- writes all applied validator scripts to a folder
-executable native-tokens-scripts
+executable stablecoin-scripts
   main-is:            Main.hs
   hs-source-dirs:     test
   default-language:   Haskell2010
-  default-extensions: ImportQualifiedPost
+  default-extensions: ImportQualifiedPost 
   other-modules:
-    Spec.Free
-    Spec.NFT
-
+    Spec.Stablecoin
+    
   -- See Plutus Tx readme for why we need the following flags:
   -- -fobject-code -fno-ignore-interface-pragmas and -fno-omit-interface-pragmas
   ghc-options:
@@ -139,6 +117,8 @@ executable native-tokens-scripts
     -Wincomplete-record-updates -Wredundant-constraints -Widentities
     -rtsopts -fobject-code -fno-ignore-interface-pragmas
     -fno-omit-interface-pragmas
+    -fplugin-opt PlutusTx.Plugin:no-simplifier-inline
+    -fplugin-opt PlutusTx.Plugin:no-simplifier-beta
 
   --------------------
   -- Local components
@@ -146,13 +126,12 @@ executable native-tokens-scripts
   build-depends:
       freer-extras
     , plutus-contract
- --   , plutus-contract-certification
+    , plutus-contract-certification
     , plutus-ledger
     , plutus-ledger-constraints
-    , native-tokens
---    , plutus-script-utils
- --   , plutus-use-cases
-
+    , plutus-script-utils
+    , plutus-use-cases
+    , stablecoin                
   --------------------------
   -- Other IOG dependencies
   --------------------------
@@ -160,6 +139,7 @@ executable native-tokens-scripts
       cardano-api
     , plutus-ledger-api
     , plutus-tx
+    , plutus-core
 
   if !(impl(ghcjs) || os(ghcjs))
     build-depends: plutus-tx-plugin
@@ -177,11 +157,12 @@ executable native-tokens-scripts
     , lens
     , mtl
     , optparse-applicative
-    , prettyprinter
+--    , prettyprinter
     , QuickCheck
-    , streaming
+--    , streaming
     , tasty
     , tasty-golden
     , tasty-hunit
     , tasty-quickcheck
     , text
+    , filepath
