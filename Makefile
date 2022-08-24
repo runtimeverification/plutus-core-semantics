@@ -275,6 +275,13 @@ endif
 build-llvm-profiling: KOMPILE_OPTS += -O3 -ccopt -fno-omit-frame-pointer
 build-llvm-profiling: $(KPLUTUS_LIB)/$(llvm_kompiled)
 
+bison_version    := $(shell eval "bison --version | head -n1 | sed 's/bison (GNU Bison) //g'")
+smallest_version := $(shell echo "$(bison_version)\n3.7.4" | sort -V | head -n1)
+
+ifeq ($(smallest_version), 3.7.4)
+	LLVM_KOMPILE_OPTS+=--gen-bison-parser
+endif 
+
 $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(libff_out) $(KPLUTUS_BIN)/kplc
 	$(KOMPILE) --backend llvm                 \
 	    $(llvm_main_file)                     \
