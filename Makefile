@@ -230,6 +230,9 @@ kplutus_files := uplc.md \
                  uplc-syntax.md \
                  uplc-bytestring.md \
                  uplc-environment.md \
+                 uplc-genvironment.md \
+                 uplc-genvironment-instance.md \
+                 uplc-rw-helpers.md \
                  uplc-string-builtins.md \
                  uplc-configuration.md \
                  uplc-flat-parser.md \
@@ -403,7 +406,8 @@ KPROVE_OPTS :=
 unit_tests := $(wildcard unit-tests/*.md)
 test-unit-tests: $(unit_tests:=.prove)
 
-prove_tests := $(wildcard simple-proofs/[!verification]*.md)
+prove_tests := $(wildcard simple-proofs/*.md)
+prove_tests := $(filter-out simple-proofs/verification.md, $(prove_tests))
 
 test-prove: $(prove_tests:=.prove)
 
