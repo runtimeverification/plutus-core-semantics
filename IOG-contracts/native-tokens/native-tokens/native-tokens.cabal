@@ -57,6 +57,8 @@ library
     -Wincomplete-uni-patterns -Wincomplete-record-updates
     -Wredundant-constraints -Widentities -fobject-code
     -fno-ignore-interface-pragmas -fno-omit-interface-pragmas
+    -fplugin-opt PlutusTx.Plugin:no-simplifier-inline
+    -fplugin-opt PlutusTx.Plugin:no-simplifier-beta
 
   --------------------
   -- Local components
@@ -140,8 +142,6 @@ executable native-tokens-scripts
     -Wincomplete-record-updates -Wredundant-constraints -Widentities
     -rtsopts -fobject-code -fno-ignore-interface-pragmas
     -fno-omit-interface-pragmas
-    -fplugin-opt PlutusTx.Plugin:no-simplifier-inline
-    -fplugin-opt PlutusTx.Plugin:no-simplifier-beta
 
   --------------------
   -- Local components
