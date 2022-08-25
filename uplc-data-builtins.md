@@ -16,11 +16,11 @@ module UPLC-DATA-BUILTINS
   rule #mkDataPairList( ( ( {T1:TextualData}, {T2:TextualData} ), L:ConstantList ) ) =>
        ((T1, T2) , #mkDataPairList(L))
 
-  syntax ConstantList ::= #mkConstantList(DataList) [function]
+  syntax ConstantList ::= #mkConstantList(DataList) [function, functional]
   rule #mkConstantList(.DataList) => .ConstantList
   rule #mkConstantList( (T:TextualData, L:DataList) ) => ({ T }, #mkConstantList(L))
 
-  syntax ConstantList ::= #mkConstantListFromDataPairList(DataPairList) [function]
+  syntax ConstantList ::= #mkConstantListFromDataPairList(DataPairList) [function, functional]
   rule #mkConstantListFromDataPairList(.DataPairList) => .ConstantList
   rule #mkConstantListFromDataPairList(
          ( (T1:TextualData, T2:TextualData), L:DataPairList ) ) =>
@@ -217,7 +217,7 @@ module UPLC-DATA-BUILTINS
 
 ```k
   rule #expectedArguments(mkNilPairData) => ListItem(unit)
-  
+
   rule <k> #eval(mkNilPairData,
                  ListItem(< con unit () >)) =>
            (con list(pair (data) (data)) [ .ConstantList ]) ... </k>
