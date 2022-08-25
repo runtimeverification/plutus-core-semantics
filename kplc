@@ -80,8 +80,12 @@ run_kompile() {
 }
 
 run_interpreter() {
-    notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"                        \
-        | (${result_only} && ( tr '\n' ' ' | sed "s/.*<k>\(.*\)~> \. .*/\1/g" ) || cat - )
+    if [[ ${debugger} ]]; then
+        notif_exec krun --directory "${backend_dir}" "${run_file}" --debugger "$@"
+    else
+        notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"                        \
+            | (${result_only} && ( tr '\n' ' ' | sed "s/.*<k>\(.*\)~> \. .*/\1/g" ) || cat - )
+    fi
 }
 
 run_prove() {
