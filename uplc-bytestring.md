@@ -130,16 +130,15 @@ module UPLC-BYTESTRING
        hexString2Int(getHexStringFromHexList(mkHexStringList(trimByteString(B)), I))
 
   syntax Bool ::= #equalsByteString(ByteString, ByteString) [function]
-  rule #equalsByteString(B1, B2) =>
-       hexString2Int(trimByteString(B1)) ==Int hexString2Int(trimByteString(B2))
+  rule #equalsByteString(B1, B2) => B1 ==K B2
 
   syntax Bool ::= #lessThanByteString(ByteString, ByteString) [function]
-  rule #lessThanByteString(B1, B2) =>
-       hexString2Int(trimByteString(B1)) <Int hexString2Int(trimByteString(B2))
+  rule #lessThanByteString(B1, B2) => #lessThanEqualsByteString(B1, B2) andBool notBool #equalsByteString(B1, B2)
 
   syntax Bool ::= #lessThanEqualsByteString(ByteString, ByteString) [function]
+  rule #lessThanEqualsByteString(#token("#","ByteString"), _) => true
   rule #lessThanEqualsByteString(B1, B2) =>
-       hexString2Int(trimByteString(B1)) <=Int hexString2Int(trimByteString(B2))
+       #lengthOfByteString(B2) >Int 0 andBool hexString2Int(trimByteString(B1)) <=Int hexString2Int(trimByteString(B2)) [owise]
 endmodule
 ```
 
