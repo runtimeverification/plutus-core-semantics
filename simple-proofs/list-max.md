@@ -25,7 +25,8 @@ function is as follows:
 This claim states that the execution of the list-max function with
 an arbitrary list of integers `X, XS` passed in as parameter and starting
 from an arbitrary environment terminates, returning the max of all of
-the elements of `X, XS` (via the auxiliary function `#maxList(X, XS)`)
+the elements of `X, XS` (via the auxiliary function
+[`#maxList(X, XS)`](verification.md#maxx-y-and-maxlistxs-calculating-the-max-element-of-a-given-list-xs))
 and an empty environment. Observe that we have to place an additional condition
 which states that all of the elements of `XS` are indeed integers
 (via the auxiliary function
