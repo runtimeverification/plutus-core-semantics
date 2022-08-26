@@ -268,7 +268,7 @@ ifneq ($(RELEASE),)
     KOMPILE_OPTS += -O3
     LLVM_KOMPILE_OPTS += -ccopt -O3
 else
-    LLVM_KOMPILE_OPTS += -ccopt -g
+    LLVM_KOMPILE_OPTS += -ccopt -g -ccopt -O1
 endif
 
 ifndef NOBUILD_CRYPTOPP
