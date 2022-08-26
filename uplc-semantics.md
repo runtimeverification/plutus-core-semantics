@@ -3,16 +3,26 @@
 ```k
 require "uplc-builtins.md"
 require "uplc-discharge.md"
-require "uplc-genvironment-instance.md"
+```
 
+```symbolic
+require "uplc-genvironment-instance.md"
+```
+
+```k
 module UPLC-SEMANTICS
   imports INT
   imports MAP
   imports SET
   imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
-  imports UPLC-GENVIRONMENT-INSTANCE
+```
 
+```symbolic
+  imports UPLC-GENVIRONMENT-INSTANCE
+```
+
+```k
   syntax Bindable ::= Value
 
   syntax FinalState ::= "[]" Term
@@ -22,8 +32,17 @@ module UPLC-SEMANTICS
 
 ```k
   syntax Set ::= #FV(Term) [function, functional, memo]
+```
 
+```concrete
+  rule #FV( X:UplcId ) => SetItem(X)
+```
+
+```symbolic
   rule #FV( X:UplcId ) => SetItem(X) requires notBool(#inKeysgEnv(X))
+```
+
+```k
   rule #FV( [ T TL ] ) => #FV(T) |Set #FVL(TL)
   rule #FV( (lam X:UplcId T) ) => #FV(T) -Set SetItem(X)
   rule #FV( (delay T) ) => #FV(T)
@@ -64,7 +83,19 @@ module UPLC-SEMANTICS
 
 ```k
   rule <k> (program _V M) => M </k>
+```
 
+```concrete
+  rule <k> X:UplcId => #lookup(RHO, X) ... </k>
+       <env> RHO </env>
+  requires X in_keys(RHO)
+
+  rule <k> X:UplcId => (error) ... </k>
+       <env> RHO </env>
+  requires notBool(X in_keys(RHO))
+```
+
+```symbolic
   rule <k> X:UplcId => gLookup(X) ... </k>
        <env> _ => .Map </env>
   requires #inKeysgEnv(X)
@@ -78,7 +109,9 @@ module UPLC-SEMANTICS
        <env> RHO </env>
   requires notBool(#inKeysgEnv(X))
    andBool notBool(X in_keys(RHO))
+```
 
+```k
   rule <k> (con T:TypeConstant C:Constant) => < con T:TypeConstant C:Constant > ... </k>
        <env> _ => .Map </env>
 
