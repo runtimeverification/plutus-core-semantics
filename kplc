@@ -80,7 +80,7 @@ run_kompile() {
 }
 
 run_interpreter() {
-    if [[ ${debugger} ]]; then
+    if ${debugger}; then
         notif_exec krun --directory "${backend_dir}" "${run_file}" --debugger "$@"
     else
         notif_exec krun --directory "${backend_dir}" "${run_file}" "$@"                        \
