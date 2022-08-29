@@ -297,6 +297,41 @@ We also implement a tail-recursive version of list-length, as follows:
   )
 ```
 
+### List-max
+
+```k
+  syntax Term ::= "LIST_MAX" [alias]
+  rule LIST_MAX => (lam lst_0 [ LIST_MAX_TAIL_REC [ (force (builtin headList)) lst_0 ] [ (force (builtin tailList)) lst_0 ] ])
+
+  syntax Term ::= "LIST_MAX_TAIL_REC" [alias]
+  rule LIST_MAX_TAIL_REC => [ REC LIST_MAX_TAIL ]
+
+  syntax Term ::= "LIST_MAX_TAIL" [alias]
+  rule LIST_MAX_TAIL => (lam f_lstMaxTail LIST_MAX_TAIL_BODY)
+
+  syntax Term ::= "LIST_MAX_TAIL_BODY" [alias]
+  rule LIST_MAX_TAIL_BODY => (lam ac_0 (lam rest_0 LIST_MAX_TAIL_LOOP))
+
+  syntax Term ::= "LIST_MAX_TAIL_LOOP" [alias]
+  rule LIST_MAX_TAIL_LOOP =>
+  (force
+    [ (force (force (builtin chooseList)))
+      rest_0
+      ( delay ac_0 )
+      ( delay
+          [ f_lstMaxTail
+              [ ( force ( builtin ifThenElse ) )
+                [ ( builtin lessThanInteger ) ac_0 [ ( force ( builtin headList ) ) rest_0 ] ]
+                [ ( force ( builtin headList ) ) rest_0 ]
+                ac_0
+              ]
+              [ (force (builtin tailList)) rest_0 ]
+          ]
+      )
+    ]
+  )
+```
+
 ### List-longer
 
 Finally, to demonstrate what invariants look like for functions with multiple parameters,
@@ -404,6 +439,28 @@ module AUXILIARIES
 
   rule length(     .ConstantList ) => 0
   rule length(_, XS:ConstantList ) => 1 +Int length(XS)
+```
+
+### `#max(X, Y)` and `#maxList(XS)`: calculating the max element of a given list `XS`
+
+```k
+  syntax Int ::= #max( Int, Int ) [function, functional]
+  rule #max( X, Y ) => X requires notBool X <Int Y
+  rule #max( X, Y ) => Y requires         X <Int Y
+
+  syntax Int ::= #maxList(ConstantList) [function]
+  rule #maxList(X:Int, .ConstantList)   => X
+  rule #maxList(X:Int, XS:ConstantList) => #max( X, #maxList( XS ) )
+    requires notBool XS ==K .ConstantList
+
+  rule #Ceil( #maxList( XS ) )
+    => { true #Equals allInts(XS) } #And #Not ( { XS #Equals .ConstantList } ) [simplification]
+
+  rule { #max( Y, #maxList( X, XS ) ) #Equals #maxList( X, XS ) } => #Top
+    requires         Y <Int X [simplification]
+
+  rule { #max( Y, #maxList( X, XS ) ) #Equals #maxList( Y, XS ) } => #Top
+    requires notBool Y <Int X [simplification]
 ```
 
 ### `longerList(XS, YS)`: capturing that the list `XS` is longer than the list `YS`
