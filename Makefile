@@ -119,7 +119,7 @@ export PLUGIN_SUBMODULE
         conformance-test update-results    \
         test-prove test-unit-tests         \
         fresh-test-coverage                \
-        venv venv-clean
+        venv venv-clean kplutus-pyk
 
 .SECONDARY:
 
@@ -322,11 +322,24 @@ coverage:
 # kplutus_pyk
 # -----------
 
-venv-clean:
-	$(MAKE) -C ./kplutus_pyk clean
+KPLUTUS_PYK_DIR := ./kplutus-pyk
+VENV_DIR        := $(BUILD_DIR)/venv
+VENV_ACTIVATE   := . $(VENV_DIR)/bin/activate
 
-venv:
-	$(MAKE) -C ./kplutus_pyk
+$(VENV_DIR)/pyvenv.cfg:
+	   virtualenv $(VENV_DIR)              \
+	&& pip install --editable ./deps/k/pyk \
+	&& pip install --editable $(KPLUTUS_PYK_DIR)
+
+venv: $(VENV_DIR)/pyvenv.cfg
+	@echo $(VENV_ACTIVATE)
+
+venv-clean:
+	rm -rf $(VENV_DIR)
+
+kplutus-pyk:
+	$(MAKE) -C $(KPLUTUS_PYK_DIR)
+
 
 # Installing
 # ----------

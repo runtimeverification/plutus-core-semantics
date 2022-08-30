@@ -14,7 +14,7 @@ def main():
         assert False
 
 def create_parser():
-    parser = argparse.ArgumentParser(prog='python3 -m kplutus_pyk')
+    parser = argparse.ArgumentParser()
 
     command_parser = parser.add_subparsers(dest='command', required=True)
 
