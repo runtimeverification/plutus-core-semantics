@@ -7,8 +7,8 @@ from pyk.cli_utils import run_process
 
 # KPlutus class
 
-class KPlutus():
 
+class KPlutus:
     @staticmethod
     def kompile(main_file: Path, args: List[str] = None) -> None:
         if args == None:
