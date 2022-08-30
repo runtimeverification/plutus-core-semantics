@@ -12,7 +12,7 @@ def main():
     if args.command == 'kompile':
         KPlutus.kompile(args.main_file, remainder)
     else:
-        assert False
+        raise AssertionError()
 
 
 def create_parser():

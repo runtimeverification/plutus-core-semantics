@@ -1,20 +1,15 @@
 import sys
 from pathlib import Path
 from subprocess import CalledProcessError
-from typing import List
+from typing import Iterable
 
 from pyk.cli_utils import run_process
-
-# KPlutus class
 
 
 class KPlutus:
     @staticmethod
-    def kompile(main_file: Path, args: List[str] = None) -> None:
-        if args == None:
-            args = []
-
-        command = ['kompile', str(main_file)] + args
+    def kompile(main_file: Path, args: Iterable[str] = ()) -> None:
+        command = ['kompile', str(main_file)] + list(args)
         try:
             run_process(command)
         except CalledProcessError as err:
