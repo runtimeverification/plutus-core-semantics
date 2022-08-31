@@ -36,7 +36,7 @@ export K_OPTS="${K_OPTS:--Xmx16G -Xss512m}"
 # -------
 
 run_kplutus_pyk() {
-    notif_exec python3 -m kplutus_pyk "$@"
+    notif_exec kplutus-pyk "$@"
 }
 
 run_kompile() {

@@ -20,14 +20,15 @@ pipeline {
         }
       }
       stages {
-        stage('Build') { steps { sh 'make build -j4' } }
+        stage('Build')            { steps { sh 'make build -j4'   } }
+        stage('Test kplutus-pyk') { steps { sh 'make kplutus-pyk' } }
         stage('Test') {
           failFast true
           options { timeout(time: 20, unit: 'MINUTES') }
           parallel {
             stage('proof tests')                   { steps { sh 'make test-prove -j4 --output-sync=recurse'                         } }
             stage('functional unit tests')         { steps { sh 'make test-unit-tests -j4 --output-sync=recurse'                    } }
-            stage('Simple')                        { steps { sh 'make test-simple -j4 --output-sync=recurse'                        } }
+            stage('simple')                        { steps { sh 'make test-simple -j4 --output-sync=recurse'                        } }
             stage('uplc-examples')                 { steps { sh 'make test-uplc-examples -j4 --output-sync=recurse'                 } }
             stage('benchmark-validation-examples') { steps { sh 'make test-benchmark-validation-examples -j4 --output-sync=recurse' } }
             stage('nofib-exe-examples')            { steps { sh 'make test-nofib-exe-examples -j4 --output-sync=recurse'            } }
