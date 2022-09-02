@@ -1,0 +1,1 @@
+(delay  (lam    case_Nil_532    (lam case_Cons_533 [ [ case_Cons_533 (con integer 1) ] (con integer 2) ])  ))
