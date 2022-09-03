@@ -45,12 +45,13 @@ module UPLC-DISCHARGE
 
   rule dischargeTerm((lam X:UplcId T:Term), RHO:Map) => (lam X dischargeTerm(T, RHO))
 
-  rule dischargeTerm([ T1:Term (T2:Term TL:TermList) ], RHO:Map) =>
-       dischargeTermApp(TL, [dischargeTerm(T1, RHO) dischargeTerm(T2, RHO) ], RHO)
+  rule dischargeTerm([ T1:Term TL:TermList ], RHO:Map) =>
+       dischargeTermApp(TL, dischargeTerm(T1, RHO), RHO)
 
   rule dischargeTermApp(T1:Term TL:TermList, T2:Term, RHO:Map) =>
-  
-       dischargeTermApp(TL, [T2 dischargeTerm(T1, RHO)], RHO)
+       dischargeTermApp(TL, [ T2 dischargeTerm(T1, RHO) ], RHO)
+
+  rule dischargeTermApp(T1:Term, T2:Term, RHO:Map) => [ T2 dischargeTerm(T1, RHO) ]
 
   rule dischargeTerm((delay T:Term), RHO:Map) => (delay dischargeTerm(T, RHO))
 
