@@ -16,7 +16,7 @@ module UPLC-DISCHARGE
   
   rule discharge(< con T:TypeConstant C:Constant >) => (con T C)  
 
-  rule discharge(< lam I:UplcId T:Term RHO:Map >) => (lam I dischargeTerm(T, RHO)) 
+  rule discharge(< lam I:UplcId T:Term RHO:Map >) => (lam I dischargeTerm(T, RHO[I <- undef]))
 
   rule discharge(< delay T:Term RHO:Map >) => (delay dischargeTerm(T, RHO)) 
 
@@ -43,7 +43,8 @@ module UPLC-DISCHARGE
 
   rule dischargeTerm((builtin BN:BuiltinName), _) => (builtin BN)
 
-  rule dischargeTerm((lam X:UplcId T:Term), RHO:Map) => (lam X dischargeTerm(T, RHO))
+  rule dischargeTerm((lam X:UplcId T:Term), RHO:Map) =>
+       (lam X dischargeTerm(T, RHO[X <- undef]))
 
   rule dischargeTerm([ T1:Term TL:TermList ], RHO:Map) =>
        dischargeTermApp(TL, dischargeTerm(T1, RHO), RHO)
