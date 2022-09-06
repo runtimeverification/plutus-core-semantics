@@ -283,7 +283,7 @@ ifeq (, $(shell which bison))
   smallest_version :=
 else
   bison_version    := $(shell eval "bison --version | head -n1 | sed 's/bison (GNU Bison) //g'")
-  smallest_version := $(shell echo -e "$(bison_version)\n3.7.4" | sort -V | head -n1)
+  smallest_version := $(shell echo "$(bison_version)3.7.4" | sort -V | head -n1)
 endif
 
 
