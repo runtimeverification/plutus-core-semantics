@@ -327,8 +327,7 @@ VENV_DIR        := $(BUILD_DIR)/venv
 VENV_ACTIVATE   := . $(VENV_DIR)/bin/activate
 
 $(VENV_DIR)/pyvenv.cfg:
-	   virtualenv $(VENV_DIR)              \
-	&& pip install --editable ./deps/k/pyk \
+	   virtualenv $(VENV_DIR) \
 	&& pip install --editable $(KPLUTUS_PYK_DIR)
 
 venv: $(VENV_DIR)/pyvenv.cfg
