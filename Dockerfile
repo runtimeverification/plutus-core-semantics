@@ -4,10 +4,17 @@ FROM runtimeverificationinc/kframework-k:ubuntu-focal-${K_COMMIT}
 RUN    apt-get update            \
     && apt-get upgrade --yes     \
     && apt-get install --yes     \
+            autoconf             \
+            automake             \
+            autopoint            \
             cmake                \
             curl                 \
             debhelper            \
             default-jdk-headless \
+            flex                 \
+            graphviz             \
+            gperf                \
+            help2man             \
             libcrypto++-dev      \
             libprocps-dev        \
             libsecp256k1-dev     \
@@ -16,9 +23,11 @@ RUN    apt-get update            \
             maven                \
             pkg-config           \
             python3              \
-            zlib1g-dev           \
+            texinfo              \
+            valgrind             \
             wget                 \
-            xxd
+            xxd                  \
+            zlib1g-dev
 
 RUN    git clone 'https://github.com/z3prover/z3' --branch=z3-4.8.11 \
     && cd z3                                                         \
