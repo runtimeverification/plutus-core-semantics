@@ -17,6 +17,7 @@ RUN    apt-get update            \
             pkg-config           \
             python3              \
             zlib1g-dev           \
+            wget                 \
             xxd
 
 RUN    git clone 'https://github.com/z3prover/z3' --branch=z3-4.8.11 \
