@@ -4,7 +4,6 @@ FROM runtimeverificationinc/kframework-k:ubuntu-focal-${K_COMMIT}
 RUN    apt-get update            \
     && apt-get upgrade --yes     \
     && apt-get install --yes     \
-            bison                \
             cmake                \
             curl                 \
             debhelper            \
@@ -28,6 +27,16 @@ RUN    git clone 'https://github.com/z3prover/z3' --branch=z3-4.8.11 \
     && make install                                                  \
     && cd ../..                                                      \
     && rm -rf z3
+
+RUN    git clone https://git.savannah.gnu.org/git/bison.git --branch=v3.7.4 \
+    && cd bison                                                             \
+    && git submodule update --init                                          \
+    && ./bootstrap                                                          \
+    && ./configure                                                          \
+    && make -j8                                                             \
+    && make install                                                         \
+    && cd ../                                                               \
+    && rm -rf bison
 
 RUN curl -sSL https://get.haskellstack.org/ | sh
 
