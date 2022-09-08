@@ -38,7 +38,8 @@ RUN    git clone 'https://github.com/z3prover/z3' --branch=z3-4.8.11 \
     && cd ../..                                                      \
     && rm -rf z3
 
-RUN    git clone https://git.savannah.gnu.org/git/bison.git --branch=v3.7.4 \
+RUN apt remove --yes bison \
+    && git clone https://git.savannah.gnu.org/git/bison.git --branch=v3.7.4 \
     && cd bison                                                             \
     && git submodule update --init                                          \
     && ./bootstrap                                                          \
