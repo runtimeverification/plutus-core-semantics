@@ -38,8 +38,7 @@ RUN    git clone 'https://github.com/z3prover/z3' --branch=z3-4.8.11 \
     && cd ../..                                                      \
     && rm -rf z3
 
-RUN apt remove --yes bison \
-    && git clone https://git.savannah.gnu.org/git/bison.git --branch=v3.7.4 \
+RUN    git clone https://git.savannah.gnu.org/git/bison.git --branch=v3.7.4 \
     && cd bison                                                             \
     && git submodule update --init                                          \
     && ./bootstrap                                                          \
@@ -64,6 +63,7 @@ RUN curl -L https://github.com/github/hub/releases/download/v2.14.0/hub-linux-am
 RUN cd /home/user && tar xzf hub.tgz
 
 ENV PATH=/home/user/hub-linux-amd64-2.14.0/bin:$PATH
+ENV PATH=/usr/local/bin:$PATH
 
 RUN    git config --global user.email 'admin@runtimeverification.com' \
     && git config --global user.name  'RV Jenkins'                    \
