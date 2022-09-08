@@ -278,13 +278,8 @@ endif
 build-llvm-profiling: KOMPILE_OPTS += -O3 -ccopt -fno-omit-frame-pointer
 build-llvm-profiling: $(KPLUTUS_LIB)/$(llvm_kompiled)
 
-# get the bison version number if bison is installed
-ifeq (, $(shell which bison))
-  smallest_version :=
-else
-  bison_version    := $(shell eval "bison --version | head -n1 | sed 's/bison (GNU Bison) //g'")
-  smallest_version := $(shell echo -e "$(bison_version)\n3.7.4" | sort -V | head -n1)
-endif
+bison_version    := $(shell eval "bison --version | head -n1 | sed 's/bison (GNU Bison) //g'")
+smallest_version := $(shell echo -e "$(bison_version)\n3.7.4" | sort -V | head -n1)
 
 
 ifeq ($(smallest_version), 3.7.4)
