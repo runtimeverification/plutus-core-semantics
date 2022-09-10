@@ -118,6 +118,7 @@ export PLUGIN_SUBMODULE
         test-nofib-exe-examples            \
         conformance-test update-results    \
         test-prove test-unit-tests         \
+        test-uplc-to-k                     \
         fresh-test-coverage                \
         venv venv-clean kplutus-pyk
 
@@ -327,7 +328,8 @@ VENV_DIR        := $(BUILD_DIR)/venv
 VENV_ACTIVATE   := . $(VENV_DIR)/bin/activate
 
 $(VENV_DIR)/pyvenv.cfg:
-	   virtualenv $(VENV_DIR) \
+	   virtualenv $(VENV_DIR)              \
+	&& $(VENV_ACTIVATE)                    \
 	&& pip install --editable $(KPLUTUS_PYK_DIR)
 
 venv: $(VENV_DIR)/pyvenv.cfg
@@ -421,7 +423,10 @@ test-unit-tests: $(unit_tests:=.prove)
 prove_tests := $(wildcard simple-proofs/*.md)
 prove_tests := $(filter-out simple-proofs/verification.md, $(prove_tests))
 
+uplc_to_k_tests := $(wildcard simple-proofs/uplc-to-k/*.uplc)
+
 test-prove: $(prove_tests:=.prove)
+test-uplc-to-k: $(uplc_to_k_tests:=.prove)
 
 unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verification-kompiled/timestamp
 	$(KPLUTUS) prove --directory unit-tests/verification/haskell $< $(KPROVE_OPTS)
@@ -435,6 +440,13 @@ simple-proofs/%.md.prove: simple-proofs/%.md simple-proofs/verification/haskell/
 simple-proofs/verification/haskell/verification-kompiled/timestamp: simple-proofs/verification.md $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory simple-proofs/verification/haskell
 
+simple-proofs/uplc-to-k/%.uplc.prove: KPROVE_OPTS += -I simple-proofs
+simple-proofs/uplc-to-k/%.uplc.prove: simple-proofs/uplc-to-k/%.k simple-proofs/verification/haskell/verification-kompiled/timestamp
+	$(KPLUTUS) prove --directory simple-proofs/verification/haskell $< $(KPROVE_OPTS)
+
+simple-proofs/uplc-to-k/%.k: simple-proofs/uplc-to-k/%.uplc $(VENV_DIR)/pyvenv.cfg simple-proofs/verification/haskell/verification-kompiled/timestamp
+	. .build/venv/bin/activate \
+	    && $(KPLUTUS) uplc-to-k --directory simple-proofs/verification/haskell/verification-kompiled $< > $@
 
 # Testing
 # -------
