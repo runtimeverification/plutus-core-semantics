@@ -441,10 +441,10 @@ simple-proofs/verification/haskell/verification-kompiled/timestamp: simple-proof
 	$(KOMPILE) --backend haskell $< --directory simple-proofs/verification/haskell
 
 simple-proofs/uplc-to-k/%.uplc.prove: KPROVE_OPTS += -I simple-proofs
-simple-proofs/uplc-to-k/%.uplc.prove: simple-proofs/uplc-to-k/%.k simple-proofs/verification/haskell/verification-kompiled/timestamp
+simple-proofs/uplc-to-k/%.uplc.prove: simple-proofs/uplc-to-k/%-spec.k simple-proofs/verification/haskell/verification-kompiled/timestamp
 	$(KPLUTUS) prove --directory simple-proofs/verification/haskell $< $(KPROVE_OPTS)
 
-simple-proofs/uplc-to-k/%.k: simple-proofs/uplc-to-k/%.uplc $(VENV_DIR)/pyvenv.cfg simple-proofs/verification/haskell/verification-kompiled/timestamp
+simple-proofs/uplc-to-k/%-spec.k: simple-proofs/uplc-to-k/%.uplc $(VENV_DIR)/pyvenv.cfg simple-proofs/verification/haskell/verification-kompiled/timestamp
 	. .build/venv/bin/activate \
 	    && $(KPLUTUS) uplc-to-k --directory simple-proofs/verification/haskell/verification-kompiled $< > $@
 

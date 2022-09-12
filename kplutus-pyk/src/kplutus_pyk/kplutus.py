@@ -53,9 +53,9 @@ class KPlutus:
 
         module_name = main_file.stem.upper()
         claim, _ = build_claim(module_name.lower(), init_cterm, final_cterm)
-        claim_module = KFlatModule(module_name, [claim], [KImport('VERIFICATION')])
+        claim_module = KFlatModule(module_name + '-SPEC', [claim], [KImport('VERIFICATION')])
 
-        spec_definition = KDefinition(module_name, [claim_module], [KRequire('verification.md')])
+        spec_definition = KDefinition(module_name + '-SPEC', [claim_module], [KRequire('verification.md')])
 
         p = KPrint(definition_dir)
         print(p.pretty_print(spec_definition))
