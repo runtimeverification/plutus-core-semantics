@@ -8,6 +8,13 @@ Dependencies
 -   Update submodules: `git submodule update --init --recursive`
 -   Make dependencies: `make deps RELEASE=true`
 
+### Ubuntu
+
+```
+sudo apt-get install build-essential m4 openjdk-11-jdk libgmp-dev libmpfr-dev pkg-config flex bison z3 libsecp256k1-dev libz3-dev maven python3 python3-pip cmake gcc clang-10 lld-10 llvm-10-tools zlib1g-dev libboost-test-dev libyaml-dev libjemalloc-dev libsecp256k1-dev libssl-dev xxd
+pip install virtualenv poetry
+```
+
 Building
 --------
 
