@@ -118,6 +118,7 @@ export PLUGIN_SUBMODULE
         test-nofib-exe-examples            \
         conformance-test update-results    \
         test-prove test-unit-tests         \
+        test-uplc-to-k                     \
         fresh-test-coverage                \
         venv venv-clean kplutus-pyk
 
@@ -279,7 +280,7 @@ build-llvm-profiling: KOMPILE_OPTS += -O3 -ccopt -fno-omit-frame-pointer
 build-llvm-profiling: $(KPLUTUS_LIB)/$(llvm_kompiled)
 
 bison_version    := $(shell eval "bison --version | head -n1 | sed 's/bison (GNU Bison) //g'")
-smallest_version := $(shell echo "$(bison_version)\n3.7.4" | sort -V | head -n1)
+smallest_version := $(shell printf "$(bison_version)\n3.7.4" | sort -V | head -n1)
 
 ifeq ($(smallest_version), 3.7.4)
 	LLVM_KOMPILE_OPTS+=--gen-bison-parser
@@ -328,7 +329,7 @@ VENV_ACTIVATE   := . $(VENV_DIR)/bin/activate
 
 $(VENV_DIR)/pyvenv.cfg:
 	   virtualenv $(VENV_DIR)              \
-	&& pip install --editable ./deps/k/pyk \
+	&& $(VENV_ACTIVATE)                    \
 	&& pip install --editable $(KPLUTUS_PYK_DIR)
 
 venv: $(VENV_DIR)/pyvenv.cfg
@@ -422,7 +423,10 @@ test-unit-tests: $(unit_tests:=.prove)
 prove_tests := $(wildcard simple-proofs/*.md)
 prove_tests := $(filter-out simple-proofs/verification.md, $(prove_tests))
 
+uplc_to_k_tests := $(wildcard simple-proofs/uplc-to-k/*.uplc)
+
 test-prove: $(prove_tests:=.prove)
+test-uplc-to-k: $(uplc_to_k_tests:=.prove)
 
 unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verification-kompiled/timestamp
 	$(KPLUTUS) prove --directory unit-tests/verification/haskell $< $(KPROVE_OPTS)
@@ -436,6 +440,13 @@ simple-proofs/%.md.prove: simple-proofs/%.md simple-proofs/verification/haskell/
 simple-proofs/verification/haskell/verification-kompiled/timestamp: simple-proofs/verification.md $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory simple-proofs/verification/haskell
 
+simple-proofs/uplc-to-k/%.uplc.prove: KPROVE_OPTS += -I simple-proofs
+simple-proofs/uplc-to-k/%.uplc.prove: simple-proofs/uplc-to-k/%-spec.k simple-proofs/verification/haskell/verification-kompiled/timestamp
+	$(KPLUTUS) prove --directory simple-proofs/verification/haskell $< $(KPROVE_OPTS)
+
+simple-proofs/uplc-to-k/%-spec.k: simple-proofs/uplc-to-k/%.uplc $(VENV_DIR)/pyvenv.cfg simple-proofs/verification/haskell/verification-kompiled/timestamp
+	. .build/venv/bin/activate \
+	    && $(KPLUTUS) uplc-to-k --directory simple-proofs/verification/haskell/verification-kompiled $< > $@
 
 # Testing
 # -------
