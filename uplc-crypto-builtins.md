@@ -98,19 +98,19 @@ The same steps of `sha3_256` are taken to produce the proper string argument for
            < con bytestring unTrimByteString(Blake2b256Wrapper(encode(B))) > ... </k>
 ```
 
-## `verifySignature`
+## `verifyEd25519Signature`
 
 ```k
-  rule #expectedArguments(verifySignature) => ListItem(bytestring) ListItem(bytestring) ListItem(bytestring)
+  rule #expectedArguments(verifyEd25519Signature) => ListItem(bytestring) ListItem(bytestring) ListItem(bytestring)
 
-  rule <k> #eval(verifySignature,
+  rule <k> #eval(verifyEd25519Signature,
                  (ListItem(< con bytestring K:ByteString >)
                   ListItem(< con bytestring M:ByteString >)
                   ListItem(< con bytestring S:ByteString >))) =>
            < con bool True > ... </k>
   requires ED25519VerifyMessageWrapper(encode(K), encode(M), encode(S))
 
-  rule <k> #eval(verifySignature,
+  rule <k> #eval(verifyEd25519Signature,
                  (ListItem(< con bytestring K:ByteString >)
                   ListItem(< con bytestring M:ByteString >)
                   ListItem(< con bytestring S:ByteString >))) =>

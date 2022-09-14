@@ -116,7 +116,7 @@ module UPLC-SYNTAX
   syntax CryptoBuiltinName ::= "sha2_256"
                              | "sha3_256"
                              | "blake2b_256"
-                             | "verifySignature"
+                             | "verifyEd25519Signature"
 ```
 
 ### Builtin Functions for String

@@ -400,7 +400,7 @@ Tags for builtins use 8 bits allowing for a max of 256 builtin functions.
   rule #bn2BuiltinName( 18 ) => sha2_256
   rule #bn2BuiltinName( 19 ) => sha3_256
   rule #bn2BuiltinName( 20 ) => blake2b_256
-  rule #bn2BuiltinName( 21 ) => verifySignature
+  rule #bn2BuiltinName( 21 ) => verifyEd25519Signature
   rule #bn2BuiltinName( 22 ) => appendString
   rule #bn2BuiltinName( 23 ) => equalsString
   rule #bn2BuiltinName( 24 ) => encodeUtf8
