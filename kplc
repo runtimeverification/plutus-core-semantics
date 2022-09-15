@@ -79,6 +79,10 @@ run_kompile() {
     fi
 }
 
+run_kast() {
+    notif_exec kast --directory "${backend_dir}" "${run_file}" "$@"
+}
+
 run_interpreter() {
     if ${debugger}; then
         notif_exec krun --directory "${backend_dir}" "${run_file}" --debugger "$@"
@@ -104,6 +108,9 @@ run_prove() {
     notif_exec kprove "${proof_args[@]}" "$@"
 }
 
+run_uplc_to_k() {
+    run_kplutus_pyk uplc-to-k --definition "${backend_dir}" "${run_file}" "$@"
+}
 
 # Main
 # ----
@@ -112,14 +119,19 @@ run_command="$1" ; shift
 
 if [[ "$run_command" == 'help' ]] || [[ "$run_command" == '--help' ]] ; then
     echo "
-        usage: ${KPLC} kompile <main> <kplc arg>* <kompile arg>*
-               ${KPLC} run     <pgm>  <kplc arg>* <krun arg>*
+        usage: ${KPLC} kompile   <main> <kplc arg>* <kompile arg>*
+               ${KPLC} kast      <pgm>  <kast arg>*
+               ${KPLC} run       <pgm>  <kplc arg>* <krun arg>*
+               ${KPLC} uplc-to-k <pgm>  <kplc arg>*
 
                ${KPLC} [help|--help|version|--version]
 
-           ${KPLC} kompile : Run kompile with arguments setup to include KPlutus semantics.
-           ${KPLC} help    : Display this help message.
-           ${KPLC} version : Display the versions of KPlutus.
+           ${KPLC} kompile   : Run kompile with arguments setup to include KPlutus semantics.
+           ${KPLC} kast      : Run kast with arguments setup to include KPlutus semantics.
+           ${KPLC} run       : Run the KPlutus interpreter on a UPLC program.
+           ${KPLC} uplc-to-k : Generate the helper K modules for verifying a contract
+           ${KPLC} help      : Display this help message.
+           ${KPLC} version   : Display the versions of KPlutus.
 
            Arguments:
                       <main>        : Name of main file to kompile.
@@ -183,7 +195,9 @@ fi
 
 case "${run_command}" in
     kompile)    run_kompile     "$@"                                                ;;
+    kast)       run_kast        "$@"                                                ;;
     run)        run_interpreter "$@"                                                ;;
     prove)      run_prove       "$@"                                                ;;
+    uplc-to-k)  run_uplc_to_k   "$@"                                                ;;
     *)          $0 help ; fatal "Unknown command: ${run_command}" ;;
 esac

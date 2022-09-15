@@ -9,6 +9,7 @@
 *.sh
 unit-tests/verification/
 simple-proofs/verification/
+simple-proofs/uplc-to-k/*.k
 *.swo
 *.swn
 *.swp
