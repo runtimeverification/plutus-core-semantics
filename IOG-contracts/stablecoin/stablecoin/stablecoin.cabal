@@ -59,6 +59,7 @@ library
     -- -fplugin-opt PlutusTx.Plugin:no-simplifier-beta
 --    -fplugin-opt PlutusTx.Plugin:no-simplifier-remove-dead-bindings
     -fplugin-opt PlutusTx.Plugin:max-simplifier-iterations=0
+    -fmax-simplifier-iterations=0    
     -fforce-recomp
     
   --------------------

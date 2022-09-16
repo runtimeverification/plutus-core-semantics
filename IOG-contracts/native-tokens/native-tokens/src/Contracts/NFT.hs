@@ -47,11 +47,13 @@ mkPolicy oref tn () ctx = traceIfFalse "UTxO not consumed"   hasUTxO           &
 
     hasUTxO :: Bool
     hasUTxO = any (\i -> txInInfoOutRef i == oref) $ txInfoInputs info
+    {-# NOINLINE hasUTxO #-} 
 
     checkMintedAmount :: Bool
     checkMintedAmount = case flattenValue (txInfoMint info) of
         [(_, tn', amt)] -> tn' == tn && amt == 1
         _               -> False
+    {-# NOINLINE checkMintedAmount #-}
 
 policy :: TxOutRef -> TokenName -> Scripts.MintingPolicy
 policy oref tn = mkMintingPolicyScript $

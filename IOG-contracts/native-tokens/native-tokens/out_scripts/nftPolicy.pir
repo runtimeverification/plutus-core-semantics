@@ -4,83 +4,83 @@
     (termbind
       (strict)
       (vardecl
-        bad_name_3743
+        bad_name_3439
         (all
-          a_3744
+          a_3440
           (type)
-          (all b_3745 (type) (fun (fun a_3744 b_3745) (fun a_3744 b_3745)))
+          (all b_3441 (type) (fun (fun a_3440 b_3441) (fun a_3440 b_3441)))
         )
       )
       (abs
-        a_3739
+        a_3435
         (type)
         (abs
-          b_3740
+          b_3436
           (type)
-          (lam f_3741 (fun a_3739 b_3740) (lam a_3742 a_3739 [ f_3741 a_3742 ]))
+          (lam f_3437 (fun a_3435 b_3436) (lam a_3438 a_3435 [ f_3437 a_3438 ]))
         )
       )
     )
     (termbind
       (strict)
-      (vardecl reconstructCaseError_2852 (con string))
+      (vardecl reconstructCaseError_2685 (con string))
       (con string "PT1")
     )
     (datatypebind
       (datatype
-        (tyvardecl Unit_2730 (type))
+        (tyvardecl Unit_2563 (type))
 
-        Unit_match_2732
-        (vardecl Unit_2731 Unit_2730)
+        Unit_match_2565
+        (vardecl Unit_2564 Unit_2563)
       )
     )
     (termbind
       (strict)
-      (vardecl error_2726 (all a_2727 (type) (fun (con unit) a_2727)))
-      (abs a_2724 (type) (lam thunk_2725 (con unit) (error a_2724)))
+      (vardecl error_2559 (all a_2560 (type) (fun (con unit) a_2560)))
+      (abs a_2557 (type) (lam thunk_2558 (con unit) (error a_2557)))
     )
     (termbind
       (strict)
       (vardecl
-        trace_2722 (all a_2723 (type) (fun (con string) (fun a_2723 a_2723)))
+        trace_2555 (all a_2556 (type) (fun (con string) (fun a_2556 a_2556)))
       )
       (builtin trace)
     )
-    (termbind (strict) (vardecl unitval_2721 (con unit)) (con unit ()))
+    (termbind (strict) (vardecl unitval_2554 (con unit)) (con unit ()))
     (termbind
       (nonstrict)
-      (vardecl x_3734 Unit_2730)
+      (vardecl x_3430 Unit_2563)
       [
-        { error_2726 Unit_2730 }
+        { error_2559 Unit_2563 }
         [
           {
             [
-              Unit_match_2732
+              Unit_match_2565
               [
-                [ { trace_2722 Unit_2730 } reconstructCaseError_2852 ] Unit_2731
+                [ { trace_2555 Unit_2563 } reconstructCaseError_2685 ] Unit_2564
               ]
             ]
             (con unit)
           }
-          unitval_2721
+          unitval_2554
         ]
       ]
     )
     (termbind
       (strict)
       (vardecl
-        equalsInteger_2860 (fun (con integer) (fun (con integer) (con bool)))
+        equalsInteger_2693 (fun (con integer) (fun (con integer) (con bool)))
       )
       (builtin equalsInteger)
     )
     (termbind
       (strict)
       (vardecl
-        fst_2857
+        fst_2690
         (all
-          a_2858
+          a_2691
           (type)
-          (all b_2859 (type) (fun [ [ (con pair) a_2858 ] b_2859 ] a_2858))
+          (all b_2692 (type) (fun [ [ (con pair) a_2691 ] b_2692 ] a_2691))
         )
       )
       (builtin fstPair)
@@ -88,15 +88,15 @@
     (termbind
       (strict)
       (vardecl
-        ifThenElse_2853
-        (all a_2854 (type) (fun (con bool) (fun a_2854 (fun a_2854 a_2854))))
+        ifThenElse_2686
+        (all a_2687 (type) (fun (con bool) (fun a_2687 (fun a_2687 a_2687))))
       )
       (builtin ifThenElse)
     )
     (termbind
       (strict)
       (vardecl
-        unsafeDataAsConstr_2846
+        unsafeDataAsConstr_2679
         (fun
           (con data) [ [ (con pair) (con integer) ] [ (con list) (con data) ] ]
         )
@@ -106,121 +106,121 @@
     (termbind
       (strict)
       (vardecl
-        fUnsafeFromDataUnit_cunsafeFromBuiltinData_3736
-        (fun (con data) Unit_2730)
+        fUnsafeFromDataUnit_cunsafeFromBuiltinData_3432
+        (fun (con data) Unit_2563)
       )
       (lam
-        d_3731
+        d_3427
         (con data)
         [
           [
             [
               [
-                { ifThenElse_2853 (fun (con unit) Unit_2730) }
+                { ifThenElse_2686 (fun (con unit) Unit_2563) }
                 [
                   [
-                    equalsInteger_2860
+                    equalsInteger_2693
                     [
-                      { { fst_2857 (con integer) } [ (con list) (con data) ] }
-                      [ unsafeDataAsConstr_2846 d_3731 ]
+                      { { fst_2690 (con integer) } [ (con list) (con data) ] }
+                      [ unsafeDataAsConstr_2679 d_3427 ]
                     ]
                   ]
                   (con integer 0)
                 ]
               ]
-              (lam ds_3732 (con unit) Unit_2731)
+              (lam ds_3428 (con unit) Unit_2564)
             ]
-            (lam ds_3735 (con unit) x_3734)
+            (lam ds_3431 (con unit) x_3430)
           ]
-          unitval_2721
+          unitval_2554
         ]
       )
     )
     (termbind
       (nonstrict)
       (vardecl
-        fUnsafeFromDataUnit_3737
-        [ (lam a_3738 (type) (fun (con data) a_3738)) Unit_2730 ]
+        fUnsafeFromDataUnit_3433
+        [ (lam a_3434 (type) (fun (con data) a_3434)) Unit_2563 ]
       )
-      fUnsafeFromDataUnit_cunsafeFromBuiltinData_3736
+      fUnsafeFromDataUnit_cunsafeFromBuiltinData_3432
     )
     (datatypebind
       (datatype
-        (tyvardecl AdditiveMonoid_2708 (fun (type) (type)))
-        (tyvardecl a_2711 (type))
-        AdditiveMonoid_match_2710
+        (tyvardecl AdditiveMonoid_2541 (fun (type) (type)))
+        (tyvardecl a_2544 (type))
+        AdditiveMonoid_match_2543
         (vardecl
-          CConsAdditiveMonoid_2709
+          CConsAdditiveMonoid_2542
           (fun
-            [ (lam a_2712 (type) (fun a_2712 (fun a_2712 a_2712))) a_2711 ]
-            (fun a_2711 [ AdditiveMonoid_2708 a_2711 ])
+            [ (lam a_2545 (type) (fun a_2545 (fun a_2545 a_2545))) a_2544 ]
+            (fun a_2544 [ AdditiveMonoid_2541 a_2544 ])
           )
         )
       )
     )
     (datatypebind
       (datatype
-        (tyvardecl Bool_2694 (type))
+        (tyvardecl Bool_2527 (type))
 
-        Bool_match_2697
-        (vardecl True_2695 Bool_2694) (vardecl False_2696 Bool_2694)
+        Bool_match_2530
+        (vardecl True_2528 Bool_2527) (vardecl False_2529 Bool_2527)
       )
     )
     (termbind
       (strict)
-      (vardecl bad_name_2705 (fun Bool_2694 (fun Bool_2694 Bool_2694)))
+      (vardecl bad_name_2538 (fun Bool_2527 (fun Bool_2527 Bool_2527)))
       (lam
-        l_2698
-        Bool_2694
+        l_2531
+        Bool_2527
         (lam
-          r_2699
-          Bool_2694
+          r_2532
+          Bool_2527
           {
             [
               [
-                { [ Bool_match_2697 l_2698 ] (all dead_2701 (type) Bool_2694) }
-                (abs dead_2702 (type) True_2695)
+                { [ Bool_match_2530 l_2531 ] (all dead_2534 (type) Bool_2527) }
+                (abs dead_2535 (type) True_2528)
               ]
-              (abs dead_2703 (type) r_2699)
+              (abs dead_2536 (type) r_2532)
             ]
-            (all dead_2704 (type) dead_2704)
+            (all dead_2537 (type) dead_2537)
           }
         )
       )
     )
     (termbind
       (nonstrict)
-      (vardecl fAdditiveMonoidBool_3430 [ AdditiveMonoid_2708 Bool_2694 ])
-      [ [ { CConsAdditiveMonoid_2709 Bool_2694 } bad_name_2705 ] False_2696 ]
+      (vardecl fAdditiveMonoidBool_3263 [ AdditiveMonoid_2541 Bool_2527 ])
+      [ [ { CConsAdditiveMonoid_2542 Bool_2527 } bad_name_2538 ] False_2529 ]
     )
     (termbind
       (strict)
       (vardecl
-        p1AdditiveMonoid_3356
+        p1AdditiveMonoid_3189
         (all
-          a_3357
+          a_3190
           (type)
           (fun
-            [ AdditiveMonoid_2708 a_3357 ]
-            [ (lam a_3358 (type) (fun a_3358 (fun a_3358 a_3358))) a_3357 ]
+            [ AdditiveMonoid_2541 a_3190 ]
+            [ (lam a_3191 (type) (fun a_3191 (fun a_3191 a_3191))) a_3190 ]
           )
         )
       )
       (abs
-        a_3349
+        a_3182
         (type)
         (lam
-          v_3350
-          [ AdditiveMonoid_2708 a_3349 ]
+          v_3183
+          [ AdditiveMonoid_2541 a_3182 ]
           [
             {
-              [ { AdditiveMonoid_match_2710 a_3349 } v_3350 ]
-              [ (lam a_3352 (type) (fun a_3352 (fun a_3352 a_3352))) a_3349 ]
+              [ { AdditiveMonoid_match_2543 a_3182 } v_3183 ]
+              [ (lam a_3185 (type) (fun a_3185 (fun a_3185 a_3185))) a_3182 ]
             }
             (lam
-              v_3353
-              [ (lam a_3354 (type) (fun a_3354 (fun a_3354 a_3354))) a_3349 ]
-              (lam v_3355 a_3349 v_3353)
+              v_3186
+              [ (lam a_3187 (type) (fun a_3187 (fun a_3187 a_3187))) a_3182 ]
+              (lam v_3188 a_3182 v_3186)
             )
           ]
         )
@@ -228,14 +228,14 @@
     )
     (datatypebind
       (datatype
-        (tyvardecl Monoid_3344 (fun (type) (type)))
-        (tyvardecl a_3347 (type))
-        Monoid_match_3346
+        (tyvardecl Monoid_3177 (fun (type) (type)))
+        (tyvardecl a_3180 (type))
+        Monoid_match_3179
         (vardecl
-          CConsMonoid_3345
+          CConsMonoid_3178
           (fun
-            [ (lam a_3348 (type) (fun a_3348 (fun a_3348 a_3348))) a_3347 ]
-            (fun a_3347 [ Monoid_3344 a_3347 ])
+            [ (lam a_3181 (type) (fun a_3181 (fun a_3181 a_3181))) a_3180 ]
+            (fun a_3180 [ Monoid_3177 a_3180 ])
           )
         )
       )
@@ -243,21 +243,21 @@
     (termbind
       (strict)
       (vardecl
-        zero_2719
-        (all a_2720 (type) (fun [ AdditiveMonoid_2708 a_2720 ] a_2720))
+        zero_2552
+        (all a_2553 (type) (fun [ AdditiveMonoid_2541 a_2553 ] a_2553))
       )
       (abs
-        a_2713
+        a_2546
         (type)
         (lam
-          v_2714
-          [ AdditiveMonoid_2708 a_2713 ]
+          v_2547
+          [ AdditiveMonoid_2541 a_2546 ]
           [
-            { [ { AdditiveMonoid_match_2710 a_2713 } v_2714 ] a_2713 }
+            { [ { AdditiveMonoid_match_2543 a_2546 } v_2547 ] a_2546 }
             (lam
-              v_2716
-              [ (lam a_2717 (type) (fun a_2717 (fun a_2717 a_2717))) a_2713 ]
-              (lam v_2718 a_2713 v_2718)
+              v_2549
+              [ (lam a_2550 (type) (fun a_2550 (fun a_2550 a_2550))) a_2546 ]
+              (lam v_2551 a_2546 v_2551)
             )
           ]
         )
@@ -266,39 +266,39 @@
     (termbind
       (strict)
       (vardecl
-        fMonoidSum_3366
+        fMonoidSum_3199
         (all
-          a_3367
+          a_3200
           (type)
           (fun
-            [ AdditiveMonoid_2708 a_3367 ]
-            [ Monoid_3344 [ (lam a_3368 (type) a_3368) a_3367 ] ]
+            [ AdditiveMonoid_2541 a_3200 ]
+            [ Monoid_3177 [ (lam a_3201 (type) a_3201) a_3200 ] ]
           )
         )
       )
       (abs
-        a_3359
+        a_3192
         (type)
         (lam
-          v_3360
-          [ AdditiveMonoid_2708 a_3359 ]
+          v_3193
+          [ AdditiveMonoid_2541 a_3192 ]
           [
             [
-              { CConsMonoid_3345 [ (lam a_3361 (type) a_3361) a_3359 ] }
+              { CConsMonoid_3178 [ (lam a_3194 (type) a_3194) a_3192 ] }
               (lam
-                eta_3362
-                [ (lam a_3363 (type) a_3363) a_3359 ]
+                eta_3195
+                [ (lam a_3196 (type) a_3196) a_3192 ]
                 (lam
-                  eta_3364
-                  [ (lam a_3365 (type) a_3365) a_3359 ]
+                  eta_3197
+                  [ (lam a_3198 (type) a_3198) a_3192 ]
                   [
-                    [ [ { p1AdditiveMonoid_3356 a_3359 } v_3360 ] eta_3362 ]
-                    eta_3364
+                    [ [ { p1AdditiveMonoid_3189 a_3192 } v_3193 ] eta_3195 ]
+                    eta_3197
                   ]
                 )
               )
             ]
-            [ { zero_2719 a_3359 } v_3360 ]
+            [ { zero_2552 a_3192 } v_3193 ]
           ]
         )
       )
@@ -306,121 +306,121 @@
     (termbind
       (nonstrict)
       (vardecl
-        dMonoid_3440 [ Monoid_3344 [ (lam a_3441 (type) a_3441) Bool_2694 ] ]
+        dMonoid_3273 [ Monoid_3177 [ (lam a_3274 (type) a_3274) Bool_2527 ] ]
       )
-      [ { fMonoidSum_3366 Bool_2694 } fAdditiveMonoidBool_3430 ]
+      [ { fMonoidSum_3199 Bool_2527 } fAdditiveMonoidBool_3263 ]
     )
     (termbind
       (strict)
       (vardecl
-        equalsByteString_3336
+        equalsByteString_3169
         (fun (con bytestring) (fun (con bytestring) (con bool)))
       )
       (builtin equalsByteString)
     )
     (datatypebind
       (datatype
-        (tyvardecl TxOutRef_2791 (type))
+        (tyvardecl TxOutRef_2624 (type))
 
-        TxOutRef_match_2793
+        TxOutRef_match_2626
         (vardecl
-          TxOutRef_2792 (fun (con bytestring) (fun (con integer) TxOutRef_2791))
+          TxOutRef_2625 (fun (con bytestring) (fun (con integer) TxOutRef_2624))
         )
       )
     )
     (termbind
       (strict)
       (vardecl
-        fEqTxOutRef_c_3429 (fun TxOutRef_2791 (fun TxOutRef_2791 Bool_2694))
+        fEqTxOutRef_c_3262 (fun TxOutRef_2624 (fun TxOutRef_2624 Bool_2527))
       )
       (lam
-        l_3404
-        TxOutRef_2791
+        l_3237
+        TxOutRef_2624
         (lam
-          r_3405
-          TxOutRef_2791
+          r_3238
+          TxOutRef_2624
           {
             [
               [
                 {
                   [
-                    Bool_match_2697
+                    Bool_match_2530
                     [
                       [
                         [
-                          { ifThenElse_2853 Bool_2694 }
+                          { ifThenElse_2686 Bool_2527 }
                           [
                             [
-                              equalsByteString_3336
+                              equalsByteString_3169
                               [
                                 {
-                                  [ TxOutRef_match_2793 l_3404 ]
+                                  [ TxOutRef_match_2626 l_3237 ]
                                   (con bytestring)
                                 }
                                 (lam
-                                  ds_3414
+                                  ds_3247
                                   (con bytestring)
-                                  (lam ds_3415 (con integer) ds_3414)
+                                  (lam ds_3248 (con integer) ds_3247)
                                 )
                               ]
                             ]
                             [
                               {
-                                [ TxOutRef_match_2793 r_3405 ] (con bytestring)
+                                [ TxOutRef_match_2626 r_3238 ] (con bytestring)
                               }
                               (lam
-                                ds_3417
+                                ds_3250
                                 (con bytestring)
-                                (lam ds_3418 (con integer) ds_3417)
+                                (lam ds_3251 (con integer) ds_3250)
                               )
                             ]
                           ]
                         ]
-                        True_2695
+                        True_2528
                       ]
-                      False_2696
+                      False_2529
                     ]
                   ]
-                  (all dead_3419 (type) Bool_2694)
+                  (all dead_3252 (type) Bool_2527)
                 }
                 (abs
-                  dead_3420
+                  dead_3253
                   (type)
                   [
                     [
                       [
-                        { ifThenElse_2853 Bool_2694 }
+                        { ifThenElse_2686 Bool_2527 }
                         [
                           [
-                            equalsInteger_2860
+                            equalsInteger_2693
                             [
-                              { [ TxOutRef_match_2793 l_3404 ] (con integer) }
+                              { [ TxOutRef_match_2626 l_3237 ] (con integer) }
                               (lam
-                                ds_3422
+                                ds_3255
                                 (con bytestring)
-                                (lam ds_3423 (con integer) ds_3423)
+                                (lam ds_3256 (con integer) ds_3256)
                               )
                             ]
                           ]
                           [
-                            { [ TxOutRef_match_2793 r_3405 ] (con integer) }
+                            { [ TxOutRef_match_2626 r_3238 ] (con integer) }
                             (lam
-                              ds_3425
+                              ds_3258
                               (con bytestring)
-                              (lam ds_3426 (con integer) ds_3426)
+                              (lam ds_3259 (con integer) ds_3259)
                             )
                           ]
                         ]
                       ]
-                      True_2695
+                      True_2528
                     ]
-                    False_2696
+                    False_2529
                   ]
                 )
               ]
-              (abs dead_3427 (type) False_2696)
+              (abs dead_3260 (type) False_2529)
             ]
-            (all dead_3428 (type) dead_3428)
+            (all dead_3261 (type) dead_3261)
           }
         )
       )
@@ -428,31 +428,31 @@
     (termbind
       (strict)
       (vardecl
-        p1Monoid_3384
+        p1Monoid_3217
         (all
-          a_3385
+          a_3218
           (type)
           (fun
-            [ Monoid_3344 a_3385 ]
-            [ (lam a_3386 (type) (fun a_3386 (fun a_3386 a_3386))) a_3385 ]
+            [ Monoid_3177 a_3218 ]
+            [ (lam a_3219 (type) (fun a_3219 (fun a_3219 a_3219))) a_3218 ]
           )
         )
       )
       (abs
-        a_3377
+        a_3210
         (type)
         (lam
-          v_3378
-          [ Monoid_3344 a_3377 ]
+          v_3211
+          [ Monoid_3177 a_3210 ]
           [
             {
-              [ { Monoid_match_3346 a_3377 } v_3378 ]
-              [ (lam a_3380 (type) (fun a_3380 (fun a_3380 a_3380))) a_3377 ]
+              [ { Monoid_match_3179 a_3210 } v_3211 ]
+              [ (lam a_3213 (type) (fun a_3213 (fun a_3213 a_3213))) a_3210 ]
             }
             (lam
-              v_3381
-              [ (lam a_3382 (type) (fun a_3382 (fun a_3382 a_3382))) a_3377 ]
-              (lam v_3383 a_3377 v_3381)
+              v_3214
+              [ (lam a_3215 (type) (fun a_3215 (fun a_3215 a_3215))) a_3210 ]
+              (lam v_3216 a_3210 v_3214)
             )
           ]
         )
@@ -461,20 +461,20 @@
     (termbind
       (strict)
       (vardecl
-        mempty_3375 (all a_3376 (type) (fun [ Monoid_3344 a_3376 ] a_3376))
+        mempty_3208 (all a_3209 (type) (fun [ Monoid_3177 a_3209 ] a_3209))
       )
       (abs
-        a_3369
+        a_3202
         (type)
         (lam
-          v_3370
-          [ Monoid_3344 a_3369 ]
+          v_3203
+          [ Monoid_3177 a_3202 ]
           [
-            { [ { Monoid_match_3346 a_3369 } v_3370 ] a_3369 }
+            { [ { Monoid_match_3179 a_3202 } v_3203 ] a_3202 }
             (lam
-              v_3372
-              [ (lam a_3373 (type) (fun a_3373 (fun a_3373 a_3373))) a_3369 ]
-              (lam v_3374 a_3369 v_3374)
+              v_3205
+              [ (lam a_3206 (type) (fun a_3206 (fun a_3206 a_3206))) a_3202 ]
+              (lam v_3207 a_3202 v_3207)
             )
           ]
         )
@@ -484,13 +484,13 @@
       (rec)
       (datatypebind
         (datatype
-          (tyvardecl List_2742 (fun (type) (type)))
-          (tyvardecl a_2746 (type))
-          Nil_match_2745
-          (vardecl Nil_2743 [ List_2742 a_2746 ])
+          (tyvardecl List_2575 (fun (type) (type)))
+          (tyvardecl a_2579 (type))
+          Nil_match_2578
+          (vardecl Nil_2576 [ List_2575 a_2579 ])
           (vardecl
-            Cons_2744
-            (fun a_2746 (fun [ List_2742 a_2746 ] [ List_2742 a_2746 ]))
+            Cons_2577
+            (fun a_2579 (fun [ List_2575 a_2579 ] [ List_2575 a_2579 ]))
           )
         )
       )
@@ -499,91 +499,91 @@
         (termbind
           (strict)
           (vardecl
-            fFoldableNil_cfoldMap_3387
+            fFoldableNil_cfoldMap_3220
             (all
-              m_3388
+              m_3221
               (type)
               (all
-                a_3389
+                a_3222
                 (type)
                 (fun
-                  [ Monoid_3344 m_3388 ]
-                  (fun (fun a_3389 m_3388) (fun [ List_2742 a_3389 ] m_3388))
+                  [ Monoid_3177 m_3221 ]
+                  (fun (fun a_3222 m_3221) (fun [ List_2575 a_3222 ] m_3221))
                 )
               )
             )
           )
           (abs
-            m_3390
+            m_3223
             (type)
             (abs
-              a_3391
+              a_3224
               (type)
               (lam
-                dMonoid_3392
-                [ Monoid_3344 m_3390 ]
+                dMonoid_3225
+                [ Monoid_3177 m_3223 ]
                 (let
                   (nonrec)
                   (termbind
                     (nonstrict)
                     (vardecl
-                      dSemigroup_3393
+                      dSemigroup_3226
                       [
-                        (lam a_3394 (type) (fun a_3394 (fun a_3394 a_3394)))
-                        m_3390
+                        (lam a_3227 (type) (fun a_3227 (fun a_3227 a_3227)))
+                        m_3223
                       ]
                     )
-                    [ { p1Monoid_3384 m_3390 } dMonoid_3392 ]
+                    [ { p1Monoid_3217 m_3223 } dMonoid_3225 ]
                   )
                   (lam
-                    ds_3395
-                    (fun a_3391 m_3390)
+                    ds_3228
+                    (fun a_3224 m_3223)
                     (lam
-                      ds_3396
-                      [ List_2742 a_3391 ]
+                      ds_3229
+                      [ List_2575 a_3224 ]
                       {
                         [
                           [
                             {
-                              [ { Nil_match_2745 a_3391 } ds_3396 ]
-                              (all dead_3398 (type) m_3390)
+                              [ { Nil_match_2578 a_3224 } ds_3229 ]
+                              (all dead_3231 (type) m_3223)
                             }
                             (abs
-                              dead_3399
+                              dead_3232
                               (type)
-                              [ { mempty_3375 m_3390 } dMonoid_3392 ]
+                              [ { mempty_3208 m_3223 } dMonoid_3225 ]
                             )
                           ]
                           (lam
-                            x_3400
-                            a_3391
+                            x_3233
+                            a_3224
                             (lam
-                              xs_3401
-                              [ List_2742 a_3391 ]
+                              xs_3234
+                              [ List_2575 a_3224 ]
                               (abs
-                                dead_3402
+                                dead_3235
                                 (type)
                                 [
-                                  [ dSemigroup_3393 [ ds_3395 x_3400 ] ]
+                                  [ dSemigroup_3226 [ ds_3228 x_3233 ] ]
                                   [
                                     [
                                       [
                                         {
-                                          { fFoldableNil_cfoldMap_3387 m_3390 }
-                                          a_3391
+                                          { fFoldableNil_cfoldMap_3220 m_3223 }
+                                          a_3224
                                         }
-                                        dMonoid_3392
+                                        dMonoid_3225
                                       ]
-                                      ds_3395
+                                      ds_3228
                                     ]
-                                    xs_3401
+                                    xs_3234
                                   ]
                                 ]
                               )
                             )
                           )
                         ]
-                        (all dead_3403 (type) dead_3403)
+                        (all dead_3236 (type) dead_3236)
                       }
                     )
                   )
@@ -597,24 +597,24 @@
           (termbind
             (strict)
             (vardecl
-              equalsByteString_3339
-              (fun (con bytestring) (fun (con bytestring) Bool_2694))
+              equalsByteString_3172
+              (fun (con bytestring) (fun (con bytestring) Bool_2527))
             )
             (lam
-              x_3337
+              x_3170
               (con bytestring)
               (lam
-                y_3338
+                y_3171
                 (con bytestring)
                 [
                   [
                     [
-                      { ifThenElse_2853 Bool_2694 }
-                      [ [ equalsByteString_3336 x_3337 ] y_3338 ]
+                      { ifThenElse_2686 Bool_2527 }
+                      [ [ equalsByteString_3169 x_3170 ] y_3171 ]
                     ]
-                    True_2695
+                    True_2528
                   ]
-                  False_2696
+                  False_2529
                 ]
               )
             )
@@ -622,19 +622,19 @@
           (datatypebind
             (datatype
               (tyvardecl
-                Tuple3_3270 (fun (type) (fun (type) (fun (type) (type))))
+                Tuple3_3103 (fun (type) (fun (type) (fun (type) (type))))
               )
-              (tyvardecl a_3273 (type))
-              (tyvardecl b_3274 (type))
-              (tyvardecl c_3275 (type))
-              Tuple3_match_3272
+              (tyvardecl a_3106 (type))
+              (tyvardecl b_3107 (type))
+              (tyvardecl c_3108 (type))
+              Tuple3_match_3105
               (vardecl
-                Tuple3_3271
+                Tuple3_3104
                 (fun
-                  a_3273
+                  a_3106
                   (fun
-                    b_3274
-                    (fun c_3275 [ [ [ Tuple3_3270 a_3273 ] b_3274 ] c_3275 ])
+                    b_3107
+                    (fun c_3108 [ [ [ Tuple3_3103 a_3106 ] b_3107 ] c_3108 ])
                   )
                 )
               )
@@ -642,12 +642,12 @@
           )
           (datatypebind
             (datatype
-              (tyvardecl Tuple2_2749 (fun (type) (fun (type) (type))))
-              (tyvardecl a_2752 (type)) (tyvardecl b_2753 (type))
-              Tuple2_match_2751
+              (tyvardecl Tuple2_2582 (fun (type) (fun (type) (type))))
+              (tyvardecl a_2585 (type)) (tyvardecl b_2586 (type))
+              Tuple2_match_2584
               (vardecl
-                Tuple2_2750
-                (fun a_2752 (fun b_2753 [ [ Tuple2_2749 a_2752 ] b_2753 ]))
+                Tuple2_2583
+                (fun a_2585 (fun b_2586 [ [ Tuple2_2582 a_2585 ] b_2586 ]))
               )
             )
           )
@@ -656,26 +656,26 @@
             (termbind
               (strict)
               (vardecl
-                goInner_3311
+                goInner_3144
                 (fun
                   (con bytestring)
                   (fun
                     [
-                      List_2742
+                      List_2575
                       [
-                        [ [ Tuple3_3270 (con bytestring) ] (con bytestring) ]
+                        [ [ Tuple3_3103 (con bytestring) ] (con bytestring) ]
                         (con integer)
                       ]
                     ]
                     (fun
                       [
-                        List_2742
-                        [ [ Tuple2_2749 (con bytestring) ] (con integer) ]
+                        List_2575
+                        [ [ Tuple2_2582 (con bytestring) ] (con integer) ]
                       ]
                       [
-                        List_2742
+                        List_2575
                         [
-                          [ [ Tuple3_3270 (con bytestring) ] (con bytestring) ]
+                          [ [ Tuple3_3103 (con bytestring) ] (con bytestring) ]
                           (con integer)
                         ]
                       ]
@@ -684,22 +684,22 @@
                 )
               )
               (lam
-                ds_3312
+                ds_3145
                 (con bytestring)
                 (lam
-                  acc_3313
+                  acc_3146
                   [
-                    List_2742
+                    List_2575
                     [
-                      [ [ Tuple3_3270 (con bytestring) ] (con bytestring) ]
+                      [ [ Tuple3_3103 (con bytestring) ] (con bytestring) ]
                       (con integer)
                     ]
                   ]
                   (lam
-                    ds_3314
+                    ds_3147
                     [
-                      List_2742
-                      [ [ Tuple2_2749 (con bytestring) ] (con integer) ]
+                      List_2575
+                      [ [ Tuple2_2582 (con bytestring) ] (con integer) ]
                     ]
                     {
                       [
@@ -707,21 +707,21 @@
                           {
                             [
                               {
-                                Nil_match_2745
+                                Nil_match_2578
                                 [
-                                  [ Tuple2_2749 (con bytestring) ] (con integer)
+                                  [ Tuple2_2582 (con bytestring) ] (con integer)
                                 ]
                               }
-                              ds_3314
+                              ds_3147
                             ]
                             (all
-                              dead_3316
+                              dead_3149
                               (type)
                               [
-                                List_2742
+                                List_2575
                                 [
                                   [
-                                    [ Tuple3_3270 (con bytestring) ]
+                                    [ Tuple3_3103 (con bytestring) ]
                                     (con bytestring)
                                   ]
                                   (con integer)
@@ -729,34 +729,34 @@
                               ]
                             )
                           }
-                          (abs dead_3317 (type) acc_3313)
+                          (abs dead_3150 (type) acc_3146)
                         ]
                         (lam
-                          ipv_3318
-                          [ [ Tuple2_2749 (con bytestring) ] (con integer) ]
+                          ipv_3151
+                          [ [ Tuple2_2582 (con bytestring) ] (con integer) ]
                           (lam
-                            ipv_3319
+                            ipv_3152
                             [
-                              List_2742
-                              [ [ Tuple2_2749 (con bytestring) ] (con integer) ]
+                              List_2575
+                              [ [ Tuple2_2582 (con bytestring) ] (con integer) ]
                             ]
                             (abs
-                              dead_3320
+                              dead_3153
                               (type)
                               [
                                 {
                                   [
                                     {
-                                      { Tuple2_match_2751 (con bytestring) }
+                                      { Tuple2_match_2584 (con bytestring) }
                                       (con integer)
                                     }
-                                    ipv_3318
+                                    ipv_3151
                                   ]
                                   [
-                                    List_2742
+                                    List_2575
                                     [
                                       [
-                                        [ Tuple3_3270 (con bytestring) ]
+                                        [ Tuple3_3103 (con bytestring) ]
                                         (con bytestring)
                                       ]
                                       (con integer)
@@ -764,45 +764,45 @@
                                   ]
                                 }
                                 (lam
-                                  tn_3322
+                                  tn_3155
                                   (con bytestring)
                                   (lam
-                                    a_3323
+                                    a_3156
                                     (con integer)
                                     {
                                       [
                                         [
                                           {
                                             [
-                                              Bool_match_2697
+                                              Bool_match_2530
                                               [
                                                 [
                                                   [
                                                     {
-                                                      ifThenElse_2853 Bool_2694
+                                                      ifThenElse_2686 Bool_2527
                                                     }
                                                     [
                                                       [
-                                                        equalsInteger_2860
-                                                        a_3323
+                                                        equalsInteger_2693
+                                                        a_3156
                                                       ]
                                                       (con integer 0)
                                                     ]
                                                   ]
-                                                  True_2695
+                                                  True_2528
                                                 ]
-                                                False_2696
+                                                False_2529
                                               ]
                                             ]
                                             (all
-                                              dead_3325
+                                              dead_3158
                                               (type)
                                               [
-                                                List_2742
+                                                List_2575
                                                 [
                                                   [
                                                     [
-                                                      Tuple3_3270
+                                                      Tuple3_3103
                                                       (con bytestring)
                                                     ]
                                                     (con bytestring)
@@ -813,31 +813,31 @@
                                             )
                                           }
                                           (abs
-                                            dead_3326
+                                            dead_3159
                                             (type)
                                             [
                                               [
-                                                [ goInner_3311 ds_3312 ]
-                                                acc_3313
+                                                [ goInner_3144 ds_3145 ]
+                                                acc_3146
                                               ]
-                                              ipv_3319
+                                              ipv_3152
                                             ]
                                           )
                                         ]
                                         (abs
-                                          dead_3327
+                                          dead_3160
                                           (type)
                                           [
                                             [
-                                              [ goInner_3311 ds_3312 ]
+                                              [ goInner_3144 ds_3145 ]
                                               [
                                                 [
                                                   {
-                                                    Cons_2744
+                                                    Cons_2577
                                                     [
                                                       [
                                                         [
-                                                          Tuple3_3270
+                                                          Tuple3_3103
                                                           (con bytestring)
                                                         ]
                                                         (con bytestring)
@@ -851,28 +851,28 @@
                                                         {
                                                           {
                                                             {
-                                                              Tuple3_3271
+                                                              Tuple3_3104
                                                               (con bytestring)
                                                             }
                                                             (con bytestring)
                                                           }
                                                           (con integer)
                                                         }
-                                                        ds_3312
+                                                        ds_3145
                                                       ]
-                                                      tn_3322
+                                                      tn_3155
                                                     ]
-                                                    a_3323
+                                                    a_3156
                                                   ]
                                                 ]
-                                                acc_3313
+                                                acc_3146
                                               ]
                                             ]
-                                            ipv_3319
+                                            ipv_3152
                                           ]
                                         )
                                       ]
-                                      (all dead_3328 (type) dead_3328)
+                                      (all dead_3161 (type) dead_3161)
                                     }
                                   )
                                 )
@@ -881,7 +881,7 @@
                           )
                         )
                       ]
-                      (all dead_3329 (type) dead_3329)
+                      (all dead_3162 (type) dead_3162)
                     }
                   )
                 )
@@ -892,30 +892,30 @@
               (termbind
                 (strict)
                 (vardecl
-                  goOuter_3281
+                  goOuter_3114
                   (fun
                     [
-                      List_2742
+                      List_2575
                       [
-                        [ [ Tuple3_3270 (con bytestring) ] (con bytestring) ]
+                        [ [ Tuple3_3103 (con bytestring) ] (con bytestring) ]
                         (con integer)
                       ]
                     ]
                     (fun
                       [
-                        List_2742
+                        List_2575
                         [
-                          [ Tuple2_2749 (con bytestring) ]
+                          [ Tuple2_2582 (con bytestring) ]
                           [
                             [
                               (lam
-                                k_3282
+                                k_3115
                                 (type)
                                 (lam
-                                  v_3283
+                                  v_3116
                                   (type)
                                   [
-                                    List_2742 [ [ Tuple2_2749 k_3282 ] v_3283 ]
+                                    List_2575 [ [ Tuple2_2582 k_3115 ] v_3116 ]
                                   ]
                                 )
                               )
@@ -926,9 +926,9 @@
                         ]
                       ]
                       [
-                        List_2742
+                        List_2575
                         [
-                          [ [ Tuple3_3270 (con bytestring) ] (con bytestring) ]
+                          [ [ Tuple3_3103 (con bytestring) ] (con bytestring) ]
                           (con integer)
                         ]
                       ]
@@ -936,29 +936,29 @@
                   )
                 )
                 (lam
-                  acc_3284
+                  acc_3117
                   [
-                    List_2742
+                    List_2575
                     [
-                      [ [ Tuple3_3270 (con bytestring) ] (con bytestring) ]
+                      [ [ Tuple3_3103 (con bytestring) ] (con bytestring) ]
                       (con integer)
                     ]
                   ]
                   (lam
-                    ds_3285
+                    ds_3118
                     [
-                      List_2742
+                      List_2575
                       [
-                        [ Tuple2_2749 (con bytestring) ]
+                        [ Tuple2_2582 (con bytestring) ]
                         [
                           [
                             (lam
-                              k_3286
+                              k_3119
                               (type)
                               (lam
-                                v_3287
+                                v_3120
                                 (type)
-                                [ List_2742 [ [ Tuple2_2749 k_3286 ] v_3287 ] ]
+                                [ List_2575 [ [ Tuple2_2582 k_3119 ] v_3120 ] ]
                               )
                             )
                             (con bytestring)
@@ -973,20 +973,20 @@
                           {
                             [
                               {
-                                Nil_match_2745
+                                Nil_match_2578
                                 [
-                                  [ Tuple2_2749 (con bytestring) ]
+                                  [ Tuple2_2582 (con bytestring) ]
                                   [
                                     [
                                       (lam
-                                        k_3291
+                                        k_3124
                                         (type)
                                         (lam
-                                          v_3292
+                                          v_3125
                                           (type)
                                           [
-                                            List_2742
-                                            [ [ Tuple2_2749 k_3291 ] v_3292 ]
+                                            List_2575
+                                            [ [ Tuple2_2582 k_3124 ] v_3125 ]
                                           ]
                                         )
                                       )
@@ -996,16 +996,16 @@
                                   ]
                                 ]
                               }
-                              ds_3285
+                              ds_3118
                             ]
                             (all
-                              dead_3293
+                              dead_3126
                               (type)
                               [
-                                List_2742
+                                List_2575
                                 [
                                   [
-                                    [ Tuple3_3270 (con bytestring) ]
+                                    [ Tuple3_3103 (con bytestring) ]
                                     (con bytestring)
                                   ]
                                   (con integer)
@@ -1013,23 +1013,23 @@
                               ]
                             )
                           }
-                          (abs dead_3294 (type) acc_3284)
+                          (abs dead_3127 (type) acc_3117)
                         ]
                         (lam
-                          ipv_3295
+                          ipv_3128
                           [
-                            [ Tuple2_2749 (con bytestring) ]
+                            [ Tuple2_2582 (con bytestring) ]
                             [
                               [
                                 (lam
-                                  k_3296
+                                  k_3129
                                   (type)
                                   (lam
-                                    v_3297
+                                    v_3130
                                     (type)
                                     [
-                                      List_2742
-                                      [ [ Tuple2_2749 k_3296 ] v_3297 ]
+                                      List_2575
+                                      [ [ Tuple2_2582 k_3129 ] v_3130 ]
                                     ]
                                   )
                                 )
@@ -1039,22 +1039,22 @@
                             ]
                           ]
                           (lam
-                            ipv_3298
+                            ipv_3131
                             [
-                              List_2742
+                              List_2575
                               [
-                                [ Tuple2_2749 (con bytestring) ]
+                                [ Tuple2_2582 (con bytestring) ]
                                 [
                                   [
                                     (lam
-                                      k_3299
+                                      k_3132
                                       (type)
                                       (lam
-                                        v_3300
+                                        v_3133
                                         (type)
                                         [
-                                          List_2742
-                                          [ [ Tuple2_2749 k_3299 ] v_3300 ]
+                                          List_2575
+                                          [ [ Tuple2_2582 k_3132 ] v_3133 ]
                                         ]
                                       )
                                     )
@@ -1065,25 +1065,25 @@
                               ]
                             ]
                             (abs
-                              dead_3301
+                              dead_3134
                               (type)
                               [
                                 {
                                   [
                                     {
-                                      { Tuple2_match_2751 (con bytestring) }
+                                      { Tuple2_match_2584 (con bytestring) }
                                       [
                                         [
                                           (lam
-                                            k_3305
+                                            k_3138
                                             (type)
                                             (lam
-                                              v_3306
+                                              v_3139
                                               (type)
                                               [
-                                                List_2742
+                                                List_2575
                                                 [
-                                                  [ Tuple2_2749 k_3305 ] v_3306
+                                                  [ Tuple2_2582 k_3138 ] v_3139
                                                 ]
                                               ]
                                             )
@@ -1093,13 +1093,13 @@
                                         (con integer)
                                       ]
                                     }
-                                    ipv_3295
+                                    ipv_3128
                                   ]
                                   [
-                                    List_2742
+                                    List_2575
                                     [
                                       [
-                                        [ Tuple3_3270 (con bytestring) ]
+                                        [ Tuple3_3103 (con bytestring) ]
                                         (con bytestring)
                                       ]
                                       (con integer)
@@ -1107,21 +1107,21 @@
                                   ]
                                 }
                                 (lam
-                                  cs_3307
+                                  cs_3140
                                   (con bytestring)
                                   (lam
-                                    m_3308
+                                    m_3141
                                     [
                                       [
                                         (lam
-                                          k_3309
+                                          k_3142
                                           (type)
                                           (lam
-                                            v_3310
+                                            v_3143
                                             (type)
                                             [
-                                              List_2742
-                                              [ [ Tuple2_2749 k_3309 ] v_3310 ]
+                                              List_2575
+                                              [ [ Tuple2_2582 k_3142 ] v_3143 ]
                                             ]
                                           )
                                         )
@@ -1131,13 +1131,13 @@
                                     ]
                                     [
                                       [
-                                        goOuter_3281
+                                        goOuter_3114
                                         [
-                                          [ [ goInner_3311 cs_3307 ] acc_3284 ]
-                                          m_3308
+                                          [ [ goInner_3144 cs_3140 ] acc_3117 ]
+                                          m_3141
                                         ]
                                       ]
-                                      ipv_3298
+                                      ipv_3131
                                     ]
                                   )
                                 )
@@ -1146,7 +1146,7 @@
                           )
                         )
                       ]
-                      (all dead_3330 (type) dead_3330)
+                      (all dead_3163 (type) dead_3163)
                     }
                   )
                 )
@@ -1156,17 +1156,17 @@
                 (termbind
                   (strict)
                   (vardecl
-                    flattenValue_3331
+                    flattenValue_3164
                     (fun
                       [
                         [
                           (lam
-                            k_3332
+                            k_3165
                             (type)
                             (lam
-                              v_3333
+                              v_3166
                               (type)
-                              [ List_2742 [ [ Tuple2_2749 k_3332 ] v_3333 ] ]
+                              [ List_2575 [ [ Tuple2_2582 k_3165 ] v_3166 ] ]
                             )
                           )
                           (con bytestring)
@@ -1174,12 +1174,12 @@
                         [
                           [
                             (lam
-                              k_3334
+                              k_3167
                               (type)
                               (lam
-                                v_3335
+                                v_3168
                                 (type)
-                                [ List_2742 [ [ Tuple2_2749 k_3334 ] v_3335 ] ]
+                                [ List_2575 [ [ Tuple2_2582 k_3167 ] v_3168 ] ]
                               )
                             )
                             (con bytestring)
@@ -1188,25 +1188,25 @@
                         ]
                       ]
                       [
-                        List_2742
+                        List_2575
                         [
-                          [ [ Tuple3_3270 (con bytestring) ] (con bytestring) ]
+                          [ [ Tuple3_3103 (con bytestring) ] (con bytestring) ]
                           (con integer)
                         ]
                       ]
                     )
                   )
                   (lam
-                    v_3276
+                    v_3109
                     [
                       [
                         (lam
-                          k_3277
+                          k_3110
                           (type)
                           (lam
-                            v_3278
+                            v_3111
                             (type)
-                            [ List_2742 [ [ Tuple2_2749 k_3277 ] v_3278 ] ]
+                            [ List_2575 [ [ Tuple2_2582 k_3110 ] v_3111 ] ]
                           )
                         )
                         (con bytestring)
@@ -1214,12 +1214,12 @@
                       [
                         [
                           (lam
-                            k_3279
+                            k_3112
                             (type)
                             (lam
-                              v_3280
+                              v_3113
                               (type)
-                              [ List_2742 [ [ Tuple2_2749 k_3279 ] v_3280 ] ]
+                              [ List_2575 [ [ Tuple2_2582 k_3112 ] v_3113 ] ]
                             )
                           )
                           (con bytestring)
@@ -1229,52 +1229,52 @@
                     ]
                     [
                       [
-                        goOuter_3281
+                        goOuter_3114
                         {
-                          Nil_2743
+                          Nil_2576
                           [
                             [
-                              [ Tuple3_3270 (con bytestring) ] (con bytestring)
+                              [ Tuple3_3103 (con bytestring) ] (con bytestring)
                             ]
                             (con integer)
                           ]
                         }
                       ]
-                      v_3276
+                      v_3109
                     ]
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl Credential_2772 (type))
+                    (tyvardecl Credential_2605 (type))
 
-                    Credential_match_2775
+                    Credential_match_2608
                     (vardecl
-                      PubKeyCredential_2773
-                      (fun (con bytestring) Credential_2772)
+                      PubKeyCredential_2606
+                      (fun (con bytestring) Credential_2605)
                     )
                     (vardecl
-                      ScriptCredential_2774
-                      (fun (con bytestring) Credential_2772)
+                      ScriptCredential_2607
+                      (fun (con bytestring) Credential_2605)
                     )
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl StakingCredential_2776 (type))
+                    (tyvardecl StakingCredential_2609 (type))
 
-                    StakingCredential_match_2779
+                    StakingCredential_match_2612
                     (vardecl
-                      StakingHash_2777
-                      (fun Credential_2772 StakingCredential_2776)
+                      StakingHash_2610
+                      (fun Credential_2605 StakingCredential_2609)
                     )
                     (vardecl
-                      StakingPtr_2778
+                      StakingPtr_2611
                       (fun
                         (con integer)
                         (fun
                           (con integer)
-                          (fun (con integer) StakingCredential_2776)
+                          (fun (con integer) StakingCredential_2609)
                         )
                       )
                     )
@@ -1282,104 +1282,104 @@
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl DCert_2817 (type))
+                    (tyvardecl DCert_2650 (type))
 
-                    DCert_match_2825
+                    DCert_match_2658
                     (vardecl
-                      DCertDelegDeRegKey_2818
-                      (fun StakingCredential_2776 DCert_2817)
+                      DCertDelegDeRegKey_2651
+                      (fun StakingCredential_2609 DCert_2650)
                     )
                     (vardecl
-                      DCertDelegDelegate_2819
+                      DCertDelegDelegate_2652
                       (fun
-                        StakingCredential_2776 (fun (con bytestring) DCert_2817)
+                        StakingCredential_2609 (fun (con bytestring) DCert_2650)
                       )
                     )
                     (vardecl
-                      DCertDelegRegKey_2820
-                      (fun StakingCredential_2776 DCert_2817)
+                      DCertDelegRegKey_2653
+                      (fun StakingCredential_2609 DCert_2650)
                     )
-                    (vardecl DCertGenesis_2821 DCert_2817)
-                    (vardecl DCertMir_2822 DCert_2817)
+                    (vardecl DCertGenesis_2654 DCert_2650)
+                    (vardecl DCertMir_2655 DCert_2650)
                     (vardecl
-                      DCertPoolRegister_2823
-                      (fun (con bytestring) (fun (con bytestring) DCert_2817))
+                      DCertPoolRegister_2656
+                      (fun (con bytestring) (fun (con bytestring) DCert_2650))
                     )
                     (vardecl
-                      DCertPoolRetire_2824
-                      (fun (con bytestring) (fun (con integer) DCert_2817))
+                      DCertPoolRetire_2657
+                      (fun (con bytestring) (fun (con integer) DCert_2650))
                     )
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl ScriptPurpose_2837 (type))
+                    (tyvardecl ScriptPurpose_2670 (type))
 
-                    ScriptPurpose_match_2842
+                    ScriptPurpose_match_2675
                     (vardecl
-                      Certifying_2838 (fun DCert_2817 ScriptPurpose_2837)
+                      Certifying_2671 (fun DCert_2650 ScriptPurpose_2670)
                     )
                     (vardecl
-                      Minting_2839 (fun (con bytestring) ScriptPurpose_2837)
+                      Minting_2672 (fun (con bytestring) ScriptPurpose_2670)
                     )
                     (vardecl
-                      Rewarding_2840
-                      (fun StakingCredential_2776 ScriptPurpose_2837)
+                      Rewarding_2673
+                      (fun StakingCredential_2609 ScriptPurpose_2670)
                     )
                     (vardecl
-                      Spending_2841 (fun TxOutRef_2791 ScriptPurpose_2837)
+                      Spending_2674 (fun TxOutRef_2624 ScriptPurpose_2670)
                     )
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl Extended_2798 (fun (type) (type)))
-                    (tyvardecl a_2803 (type))
-                    Extended_match_2802
-                    (vardecl Finite_2799 (fun a_2803 [ Extended_2798 a_2803 ]))
-                    (vardecl NegInf_2800 [ Extended_2798 a_2803 ])
-                    (vardecl PosInf_2801 [ Extended_2798 a_2803 ])
+                    (tyvardecl Extended_2631 (fun (type) (type)))
+                    (tyvardecl a_2636 (type))
+                    Extended_match_2635
+                    (vardecl Finite_2632 (fun a_2636 [ Extended_2631 a_2636 ]))
+                    (vardecl NegInf_2633 [ Extended_2631 a_2636 ])
+                    (vardecl PosInf_2634 [ Extended_2631 a_2636 ])
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl LowerBound_2808 (fun (type) (type)))
-                    (tyvardecl a_2811 (type))
-                    LowerBound_match_2810
+                    (tyvardecl LowerBound_2641 (fun (type) (type)))
+                    (tyvardecl a_2644 (type))
+                    LowerBound_match_2643
                     (vardecl
-                      LowerBound_2809
+                      LowerBound_2642
                       (fun
-                        [ Extended_2798 a_2811 ]
-                        (fun Bool_2694 [ LowerBound_2808 a_2811 ])
+                        [ Extended_2631 a_2644 ]
+                        (fun Bool_2527 [ LowerBound_2641 a_2644 ])
                       )
                     )
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl UpperBound_2804 (fun (type) (type)))
-                    (tyvardecl a_2807 (type))
-                    UpperBound_match_2806
+                    (tyvardecl UpperBound_2637 (fun (type) (type)))
+                    (tyvardecl a_2640 (type))
+                    UpperBound_match_2639
                     (vardecl
-                      UpperBound_2805
+                      UpperBound_2638
                       (fun
-                        [ Extended_2798 a_2807 ]
-                        (fun Bool_2694 [ UpperBound_2804 a_2807 ])
+                        [ Extended_2631 a_2640 ]
+                        (fun Bool_2527 [ UpperBound_2637 a_2640 ])
                       )
                     )
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl Interval_2812 (fun (type) (type)))
-                    (tyvardecl a_2815 (type))
-                    Interval_match_2814
+                    (tyvardecl Interval_2645 (fun (type) (type)))
+                    (tyvardecl a_2648 (type))
+                    Interval_match_2647
                     (vardecl
-                      Interval_2813
+                      Interval_2646
                       (fun
-                        [ LowerBound_2808 a_2815 ]
+                        [ LowerBound_2641 a_2648 ]
                         (fun
-                          [ UpperBound_2804 a_2815 ] [ Interval_2812 a_2815 ]
+                          [ UpperBound_2637 a_2648 ] [ Interval_2645 a_2648 ]
                         )
                       )
                     )
@@ -1387,47 +1387,47 @@
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl Maybe_2764 (fun (type) (type)))
-                    (tyvardecl a_2768 (type))
-                    Maybe_match_2767
-                    (vardecl Just_2765 (fun a_2768 [ Maybe_2764 a_2768 ]))
-                    (vardecl Nothing_2766 [ Maybe_2764 a_2768 ])
+                    (tyvardecl Maybe_2597 (fun (type) (type)))
+                    (tyvardecl a_2601 (type))
+                    Maybe_match_2600
+                    (vardecl Just_2598 (fun a_2601 [ Maybe_2597 a_2601 ]))
+                    (vardecl Nothing_2599 [ Maybe_2597 a_2601 ])
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl Address_2780 (type))
+                    (tyvardecl Address_2613 (type))
 
-                    Address_match_2782
+                    Address_match_2615
                     (vardecl
-                      Address_2781
+                      Address_2614
                       (fun
-                        Credential_2772
-                        (fun [ Maybe_2764 StakingCredential_2776 ] Address_2780)
+                        Credential_2605
+                        (fun [ Maybe_2597 StakingCredential_2609 ] Address_2613)
                       )
                     )
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl TxOut_2783 (type))
+                    (tyvardecl TxOut_2616 (type))
 
-                    TxOut_match_2785
+                    TxOut_match_2618
                     (vardecl
-                      TxOut_2784
+                      TxOut_2617
                       (fun
-                        Address_2780
+                        Address_2613
                         (fun
                           [
                             [
                               (lam
-                                k_2786
+                                k_2619
                                 (type)
                                 (lam
-                                  v_2787
+                                  v_2620
                                   (type)
                                   [
-                                    List_2742 [ [ Tuple2_2749 k_2786 ] v_2787 ]
+                                    List_2575 [ [ Tuple2_2582 k_2619 ] v_2620 ]
                                   ]
                                 )
                               )
@@ -1436,14 +1436,14 @@
                             [
                               [
                                 (lam
-                                  k_2788
+                                  k_2621
                                   (type)
                                   (lam
-                                    v_2789
+                                    v_2622
                                     (type)
                                     [
-                                      List_2742
-                                      [ [ Tuple2_2749 k_2788 ] v_2789 ]
+                                      List_2575
+                                      [ [ Tuple2_2582 k_2621 ] v_2622 ]
                                     ]
                                   )
                                 )
@@ -1452,7 +1452,7 @@
                               (con integer)
                             ]
                           ]
-                          (fun [ Maybe_2764 (con bytestring) ] TxOut_2783)
+                          (fun [ Maybe_2597 (con bytestring) ] TxOut_2616)
                         )
                       )
                     )
@@ -1460,38 +1460,38 @@
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl TxInInfo_2794 (type))
+                    (tyvardecl TxInInfo_2627 (type))
 
-                    TxInInfo_match_2796
+                    TxInInfo_match_2629
                     (vardecl
-                      TxInInfo_2795
-                      (fun TxOutRef_2791 (fun TxOut_2783 TxInInfo_2794))
+                      TxInInfo_2628
+                      (fun TxOutRef_2624 (fun TxOut_2616 TxInInfo_2627))
                     )
                   )
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl TxInfo_2826 (type))
+                    (tyvardecl TxInfo_2659 (type))
 
-                    TxInfo_match_2828
+                    TxInfo_match_2661
                     (vardecl
-                      TxInfo_2827
+                      TxInfo_2660
                       (fun
-                        [ List_2742 TxInInfo_2794 ]
+                        [ List_2575 TxInInfo_2627 ]
                         (fun
-                          [ List_2742 TxOut_2783 ]
+                          [ List_2575 TxOut_2616 ]
                           (fun
                             [
                               [
                                 (lam
-                                  k_2829
+                                  k_2662
                                   (type)
                                   (lam
-                                    v_2830
+                                    v_2663
                                     (type)
                                     [
-                                      List_2742
-                                      [ [ Tuple2_2749 k_2829 ] v_2830 ]
+                                      List_2575
+                                      [ [ Tuple2_2582 k_2662 ] v_2663 ]
                                     ]
                                   )
                                 )
@@ -1500,14 +1500,14 @@
                               [
                                 [
                                   (lam
-                                    k_2831
+                                    k_2664
                                     (type)
                                     (lam
-                                      v_2832
+                                      v_2665
                                       (type)
                                       [
-                                        List_2742
-                                        [ [ Tuple2_2749 k_2831 ] v_2832 ]
+                                        List_2575
+                                        [ [ Tuple2_2582 k_2664 ] v_2665 ]
                                       ]
                                     )
                                   )
@@ -1520,14 +1520,14 @@
                               [
                                 [
                                   (lam
-                                    k_2833
+                                    k_2666
                                     (type)
                                     (lam
-                                      v_2834
+                                      v_2667
                                       (type)
                                       [
-                                        List_2742
-                                        [ [ Tuple2_2749 k_2833 ] v_2834 ]
+                                        List_2575
+                                        [ [ Tuple2_2582 k_2666 ] v_2667 ]
                                       ]
                                     )
                                   )
@@ -1536,14 +1536,14 @@
                                 [
                                   [
                                     (lam
-                                      k_2835
+                                      k_2668
                                       (type)
                                       (lam
-                                        v_2836
+                                        v_2669
                                         (type)
                                         [
-                                          List_2742
-                                          [ [ Tuple2_2749 k_2835 ] v_2836 ]
+                                          List_2575
+                                          [ [ Tuple2_2582 k_2668 ] v_2669 ]
                                         ]
                                       )
                                     )
@@ -1553,28 +1553,28 @@
                                 ]
                               ]
                               (fun
-                                [ List_2742 DCert_2817 ]
+                                [ List_2575 DCert_2650 ]
                                 (fun
                                   [
-                                    List_2742
+                                    List_2575
                                     [
-                                      [ Tuple2_2749 StakingCredential_2776 ]
+                                      [ Tuple2_2582 StakingCredential_2609 ]
                                       (con integer)
                                     ]
                                   ]
                                   (fun
-                                    [ Interval_2812 (con integer) ]
+                                    [ Interval_2645 (con integer) ]
                                     (fun
-                                      [ List_2742 (con bytestring) ]
+                                      [ List_2575 (con bytestring) ]
                                       (fun
                                         [
-                                          List_2742
+                                          List_2575
                                           [
-                                            [ Tuple2_2749 (con bytestring) ]
+                                            [ Tuple2_2582 (con bytestring) ]
                                             (con data)
                                           ]
                                         ]
-                                        (fun (con bytestring) TxInfo_2826)
+                                        (fun (con bytestring) TxInfo_2659)
                                       )
                                     )
                                   )
@@ -1589,13 +1589,13 @@
                 )
                 (datatypebind
                   (datatype
-                    (tyvardecl ScriptContext_2843 (type))
+                    (tyvardecl ScriptContext_2676 (type))
 
-                    ScriptContext_match_2845
+                    ScriptContext_match_2678
                     (vardecl
-                      ScriptContext_2844
+                      ScriptContext_2677
                       (fun
-                        TxInfo_2826 (fun ScriptPurpose_2837 ScriptContext_2843)
+                        TxInfo_2659 (fun ScriptPurpose_2670 ScriptContext_2676)
                       )
                     )
                   )
@@ -1603,346 +1603,338 @@
                 (termbind
                   (strict)
                   (vardecl
-                    mkPolicy_3696
+                    mkPolicy_3392
                     (fun
-                      TxOutRef_2791
+                      TxOutRef_2624
                       (fun
                         (con bytestring)
-                        (fun Unit_2730 (fun ScriptContext_2843 Bool_2694))
+                        (fun Unit_2563 (fun ScriptContext_2676 Bool_2527))
                       )
                     )
                   )
                   (lam
-                    oref_3431
-                    TxOutRef_2791
+                    oref_3264
+                    TxOutRef_2624
                     (lam
-                      tn_3432
+                      tn_3265
                       (con bytestring)
                       (lam
-                        ds_3433
-                        Unit_2730
+                        ds_3266
+                        Unit_2563
                         (lam
-                          ctx_3434
-                          ScriptContext_2843
+                          ctx_3267
+                          ScriptContext_2676
                           (let
                             (nonrec)
                             (termbind
                               (nonstrict)
-                              (vardecl info_3439 TxInfo_2826)
+                              (vardecl info_3272 TxInfo_2659)
                               [
                                 {
-                                  [ ScriptContext_match_2845 ctx_3434 ]
-                                  TxInfo_2826
+                                  [ ScriptContext_match_2678 ctx_3267 ]
+                                  TxInfo_2659
                                 }
                                 (lam
-                                  ds_3437
-                                  TxInfo_2826
-                                  (lam ds_3438 ScriptPurpose_2837 ds_3437)
+                                  ds_3270
+                                  TxInfo_2659
+                                  (lam ds_3271 ScriptPurpose_2670 ds_3270)
                                 )
                               ]
                             )
-                            [
-                              { [ Unit_match_2732 ds_3433 ] Bool_2694 }
+                            (termbind
+                              (nonstrict)
+                              (vardecl checkMintedAmount_3371 Bool_2527)
                               {
                                 [
                                   [
                                     {
                                       [
-                                        Bool_match_2697
                                         {
+                                          Nil_match_2578
                                           [
                                             [
-                                              {
+                                              [ Tuple3_3103 (con bytestring) ]
+                                              (con bytestring)
+                                            ]
+                                            (con integer)
+                                          ]
+                                        }
+                                        [
+                                          flattenValue_3164
+                                          [
+                                            {
+                                              [ TxInfo_match_2661 info_3272 ]
+                                              [
                                                 [
-                                                  Bool_match_2697
-                                                  [
-                                                    [
+                                                  (lam
+                                                    k_3327
+                                                    (type)
+                                                    (lam
+                                                      v_3328
+                                                      (type)
                                                       [
-                                                        {
-                                                          {
-                                                            fFoldableNil_cfoldMap_3387
-                                                            [
-                                                              (lam
-                                                                a_3521
-                                                                (type)
-                                                                a_3521
-                                                              )
-                                                              Bool_2694
-                                                            ]
-                                                          }
-                                                          TxInInfo_2794
-                                                        }
-                                                        dMonoid_3440
-                                                      ]
-                                                      (lam
-                                                        i_3522
-                                                        TxInInfo_2794
+                                                        List_2575
                                                         [
+                                                          [ Tuple2_2582 k_3327 ]
+                                                          v_3328
+                                                        ]
+                                                      ]
+                                                    )
+                                                  )
+                                                  (con bytestring)
+                                                ]
+                                                [
+                                                  [
+                                                    (lam
+                                                      k_3329
+                                                      (type)
+                                                      (lam
+                                                        v_3330
+                                                        (type)
+                                                        [
+                                                          List_2575
                                                           [
-                                                            fEqTxOutRef_c_3429
                                                             [
-                                                              {
-                                                                [
-                                                                  TxInInfo_match_2796
-                                                                  i_3522
-                                                                ]
-                                                                TxOutRef_2791
-                                                              }
-                                                              (lam
-                                                                ds_3524
-                                                                TxOutRef_2791
-                                                                (lam
-                                                                  ds_3525
-                                                                  TxOut_2783
-                                                                  ds_3524
-                                                                )
-                                                              )
+                                                              Tuple2_2582 k_3329
                                                             ]
+                                                            v_3330
                                                           ]
-                                                          oref_3431
                                                         ]
                                                       )
-                                                    ]
+                                                    )
+                                                    (con bytestring)
+                                                  ]
+                                                  (con integer)
+                                                ]
+                                              ]
+                                            }
+                                            (lam
+                                              ds_3331
+                                              [ List_2575 TxInInfo_2627 ]
+                                              (lam
+                                                ds_3332
+                                                [ List_2575 TxOut_2616 ]
+                                                (lam
+                                                  ds_3333
+                                                  [
                                                     [
-                                                      {
-                                                        [
-                                                          TxInfo_match_2828
-                                                          info_3439
-                                                        ]
-                                                        [
-                                                          List_2742
-                                                          TxInInfo_2794
-                                                        ]
-                                                      }
                                                       (lam
-                                                        ds_3527
-                                                        [
-                                                          List_2742
-                                                          TxInInfo_2794
-                                                        ]
+                                                        k_3334
+                                                        (type)
                                                         (lam
-                                                          ds_3528
+                                                          v_3335
+                                                          (type)
                                                           [
-                                                            List_2742 TxOut_2783
-                                                          ]
-                                                          (lam
-                                                            ds_3529
+                                                            List_2575
                                                             [
                                                               [
-                                                                (lam
-                                                                  k_3530
-                                                                  (type)
-                                                                  (lam
-                                                                    v_3531
-                                                                    (type)
-                                                                    [
-                                                                      List_2742
-                                                                      [
-                                                                        [
-                                                                          Tuple2_2749
-                                                                          k_3530
-                                                                        ]
-                                                                        v_3531
-                                                                      ]
-                                                                    ]
-                                                                  )
-                                                                )
-                                                                (con bytestring)
+                                                                Tuple2_2582
+                                                                k_3334
                                                               ]
+                                                              v_3335
+                                                            ]
+                                                          ]
+                                                        )
+                                                      )
+                                                      (con bytestring)
+                                                    ]
+                                                    [
+                                                      [
+                                                        (lam
+                                                          k_3336
+                                                          (type)
+                                                          (lam
+                                                            v_3337
+                                                            (type)
+                                                            [
+                                                              List_2575
                                                               [
                                                                 [
-                                                                  (lam
-                                                                    k_3532
-                                                                    (type)
-                                                                    (lam
-                                                                      v_3533
-                                                                      (type)
-                                                                      [
-                                                                        List_2742
-                                                                        [
-                                                                          [
-                                                                            Tuple2_2749
-                                                                            k_3532
-                                                                          ]
-                                                                          v_3533
-                                                                        ]
-                                                                      ]
-                                                                    )
-                                                                  )
-                                                                  (con
-                                                                    bytestring
-                                                                  )
+                                                                  Tuple2_2582
+                                                                  k_3336
                                                                 ]
-                                                                (con integer)
+                                                                v_3337
                                                               ]
                                                             ]
-                                                            (lam
-                                                              ds_3534
+                                                          )
+                                                        )
+                                                        (con bytestring)
+                                                      ]
+                                                      (con integer)
+                                                    ]
+                                                  ]
+                                                  (lam
+                                                    ds_3338
+                                                    [
+                                                      [
+                                                        (lam
+                                                          k_3339
+                                                          (type)
+                                                          (lam
+                                                            v_3340
+                                                            (type)
+                                                            [
+                                                              List_2575
                                                               [
                                                                 [
-                                                                  (lam
-                                                                    k_3535
-                                                                    (type)
-                                                                    (lam
-                                                                      v_3536
-                                                                      (type)
-                                                                      [
-                                                                        List_2742
-                                                                        [
-                                                                          [
-                                                                            Tuple2_2749
-                                                                            k_3535
-                                                                          ]
-                                                                          v_3536
-                                                                        ]
-                                                                      ]
-                                                                    )
-                                                                  )
-                                                                  (con
-                                                                    bytestring
-                                                                  )
+                                                                  Tuple2_2582
+                                                                  k_3339
                                                                 ]
+                                                                v_3340
+                                                              ]
+                                                            ]
+                                                          )
+                                                        )
+                                                        (con bytestring)
+                                                      ]
+                                                      [
+                                                        [
+                                                          (lam
+                                                            k_3341
+                                                            (type)
+                                                            (lam
+                                                              v_3342
+                                                              (type)
+                                                              [
+                                                                List_2575
                                                                 [
                                                                   [
-                                                                    (lam
-                                                                      k_3537
-                                                                      (type)
-                                                                      (lam
-                                                                        v_3538
-                                                                        (type)
-                                                                        [
-                                                                          List_2742
-                                                                          [
-                                                                            [
-                                                                              Tuple2_2749
-                                                                              k_3537
-                                                                            ]
-                                                                            v_3538
-                                                                          ]
-                                                                        ]
-                                                                      )
-                                                                    )
+                                                                    Tuple2_2582
+                                                                    k_3341
+                                                                  ]
+                                                                  v_3342
+                                                                ]
+                                                              ]
+                                                            )
+                                                          )
+                                                          (con bytestring)
+                                                        ]
+                                                        (con integer)
+                                                      ]
+                                                    ]
+                                                    (lam
+                                                      ds_3343
+                                                      [ List_2575 DCert_2650 ]
+                                                      (lam
+                                                        ds_3344
+                                                        [
+                                                          List_2575
+                                                          [
+                                                            [
+                                                              Tuple2_2582
+                                                              StakingCredential_2609
+                                                            ]
+                                                            (con integer)
+                                                          ]
+                                                        ]
+                                                        (lam
+                                                          ds_3345
+                                                          [
+                                                            Interval_2645
+                                                            (con integer)
+                                                          ]
+                                                          (lam
+                                                            ds_3346
+                                                            [
+                                                              List_2575
+                                                              (con bytestring)
+                                                            ]
+                                                            (lam
+                                                              ds_3347
+                                                              [
+                                                                List_2575
+                                                                [
+                                                                  [
+                                                                    Tuple2_2582
                                                                     (con
                                                                       bytestring
                                                                     )
                                                                   ]
-                                                                  (con integer)
+                                                                  (con data)
                                                                 ]
                                                               ]
                                                               (lam
-                                                                ds_3539
-                                                                [
-                                                                  List_2742
-                                                                  DCert_2817
-                                                                ]
-                                                                (lam
-                                                                  ds_3540
-                                                                  [
-                                                                    List_2742
-                                                                    [
-                                                                      [
-                                                                        Tuple2_2749
-                                                                        StakingCredential_2776
-                                                                      ]
-                                                                      (con
-                                                                        integer
-                                                                      )
-                                                                    ]
-                                                                  ]
-                                                                  (lam
-                                                                    ds_3541
-                                                                    [
-                                                                      Interval_2812
-                                                                      (con
-                                                                        integer
-                                                                      )
-                                                                    ]
-                                                                    (lam
-                                                                      ds_3542
-                                                                      [
-                                                                        List_2742
-                                                                        (con
-                                                                          bytestring
-                                                                        )
-                                                                      ]
-                                                                      (lam
-                                                                        ds_3543
-                                                                        [
-                                                                          List_2742
-                                                                          [
-                                                                            [
-                                                                              Tuple2_2749
-                                                                              (con
-                                                                                bytestring
-                                                                              )
-                                                                            ]
-                                                                            (con
-                                                                              data
-                                                                            )
-                                                                          ]
-                                                                        ]
-                                                                        (lam
-                                                                          ds_3544
-                                                                          (con
-                                                                            bytestring
-                                                                          )
-                                                                          ds_3527
-                                                                        )
-                                                                      )
-                                                                    )
-                                                                  )
-                                                                )
+                                                                ds_3348
+                                                                (con bytestring)
+                                                                ds_3338
                                                               )
                                                             )
                                                           )
                                                         )
                                                       )
-                                                    ]
-                                                  ]
-                                                ]
-                                                (all dead_3545 (type) Bool_2694)
-                                              }
-                                              (abs dead_3546 (type) True_2695)
-                                            ]
-                                            (abs
-                                              dead_3547
-                                              (type)
-                                              [
-                                                [
-                                                  { trace_2722 Bool_2694 }
-                                                  (con
-                                                    string "UTxO not consumed"
+                                                    )
                                                   )
-                                                ]
-                                                False_2696
-                                              ]
+                                                )
+                                              )
                                             )
                                           ]
-                                          (all dead_3548 (type) dead_3548)
-                                        }
+                                        ]
                                       ]
-                                      (all dead_3549 (type) Bool_2694)
+                                      (all dead_3349 (type) Bool_2527)
                                     }
-                                    (abs
-                                      dead_3550
-                                      (type)
-                                      {
+                                    (abs dead_3350 (type) False_2529)
+                                  ]
+                                  (lam
+                                    ds_3351
+                                    [
+                                      [
+                                        [ Tuple3_3103 (con bytestring) ]
+                                        (con bytestring)
+                                      ]
+                                      (con integer)
+                                    ]
+                                    (lam
+                                      ds_3352
+                                      [
+                                        List_2575
                                         [
                                           [
-                                            {
-                                              [
-                                                Bool_match_2697
+                                            [ Tuple3_3103 (con bytestring) ]
+                                            (con bytestring)
+                                          ]
+                                          (con integer)
+                                        ]
+                                      ]
+                                      (abs
+                                        dead_3353
+                                        (type)
+                                        [
+                                          {
+                                            [
+                                              {
+                                                {
+                                                  {
+                                                    Tuple3_match_3105
+                                                    (con bytestring)
+                                                  }
+                                                  (con bytestring)
+                                                }
+                                                (con integer)
+                                              }
+                                              ds_3351
+                                            ]
+                                            Bool_2527
+                                          }
+                                          (lam
+                                            ds_3355
+                                            (con bytestring)
+                                            (lam
+                                              tn_3356
+                                              (con bytestring)
+                                              (lam
+                                                amt_3357
+                                                (con integer)
                                                 {
                                                   [
                                                     [
                                                       {
                                                         [
                                                           {
-                                                            Nil_match_2745
+                                                            Nil_match_2578
                                                             [
                                                               [
                                                                 [
-                                                                  Tuple3_3270
+                                                                  Tuple3_3103
                                                                   (con
                                                                     bytestring
                                                                   )
@@ -1952,279 +1944,84 @@
                                                               (con integer)
                                                             ]
                                                           }
-                                                          [
-                                                            flattenValue_3331
-                                                            [
-                                                              {
-                                                                [
-                                                                  TxInfo_match_2828
-                                                                  info_3439
-                                                                ]
-                                                                [
-                                                                  [
-                                                                    (lam
-                                                                      k_3646
-                                                                      (type)
-                                                                      (lam
-                                                                        v_3647
-                                                                        (type)
-                                                                        [
-                                                                          List_2742
-                                                                          [
-                                                                            [
-                                                                              Tuple2_2749
-                                                                              k_3646
-                                                                            ]
-                                                                            v_3647
-                                                                          ]
-                                                                        ]
-                                                                      )
-                                                                    )
-                                                                    (con
-                                                                      bytestring
-                                                                    )
-                                                                  ]
-                                                                  [
-                                                                    [
-                                                                      (lam
-                                                                        k_3648
-                                                                        (type)
-                                                                        (lam
-                                                                          v_3649
-                                                                          (type)
-                                                                          [
-                                                                            List_2742
-                                                                            [
-                                                                              [
-                                                                                Tuple2_2749
-                                                                                k_3648
-                                                                              ]
-                                                                              v_3649
-                                                                            ]
-                                                                          ]
-                                                                        )
-                                                                      )
-                                                                      (con
-                                                                        bytestring
-                                                                      )
-                                                                    ]
-                                                                    (con
-                                                                      integer
-                                                                    )
-                                                                  ]
-                                                                ]
-                                                              }
-                                                              (lam
-                                                                ds_3650
-                                                                [
-                                                                  List_2742
-                                                                  TxInInfo_2794
-                                                                ]
-                                                                (lam
-                                                                  ds_3651
-                                                                  [
-                                                                    List_2742
-                                                                    TxOut_2783
-                                                                  ]
-                                                                  (lam
-                                                                    ds_3652
-                                                                    [
-                                                                      [
-                                                                        (lam
-                                                                          k_3653
-                                                                          (type)
-                                                                          (lam
-                                                                            v_3654
-                                                                            (type)
-                                                                            [
-                                                                              List_2742
-                                                                              [
-                                                                                [
-                                                                                  Tuple2_2749
-                                                                                  k_3653
-                                                                                ]
-                                                                                v_3654
-                                                                              ]
-                                                                            ]
-                                                                          )
-                                                                        )
-                                                                        (con
-                                                                          bytestring
-                                                                        )
-                                                                      ]
-                                                                      [
-                                                                        [
-                                                                          (lam
-                                                                            k_3655
-                                                                            (type)
-                                                                            (lam
-                                                                              v_3656
-                                                                              (type)
-                                                                              [
-                                                                                List_2742
-                                                                                [
-                                                                                  [
-                                                                                    Tuple2_2749
-                                                                                    k_3655
-                                                                                  ]
-                                                                                  v_3656
-                                                                                ]
-                                                                              ]
-                                                                            )
-                                                                          )
-                                                                          (con
-                                                                            bytestring
-                                                                          )
-                                                                        ]
-                                                                        (con
-                                                                          integer
-                                                                        )
-                                                                      ]
-                                                                    ]
-                                                                    (lam
-                                                                      ds_3657
-                                                                      [
-                                                                        [
-                                                                          (lam
-                                                                            k_3658
-                                                                            (type)
-                                                                            (lam
-                                                                              v_3659
-                                                                              (type)
-                                                                              [
-                                                                                List_2742
-                                                                                [
-                                                                                  [
-                                                                                    Tuple2_2749
-                                                                                    k_3658
-                                                                                  ]
-                                                                                  v_3659
-                                                                                ]
-                                                                              ]
-                                                                            )
-                                                                          )
-                                                                          (con
-                                                                            bytestring
-                                                                          )
-                                                                        ]
-                                                                        [
-                                                                          [
-                                                                            (lam
-                                                                              k_3660
-                                                                              (type)
-                                                                              (lam
-                                                                                v_3661
-                                                                                (type)
-                                                                                [
-                                                                                  List_2742
-                                                                                  [
-                                                                                    [
-                                                                                      Tuple2_2749
-                                                                                      k_3660
-                                                                                    ]
-                                                                                    v_3661
-                                                                                  ]
-                                                                                ]
-                                                                              )
-                                                                            )
-                                                                            (con
-                                                                              bytestring
-                                                                            )
-                                                                          ]
-                                                                          (con
-                                                                            integer
-                                                                          )
-                                                                        ]
-                                                                      ]
-                                                                      (lam
-                                                                        ds_3662
-                                                                        [
-                                                                          List_2742
-                                                                          DCert_2817
-                                                                        ]
-                                                                        (lam
-                                                                          ds_3663
-                                                                          [
-                                                                            List_2742
-                                                                            [
-                                                                              [
-                                                                                Tuple2_2749
-                                                                                StakingCredential_2776
-                                                                              ]
-                                                                              (con
-                                                                                integer
-                                                                              )
-                                                                            ]
-                                                                          ]
-                                                                          (lam
-                                                                            ds_3664
-                                                                            [
-                                                                              Interval_2812
-                                                                              (con
-                                                                                integer
-                                                                              )
-                                                                            ]
-                                                                            (lam
-                                                                              ds_3665
-                                                                              [
-                                                                                List_2742
-                                                                                (con
-                                                                                  bytestring
-                                                                                )
-                                                                              ]
-                                                                              (lam
-                                                                                ds_3666
-                                                                                [
-                                                                                  List_2742
-                                                                                  [
-                                                                                    [
-                                                                                      Tuple2_2749
-                                                                                      (con
-                                                                                        bytestring
-                                                                                      )
-                                                                                    ]
-                                                                                    (con
-                                                                                      data
-                                                                                    )
-                                                                                  ]
-                                                                                ]
-                                                                                (lam
-                                                                                  ds_3667
-                                                                                  (con
-                                                                                    bytestring
-                                                                                  )
-                                                                                  ds_3657
-                                                                                )
-                                                                              )
-                                                                            )
-                                                                          )
-                                                                        )
-                                                                      )
-                                                                    )
-                                                                  )
-                                                                )
-                                                              )
-                                                            ]
-                                                          ]
+                                                          ds_3352
                                                         ]
                                                         (all
-                                                          dead_3668
+                                                          dead_3359
                                                           (type)
-                                                          Bool_2694
+                                                          Bool_2527
                                                         )
                                                       }
                                                       (abs
-                                                        dead_3669
+                                                        dead_3360
                                                         (type)
-                                                        False_2696
+                                                        {
+                                                          [
+                                                            [
+                                                              {
+                                                                [
+                                                                  Bool_match_2530
+                                                                  [
+                                                                    [
+                                                                      equalsByteString_3172
+                                                                      tn_3356
+                                                                    ]
+                                                                    tn_3265
+                                                                  ]
+                                                                ]
+                                                                (all
+                                                                  dead_3362
+                                                                  (type)
+                                                                  Bool_2527
+                                                                )
+                                                              }
+                                                              (abs
+                                                                dead_3363
+                                                                (type)
+                                                                [
+                                                                  [
+                                                                    [
+                                                                      {
+                                                                        ifThenElse_2686
+                                                                        Bool_2527
+                                                                      }
+                                                                      [
+                                                                        [
+                                                                          equalsInteger_2693
+                                                                          amt_3357
+                                                                        ]
+                                                                        (con
+                                                                          integer
+                                                                          1
+                                                                        )
+                                                                      ]
+                                                                    ]
+                                                                    True_2528
+                                                                  ]
+                                                                  False_2529
+                                                                ]
+                                                              )
+                                                            ]
+                                                            (abs
+                                                              dead_3364
+                                                              (type)
+                                                              False_2529
+                                                            )
+                                                          ]
+                                                          (all
+                                                            dead_3365
+                                                            (type)
+                                                            dead_3365
+                                                          )
+                                                        }
                                                       )
                                                     ]
                                                     (lam
-                                                      ds_3670
+                                                      ipv_3366
                                                       [
                                                         [
                                                           [
-                                                            Tuple3_3270
+                                                            Tuple3_3103
                                                             (con bytestring)
                                                           ]
                                                           (con bytestring)
@@ -2232,13 +2029,13 @@
                                                         (con integer)
                                                       ]
                                                       (lam
-                                                        ds_3671
+                                                        ipv_3367
                                                         [
-                                                          List_2742
+                                                          List_2575
                                                           [
                                                             [
                                                               [
-                                                                Tuple3_3270
+                                                                Tuple3_3103
                                                                 (con bytestring)
                                                               ]
                                                               (con bytestring)
@@ -2247,225 +2044,292 @@
                                                           ]
                                                         ]
                                                         (abs
-                                                          dead_3672
+                                                          dead_3368
                                                           (type)
-                                                          [
-                                                            {
-                                                              [
-                                                                {
-                                                                  {
-                                                                    {
-                                                                      Tuple3_match_3272
-                                                                      (con
-                                                                        bytestring
-                                                                      )
-                                                                    }
-                                                                    (con
-                                                                      bytestring
-                                                                    )
-                                                                  }
-                                                                  (con integer)
-                                                                }
-                                                                ds_3670
-                                                              ]
-                                                              Bool_2694
-                                                            }
-                                                            (lam
-                                                              ds_3674
-                                                              (con bytestring)
-                                                              (lam
-                                                                tn_3675
-                                                                (con bytestring)
-                                                                (lam
-                                                                  amt_3676
-                                                                  (con integer)
-                                                                  {
-                                                                    [
-                                                                      [
-                                                                        {
-                                                                          [
-                                                                            {
-                                                                              Nil_match_2745
-                                                                              [
-                                                                                [
-                                                                                  [
-                                                                                    Tuple3_3270
-                                                                                    (con
-                                                                                      bytestring
-                                                                                    )
-                                                                                  ]
-                                                                                  (con
-                                                                                    bytestring
-                                                                                  )
-                                                                                ]
-                                                                                (con
-                                                                                  integer
-                                                                                )
-                                                                              ]
-                                                                            }
-                                                                            ds_3671
-                                                                          ]
-                                                                          (all
-                                                                            dead_3678
-                                                                            (type)
-                                                                            Bool_2694
-                                                                          )
-                                                                        }
-                                                                        (abs
-                                                                          dead_3679
-                                                                          (type)
-                                                                          {
-                                                                            [
-                                                                              [
-                                                                                {
-                                                                                  [
-                                                                                    Bool_match_2697
-                                                                                    [
-                                                                                      [
-                                                                                        equalsByteString_3339
-                                                                                        tn_3675
-                                                                                      ]
-                                                                                      tn_3432
-                                                                                    ]
-                                                                                  ]
-                                                                                  (all
-                                                                                    dead_3681
-                                                                                    (type)
-                                                                                    Bool_2694
-                                                                                  )
-                                                                                }
-                                                                                (abs
-                                                                                  dead_3682
-                                                                                  (type)
-                                                                                  [
-                                                                                    [
-                                                                                      [
-                                                                                        {
-                                                                                          ifThenElse_2853
-                                                                                          Bool_2694
-                                                                                        }
-                                                                                        [
-                                                                                          [
-                                                                                            equalsInteger_2860
-                                                                                            amt_3676
-                                                                                          ]
-                                                                                          (con
-                                                                                            integer
-                                                                                            1
-                                                                                          )
-                                                                                        ]
-                                                                                      ]
-                                                                                      True_2695
-                                                                                    ]
-                                                                                    False_2696
-                                                                                  ]
-                                                                                )
-                                                                              ]
-                                                                              (abs
-                                                                                dead_3683
-                                                                                (type)
-                                                                                False_2696
-                                                                              )
-                                                                            ]
-                                                                            (all
-                                                                              dead_3684
-                                                                              (type)
-                                                                              dead_3684
-                                                                            )
-                                                                          }
-                                                                        )
-                                                                      ]
-                                                                      (lam
-                                                                        ipv_3685
-                                                                        [
-                                                                          [
-                                                                            [
-                                                                              Tuple3_3270
-                                                                              (con
-                                                                                bytestring
-                                                                              )
-                                                                            ]
-                                                                            (con
-                                                                              bytestring
-                                                                            )
-                                                                          ]
-                                                                          (con
-                                                                            integer
-                                                                          )
-                                                                        ]
-                                                                        (lam
-                                                                          ipv_3686
-                                                                          [
-                                                                            List_2742
-                                                                            [
-                                                                              [
-                                                                                [
-                                                                                  Tuple3_3270
-                                                                                  (con
-                                                                                    bytestring
-                                                                                  )
-                                                                                ]
-                                                                                (con
-                                                                                  bytestring
-                                                                                )
-                                                                              ]
-                                                                              (con
-                                                                                integer
-                                                                              )
-                                                                            ]
-                                                                          ]
-                                                                          (abs
-                                                                            dead_3687
-                                                                            (type)
-                                                                            False_2696
-                                                                          )
-                                                                        )
-                                                                      )
-                                                                    ]
-                                                                    (all
-                                                                      dead_3688
-                                                                      (type)
-                                                                      dead_3688
-                                                                    )
-                                                                  }
-                                                                )
-                                                              )
-                                                            )
-                                                          ]
+                                                          False_2529
                                                         )
                                                       )
                                                     )
                                                   ]
                                                   (all
-                                                    dead_3689 (type) dead_3689
+                                                    dead_3369 (type) dead_3369
                                                   )
                                                 }
+                                              )
+                                            )
+                                          )
+                                        ]
+                                      )
+                                    )
+                                  )
+                                ]
+                                (all dead_3370 (type) dead_3370)
+                              }
+                            )
+                            (termbind
+                              (nonstrict)
+                              (vardecl
+                                hasUTxO_3299
+                                [ (lam a_3300 (type) a_3300) Bool_2527 ]
+                              )
+                              [
+                                [
+                                  [
+                                    {
+                                      {
+                                        fFoldableNil_cfoldMap_3220
+                                        [ (lam a_3275 (type) a_3275) Bool_2527 ]
+                                      }
+                                      TxInInfo_2627
+                                    }
+                                    dMonoid_3273
+                                  ]
+                                  (lam
+                                    i_3276
+                                    TxInInfo_2627
+                                    [
+                                      [
+                                        fEqTxOutRef_c_3262
+                                        [
+                                          {
+                                            [ TxInInfo_match_2629 i_3276 ]
+                                            TxOutRef_2624
+                                          }
+                                          (lam
+                                            ds_3278
+                                            TxOutRef_2624
+                                            (lam ds_3279 TxOut_2616 ds_3278)
+                                          )
+                                        ]
+                                      ]
+                                      oref_3264
+                                    ]
+                                  )
+                                ]
+                                [
+                                  {
+                                    [ TxInfo_match_2661 info_3272 ]
+                                    [ List_2575 TxInInfo_2627 ]
+                                  }
+                                  (lam
+                                    ds_3281
+                                    [ List_2575 TxInInfo_2627 ]
+                                    (lam
+                                      ds_3282
+                                      [ List_2575 TxOut_2616 ]
+                                      (lam
+                                        ds_3283
+                                        [
+                                          [
+                                            (lam
+                                              k_3284
+                                              (type)
+                                              (lam
+                                                v_3285
+                                                (type)
+                                                [
+                                                  List_2575
+                                                  [
+                                                    [ Tuple2_2582 k_3284 ]
+                                                    v_3285
+                                                  ]
+                                                ]
+                                              )
+                                            )
+                                            (con bytestring)
+                                          ]
+                                          [
+                                            [
+                                              (lam
+                                                k_3286
+                                                (type)
+                                                (lam
+                                                  v_3287
+                                                  (type)
+                                                  [
+                                                    List_2575
+                                                    [
+                                                      [ Tuple2_2582 k_3286 ]
+                                                      v_3287
+                                                    ]
+                                                  ]
+                                                )
+                                              )
+                                              (con bytestring)
+                                            ]
+                                            (con integer)
+                                          ]
+                                        ]
+                                        (lam
+                                          ds_3288
+                                          [
+                                            [
+                                              (lam
+                                                k_3289
+                                                (type)
+                                                (lam
+                                                  v_3290
+                                                  (type)
+                                                  [
+                                                    List_2575
+                                                    [
+                                                      [ Tuple2_2582 k_3289 ]
+                                                      v_3290
+                                                    ]
+                                                  ]
+                                                )
+                                              )
+                                              (con bytestring)
+                                            ]
+                                            [
+                                              [
+                                                (lam
+                                                  k_3291
+                                                  (type)
+                                                  (lam
+                                                    v_3292
+                                                    (type)
+                                                    [
+                                                      List_2575
+                                                      [
+                                                        [ Tuple2_2582 k_3291 ]
+                                                        v_3292
+                                                      ]
+                                                    ]
+                                                  )
+                                                )
+                                                (con bytestring)
                                               ]
-                                              (all dead_3690 (type) Bool_2694)
+                                              (con integer)
+                                            ]
+                                          ]
+                                          (lam
+                                            ds_3293
+                                            [ List_2575 DCert_2650 ]
+                                            (lam
+                                              ds_3294
+                                              [
+                                                List_2575
+                                                [
+                                                  [
+                                                    Tuple2_2582
+                                                    StakingCredential_2609
+                                                  ]
+                                                  (con integer)
+                                                ]
+                                              ]
+                                              (lam
+                                                ds_3295
+                                                [ Interval_2645 (con integer) ]
+                                                (lam
+                                                  ds_3296
+                                                  [ List_2575 (con bytestring) ]
+                                                  (lam
+                                                    ds_3297
+                                                    [
+                                                      List_2575
+                                                      [
+                                                        [
+                                                          Tuple2_2582
+                                                          (con bytestring)
+                                                        ]
+                                                        (con data)
+                                                      ]
+                                                    ]
+                                                    (lam
+                                                      ds_3298
+                                                      (con bytestring)
+                                                      ds_3281
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                            )
+                                          )
+                                        )
+                                      )
+                                    )
+                                  )
+                                ]
+                              ]
+                            )
+                            (termbind
+                              (nonstrict)
+                              (vardecl hasUTxO_3301 Bool_2527)
+                              hasUTxO_3299
+                            )
+                            [
+                              { [ Unit_match_2565 ds_3266 ] Bool_2527 }
+                              {
+                                [
+                                  [
+                                    {
+                                      [
+                                        Bool_match_2530
+                                        {
+                                          [
+                                            [
+                                              {
+                                                [ Bool_match_2530 hasUTxO_3301 ]
+                                                (all dead_3379 (type) Bool_2527)
+                                              }
+                                              (abs dead_3380 (type) True_2528)
+                                            ]
+                                            (abs
+                                              dead_3381
+                                              (type)
+                                              [
+                                                [
+                                                  { trace_2555 Bool_2527 }
+                                                  (con
+                                                    string "UTxO not consumed"
+                                                  )
+                                                ]
+                                                False_2529
+                                              ]
+                                            )
+                                          ]
+                                          (all dead_3382 (type) dead_3382)
+                                        }
+                                      ]
+                                      (all dead_3383 (type) Bool_2527)
+                                    }
+                                    (abs
+                                      dead_3384
+                                      (type)
+                                      {
+                                        [
+                                          [
+                                            {
+                                              [
+                                                Bool_match_2530
+                                                checkMintedAmount_3371
+                                              ]
+                                              (all dead_3386 (type) Bool_2527)
                                             }
-                                            (abs dead_3691 (type) True_2695)
+                                            (abs dead_3387 (type) True_2528)
                                           ]
                                           (abs
-                                            dead_3692
+                                            dead_3388
                                             (type)
                                             [
                                               [
-                                                { trace_2722 Bool_2694 }
+                                                { trace_2555 Bool_2527 }
                                                 (con
                                                   string "wrong amount minted"
                                                 )
                                               ]
-                                              False_2696
+                                              False_2529
                                             ]
                                           )
                                         ]
-                                        (all dead_3693 (type) dead_3693)
+                                        (all dead_3389 (type) dead_3389)
                                       }
                                     )
                                   ]
-                                  (abs dead_3694 (type) False_2696)
+                                  (abs dead_3390 (type) False_2529)
                                 ]
-                                (all dead_3695 (type) dead_3695)
+                                (all dead_3391 (type) dead_3391)
                               }
                             ]
                           )
@@ -2476,138 +2340,138 @@
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_3241 ScriptContext_2843)
+                  (vardecl x_3074 ScriptContext_2676)
                   [
-                    { error_2726 ScriptContext_2843 }
+                    { error_2559 ScriptContext_2676 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_3224 ScriptPurpose_2837)
+                  (vardecl x_3057 ScriptPurpose_2670)
                   [
-                    { error_2726 ScriptPurpose_2837 }
+                    { error_2559 ScriptPurpose_2670 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_3131 DCert_2817)
+                  (vardecl x_2964 DCert_2650)
                   [
-                    { error_2726 DCert_2817 }
+                    { error_2559 DCert_2650 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_2960 StakingCredential_2776)
+                  (vardecl x_2793 StakingCredential_2609)
                   [
-                    { error_2726 StakingCredential_2776 }
+                    { error_2559 StakingCredential_2609 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_2941 Credential_2772)
+                  (vardecl x_2774 Credential_2605)
                   [
-                    { error_2726 Credential_2772 }
+                    { error_2559 Credential_2605 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (strict)
-                  (vardecl unsafeDataAsB_2864 (fun (con data) (con bytestring)))
+                  (vardecl unsafeDataAsB_2697 (fun (con data) (con bytestring)))
                   (builtin unBData)
                 )
                 (termbind
                   (strict)
                   (vardecl
-                    head_2855
-                    (all a_2856 (type) (fun [ (con list) a_2856 ] a_2856))
+                    head_2688
+                    (all a_2689 (type) (fun [ (con list) a_2689 ] a_2689))
                   )
                   (builtin headList)
                 )
                 (termbind
                   (strict)
                   (vardecl
-                    snd_2849
+                    snd_2682
                     (all
-                      a_2850
+                      a_2683
                       (type)
                       (all
-                        b_2851
+                        b_2684
                         (type)
-                        (fun [ [ (con pair) a_2850 ] b_2851 ] b_2851)
+                        (fun [ [ (con pair) a_2683 ] b_2684 ] b_2684)
                       )
                     )
                   )
@@ -2616,136 +2480,136 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataCredential_cunsafeFromBuiltinData_2945
-                    (fun (con data) Credential_2772)
+                    fUnsafeFromDataCredential_cunsafeFromBuiltinData_2778
+                    (fun (con data) Credential_2605)
                   )
                   (lam
-                    d_2931
+                    d_2764
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_2932
+                          tup_2765
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_2931 ]
+                        [ unsafeDataAsConstr_2679 d_2764 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2937 (con bytestring))
+                        (vardecl x_2770 (con bytestring))
                         [
-                          unsafeDataAsB_2864
+                          unsafeDataAsB_2697
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_2932
+                              tup_2765
                             ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2938 Credential_2772)
-                        [ PubKeyCredential_2773 x_2937 ]
+                        (vardecl x_2771 Credential_2605)
+                        [ PubKeyCredential_2606 x_2770 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl index_2933 (con integer))
+                        (vardecl index_2766 (con integer))
                         [
                           {
-                            { fst_2857 (con integer) } [ (con list) (con data) ]
+                            { fst_2690 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_2932
+                          tup_2765
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2943 Credential_2772)
+                        (vardecl x_2776 Credential_2605)
                         [
                           [
                             [
                               [
                                 {
-                                  ifThenElse_2853
-                                  (fun (con unit) Credential_2772)
+                                  ifThenElse_2686
+                                  (fun (con unit) Credential_2605)
                                 }
                                 [
-                                  [ equalsInteger_2860 index_2933 ]
+                                  [ equalsInteger_2693 index_2766 ]
                                   (con integer 0)
                                 ]
                               ]
-                              (lam ds_2939 (con unit) x_2938)
+                              (lam ds_2772 (con unit) x_2771)
                             ]
-                            (lam ds_2942 (con unit) x_2941)
+                            (lam ds_2775 (con unit) x_2774)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2934 (con bytestring))
+                        (vardecl x_2767 (con bytestring))
                         [
-                          unsafeDataAsB_2864
+                          unsafeDataAsB_2697
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_2932
+                              tup_2765
                             ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2935 Credential_2772)
-                        [ ScriptCredential_2774 x_2934 ]
+                        (vardecl x_2768 Credential_2605)
+                        [ ScriptCredential_2607 x_2767 ]
                       )
                       [
                         [
                           [
                             [
                               {
-                                ifThenElse_2853 (fun (con unit) Credential_2772)
+                                ifThenElse_2686 (fun (con unit) Credential_2605)
                               }
                               [
-                                [ equalsInteger_2860 index_2933 ]
+                                [ equalsInteger_2693 index_2766 ]
                                 (con integer 1)
                               ]
                             ]
-                            (lam ds_2936 (con unit) x_2935)
+                            (lam ds_2769 (con unit) x_2768)
                           ]
-                          (lam ds_2944 (con unit) x_2943)
+                          (lam ds_2777 (con unit) x_2776)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
                 )
                 (termbind
                   (strict)
-                  (vardecl unsafeDataAsI_2863 (fun (con data) (con integer)))
+                  (vardecl unsafeDataAsI_2696 (fun (con data) (con integer)))
                   (builtin unIData)
                 )
                 (termbind
                   (strict)
                   (vardecl
-                    tail_2847
+                    tail_2680
                     (all
-                      a_2848
+                      a_2681
                       (type)
-                      (fun [ (con list) a_2848 ] [ (con list) a_2848 ])
+                      (fun [ (con list) a_2681 ] [ (con list) a_2681 ])
                     )
                   )
                   (builtin tailList)
@@ -2753,143 +2617,143 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2964
-                    (fun (con data) StakingCredential_2776)
+                    fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2797
+                    (fun (con data) StakingCredential_2609)
                   )
                   (lam
-                    d_2946
+                    d_2779
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_2947
+                          tup_2780
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_2946 ]
+                        [ unsafeDataAsConstr_2679 d_2779 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2956 Credential_2772)
+                        (vardecl x_2789 Credential_2605)
                         [
-                          fUnsafeFromDataCredential_cunsafeFromBuiltinData_2945
+                          fUnsafeFromDataCredential_cunsafeFromBuiltinData_2778
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_2947
+                              tup_2780
                             ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2957 StakingCredential_2776)
-                        [ StakingHash_2777 x_2956 ]
+                        (vardecl x_2790 StakingCredential_2609)
+                        [ StakingHash_2610 x_2789 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl index_2948 (con integer))
+                        (vardecl index_2781 (con integer))
                         [
                           {
-                            { fst_2857 (con integer) } [ (con list) (con data) ]
+                            { fst_2690 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_2947
+                          tup_2780
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2962 StakingCredential_2776)
+                        (vardecl x_2795 StakingCredential_2609)
                         [
                           [
                             [
                               [
                                 {
-                                  ifThenElse_2853
-                                  (fun (con unit) StakingCredential_2776)
+                                  ifThenElse_2686
+                                  (fun (con unit) StakingCredential_2609)
                                 }
                                 [
-                                  [ equalsInteger_2860 index_2948 ]
+                                  [ equalsInteger_2693 index_2781 ]
                                   (con integer 0)
                                 ]
                               ]
-                              (lam ds_2958 (con unit) x_2957)
+                              (lam ds_2791 (con unit) x_2790)
                             ]
-                            (lam ds_2961 (con unit) x_2960)
+                            (lam ds_2794 (con unit) x_2793)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_2949 [ (con list) (con data) ])
+                        (vardecl t_2782 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_2947
+                          tup_2780
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_2950 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_2949 ]
+                        (vardecl t_2783 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_2782 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2953 (con integer))
+                        (vardecl x_2786 (con integer))
                         [
-                          unsafeDataAsI_2863
+                          unsafeDataAsI_2696
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_2950 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_2783 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2952 (con integer))
+                        (vardecl x_2785 (con integer))
                         [
-                          unsafeDataAsI_2863 [ { head_2855 (con data) } t_2950 ]
+                          unsafeDataAsI_2696 [ { head_2688 (con data) } t_2783 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2951 (con integer))
+                        (vardecl x_2784 (con integer))
                         [
-                          unsafeDataAsI_2863 [ { head_2855 (con data) } t_2949 ]
+                          unsafeDataAsI_2696 [ { head_2688 (con data) } t_2782 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2954 StakingCredential_2776)
-                        [ [ [ StakingPtr_2778 x_2951 ] x_2952 ] x_2953 ]
+                        (vardecl x_2787 StakingCredential_2609)
+                        [ [ [ StakingPtr_2611 x_2784 ] x_2785 ] x_2786 ]
                       )
                       [
                         [
                           [
                             [
                               {
-                                ifThenElse_2853
-                                (fun (con unit) StakingCredential_2776)
+                                ifThenElse_2686
+                                (fun (con unit) StakingCredential_2609)
                               }
                               [
-                                [ equalsInteger_2860 index_2948 ]
+                                [ equalsInteger_2693 index_2781 ]
                                 (con integer 1)
                               ]
                             ]
-                            (lam ds_2955 (con unit) x_2954)
+                            (lam ds_2788 (con unit) x_2787)
                           ]
-                          (lam ds_2963 (con unit) x_2962)
+                          (lam ds_2796 (con unit) x_2795)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
@@ -2897,397 +2761,397 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataDCert_cunsafeFromBuiltinData_3145
-                    (fun (con data) DCert_2817)
+                    fUnsafeFromDataDCert_cunsafeFromBuiltinData_2978
+                    (fun (con data) DCert_2650)
                   )
                   (lam
-                    d_3104
+                    d_2937
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_3105
+                          tup_2938
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_3104 ]
+                        [ unsafeDataAsConstr_2679 d_2937 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3127 StakingCredential_2776)
+                        (vardecl x_2960 StakingCredential_2609)
                         [
-                          fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2964
+                          fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2797
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_3105
+                              tup_2938
                             ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3128 DCert_2817)
-                        [ DCertDelegRegKey_2820 x_3127 ]
+                        (vardecl x_2961 DCert_2650)
+                        [ DCertDelegRegKey_2653 x_2960 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl index_3106 (con integer))
+                        (vardecl index_2939 (con integer))
                         [
                           {
-                            { fst_2857 (con integer) } [ (con list) (con data) ]
+                            { fst_2690 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_3105
+                          tup_2938
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3133 DCert_2817)
+                        (vardecl x_2966 DCert_2650)
                         [
                           [
                             [
                               [
-                                { ifThenElse_2853 (fun (con unit) DCert_2817) }
+                                { ifThenElse_2686 (fun (con unit) DCert_2650) }
                                 [
-                                  [ equalsInteger_2860 index_3106 ]
+                                  [ equalsInteger_2693 index_2939 ]
                                   (con integer 0)
                                 ]
                               ]
-                              (lam ds_3129 (con unit) x_3128)
+                              (lam ds_2962 (con unit) x_2961)
                             ]
-                            (lam ds_3132 (con unit) x_3131)
+                            (lam ds_2965 (con unit) x_2964)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3124 StakingCredential_2776)
+                        (vardecl x_2957 StakingCredential_2609)
                         [
-                          fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2964
+                          fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2797
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_3105
+                              tup_2938
                             ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3125 DCert_2817)
-                        [ DCertDelegDeRegKey_2818 x_3124 ]
+                        (vardecl x_2958 DCert_2650)
+                        [ DCertDelegDeRegKey_2651 x_2957 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3135 DCert_2817)
+                        (vardecl x_2968 DCert_2650)
                         [
                           [
                             [
                               [
-                                { ifThenElse_2853 (fun (con unit) DCert_2817) }
+                                { ifThenElse_2686 (fun (con unit) DCert_2650) }
                                 [
-                                  [ equalsInteger_2860 index_3106 ]
+                                  [ equalsInteger_2693 index_2939 ]
                                   (con integer 1)
                                 ]
                               ]
-                              (lam ds_3126 (con unit) x_3125)
+                              (lam ds_2959 (con unit) x_2958)
                             ]
-                            (lam ds_3134 (con unit) x_3133)
+                            (lam ds_2967 (con unit) x_2966)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3119 [ (con list) (con data) ])
+                        (vardecl t_2952 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_3105
+                          tup_2938
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3121 (con bytestring))
+                        (vardecl x_2954 (con bytestring))
                         [
-                          unsafeDataAsB_2864
+                          unsafeDataAsB_2697
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_3119 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_2952 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3120 StakingCredential_2776)
+                        (vardecl x_2953 StakingCredential_2609)
                         [
-                          fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2964
-                          [ { head_2855 (con data) } t_3119 ]
+                          fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2797
+                          [ { head_2688 (con data) } t_2952 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3122 DCert_2817)
-                        [ [ DCertDelegDelegate_2819 x_3120 ] x_3121 ]
+                        (vardecl x_2955 DCert_2650)
+                        [ [ DCertDelegDelegate_2652 x_2953 ] x_2954 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3137 DCert_2817)
+                        (vardecl x_2970 DCert_2650)
                         [
                           [
                             [
                               [
-                                { ifThenElse_2853 (fun (con unit) DCert_2817) }
+                                { ifThenElse_2686 (fun (con unit) DCert_2650) }
                                 [
-                                  [ equalsInteger_2860 index_3106 ]
+                                  [ equalsInteger_2693 index_2939 ]
                                   (con integer 2)
                                 ]
                               ]
-                              (lam ds_3123 (con unit) x_3122)
+                              (lam ds_2956 (con unit) x_2955)
                             ]
-                            (lam ds_3136 (con unit) x_3135)
+                            (lam ds_2969 (con unit) x_2968)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3114 [ (con list) (con data) ])
+                        (vardecl t_2947 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_3105
+                          tup_2938
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3116 (con bytestring))
+                        (vardecl x_2949 (con bytestring))
                         [
-                          unsafeDataAsB_2864
+                          unsafeDataAsB_2697
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_3114 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_2947 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3115 (con bytestring))
+                        (vardecl x_2948 (con bytestring))
                         [
-                          unsafeDataAsB_2864 [ { head_2855 (con data) } t_3114 ]
+                          unsafeDataAsB_2697 [ { head_2688 (con data) } t_2947 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3117 DCert_2817)
-                        [ [ DCertPoolRegister_2823 x_3115 ] x_3116 ]
+                        (vardecl x_2950 DCert_2650)
+                        [ [ DCertPoolRegister_2656 x_2948 ] x_2949 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3139 DCert_2817)
+                        (vardecl x_2972 DCert_2650)
                         [
                           [
                             [
                               [
-                                { ifThenElse_2853 (fun (con unit) DCert_2817) }
+                                { ifThenElse_2686 (fun (con unit) DCert_2650) }
                                 [
-                                  [ equalsInteger_2860 index_3106 ]
+                                  [ equalsInteger_2693 index_2939 ]
                                   (con integer 3)
                                 ]
                               ]
-                              (lam ds_3118 (con unit) x_3117)
+                              (lam ds_2951 (con unit) x_2950)
                             ]
-                            (lam ds_3138 (con unit) x_3137)
+                            (lam ds_2971 (con unit) x_2970)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3109 [ (con list) (con data) ])
+                        (vardecl t_2942 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_3105
+                          tup_2938
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3111 (con integer))
+                        (vardecl x_2944 (con integer))
                         [
-                          unsafeDataAsI_2863
+                          unsafeDataAsI_2696
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_3109 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_2942 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3110 (con bytestring))
+                        (vardecl x_2943 (con bytestring))
                         [
-                          unsafeDataAsB_2864 [ { head_2855 (con data) } t_3109 ]
+                          unsafeDataAsB_2697 [ { head_2688 (con data) } t_2942 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3112 DCert_2817)
-                        [ [ DCertPoolRetire_2824 x_3110 ] x_3111 ]
+                        (vardecl x_2945 DCert_2650)
+                        [ [ DCertPoolRetire_2657 x_2943 ] x_2944 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3141 DCert_2817)
+                        (vardecl x_2974 DCert_2650)
                         [
                           [
                             [
                               [
-                                { ifThenElse_2853 (fun (con unit) DCert_2817) }
+                                { ifThenElse_2686 (fun (con unit) DCert_2650) }
                                 [
-                                  [ equalsInteger_2860 index_3106 ]
+                                  [ equalsInteger_2693 index_2939 ]
                                   (con integer 4)
                                 ]
                               ]
-                              (lam ds_3113 (con unit) x_3112)
+                              (lam ds_2946 (con unit) x_2945)
                             ]
-                            (lam ds_3140 (con unit) x_3139)
+                            (lam ds_2973 (con unit) x_2972)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3143 DCert_2817)
+                        (vardecl x_2976 DCert_2650)
                         [
                           [
                             [
                               [
-                                { ifThenElse_2853 (fun (con unit) DCert_2817) }
+                                { ifThenElse_2686 (fun (con unit) DCert_2650) }
                                 [
-                                  [ equalsInteger_2860 index_3106 ]
+                                  [ equalsInteger_2693 index_2939 ]
                                   (con integer 5)
                                 ]
                               ]
-                              (lam ds_3108 (con unit) DCertGenesis_2821)
+                              (lam ds_2941 (con unit) DCertGenesis_2654)
                             ]
-                            (lam ds_3142 (con unit) x_3141)
+                            (lam ds_2975 (con unit) x_2974)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       [
                         [
                           [
                             [
-                              { ifThenElse_2853 (fun (con unit) DCert_2817) }
+                              { ifThenElse_2686 (fun (con unit) DCert_2650) }
                               [
-                                [ equalsInteger_2860 index_3106 ]
+                                [ equalsInteger_2693 index_2939 ]
                                 (con integer 6)
                               ]
                             ]
-                            (lam ds_3107 (con unit) DCertMir_2822)
+                            (lam ds_2940 (con unit) DCertMir_2655)
                           ]
-                          (lam ds_3144 (con unit) x_3143)
+                          (lam ds_2977 (con unit) x_2976)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_3011 TxOutRef_2791)
+                  (vardecl x_2844 TxOutRef_2624)
                   [
-                    { error_2726 TxOutRef_2791 }
+                    { error_2559 TxOutRef_2624 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_3000 (con bytestring))
+                  (vardecl x_2833 (con bytestring))
                   [
-                    { error_2726 (con bytestring) }
+                    { error_2559 (con bytestring) }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataTxId_cunsafeFromBuiltinData_3002
+                    fUnsafeFromDataTxId_cunsafeFromBuiltinData_2835
                     (fun (con data) (con bytestring))
                   )
                   (lam
-                    d_2995
+                    d_2828
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_2996
+                          tup_2829
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_2995 ]
+                        [ unsafeDataAsConstr_2679 d_2828 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2997 (con bytestring))
+                        (vardecl x_2830 (con bytestring))
                         [
-                          unsafeDataAsB_2864
+                          unsafeDataAsB_2697
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_2996
+                              tup_2829
                             ]
                           ]
                         ]
@@ -3297,28 +3161,28 @@
                           [
                             [
                               {
-                                ifThenElse_2853
+                                ifThenElse_2686
                                 (fun (con unit) (con bytestring))
                               }
                               [
                                 [
-                                  equalsInteger_2860
+                                  equalsInteger_2693
                                   [
                                     {
-                                      { fst_2857 (con integer) }
+                                      { fst_2690 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_2996
+                                    tup_2829
                                   ]
                                 ]
                                 (con integer 0)
                               ]
                             ]
-                            (lam ds_2998 (con unit) x_2997)
+                            (lam ds_2831 (con unit) x_2830)
                           ]
-                          (lam ds_3001 (con unit) x_3000)
+                          (lam ds_2834 (con unit) x_2833)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
@@ -3326,83 +3190,83 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData_3013
-                    (fun (con data) TxOutRef_2791)
+                    fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData_2846
+                    (fun (con data) TxOutRef_2624)
                   )
                   (lam
-                    d_3003
+                    d_2836
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_3004
+                          tup_2837
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_3003 ]
+                        [ unsafeDataAsConstr_2679 d_2836 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3005 [ (con list) (con data) ])
+                        (vardecl t_2838 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_3004
+                          tup_2837
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3007 (con integer))
+                        (vardecl x_2840 (con integer))
                         [
-                          unsafeDataAsI_2863
+                          unsafeDataAsI_2696
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_3005 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_2838 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3006 (con bytestring))
+                        (vardecl x_2839 (con bytestring))
                         [
-                          fUnsafeFromDataTxId_cunsafeFromBuiltinData_3002
-                          [ { head_2855 (con data) } t_3005 ]
+                          fUnsafeFromDataTxId_cunsafeFromBuiltinData_2835
+                          [ { head_2688 (con data) } t_2838 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3008 TxOutRef_2791)
-                        [ [ TxOutRef_2792 x_3006 ] x_3007 ]
+                        (vardecl x_2841 TxOutRef_2624)
+                        [ [ TxOutRef_2625 x_2839 ] x_2840 ]
                       )
                       [
                         [
                           [
                             [
-                              { ifThenElse_2853 (fun (con unit) TxOutRef_2791) }
+                              { ifThenElse_2686 (fun (con unit) TxOutRef_2624) }
                               [
                                 [
-                                  equalsInteger_2860
+                                  equalsInteger_2693
                                   [
                                     {
-                                      { fst_2857 (con integer) }
+                                      { fst_2690 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_3004
+                                    tup_2837
                                   ]
                                 ]
                                 (con integer 0)
                               ]
                             ]
-                            (lam ds_3009 (con unit) x_3008)
+                            (lam ds_2842 (con unit) x_2841)
                           ]
-                          (lam ds_3012 (con unit) x_3011)
+                          (lam ds_2845 (con unit) x_2844)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
@@ -3410,351 +3274,351 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3232
-                    (fun (con data) ScriptPurpose_2837)
+                    fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3065
+                    (fun (con data) ScriptPurpose_2670)
                   )
                   (lam
-                    d_3208
+                    d_3041
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_3209
+                          tup_3042
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_3208 ]
+                        [ unsafeDataAsConstr_2679 d_3041 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3220 (con bytestring))
+                        (vardecl x_3053 (con bytestring))
                         [
-                          unsafeDataAsB_2864
+                          unsafeDataAsB_2697
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_3209
+                              tup_3042
                             ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3221 ScriptPurpose_2837)
-                        [ Minting_2839 x_3220 ]
+                        (vardecl x_3054 ScriptPurpose_2670)
+                        [ Minting_2672 x_3053 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl index_3210 (con integer))
+                        (vardecl index_3043 (con integer))
                         [
                           {
-                            { fst_2857 (con integer) } [ (con list) (con data) ]
+                            { fst_2690 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_3209
+                          tup_3042
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3226 ScriptPurpose_2837)
+                        (vardecl x_3059 ScriptPurpose_2670)
                         [
                           [
                             [
                               [
                                 {
-                                  ifThenElse_2853
-                                  (fun (con unit) ScriptPurpose_2837)
+                                  ifThenElse_2686
+                                  (fun (con unit) ScriptPurpose_2670)
                                 }
                                 [
-                                  [ equalsInteger_2860 index_3210 ]
+                                  [ equalsInteger_2693 index_3043 ]
                                   (con integer 0)
                                 ]
                               ]
-                              (lam ds_3222 (con unit) x_3221)
+                              (lam ds_3055 (con unit) x_3054)
                             ]
-                            (lam ds_3225 (con unit) x_3224)
+                            (lam ds_3058 (con unit) x_3057)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3217 TxOutRef_2791)
+                        (vardecl x_3050 TxOutRef_2624)
                         [
-                          fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData_3013
+                          fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData_2846
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_3209
+                              tup_3042
                             ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3218 ScriptPurpose_2837)
-                        [ Spending_2841 x_3217 ]
+                        (vardecl x_3051 ScriptPurpose_2670)
+                        [ Spending_2674 x_3050 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3228 ScriptPurpose_2837)
+                        (vardecl x_3061 ScriptPurpose_2670)
                         [
                           [
                             [
                               [
                                 {
-                                  ifThenElse_2853
-                                  (fun (con unit) ScriptPurpose_2837)
+                                  ifThenElse_2686
+                                  (fun (con unit) ScriptPurpose_2670)
                                 }
                                 [
-                                  [ equalsInteger_2860 index_3210 ]
+                                  [ equalsInteger_2693 index_3043 ]
                                   (con integer 1)
                                 ]
                               ]
-                              (lam ds_3219 (con unit) x_3218)
+                              (lam ds_3052 (con unit) x_3051)
                             ]
-                            (lam ds_3227 (con unit) x_3226)
+                            (lam ds_3060 (con unit) x_3059)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3214 StakingCredential_2776)
+                        (vardecl x_3047 StakingCredential_2609)
                         [
-                          fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2964
+                          fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2797
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_3209
+                              tup_3042
                             ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3215 ScriptPurpose_2837)
-                        [ Rewarding_2840 x_3214 ]
+                        (vardecl x_3048 ScriptPurpose_2670)
+                        [ Rewarding_2673 x_3047 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3230 ScriptPurpose_2837)
+                        (vardecl x_3063 ScriptPurpose_2670)
                         [
                           [
                             [
                               [
                                 {
-                                  ifThenElse_2853
-                                  (fun (con unit) ScriptPurpose_2837)
+                                  ifThenElse_2686
+                                  (fun (con unit) ScriptPurpose_2670)
                                 }
                                 [
-                                  [ equalsInteger_2860 index_3210 ]
+                                  [ equalsInteger_2693 index_3043 ]
                                   (con integer 2)
                                 ]
                               ]
-                              (lam ds_3216 (con unit) x_3215)
+                              (lam ds_3049 (con unit) x_3048)
                             ]
-                            (lam ds_3229 (con unit) x_3228)
+                            (lam ds_3062 (con unit) x_3061)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3211 DCert_2817)
+                        (vardecl x_3044 DCert_2650)
                         [
-                          fUnsafeFromDataDCert_cunsafeFromBuiltinData_3145
+                          fUnsafeFromDataDCert_cunsafeFromBuiltinData_2978
                           [
-                            { head_2855 (con data) }
+                            { head_2688 (con data) }
                             [
                               {
-                                { snd_2849 (con integer) }
+                                { snd_2682 (con integer) }
                                 [ (con list) (con data) ]
                               }
-                              tup_3209
+                              tup_3042
                             ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3212 ScriptPurpose_2837)
-                        [ Certifying_2838 x_3211 ]
+                        (vardecl x_3045 ScriptPurpose_2670)
+                        [ Certifying_2671 x_3044 ]
                       )
                       [
                         [
                           [
                             [
                               {
-                                ifThenElse_2853
-                                (fun (con unit) ScriptPurpose_2837)
+                                ifThenElse_2686
+                                (fun (con unit) ScriptPurpose_2670)
                               }
                               [
-                                [ equalsInteger_2860 index_3210 ]
+                                [ equalsInteger_2693 index_3043 ]
                                 (con integer 3)
                               ]
                             ]
-                            (lam ds_3213 (con unit) x_3212)
+                            (lam ds_3046 (con unit) x_3045)
                           ]
-                          (lam ds_3231 (con unit) x_3230)
+                          (lam ds_3064 (con unit) x_3063)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_3205 TxInfo_2826)
+                  (vardecl x_3038 TxInfo_2659)
                   [
-                    { error_2726 TxInfo_2826 }
+                    { error_2559 TxInfo_2659 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataTuple2_cunsafeFromBuiltinData_3164
+                    fUnsafeFromDataTuple2_cunsafeFromBuiltinData_2997
                     (all
-                      a_3165
+                      a_2998
                       (type)
                       (all
-                        b_3166
+                        b_2999
                         (type)
                         (fun
-                          [ (lam a_3167 (type) (fun (con data) a_3167)) a_3165 ]
+                          [ (lam a_3000 (type) (fun (con data) a_3000)) a_2998 ]
                           (fun
                             [
-                              (lam a_3168 (type) (fun (con data) a_3168)) b_3166
+                              (lam a_3001 (type) (fun (con data) a_3001)) b_2999
                             ]
-                            (fun (con data) [ [ Tuple2_2749 a_3165 ] b_3166 ])
+                            (fun (con data) [ [ Tuple2_2582 a_2998 ] b_2999 ])
                           )
                         )
                       )
                     )
                   )
                   (abs
-                    a_3148
+                    a_2981
                     (type)
                     (abs
-                      b_3149
+                      b_2982
                       (type)
                       (let
                         (nonrec)
                         (termbind
                           (nonstrict)
-                          (vardecl x_3162 [ [ Tuple2_2749 a_3148 ] b_3149 ])
+                          (vardecl x_2995 [ [ Tuple2_2582 a_2981 ] b_2982 ])
                           [
-                            { error_2726 [ [ Tuple2_2749 a_3148 ] b_3149 ] }
+                            { error_2559 [ [ Tuple2_2582 a_2981 ] b_2982 ] }
                             [
                               {
                                 [
-                                  Unit_match_2732
+                                  Unit_match_2565
                                   [
                                     [
-                                      { trace_2722 Unit_2730 }
-                                      reconstructCaseError_2852
+                                      { trace_2555 Unit_2563 }
+                                      reconstructCaseError_2685
                                     ]
-                                    Unit_2731
+                                    Unit_2564
                                   ]
                                 ]
                                 (con unit)
                               }
-                              unitval_2721
+                              unitval_2554
                             ]
                           ]
                         )
                         (lam
-                          dUnsafeFromData_3150
-                          [ (lam a_3151 (type) (fun (con data) a_3151)) a_3148 ]
+                          dUnsafeFromData_2983
+                          [ (lam a_2984 (type) (fun (con data) a_2984)) a_2981 ]
                           (lam
-                            dUnsafeFromData_3152
+                            dUnsafeFromData_2985
                             [
-                              (lam a_3153 (type) (fun (con data) a_3153)) b_3149
+                              (lam a_2986 (type) (fun (con data) a_2986)) b_2982
                             ]
                             (lam
-                              d_3154
+                              d_2987
                               (con data)
                               (let
                                 (nonrec)
                                 (termbind
                                   (nonstrict)
                                   (vardecl
-                                    tup_3155
+                                    tup_2988
                                     [
                                       [ (con pair) (con integer) ]
                                       [ (con list) (con data) ]
                                     ]
                                   )
-                                  [ unsafeDataAsConstr_2846 d_3154 ]
+                                  [ unsafeDataAsConstr_2679 d_2987 ]
                                 )
                                 (termbind
                                   (nonstrict)
-                                  (vardecl t_3156 [ (con list) (con data) ])
+                                  (vardecl t_2989 [ (con list) (con data) ])
                                   [
                                     {
-                                      { snd_2849 (con integer) }
+                                      { snd_2682 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_3155
+                                    tup_2988
                                   ]
                                 )
                                 (termbind
                                   (nonstrict)
-                                  (vardecl x_3158 b_3149)
+                                  (vardecl x_2991 b_2982)
                                   [
-                                    dUnsafeFromData_3152
+                                    dUnsafeFromData_2985
                                     [
-                                      { head_2855 (con data) }
-                                      [ { tail_2847 (con data) } t_3156 ]
+                                      { head_2688 (con data) }
+                                      [ { tail_2680 (con data) } t_2989 ]
                                     ]
                                   ]
                                 )
                                 (termbind
                                   (nonstrict)
-                                  (vardecl x_3157 a_3148)
+                                  (vardecl x_2990 a_2981)
                                   [
-                                    dUnsafeFromData_3150
-                                    [ { head_2855 (con data) } t_3156 ]
+                                    dUnsafeFromData_2983
+                                    [ { head_2688 (con data) } t_2989 ]
                                   ]
                                 )
                                 (termbind
                                   (nonstrict)
                                   (vardecl
-                                    x_3159 [ [ Tuple2_2749 a_3148 ] b_3149 ]
+                                    x_2992 [ [ Tuple2_2582 a_2981 ] b_2982 ]
                                   )
                                   [
-                                    [ { { Tuple2_2750 a_3148 } b_3149 } x_3157 ]
-                                    x_3158
+                                    [ { { Tuple2_2583 a_2981 } b_2982 } x_2990 ]
+                                    x_2991
                                   ]
                                 )
                                 [
@@ -3762,31 +3626,31 @@
                                     [
                                       [
                                         {
-                                          ifThenElse_2853
+                                          ifThenElse_2686
                                           (fun
                                             (con unit)
-                                            [ [ Tuple2_2749 a_3148 ] b_3149 ]
+                                            [ [ Tuple2_2582 a_2981 ] b_2982 ]
                                           )
                                         }
                                         [
                                           [
-                                            equalsInteger_2860
+                                            equalsInteger_2693
                                             [
                                               {
-                                                { fst_2857 (con integer) }
+                                                { fst_2690 (con integer) }
                                                 [ (con list) (con data) ]
                                               }
-                                              tup_3155
+                                              tup_2988
                                             ]
                                           ]
                                           (con integer 0)
                                         ]
                                       ]
-                                      (lam ds_3160 (con unit) x_3159)
+                                      (lam ds_2993 (con unit) x_2992)
                                     ]
-                                    (lam ds_3163 (con unit) x_3162)
+                                    (lam ds_2996 (con unit) x_2995)
                                   ]
-                                  unitval_2721
+                                  unitval_2554
                                 ]
                               )
                             )
@@ -3799,89 +3663,89 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataBuiltinData_cunsafeFromBuiltinData_3147
+                    fUnsafeFromDataBuiltinData_cunsafeFromBuiltinData_2980
                     (fun (con data) (con data))
                   )
-                  (lam d_3146 (con data) d_3146)
+                  (lam d_2979 (con data) d_2979)
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_3051 Bool_2694)
+                  (vardecl x_2884 Bool_2527)
                   [
-                    { error_2726 Bool_2694 }
+                    { error_2559 Bool_2527 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataBool_cunsafeFromBuiltinData_3055
-                    (fun (con data) Bool_2694)
+                    fUnsafeFromDataBool_cunsafeFromBuiltinData_2888
+                    (fun (con data) Bool_2527)
                   )
                   (lam
-                    d_3046
+                    d_2879
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
-                        (vardecl index_3047 (con integer))
+                        (vardecl index_2880 (con integer))
                         [
                           {
-                            { fst_2857 (con integer) } [ (con list) (con data) ]
+                            { fst_2690 (con integer) } [ (con list) (con data) ]
                           }
-                          [ unsafeDataAsConstr_2846 d_3046 ]
+                          [ unsafeDataAsConstr_2679 d_2879 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3053 Bool_2694)
+                        (vardecl x_2886 Bool_2527)
                         [
                           [
                             [
                               [
-                                { ifThenElse_2853 (fun (con unit) Bool_2694) }
+                                { ifThenElse_2686 (fun (con unit) Bool_2527) }
                                 [
-                                  [ equalsInteger_2860 index_3047 ]
+                                  [ equalsInteger_2693 index_2880 ]
                                   (con integer 0)
                                 ]
                               ]
-                              (lam ds_3049 (con unit) False_2696)
+                              (lam ds_2882 (con unit) False_2529)
                             ]
-                            (lam ds_3052 (con unit) x_3051)
+                            (lam ds_2885 (con unit) x_2884)
                           ]
-                          unitval_2721
+                          unitval_2554
                         ]
                       )
                       [
                         [
                           [
                             [
-                              { ifThenElse_2853 (fun (con unit) Bool_2694) }
+                              { ifThenElse_2686 (fun (con unit) Bool_2527) }
                               [
-                                [ equalsInteger_2860 index_3047 ]
+                                [ equalsInteger_2693 index_2880 ]
                                 (con integer 1)
                               ]
                             ]
-                            (lam ds_3048 (con unit) True_2695)
+                            (lam ds_2881 (con unit) True_2528)
                           ]
-                          (lam ds_3054 (con unit) x_3053)
+                          (lam ds_2887 (con unit) x_2886)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
@@ -3889,146 +3753,146 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataExtended_cunsafeFromBuiltinData_3043
+                    fUnsafeFromDataExtended_cunsafeFromBuiltinData_2876
                     (all
-                      a_3044
+                      a_2877
                       (type)
                       (fun
-                        [ (lam a_3045 (type) (fun (con data) a_3045)) a_3044 ]
-                        (fun (con data) [ Extended_2798 a_3044 ])
+                        [ (lam a_2878 (type) (fun (con data) a_2878)) a_2877 ]
+                        (fun (con data) [ Extended_2631 a_2877 ])
                       )
                     )
                   )
                   (abs
-                    a_3025
+                    a_2858
                     (type)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
-                        (vardecl x_3037 [ Extended_2798 a_3025 ])
+                        (vardecl x_2870 [ Extended_2631 a_2858 ])
                         [
-                          { error_2726 [ Extended_2798 a_3025 ] }
+                          { error_2559 [ Extended_2631 a_2858 ] }
                           [
                             {
                               [
-                                Unit_match_2732
+                                Unit_match_2565
                                 [
                                   [
-                                    { trace_2722 Unit_2730 }
-                                    reconstructCaseError_2852
+                                    { trace_2555 Unit_2563 }
+                                    reconstructCaseError_2685
                                   ]
-                                  Unit_2731
+                                  Unit_2564
                                 ]
                               ]
                               (con unit)
                             }
-                            unitval_2721
+                            unitval_2554
                           ]
                         ]
                       )
                       (lam
-                        dUnsafeFromData_3026
-                        [ (lam a_3027 (type) (fun (con data) a_3027)) a_3025 ]
+                        dUnsafeFromData_2859
+                        [ (lam a_2860 (type) (fun (con data) a_2860)) a_2858 ]
                         (lam
-                          d_3028
+                          d_2861
                           (con data)
                           (let
                             (nonrec)
                             (termbind
                               (nonstrict)
                               (vardecl
-                                tup_3029
+                                tup_2862
                                 [
                                   [ (con pair) (con integer) ]
                                   [ (con list) (con data) ]
                                 ]
                               )
-                              [ unsafeDataAsConstr_2846 d_3028 ]
+                              [ unsafeDataAsConstr_2679 d_2861 ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl index_3030 (con integer))
+                              (vardecl index_2863 (con integer))
                               [
                                 {
-                                  { fst_2857 (con integer) }
+                                  { fst_2690 (con integer) }
                                   [ (con list) (con data) ]
                                 }
-                                tup_3029
+                                tup_2862
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3039 [ Extended_2798 a_3025 ])
+                              (vardecl x_2872 [ Extended_2631 a_2858 ])
                               [
                                 [
                                   [
                                     [
                                       {
-                                        ifThenElse_2853
+                                        ifThenElse_2686
                                         (fun
-                                          (con unit) [ Extended_2798 a_3025 ]
+                                          (con unit) [ Extended_2631 a_2858 ]
                                         )
                                       }
                                       [
-                                        [ equalsInteger_2860 index_3030 ]
+                                        [ equalsInteger_2693 index_2863 ]
                                         (con integer 0)
                                       ]
                                     ]
                                     (lam
-                                      ds_3035 (con unit) { NegInf_2800 a_3025 }
+                                      ds_2868 (con unit) { NegInf_2633 a_2858 }
                                     )
                                   ]
-                                  (lam ds_3038 (con unit) x_3037)
+                                  (lam ds_2871 (con unit) x_2870)
                                 ]
-                                unitval_2721
+                                unitval_2554
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3032 a_3025)
+                              (vardecl x_2865 a_2858)
                               [
-                                dUnsafeFromData_3026
+                                dUnsafeFromData_2859
                                 [
-                                  { head_2855 (con data) }
+                                  { head_2688 (con data) }
                                   [
                                     {
-                                      { snd_2849 (con integer) }
+                                      { snd_2682 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_3029
+                                    tup_2862
                                   ]
                                 ]
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3033 [ Extended_2798 a_3025 ])
-                              [ { Finite_2799 a_3025 } x_3032 ]
+                              (vardecl x_2866 [ Extended_2631 a_2858 ])
+                              [ { Finite_2632 a_2858 } x_2865 ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3041 [ Extended_2798 a_3025 ])
+                              (vardecl x_2874 [ Extended_2631 a_2858 ])
                               [
                                 [
                                   [
                                     [
                                       {
-                                        ifThenElse_2853
+                                        ifThenElse_2686
                                         (fun
-                                          (con unit) [ Extended_2798 a_3025 ]
+                                          (con unit) [ Extended_2631 a_2858 ]
                                         )
                                       }
                                       [
-                                        [ equalsInteger_2860 index_3030 ]
+                                        [ equalsInteger_2693 index_2863 ]
                                         (con integer 1)
                                       ]
                                     ]
-                                    (lam ds_3034 (con unit) x_3033)
+                                    (lam ds_2867 (con unit) x_2866)
                                   ]
-                                  (lam ds_3040 (con unit) x_3039)
+                                  (lam ds_2873 (con unit) x_2872)
                                 ]
-                                unitval_2721
+                                unitval_2554
                               ]
                             )
                             [
@@ -4036,21 +3900,21 @@
                                 [
                                   [
                                     {
-                                      ifThenElse_2853
-                                      (fun (con unit) [ Extended_2798 a_3025 ])
+                                      ifThenElse_2686
+                                      (fun (con unit) [ Extended_2631 a_2858 ])
                                     }
                                     [
-                                      [ equalsInteger_2860 index_3030 ]
+                                      [ equalsInteger_2693 index_2863 ]
                                       (con integer 2)
                                     ]
                                   ]
                                   (lam
-                                    ds_3031 (con unit) { PosInf_2801 a_3025 }
+                                    ds_2864 (con unit) { PosInf_2634 a_2858 }
                                   )
                                 ]
-                                (lam ds_3042 (con unit) x_3041)
+                                (lam ds_2875 (con unit) x_2874)
                               ]
-                              unitval_2721
+                              unitval_2554
                             ]
                           )
                         )
@@ -4061,133 +3925,133 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_3085
+                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_2918
                     (all
-                      a_3086
+                      a_2919
                       (type)
                       (fun
-                        [ (lam a_3087 (type) (fun (con data) a_3087)) a_3086 ]
-                        (fun (con data) [ UpperBound_2804 a_3086 ])
+                        [ (lam a_2920 (type) (fun (con data) a_2920)) a_2919 ]
+                        (fun (con data) [ UpperBound_2637 a_2919 ])
                       )
                     )
                   )
                   (abs
-                    a_3072
+                    a_2905
                     (type)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
-                        (vardecl x_3083 [ UpperBound_2804 a_3072 ])
+                        (vardecl x_2916 [ UpperBound_2637 a_2905 ])
                         [
-                          { error_2726 [ UpperBound_2804 a_3072 ] }
+                          { error_2559 [ UpperBound_2637 a_2905 ] }
                           [
                             {
                               [
-                                Unit_match_2732
+                                Unit_match_2565
                                 [
                                   [
-                                    { trace_2722 Unit_2730 }
-                                    reconstructCaseError_2852
+                                    { trace_2555 Unit_2563 }
+                                    reconstructCaseError_2685
                                   ]
-                                  Unit_2731
+                                  Unit_2564
                                 ]
                               ]
                               (con unit)
                             }
-                            unitval_2721
+                            unitval_2554
                           ]
                         ]
                       )
                       (lam
-                        dUnsafeFromData_3073
-                        [ (lam a_3074 (type) (fun (con data) a_3074)) a_3072 ]
+                        dUnsafeFromData_2906
+                        [ (lam a_2907 (type) (fun (con data) a_2907)) a_2905 ]
                         (lam
-                          d_3075
+                          d_2908
                           (con data)
                           (let
                             (nonrec)
                             (termbind
                               (nonstrict)
                               (vardecl
-                                tup_3076
+                                tup_2909
                                 [
                                   [ (con pair) (con integer) ]
                                   [ (con list) (con data) ]
                                 ]
                               )
-                              [ unsafeDataAsConstr_2846 d_3075 ]
+                              [ unsafeDataAsConstr_2679 d_2908 ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl t_3077 [ (con list) (con data) ])
+                              (vardecl t_2910 [ (con list) (con data) ])
                               [
                                 {
-                                  { snd_2849 (con integer) }
+                                  { snd_2682 (con integer) }
                                   [ (con list) (con data) ]
                                 }
-                                tup_3076
+                                tup_2909
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3079 Bool_2694)
+                              (vardecl x_2912 Bool_2527)
                               [
-                                fUnsafeFromDataBool_cunsafeFromBuiltinData_3055
+                                fUnsafeFromDataBool_cunsafeFromBuiltinData_2888
                                 [
-                                  { head_2855 (con data) }
-                                  [ { tail_2847 (con data) } t_3077 ]
+                                  { head_2688 (con data) }
+                                  [ { tail_2680 (con data) } t_2910 ]
                                 ]
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3078 [ Extended_2798 a_3072 ])
+                              (vardecl x_2911 [ Extended_2631 a_2905 ])
                               [
                                 [
                                   {
-                                    fUnsafeFromDataExtended_cunsafeFromBuiltinData_3043
-                                    a_3072
+                                    fUnsafeFromDataExtended_cunsafeFromBuiltinData_2876
+                                    a_2905
                                   }
-                                  dUnsafeFromData_3073
+                                  dUnsafeFromData_2906
                                 ]
-                                [ { head_2855 (con data) } t_3077 ]
+                                [ { head_2688 (con data) } t_2910 ]
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3080 [ UpperBound_2804 a_3072 ])
-                              [ [ { UpperBound_2805 a_3072 } x_3078 ] x_3079 ]
+                              (vardecl x_2913 [ UpperBound_2637 a_2905 ])
+                              [ [ { UpperBound_2638 a_2905 } x_2911 ] x_2912 ]
                             )
                             [
                               [
                                 [
                                   [
                                     {
-                                      ifThenElse_2853
+                                      ifThenElse_2686
                                       (fun
-                                        (con unit) [ UpperBound_2804 a_3072 ]
+                                        (con unit) [ UpperBound_2637 a_2905 ]
                                       )
                                     }
                                     [
                                       [
-                                        equalsInteger_2860
+                                        equalsInteger_2693
                                         [
                                           {
-                                            { fst_2857 (con integer) }
+                                            { fst_2690 (con integer) }
                                             [ (con list) (con data) ]
                                           }
-                                          tup_3076
+                                          tup_2909
                                         ]
                                       ]
                                       (con integer 0)
                                     ]
                                   ]
-                                  (lam ds_3081 (con unit) x_3080)
+                                  (lam ds_2914 (con unit) x_2913)
                                 ]
-                                (lam ds_3084 (con unit) x_3083)
+                                (lam ds_2917 (con unit) x_2916)
                               ]
-                              unitval_2721
+                              unitval_2554
                             ]
                           )
                         )
@@ -4198,133 +4062,133 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_3069
+                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_2902
                     (all
-                      a_3070
+                      a_2903
                       (type)
                       (fun
-                        [ (lam a_3071 (type) (fun (con data) a_3071)) a_3070 ]
-                        (fun (con data) [ LowerBound_2808 a_3070 ])
+                        [ (lam a_2904 (type) (fun (con data) a_2904)) a_2903 ]
+                        (fun (con data) [ LowerBound_2641 a_2903 ])
                       )
                     )
                   )
                   (abs
-                    a_3056
+                    a_2889
                     (type)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
-                        (vardecl x_3067 [ LowerBound_2808 a_3056 ])
+                        (vardecl x_2900 [ LowerBound_2641 a_2889 ])
                         [
-                          { error_2726 [ LowerBound_2808 a_3056 ] }
+                          { error_2559 [ LowerBound_2641 a_2889 ] }
                           [
                             {
                               [
-                                Unit_match_2732
+                                Unit_match_2565
                                 [
                                   [
-                                    { trace_2722 Unit_2730 }
-                                    reconstructCaseError_2852
+                                    { trace_2555 Unit_2563 }
+                                    reconstructCaseError_2685
                                   ]
-                                  Unit_2731
+                                  Unit_2564
                                 ]
                               ]
                               (con unit)
                             }
-                            unitval_2721
+                            unitval_2554
                           ]
                         ]
                       )
                       (lam
-                        dUnsafeFromData_3057
-                        [ (lam a_3058 (type) (fun (con data) a_3058)) a_3056 ]
+                        dUnsafeFromData_2890
+                        [ (lam a_2891 (type) (fun (con data) a_2891)) a_2889 ]
                         (lam
-                          d_3059
+                          d_2892
                           (con data)
                           (let
                             (nonrec)
                             (termbind
                               (nonstrict)
                               (vardecl
-                                tup_3060
+                                tup_2893
                                 [
                                   [ (con pair) (con integer) ]
                                   [ (con list) (con data) ]
                                 ]
                               )
-                              [ unsafeDataAsConstr_2846 d_3059 ]
+                              [ unsafeDataAsConstr_2679 d_2892 ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl t_3061 [ (con list) (con data) ])
+                              (vardecl t_2894 [ (con list) (con data) ])
                               [
                                 {
-                                  { snd_2849 (con integer) }
+                                  { snd_2682 (con integer) }
                                   [ (con list) (con data) ]
                                 }
-                                tup_3060
+                                tup_2893
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3063 Bool_2694)
+                              (vardecl x_2896 Bool_2527)
                               [
-                                fUnsafeFromDataBool_cunsafeFromBuiltinData_3055
+                                fUnsafeFromDataBool_cunsafeFromBuiltinData_2888
                                 [
-                                  { head_2855 (con data) }
-                                  [ { tail_2847 (con data) } t_3061 ]
+                                  { head_2688 (con data) }
+                                  [ { tail_2680 (con data) } t_2894 ]
                                 ]
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3062 [ Extended_2798 a_3056 ])
+                              (vardecl x_2895 [ Extended_2631 a_2889 ])
                               [
                                 [
                                   {
-                                    fUnsafeFromDataExtended_cunsafeFromBuiltinData_3043
-                                    a_3056
+                                    fUnsafeFromDataExtended_cunsafeFromBuiltinData_2876
+                                    a_2889
                                   }
-                                  dUnsafeFromData_3057
+                                  dUnsafeFromData_2890
                                 ]
-                                [ { head_2855 (con data) } t_3061 ]
+                                [ { head_2688 (con data) } t_2894 ]
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3064 [ LowerBound_2808 a_3056 ])
-                              [ [ { LowerBound_2809 a_3056 } x_3062 ] x_3063 ]
+                              (vardecl x_2897 [ LowerBound_2641 a_2889 ])
+                              [ [ { LowerBound_2642 a_2889 } x_2895 ] x_2896 ]
                             )
                             [
                               [
                                 [
                                   [
                                     {
-                                      ifThenElse_2853
+                                      ifThenElse_2686
                                       (fun
-                                        (con unit) [ LowerBound_2808 a_3056 ]
+                                        (con unit) [ LowerBound_2641 a_2889 ]
                                       )
                                     }
                                     [
                                       [
-                                        equalsInteger_2860
+                                        equalsInteger_2693
                                         [
                                           {
-                                            { fst_2857 (con integer) }
+                                            { fst_2690 (con integer) }
                                             [ (con list) (con data) ]
                                           }
-                                          tup_3060
+                                          tup_2893
                                         ]
                                       ]
                                       (con integer 0)
                                     ]
                                   ]
-                                  (lam ds_3065 (con unit) x_3064)
+                                  (lam ds_2898 (con unit) x_2897)
                                 ]
-                                (lam ds_3068 (con unit) x_3067)
+                                (lam ds_2901 (con unit) x_2900)
                               ]
-                              unitval_2721
+                              unitval_2554
                             ]
                           )
                         )
@@ -4335,137 +4199,137 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_3101
+                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_2934
                     (all
-                      a_3102
+                      a_2935
                       (type)
                       (fun
-                        [ (lam a_3103 (type) (fun (con data) a_3103)) a_3102 ]
-                        (fun (con data) [ Interval_2812 a_3102 ])
+                        [ (lam a_2936 (type) (fun (con data) a_2936)) a_2935 ]
+                        (fun (con data) [ Interval_2645 a_2935 ])
                       )
                     )
                   )
                   (abs
-                    a_3088
+                    a_2921
                     (type)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
-                        (vardecl x_3099 [ Interval_2812 a_3088 ])
+                        (vardecl x_2932 [ Interval_2645 a_2921 ])
                         [
-                          { error_2726 [ Interval_2812 a_3088 ] }
+                          { error_2559 [ Interval_2645 a_2921 ] }
                           [
                             {
                               [
-                                Unit_match_2732
+                                Unit_match_2565
                                 [
                                   [
-                                    { trace_2722 Unit_2730 }
-                                    reconstructCaseError_2852
+                                    { trace_2555 Unit_2563 }
+                                    reconstructCaseError_2685
                                   ]
-                                  Unit_2731
+                                  Unit_2564
                                 ]
                               ]
                               (con unit)
                             }
-                            unitval_2721
+                            unitval_2554
                           ]
                         ]
                       )
                       (lam
-                        dUnsafeFromData_3089
-                        [ (lam a_3090 (type) (fun (con data) a_3090)) a_3088 ]
+                        dUnsafeFromData_2922
+                        [ (lam a_2923 (type) (fun (con data) a_2923)) a_2921 ]
                         (lam
-                          d_3091
+                          d_2924
                           (con data)
                           (let
                             (nonrec)
                             (termbind
                               (nonstrict)
                               (vardecl
-                                tup_3092
+                                tup_2925
                                 [
                                   [ (con pair) (con integer) ]
                                   [ (con list) (con data) ]
                                 ]
                               )
-                              [ unsafeDataAsConstr_2846 d_3091 ]
+                              [ unsafeDataAsConstr_2679 d_2924 ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl t_3093 [ (con list) (con data) ])
+                              (vardecl t_2926 [ (con list) (con data) ])
                               [
                                 {
-                                  { snd_2849 (con integer) }
+                                  { snd_2682 (con integer) }
                                   [ (con list) (con data) ]
                                 }
-                                tup_3092
+                                tup_2925
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3095 [ UpperBound_2804 a_3088 ])
+                              (vardecl x_2928 [ UpperBound_2637 a_2921 ])
                               [
                                 [
                                   {
-                                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_3085
-                                    a_3088
+                                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_2918
+                                    a_2921
                                   }
-                                  dUnsafeFromData_3089
+                                  dUnsafeFromData_2922
                                 ]
                                 [
-                                  { head_2855 (con data) }
-                                  [ { tail_2847 (con data) } t_3093 ]
+                                  { head_2688 (con data) }
+                                  [ { tail_2680 (con data) } t_2926 ]
                                 ]
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3094 [ LowerBound_2808 a_3088 ])
+                              (vardecl x_2927 [ LowerBound_2641 a_2921 ])
                               [
                                 [
                                   {
-                                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_3069
-                                    a_3088
+                                    fUnsafeFromDataInterval_cunsafeFromBuiltinData_2902
+                                    a_2921
                                   }
-                                  dUnsafeFromData_3089
+                                  dUnsafeFromData_2922
                                 ]
-                                [ { head_2855 (con data) } t_3093 ]
+                                [ { head_2688 (con data) } t_2926 ]
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_3096 [ Interval_2812 a_3088 ])
-                              [ [ { Interval_2813 a_3088 } x_3094 ] x_3095 ]
+                              (vardecl x_2929 [ Interval_2645 a_2921 ])
+                              [ [ { Interval_2646 a_2921 } x_2927 ] x_2928 ]
                             )
                             [
                               [
                                 [
                                   [
                                     {
-                                      ifThenElse_2853
-                                      (fun (con unit) [ Interval_2812 a_3088 ])
+                                      ifThenElse_2686
+                                      (fun (con unit) [ Interval_2645 a_2921 ])
                                     }
                                     [
                                       [
-                                        equalsInteger_2860
+                                        equalsInteger_2693
                                         [
                                           {
-                                            { fst_2857 (con integer) }
+                                            { fst_2690 (con integer) }
                                             [ (con list) (con data) ]
                                           }
-                                          tup_3092
+                                          tup_2925
                                         ]
                                       ]
                                       (con integer 0)
                                     ]
                                   ]
-                                  (lam ds_3097 (con unit) x_3096)
+                                  (lam ds_2930 (con unit) x_2929)
                                 ]
-                                (lam ds_3100 (con unit) x_3099)
+                                (lam ds_2933 (con unit) x_2932)
                               ]
-                              unitval_2721
+                              unitval_2554
                             ]
                           )
                         )
@@ -4475,206 +4339,206 @@
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_3022 TxInInfo_2794)
+                  (vardecl x_2855 TxInInfo_2627)
                   [
-                    { error_2726 TxInInfo_2794 }
+                    { error_2559 TxInInfo_2627 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_2992 TxOut_2783)
+                  (vardecl x_2825 TxOut_2616)
                   [
-                    { error_2726 TxOut_2783 }
+                    { error_2559 TxOut_2616 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (nonstrict)
-                  (vardecl x_2973 Address_2780)
+                  (vardecl x_2806 Address_2613)
                   [
-                    { error_2726 Address_2780 }
+                    { error_2559 Address_2613 }
                     [
                       {
                         [
-                          Unit_match_2732
+                          Unit_match_2565
                           [
                             [
-                              { trace_2722 Unit_2730 } reconstructCaseError_2852
+                              { trace_2555 Unit_2563 } reconstructCaseError_2685
                             ]
-                            Unit_2731
+                            Unit_2564
                           ]
                         ]
                         (con unit)
                       }
-                      unitval_2721
+                      unitval_2554
                     ]
                   ]
                 )
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataMaybe_cunsafeFromBuiltinData_2928
+                    fUnsafeFromDataMaybe_cunsafeFromBuiltinData_2761
                     (all
-                      a_2929
+                      a_2762
                       (type)
                       (fun
-                        [ (lam a_2930 (type) (fun (con data) a_2930)) a_2929 ]
-                        (fun (con data) [ Maybe_2764 a_2929 ])
+                        [ (lam a_2763 (type) (fun (con data) a_2763)) a_2762 ]
+                        (fun (con data) [ Maybe_2597 a_2762 ])
                       )
                     )
                   )
                   (abs
-                    a_2913
+                    a_2746
                     (type)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
-                        (vardecl x_2924 [ Maybe_2764 a_2913 ])
+                        (vardecl x_2757 [ Maybe_2597 a_2746 ])
                         [
-                          { error_2726 [ Maybe_2764 a_2913 ] }
+                          { error_2559 [ Maybe_2597 a_2746 ] }
                           [
                             {
                               [
-                                Unit_match_2732
+                                Unit_match_2565
                                 [
                                   [
-                                    { trace_2722 Unit_2730 }
-                                    reconstructCaseError_2852
+                                    { trace_2555 Unit_2563 }
+                                    reconstructCaseError_2685
                                   ]
-                                  Unit_2731
+                                  Unit_2564
                                 ]
                               ]
                               (con unit)
                             }
-                            unitval_2721
+                            unitval_2554
                           ]
                         ]
                       )
                       (lam
-                        dUnsafeFromData_2914
-                        [ (lam a_2915 (type) (fun (con data) a_2915)) a_2913 ]
+                        dUnsafeFromData_2747
+                        [ (lam a_2748 (type) (fun (con data) a_2748)) a_2746 ]
                         (lam
-                          d_2916
+                          d_2749
                           (con data)
                           (let
                             (nonrec)
                             (termbind
                               (nonstrict)
                               (vardecl
-                                tup_2917
+                                tup_2750
                                 [
                                   [ (con pair) (con integer) ]
                                   [ (con list) (con data) ]
                                 ]
                               )
-                              [ unsafeDataAsConstr_2846 d_2916 ]
+                              [ unsafeDataAsConstr_2679 d_2749 ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl index_2918 (con integer))
+                              (vardecl index_2751 (con integer))
                               [
                                 {
-                                  { fst_2857 (con integer) }
+                                  { fst_2690 (con integer) }
                                   [ (con list) (con data) ]
                                 }
-                                tup_2917
+                                tup_2750
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_2926 [ Maybe_2764 a_2913 ])
+                              (vardecl x_2759 [ Maybe_2597 a_2746 ])
                               [
                                 [
                                   [
                                     [
                                       {
-                                        ifThenElse_2853
-                                        (fun (con unit) [ Maybe_2764 a_2913 ])
+                                        ifThenElse_2686
+                                        (fun (con unit) [ Maybe_2597 a_2746 ])
                                       }
                                       [
-                                        [ equalsInteger_2860 index_2918 ]
+                                        [ equalsInteger_2693 index_2751 ]
                                         (con integer 1)
                                       ]
                                     ]
                                     (lam
-                                      ds_2922 (con unit) { Nothing_2766 a_2913 }
+                                      ds_2755 (con unit) { Nothing_2599 a_2746 }
                                     )
                                   ]
-                                  (lam ds_2925 (con unit) x_2924)
+                                  (lam ds_2758 (con unit) x_2757)
                                 ]
-                                unitval_2721
+                                unitval_2554
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_2919 a_2913)
+                              (vardecl x_2752 a_2746)
                               [
-                                dUnsafeFromData_2914
+                                dUnsafeFromData_2747
                                 [
-                                  { head_2855 (con data) }
+                                  { head_2688 (con data) }
                                   [
                                     {
-                                      { snd_2849 (con integer) }
+                                      { snd_2682 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_2917
+                                    tup_2750
                                   ]
                                 ]
                               ]
                             )
                             (termbind
                               (nonstrict)
-                              (vardecl x_2920 [ Maybe_2764 a_2913 ])
-                              [ { Just_2765 a_2913 } x_2919 ]
+                              (vardecl x_2753 [ Maybe_2597 a_2746 ])
+                              [ { Just_2598 a_2746 } x_2752 ]
                             )
                             [
                               [
                                 [
                                   [
                                     {
-                                      ifThenElse_2853
-                                      (fun (con unit) [ Maybe_2764 a_2913 ])
+                                      ifThenElse_2686
+                                      (fun (con unit) [ Maybe_2597 a_2746 ])
                                     }
                                     [
-                                      [ equalsInteger_2860 index_2918 ]
+                                      [ equalsInteger_2693 index_2751 ]
                                       (con integer 0)
                                     ]
                                   ]
-                                  (lam ds_2921 (con unit) x_2920)
+                                  (lam ds_2754 (con unit) x_2753)
                                 ]
-                                (lam ds_2927 (con unit) x_2926)
+                                (lam ds_2760 (con unit) x_2759)
                               ]
-                              unitval_2721
+                              unitval_2554
                             ]
                           )
                         )
@@ -4685,89 +4549,89 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataAddress_cunsafeFromBuiltinData_2975
-                    (fun (con data) Address_2780)
+                    fUnsafeFromDataAddress_cunsafeFromBuiltinData_2808
+                    (fun (con data) Address_2613)
                   )
                   (lam
-                    d_2965
+                    d_2798
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_2966
+                          tup_2799
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_2965 ]
+                        [ unsafeDataAsConstr_2679 d_2798 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_2967 [ (con list) (con data) ])
+                        (vardecl t_2800 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_2966
+                          tup_2799
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2969 [ Maybe_2764 StakingCredential_2776 ])
+                        (vardecl x_2802 [ Maybe_2597 StakingCredential_2609 ])
                         [
                           [
                             {
-                              fUnsafeFromDataMaybe_cunsafeFromBuiltinData_2928
-                              StakingCredential_2776
+                              fUnsafeFromDataMaybe_cunsafeFromBuiltinData_2761
+                              StakingCredential_2609
                             }
-                            fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2964
+                            fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2797
                           ]
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_2967 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_2800 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2968 Credential_2772)
+                        (vardecl x_2801 Credential_2605)
                         [
-                          fUnsafeFromDataCredential_cunsafeFromBuiltinData_2945
-                          [ { head_2855 (con data) } t_2967 ]
+                          fUnsafeFromDataCredential_cunsafeFromBuiltinData_2778
+                          [ { head_2688 (con data) } t_2800 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2970 Address_2780)
-                        [ [ Address_2781 x_2968 ] x_2969 ]
+                        (vardecl x_2803 Address_2613)
+                        [ [ Address_2614 x_2801 ] x_2802 ]
                       )
                       [
                         [
                           [
                             [
-                              { ifThenElse_2853 (fun (con unit) Address_2780) }
+                              { ifThenElse_2686 (fun (con unit) Address_2613) }
                               [
                                 [
-                                  equalsInteger_2860
+                                  equalsInteger_2693
                                   [
                                     {
-                                      { fst_2857 (con integer) }
+                                      { fst_2690 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_2966
+                                    tup_2799
                                   ]
                                 ]
                                 (con integer 0)
                               ]
                             ]
-                            (lam ds_2971 (con unit) x_2970)
+                            (lam ds_2804 (con unit) x_2803)
                           ]
-                          (lam ds_2974 (con unit) x_2973)
+                          (lam ds_2807 (con unit) x_2806)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
@@ -4775,30 +4639,30 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataMap_2884
+                    fUnsafeFromDataMap_2717
                     (all
-                      v_2885
+                      v_2718
                       (type)
                       (all
-                        k_2886
+                        k_2719
                         (type)
                         (fun
-                          Unit_2730
-                          [ List_2742 [ [ Tuple2_2749 k_2886 ] v_2885 ] ]
+                          Unit_2563
+                          [ List_2575 [ [ Tuple2_2582 k_2719 ] v_2718 ] ]
                         )
                       )
                     )
                   )
                   (abs
-                    v_2881
+                    v_2714
                     (type)
                     (abs
-                      k_2882
+                      k_2715
                       (type)
                       (lam
-                        ds_2883
-                        Unit_2730
-                        { Nil_2743 [ [ Tuple2_2749 k_2882 ] v_2881 ] }
+                        ds_2716
+                        Unit_2563
+                        { Nil_2576 [ [ Tuple2_2582 k_2715 ] v_2714 ] }
                       )
                     )
                   )
@@ -4806,7 +4670,7 @@
                 (termbind
                   (strict)
                   (vardecl
-                    unsafeDataAsMap_2880
+                    unsafeDataAsMap_2713
                     (fun
                       (con data)
                       [ (con list) [ [ (con pair) (con data) ] (con data) ] ]
@@ -4817,15 +4681,15 @@
                 (termbind
                   (strict)
                   (vardecl
-                    chooseList_2866
+                    chooseList_2699
                     (all
-                      a_2867
+                      a_2700
                       (type)
                       (all
-                        b_2868
+                        b_2701
                         (type)
                         (fun
-                          [ (con list) a_2867 ] (fun b_2868 (fun b_2868 b_2868))
+                          [ (con list) a_2700 ] (fun b_2701 (fun b_2701 b_2701))
                         )
                       )
                     )
@@ -4835,38 +4699,38 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataMap_cunsafeFromBuiltinData_2903
+                    fUnsafeFromDataMap_cunsafeFromBuiltinData_2736
                     (all
-                      k_2904
+                      k_2737
                       (type)
                       (all
-                        v_2905
+                        v_2738
                         (type)
                         (fun
-                          [ (lam a_2906 (type) (fun (con data) a_2906)) k_2904 ]
+                          [ (lam a_2739 (type) (fun (con data) a_2739)) k_2737 ]
                           (fun
                             [
-                              (lam a_2907 (type) (fun (con data) a_2907)) v_2905
+                              (lam a_2740 (type) (fun (con data) a_2740)) v_2738
                             ]
                             (fun
                               (con data)
                               [
                                 [
                                   (lam
-                                    k_2908
+                                    k_2741
                                     (type)
                                     (lam
-                                      v_2909
+                                      v_2742
                                       (type)
                                       [
-                                        List_2742
-                                        [ [ Tuple2_2749 k_2908 ] v_2909 ]
+                                        List_2575
+                                        [ [ Tuple2_2582 k_2741 ] v_2742 ]
                                       ]
                                     )
                                   )
-                                  k_2904
+                                  k_2737
                                 ]
-                                v_2905
+                                v_2738
                               ]
                             )
                           )
@@ -4875,35 +4739,35 @@
                     )
                   )
                   (abs
-                    k_2887
+                    k_2720
                     (type)
                     (abs
-                      v_2888
+                      v_2721
                       (type)
                       (lam
-                        dUnsafeFromData_2889
-                        [ (lam a_2890 (type) (fun (con data) a_2890)) k_2887 ]
+                        dUnsafeFromData_2722
+                        [ (lam a_2723 (type) (fun (con data) a_2723)) k_2720 ]
                         (lam
-                          dUnsafeFromData_2891
-                          [ (lam a_2892 (type) (fun (con data) a_2892)) v_2888 ]
+                          dUnsafeFromData_2724
+                          [ (lam a_2725 (type) (fun (con data) a_2725)) v_2721 ]
                           (let
                             (rec)
                             (termbind
                               (strict)
                               (vardecl
-                                go_2894
+                                go_2727
                                 (fun
                                   [
                                     (con list)
                                     [ [ (con pair) (con data) ] (con data) ]
                                   ]
                                   [
-                                    List_2742 [ [ Tuple2_2749 k_2887 ] v_2888 ]
+                                    List_2575 [ [ Tuple2_2582 k_2720 ] v_2721 ]
                                   ]
                                 )
                               )
                               (lam
-                                l_2895
+                                l_2728
                                 [
                                   (con list)
                                   [ [ (con pair) (con data) ] (con data) ]
@@ -4913,92 +4777,92 @@
                                   (termbind
                                     (nonstrict)
                                     (vardecl
-                                      lvl_2900
+                                      lvl_2733
                                       [
-                                        List_2742
-                                        [ [ Tuple2_2749 k_2887 ] v_2888 ]
+                                        List_2575
+                                        [ [ Tuple2_2582 k_2720 ] v_2721 ]
                                       ]
                                     )
                                     [
-                                      go_2894
+                                      go_2727
                                       [
                                         {
-                                          tail_2847
+                                          tail_2680
                                           [
                                             [ (con pair) (con data) ] (con data)
                                           ]
                                         }
-                                        l_2895
+                                        l_2728
                                       ]
                                     ]
                                   )
                                   (termbind
                                     (nonstrict)
                                     (vardecl
-                                      tup_2896
+                                      tup_2729
                                       [ [ (con pair) (con data) ] (con data) ]
                                     )
                                     [
                                       {
-                                        head_2855
+                                        head_2688
                                         [ [ (con pair) (con data) ] (con data) ]
                                       }
-                                      l_2895
+                                      l_2728
                                     ]
                                   )
                                   (termbind
                                     (nonstrict)
-                                    (vardecl lvl_2898 v_2888)
+                                    (vardecl lvl_2731 v_2721)
                                     [
-                                      dUnsafeFromData_2891
+                                      dUnsafeFromData_2724
                                       [
-                                        { { snd_2849 (con data) } (con data) }
-                                        tup_2896
+                                        { { snd_2682 (con data) } (con data) }
+                                        tup_2729
                                       ]
                                     ]
                                   )
                                   (termbind
                                     (nonstrict)
-                                    (vardecl lvl_2897 k_2887)
+                                    (vardecl lvl_2730 k_2720)
                                     [
-                                      dUnsafeFromData_2889
+                                      dUnsafeFromData_2722
                                       [
-                                        { { fst_2857 (con data) } (con data) }
-                                        tup_2896
+                                        { { fst_2690 (con data) } (con data) }
+                                        tup_2729
                                       ]
                                     ]
                                   )
                                   (termbind
                                     (nonstrict)
                                     (vardecl
-                                      lvl_2899 [ [ Tuple2_2749 k_2887 ] v_2888 ]
+                                      lvl_2732 [ [ Tuple2_2582 k_2720 ] v_2721 ]
                                     )
                                     [
                                       [
-                                        { { Tuple2_2750 k_2887 } v_2888 }
-                                        lvl_2897
+                                        { { Tuple2_2583 k_2720 } v_2721 }
+                                        lvl_2730
                                       ]
-                                      lvl_2898
+                                      lvl_2731
                                     ]
                                   )
                                   (termbind
                                     (nonstrict)
                                     (vardecl
-                                      lvl_2901
+                                      lvl_2734
                                       [
-                                        List_2742
-                                        [ [ Tuple2_2749 k_2887 ] v_2888 ]
+                                        List_2575
+                                        [ [ Tuple2_2582 k_2720 ] v_2721 ]
                                       ]
                                     )
                                     [
                                       [
                                         {
-                                          Cons_2744
-                                          [ [ Tuple2_2749 k_2887 ] v_2888 ]
+                                          Cons_2577
+                                          [ [ Tuple2_2582 k_2720 ] v_2721 ]
                                         }
-                                        lvl_2899
+                                        lvl_2732
                                       ]
-                                      lvl_2900
+                                      lvl_2733
                                     ]
                                   )
                                   [
@@ -5007,40 +4871,40 @@
                                         [
                                           {
                                             {
-                                              chooseList_2866
+                                              chooseList_2699
                                               [
                                                 [ (con pair) (con data) ]
                                                 (con data)
                                               ]
                                             }
                                             (fun
-                                              Unit_2730
+                                              Unit_2563
                                               [
-                                                List_2742
+                                                List_2575
                                                 [
-                                                  [ Tuple2_2749 k_2887 ] v_2888
+                                                  [ Tuple2_2582 k_2720 ] v_2721
                                                 ]
                                               ]
                                             )
                                           }
-                                          l_2895
+                                          l_2728
                                         ]
                                         {
-                                          { fUnsafeFromDataMap_2884 v_2888 }
-                                          k_2887
+                                          { fUnsafeFromDataMap_2717 v_2721 }
+                                          k_2720
                                         }
                                       ]
-                                      (lam ds_2902 Unit_2730 lvl_2901)
+                                      (lam ds_2735 Unit_2563 lvl_2734)
                                     ]
-                                    Unit_2731
+                                    Unit_2564
                                   ]
                                 )
                               )
                             )
                             (lam
-                              d_2893
+                              d_2726
                               (con data)
-                              [ go_2894 [ unsafeDataAsMap_2880 d_2893 ] ]
+                              [ go_2727 [ unsafeDataAsMap_2713 d_2726 ] ]
                             )
                           )
                         )
@@ -5051,18 +4915,18 @@
                 (termbind
                   (nonstrict)
                   (vardecl
-                    fUnsafeFromDataValue_2910
+                    fUnsafeFromDataValue_2743
                     (fun
                       (con data)
                       [
                         [
                           (lam
-                            k_2911
+                            k_2744
                             (type)
                             (lam
-                              v_2912
+                              v_2745
                               (type)
-                              [ List_2742 [ [ Tuple2_2749 k_2911 ] v_2912 ] ]
+                              [ List_2575 [ [ Tuple2_2582 k_2744 ] v_2745 ] ]
                             )
                           )
                           (con bytestring)
@@ -5075,84 +4939,84 @@
                     [
                       {
                         {
-                          fUnsafeFromDataMap_cunsafeFromBuiltinData_2903
+                          fUnsafeFromDataMap_cunsafeFromBuiltinData_2736
                           (con bytestring)
                         }
                         (con integer)
                       }
-                      unsafeDataAsB_2864
+                      unsafeDataAsB_2697
                     ]
-                    unsafeDataAsI_2863
+                    unsafeDataAsI_2696
                   ]
                 )
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataTxOut_cunsafeFromBuiltinData_2994
-                    (fun (con data) TxOut_2783)
+                    fUnsafeFromDataTxOut_cunsafeFromBuiltinData_2827
+                    (fun (con data) TxOut_2616)
                   )
                   (lam
-                    d_2976
+                    d_2809
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_2977
+                          tup_2810
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_2976 ]
+                        [ unsafeDataAsConstr_2679 d_2809 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_2978 [ (con list) (con data) ])
+                        (vardecl t_2811 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_2977
+                          tup_2810
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_2979 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_2978 ]
+                        (vardecl t_2812 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_2811 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2988 [ Maybe_2764 (con bytestring) ])
+                        (vardecl x_2821 [ Maybe_2597 (con bytestring) ])
                         [
                           [
                             {
-                              fUnsafeFromDataMaybe_cunsafeFromBuiltinData_2928
+                              fUnsafeFromDataMaybe_cunsafeFromBuiltinData_2761
                               (con bytestring)
                             }
-                            unsafeDataAsB_2864
+                            unsafeDataAsB_2697
                           ]
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_2979 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_2812 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
                         (vardecl
-                          x_2983
+                          x_2816
                           [
                             [
                               (lam
-                                k_2984
+                                k_2817
                                 (type)
                                 (lam
-                                  v_2985
+                                  v_2818
                                   (type)
                                   [
-                                    List_2742 [ [ Tuple2_2749 k_2984 ] v_2985 ]
+                                    List_2575 [ [ Tuple2_2582 k_2817 ] v_2818 ]
                                   ]
                                 )
                               )
@@ -5161,14 +5025,14 @@
                             [
                               [
                                 (lam
-                                  k_2986
+                                  k_2819
                                   (type)
                                   (lam
-                                    v_2987
+                                    v_2820
                                     (type)
                                     [
-                                      List_2742
-                                      [ [ Tuple2_2749 k_2986 ] v_2987 ]
+                                      List_2575
+                                      [ [ Tuple2_2582 k_2819 ] v_2820 ]
                                     ]
                                   )
                                 )
@@ -5183,20 +5047,20 @@
                             [
                               {
                                 {
-                                  fUnsafeFromDataMap_cunsafeFromBuiltinData_2903
+                                  fUnsafeFromDataMap_cunsafeFromBuiltinData_2736
                                   (con bytestring)
                                 }
                                 [
                                   [
                                     (lam
-                                      k_2981
+                                      k_2814
                                       (type)
                                       (lam
-                                        v_2982
+                                        v_2815
                                         (type)
                                         [
-                                          List_2742
-                                          [ [ Tuple2_2749 k_2981 ] v_2982 ]
+                                          List_2575
+                                          [ [ Tuple2_2582 k_2814 ] v_2815 ]
                                         ]
                                       )
                                     )
@@ -5205,50 +5069,50 @@
                                   (con integer)
                                 ]
                               }
-                              unsafeDataAsB_2864
+                              unsafeDataAsB_2697
                             ]
-                            fUnsafeFromDataValue_2910
+                            fUnsafeFromDataValue_2743
                           ]
-                          [ { head_2855 (con data) } t_2979 ]
+                          [ { head_2688 (con data) } t_2812 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2980 Address_2780)
+                        (vardecl x_2813 Address_2613)
                         [
-                          fUnsafeFromDataAddress_cunsafeFromBuiltinData_2975
-                          [ { head_2855 (con data) } t_2978 ]
+                          fUnsafeFromDataAddress_cunsafeFromBuiltinData_2808
+                          [ { head_2688 (con data) } t_2811 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_2989 TxOut_2783)
-                        [ [ [ TxOut_2784 x_2980 ] x_2983 ] x_2988 ]
+                        (vardecl x_2822 TxOut_2616)
+                        [ [ [ TxOut_2617 x_2813 ] x_2816 ] x_2821 ]
                       )
                       [
                         [
                           [
                             [
-                              { ifThenElse_2853 (fun (con unit) TxOut_2783) }
+                              { ifThenElse_2686 (fun (con unit) TxOut_2616) }
                               [
                                 [
-                                  equalsInteger_2860
+                                  equalsInteger_2693
                                   [
                                     {
-                                      { fst_2857 (con integer) }
+                                      { fst_2690 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_2977
+                                    tup_2810
                                   ]
                                 ]
                                 (con integer 0)
                               ]
                             ]
-                            (lam ds_2990 (con unit) x_2989)
+                            (lam ds_2823 (con unit) x_2822)
                           ]
-                          (lam ds_2993 (con unit) x_2992)
+                          (lam ds_2826 (con unit) x_2825)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
@@ -5256,83 +5120,83 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3024
-                    (fun (con data) TxInInfo_2794)
+                    fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_2857
+                    (fun (con data) TxInInfo_2627)
                   )
                   (lam
-                    d_3014
+                    d_2847
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_3015
+                          tup_2848
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_3014 ]
+                        [ unsafeDataAsConstr_2679 d_2847 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3016 [ (con list) (con data) ])
+                        (vardecl t_2849 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_3015
+                          tup_2848
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3018 TxOut_2783)
+                        (vardecl x_2851 TxOut_2616)
                         [
-                          fUnsafeFromDataTxOut_cunsafeFromBuiltinData_2994
+                          fUnsafeFromDataTxOut_cunsafeFromBuiltinData_2827
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_3016 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_2849 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3017 TxOutRef_2791)
+                        (vardecl x_2850 TxOutRef_2624)
                         [
-                          fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData_3013
-                          [ { head_2855 (con data) } t_3016 ]
+                          fUnsafeFromDataTxOutRef_cunsafeFromBuiltinData_2846
+                          [ { head_2688 (con data) } t_2849 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3019 TxInInfo_2794)
-                        [ [ TxInInfo_2795 x_3017 ] x_3018 ]
+                        (vardecl x_2852 TxInInfo_2627)
+                        [ [ TxInInfo_2628 x_2850 ] x_2851 ]
                       )
                       [
                         [
                           [
                             [
-                              { ifThenElse_2853 (fun (con unit) TxInInfo_2794) }
+                              { ifThenElse_2686 (fun (con unit) TxInInfo_2627) }
                               [
                                 [
-                                  equalsInteger_2860
+                                  equalsInteger_2693
                                   [
                                     {
-                                      { fst_2857 (con integer) }
+                                      { fst_2690 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_3015
+                                    tup_2848
                                   ]
                                 ]
                                 (con integer 0)
                               ]
                             ]
-                            (lam ds_3020 (con unit) x_3019)
+                            (lam ds_2853 (con unit) x_2852)
                           ]
-                          (lam ds_3023 (con unit) x_3022)
+                          (lam ds_2856 (con unit) x_2855)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
@@ -5340,7 +5204,7 @@
                 (termbind
                   (strict)
                   (vardecl
-                    unsafeDataAsList_2865
+                    unsafeDataAsList_2698
                     (fun (con data) [ (con list) (con data) ])
                   )
                   (builtin unListData)
@@ -5348,71 +5212,71 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataNil_cunsafeFromBuiltinData_2877
+                    fUnsafeFromDataNil_cunsafeFromBuiltinData_2710
                     (all
-                      a_2878
+                      a_2711
                       (type)
                       (fun
-                        [ (lam a_2879 (type) (fun (con data) a_2879)) a_2878 ]
-                        (fun (con data) [ List_2742 a_2878 ])
+                        [ (lam a_2712 (type) (fun (con data) a_2712)) a_2711 ]
+                        (fun (con data) [ List_2575 a_2711 ])
                       )
                     )
                   )
                   (abs
-                    a_2869
+                    a_2702
                     (type)
                     (lam
-                      dUnsafeFromData_2870
-                      [ (lam a_2871 (type) (fun (con data) a_2871)) a_2869 ]
+                      dUnsafeFromData_2703
+                      [ (lam a_2704 (type) (fun (con data) a_2704)) a_2702 ]
                       (let
                         (rec)
                         (termbind
                           (strict)
                           (vardecl
-                            go_2873
-                            (fun [ (con list) (con data) ] [ List_2742 a_2869 ])
+                            go_2706
+                            (fun [ (con list) (con data) ] [ List_2575 a_2702 ])
                           )
                           (lam
-                            l_2874
+                            l_2707
                             [ (con list) (con data) ]
                             [
                               [
                                 [
                                   [
                                     {
-                                      { chooseList_2866 (con data) }
-                                      (fun Unit_2730 [ List_2742 a_2869 ])
+                                      { chooseList_2699 (con data) }
+                                      (fun Unit_2563 [ List_2575 a_2702 ])
                                     }
-                                    l_2874
+                                    l_2707
                                   ]
-                                  (lam ds_2875 Unit_2730 { Nil_2743 a_2869 })
+                                  (lam ds_2708 Unit_2563 { Nil_2576 a_2702 })
                                 ]
                                 (lam
-                                  ds_2876
-                                  Unit_2730
+                                  ds_2709
+                                  Unit_2563
                                   [
                                     [
-                                      { Cons_2744 a_2869 }
+                                      { Cons_2577 a_2702 }
                                       [
-                                        dUnsafeFromData_2870
-                                        [ { head_2855 (con data) } l_2874 ]
+                                        dUnsafeFromData_2703
+                                        [ { head_2688 (con data) } l_2707 ]
                                       ]
                                     ]
                                     [
-                                      go_2873
-                                      [ { tail_2847 (con data) } l_2874 ]
+                                      go_2706
+                                      [ { tail_2680 (con data) } l_2707 ]
                                     ]
                                   ]
                                 )
                               ]
-                              Unit_2731
+                              Unit_2564
                             ]
                           )
                         )
                         (lam
-                          d_2872
+                          d_2705
                           (con data)
-                          [ go_2873 [ unsafeDataAsList_2865 d_2872 ] ]
+                          [ go_2706 [ unsafeDataAsList_2698 d_2705 ] ]
                         )
                       )
                     )
@@ -5421,154 +5285,154 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3207
-                    (fun (con data) TxInfo_2826)
+                    fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3040
+                    (fun (con data) TxInfo_2659)
                   )
                   (lam
-                    d_3169
+                    d_3002
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_3170
+                          tup_3003
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_3169 ]
+                        [ unsafeDataAsConstr_2679 d_3002 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3171 [ (con list) (con data) ])
+                        (vardecl t_3004 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_3170
+                          tup_3003
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3172 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_3171 ]
+                        (vardecl t_3005 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_3004 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3173 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_3172 ]
+                        (vardecl t_3006 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_3005 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3174 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_3173 ]
+                        (vardecl t_3007 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_3006 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3175 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_3174 ]
+                        (vardecl t_3008 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_3007 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3176 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_3175 ]
+                        (vardecl t_3009 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_3008 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3177 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_3176 ]
+                        (vardecl t_3010 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_3009 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3178 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_3177 ]
+                        (vardecl t_3011 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_3010 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3179 [ (con list) (con data) ])
-                        [ { tail_2847 (con data) } t_3178 ]
+                        (vardecl t_3012 [ (con list) (con data) ])
+                        [ { tail_2680 (con data) } t_3011 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3201 (con bytestring))
+                        (vardecl x_3034 (con bytestring))
                         [
-                          fUnsafeFromDataTxId_cunsafeFromBuiltinData_3002
+                          fUnsafeFromDataTxId_cunsafeFromBuiltinData_2835
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_3179 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_3012 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
                         (vardecl
-                          x_3200
+                          x_3033
                           [
-                            List_2742
-                            [ [ Tuple2_2749 (con bytestring) ] (con data) ]
+                            List_2575
+                            [ [ Tuple2_2582 (con bytestring) ] (con data) ]
                           ]
                         )
                         [
                           [
                             {
-                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2877
-                              [ [ Tuple2_2749 (con bytestring) ] (con data) ]
+                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2710
+                              [ [ Tuple2_2582 (con bytestring) ] (con data) ]
                             }
                             [
                               [
                                 {
                                   {
-                                    fUnsafeFromDataTuple2_cunsafeFromBuiltinData_3164
+                                    fUnsafeFromDataTuple2_cunsafeFromBuiltinData_2997
                                     (con bytestring)
                                   }
                                   (con data)
                                 }
-                                unsafeDataAsB_2864
+                                unsafeDataAsB_2697
                               ]
-                              fUnsafeFromDataBuiltinData_cunsafeFromBuiltinData_3147
+                              fUnsafeFromDataBuiltinData_cunsafeFromBuiltinData_2980
                             ]
                           ]
-                          [ { head_2855 (con data) } t_3179 ]
+                          [ { head_2688 (con data) } t_3012 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3199 [ List_2742 (con bytestring) ])
+                        (vardecl x_3032 [ List_2575 (con bytestring) ])
                         [
                           [
                             {
-                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2877
+                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2710
                               (con bytestring)
                             }
-                            unsafeDataAsB_2864
+                            unsafeDataAsB_2697
                           ]
-                          [ { head_2855 (con data) } t_3178 ]
+                          [ { head_2688 (con data) } t_3011 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3198 [ Interval_2812 (con integer) ])
+                        (vardecl x_3031 [ Interval_2645 (con integer) ])
                         [
                           [
                             {
-                              fUnsafeFromDataInterval_cunsafeFromBuiltinData_3101
+                              fUnsafeFromDataInterval_cunsafeFromBuiltinData_2934
                               (con integer)
                             }
-                            unsafeDataAsI_2863
+                            unsafeDataAsI_2696
                           ]
-                          [ { head_2855 (con data) } t_3177 ]
+                          [ { head_2688 (con data) } t_3010 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
                         (vardecl
-                          x_3197
+                          x_3030
                           [
-                            List_2742
+                            List_2575
                             [
-                              [ Tuple2_2749 StakingCredential_2776 ]
+                              [ Tuple2_2582 StakingCredential_2609 ]
                               (con integer)
                             ]
                           ]
@@ -5576,9 +5440,9 @@
                         [
                           [
                             {
-                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2877
+                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2710
                               [
-                                [ Tuple2_2749 StakingCredential_2776 ]
+                                [ Tuple2_2582 StakingCredential_2609 ]
                                 (con integer)
                               ]
                             }
@@ -5586,47 +5450,47 @@
                               [
                                 {
                                   {
-                                    fUnsafeFromDataTuple2_cunsafeFromBuiltinData_3164
-                                    StakingCredential_2776
+                                    fUnsafeFromDataTuple2_cunsafeFromBuiltinData_2997
+                                    StakingCredential_2609
                                   }
                                   (con integer)
                                 }
-                                fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2964
+                                fUnsafeFromDataStakingCredential_cunsafeFromBuiltinData_2797
                               ]
-                              unsafeDataAsI_2863
+                              unsafeDataAsI_2696
                             ]
                           ]
-                          [ { head_2855 (con data) } t_3176 ]
+                          [ { head_2688 (con data) } t_3009 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3196 [ List_2742 DCert_2817 ])
+                        (vardecl x_3029 [ List_2575 DCert_2650 ])
                         [
                           [
                             {
-                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2877
-                              DCert_2817
+                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2710
+                              DCert_2650
                             }
-                            fUnsafeFromDataDCert_cunsafeFromBuiltinData_3145
+                            fUnsafeFromDataDCert_cunsafeFromBuiltinData_2978
                           ]
-                          [ { head_2855 (con data) } t_3175 ]
+                          [ { head_2688 (con data) } t_3008 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
                         (vardecl
-                          x_3191
+                          x_3024
                           [
                             [
                               (lam
-                                k_3192
+                                k_3025
                                 (type)
                                 (lam
-                                  v_3193
+                                  v_3026
                                   (type)
                                   [
-                                    List_2742 [ [ Tuple2_2749 k_3192 ] v_3193 ]
+                                    List_2575 [ [ Tuple2_2582 k_3025 ] v_3026 ]
                                   ]
                                 )
                               )
@@ -5635,14 +5499,14 @@
                             [
                               [
                                 (lam
-                                  k_3194
+                                  k_3027
                                   (type)
                                   (lam
-                                    v_3195
+                                    v_3028
                                     (type)
                                     [
-                                      List_2742
-                                      [ [ Tuple2_2749 k_3194 ] v_3195 ]
+                                      List_2575
+                                      [ [ Tuple2_2582 k_3027 ] v_3028 ]
                                     ]
                                   )
                                 )
@@ -5657,20 +5521,20 @@
                             [
                               {
                                 {
-                                  fUnsafeFromDataMap_cunsafeFromBuiltinData_2903
+                                  fUnsafeFromDataMap_cunsafeFromBuiltinData_2736
                                   (con bytestring)
                                 }
                                 [
                                   [
                                     (lam
-                                      k_3189
+                                      k_3022
                                       (type)
                                       (lam
-                                        v_3190
+                                        v_3023
                                         (type)
                                         [
-                                          List_2742
-                                          [ [ Tuple2_2749 k_3189 ] v_3190 ]
+                                          List_2575
+                                          [ [ Tuple2_2582 k_3022 ] v_3023 ]
                                         ]
                                       )
                                     )
@@ -5679,27 +5543,27 @@
                                   (con integer)
                                 ]
                               }
-                              unsafeDataAsB_2864
+                              unsafeDataAsB_2697
                             ]
-                            fUnsafeFromDataValue_2910
+                            fUnsafeFromDataValue_2743
                           ]
-                          [ { head_2855 (con data) } t_3174 ]
+                          [ { head_2688 (con data) } t_3007 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
                         (vardecl
-                          x_3184
+                          x_3017
                           [
                             [
                               (lam
-                                k_3185
+                                k_3018
                                 (type)
                                 (lam
-                                  v_3186
+                                  v_3019
                                   (type)
                                   [
-                                    List_2742 [ [ Tuple2_2749 k_3185 ] v_3186 ]
+                                    List_2575 [ [ Tuple2_2582 k_3018 ] v_3019 ]
                                   ]
                                 )
                               )
@@ -5708,14 +5572,14 @@
                             [
                               [
                                 (lam
-                                  k_3187
+                                  k_3020
                                   (type)
                                   (lam
-                                    v_3188
+                                    v_3021
                                     (type)
                                     [
-                                      List_2742
-                                      [ [ Tuple2_2749 k_3187 ] v_3188 ]
+                                      List_2575
+                                      [ [ Tuple2_2582 k_3020 ] v_3021 ]
                                     ]
                                   )
                                 )
@@ -5730,20 +5594,20 @@
                             [
                               {
                                 {
-                                  fUnsafeFromDataMap_cunsafeFromBuiltinData_2903
+                                  fUnsafeFromDataMap_cunsafeFromBuiltinData_2736
                                   (con bytestring)
                                 }
                                 [
                                   [
                                     (lam
-                                      k_3182
+                                      k_3015
                                       (type)
                                       (lam
-                                        v_3183
+                                        v_3016
                                         (type)
                                         [
-                                          List_2742
-                                          [ [ Tuple2_2749 k_3182 ] v_3183 ]
+                                          List_2575
+                                          [ [ Tuple2_2582 k_3015 ] v_3016 ]
                                         ]
                                       )
                                     )
@@ -5752,44 +5616,44 @@
                                   (con integer)
                                 ]
                               }
-                              unsafeDataAsB_2864
+                              unsafeDataAsB_2697
                             ]
-                            fUnsafeFromDataValue_2910
+                            fUnsafeFromDataValue_2743
                           ]
-                          [ { head_2855 (con data) } t_3173 ]
+                          [ { head_2688 (con data) } t_3006 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3181 [ List_2742 TxOut_2783 ])
+                        (vardecl x_3014 [ List_2575 TxOut_2616 ])
                         [
                           [
                             {
-                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2877
-                              TxOut_2783
+                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2710
+                              TxOut_2616
                             }
-                            fUnsafeFromDataTxOut_cunsafeFromBuiltinData_2994
+                            fUnsafeFromDataTxOut_cunsafeFromBuiltinData_2827
                           ]
-                          [ { head_2855 (con data) } t_3172 ]
+                          [ { head_2688 (con data) } t_3005 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3180 [ List_2742 TxInInfo_2794 ])
+                        (vardecl x_3013 [ List_2575 TxInInfo_2627 ])
                         [
                           [
                             {
-                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2877
-                              TxInInfo_2794
+                              fUnsafeFromDataNil_cunsafeFromBuiltinData_2710
+                              TxInInfo_2627
                             }
-                            fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3024
+                            fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_2857
                           ]
-                          [ { head_2855 (con data) } t_3171 ]
+                          [ { head_2688 (con data) } t_3004 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3202 TxInfo_2826)
+                        (vardecl x_3035 TxInfo_2659)
                         [
                           [
                             [
@@ -5798,47 +5662,47 @@
                                   [
                                     [
                                       [
-                                        [ [ TxInfo_2827 x_3180 ] x_3181 ] x_3184
+                                        [ [ TxInfo_2660 x_3013 ] x_3014 ] x_3017
                                       ]
-                                      x_3191
+                                      x_3024
                                     ]
-                                    x_3196
+                                    x_3029
                                   ]
-                                  x_3197
+                                  x_3030
                                 ]
-                                x_3198
+                                x_3031
                               ]
-                              x_3199
+                              x_3032
                             ]
-                            x_3200
+                            x_3033
                           ]
-                          x_3201
+                          x_3034
                         ]
                       )
                       [
                         [
                           [
                             [
-                              { ifThenElse_2853 (fun (con unit) TxInfo_2826) }
+                              { ifThenElse_2686 (fun (con unit) TxInfo_2659) }
                               [
                                 [
-                                  equalsInteger_2860
+                                  equalsInteger_2693
                                   [
                                     {
-                                      { fst_2857 (con integer) }
+                                      { fst_2690 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_3170
+                                    tup_3003
                                   ]
                                 ]
                                 (con integer 0)
                               ]
                             ]
-                            (lam ds_3203 (con unit) x_3202)
+                            (lam ds_3036 (con unit) x_3035)
                           ]
-                          (lam ds_3206 (con unit) x_3205)
+                          (lam ds_3039 (con unit) x_3038)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
@@ -5846,120 +5710,120 @@
                 (termbind
                   (strict)
                   (vardecl
-                    fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3243
-                    (fun (con data) ScriptContext_2843)
+                    fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3076
+                    (fun (con data) ScriptContext_2676)
                   )
                   (lam
-                    d_3233
+                    d_3066
                     (con data)
                     (let
                       (nonrec)
                       (termbind
                         (nonstrict)
                         (vardecl
-                          tup_3234
+                          tup_3067
                           [
                             [ (con pair) (con integer) ]
                             [ (con list) (con data) ]
                           ]
                         )
-                        [ unsafeDataAsConstr_2846 d_3233 ]
+                        [ unsafeDataAsConstr_2679 d_3066 ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl t_3235 [ (con list) (con data) ])
+                        (vardecl t_3068 [ (con list) (con data) ])
                         [
                           {
-                            { snd_2849 (con integer) } [ (con list) (con data) ]
+                            { snd_2682 (con integer) } [ (con list) (con data) ]
                           }
-                          tup_3234
+                          tup_3067
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3237 ScriptPurpose_2837)
+                        (vardecl x_3070 ScriptPurpose_2670)
                         [
-                          fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3232
+                          fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3065
                           [
-                            { head_2855 (con data) }
-                            [ { tail_2847 (con data) } t_3235 ]
+                            { head_2688 (con data) }
+                            [ { tail_2680 (con data) } t_3068 ]
                           ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3236 TxInfo_2826)
+                        (vardecl x_3069 TxInfo_2659)
                         [
-                          fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3207
-                          [ { head_2855 (con data) } t_3235 ]
+                          fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3040
+                          [ { head_2688 (con data) } t_3068 ]
                         ]
                       )
                       (termbind
                         (nonstrict)
-                        (vardecl x_3238 ScriptContext_2843)
-                        [ [ ScriptContext_2844 x_3236 ] x_3237 ]
+                        (vardecl x_3071 ScriptContext_2676)
+                        [ [ ScriptContext_2677 x_3069 ] x_3070 ]
                       )
                       [
                         [
                           [
                             [
                               {
-                                ifThenElse_2853
-                                (fun (con unit) ScriptContext_2843)
+                                ifThenElse_2686
+                                (fun (con unit) ScriptContext_2676)
                               }
                               [
                                 [
-                                  equalsInteger_2860
+                                  equalsInteger_2693
                                   [
                                     {
-                                      { fst_2857 (con integer) }
+                                      { fst_2690 (con integer) }
                                       [ (con list) (con data) ]
                                     }
-                                    tup_3234
+                                    tup_3067
                                   ]
                                 ]
                                 (con integer 0)
                               ]
                             ]
-                            (lam ds_3239 (con unit) x_3238)
+                            (lam ds_3072 (con unit) x_3071)
                           ]
-                          (lam ds_3242 (con unit) x_3241)
+                          (lam ds_3075 (con unit) x_3074)
                         ]
-                        unitval_2721
+                        unitval_2554
                       ]
                     )
                   )
                 )
                 (termbind
                   (strict)
-                  (vardecl checkHasFailedError_2738 (con string))
+                  (vardecl checkHasFailedError_2571 (con string))
                   (con string "PT5")
                 )
                 (termbind
                   (strict)
                   (vardecl
-                    traceError_2736
-                    (all a_2737 (type) (fun (con string) a_2737))
+                    traceError_2569
+                    (all a_2570 (type) (fun (con string) a_2570))
                   )
                   (abs
-                    a_2733
+                    a_2566
                     (type)
                     (lam
-                      str_2734
+                      str_2567
                       (con string)
                       [
-                        { error_2726 a_2733 }
+                        { error_2559 a_2566 }
                         [
                           {
                             [
-                              Unit_match_2732
+                              Unit_match_2565
                               [
-                                [ { trace_2722 Unit_2730 } str_2734 ] Unit_2731
+                                [ { trace_2555 Unit_2563 } str_2567 ] Unit_2564
                               ]
                             ]
                             (con unit)
                           }
-                          unitval_2721
+                          unitval_2554
                         ]
                       ]
                     )
@@ -5968,64 +5832,64 @@
                 (termbind
                   (strict)
                   (vardecl
-                    wrapMintingPolicy_3255
+                    wrapMintingPolicy_3088
                     (all
-                      r_3256
+                      r_3089
                       (type)
                       (fun
-                        [ (lam a_3257 (type) (fun (con data) a_3257)) r_3256 ]
+                        [ (lam a_3090 (type) (fun (con data) a_3090)) r_3089 ]
                         (fun
-                          (fun r_3256 (fun ScriptContext_2843 Bool_2694))
-                          (fun (con data) (fun (con data) Unit_2730))
+                          (fun r_3089 (fun ScriptContext_2676 Bool_2527))
+                          (fun (con data) (fun (con data) Unit_2563))
                         )
                       )
                     )
                   )
                   (abs
-                    r_3244
+                    r_3077
                     (type)
                     (lam
-                      dUnsafeFromData_3245
-                      [ (lam a_3246 (type) (fun (con data) a_3246)) r_3244 ]
+                      dUnsafeFromData_3078
+                      [ (lam a_3079 (type) (fun (con data) a_3079)) r_3077 ]
                       (lam
-                        f_3247
-                        (fun r_3244 (fun ScriptContext_2843 Bool_2694))
+                        f_3080
+                        (fun r_3077 (fun ScriptContext_2676 Bool_2527))
                         (lam
-                          r_3248
+                          r_3081
                           (con data)
                           (lam
-                            p_3249
+                            p_3082
                             (con data)
                             {
                               [
                                 [
                                   {
                                     [
-                                      Bool_match_2697
+                                      Bool_match_2530
                                       [
                                         [
-                                          f_3247 [ dUnsafeFromData_3245 r_3248 ]
+                                          f_3080 [ dUnsafeFromData_3078 r_3081 ]
                                         ]
                                         [
-                                          fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3243
-                                          p_3249
+                                          fUnsafeFromDataScriptContext_cunsafeFromBuiltinData_3076
+                                          p_3082
                                         ]
                                       ]
                                     ]
-                                    (all dead_3251 (type) Unit_2730)
+                                    (all dead_3084 (type) Unit_2563)
                                   }
-                                  (abs dead_3252 (type) Unit_2731)
+                                  (abs dead_3085 (type) Unit_2564)
                                 ]
                                 (abs
-                                  dead_3253
+                                  dead_3086
                                   (type)
                                   [
-                                    { traceError_2736 Unit_2730 }
-                                    checkHasFailedError_2738
+                                    { traceError_2569 Unit_2563 }
+                                    checkHasFailedError_2571
                                   ]
                                 )
                               ]
-                              (all dead_3254 (type) dead_3254)
+                              (all dead_3087 (type) dead_3087)
                             }
                           )
                         )
@@ -6034,26 +5898,26 @@
                   )
                 )
                 (lam
-                  oref_3746
-                  TxOutRef_2791
+                  oref_3442
+                  TxOutRef_2624
                   (lam
-                    tn_3747
+                    tn_3443
                     (con bytestring)
                     [
                       [
                         {
                           {
-                            bad_name_3743
-                            (fun Unit_2730 (fun ScriptContext_2843 Bool_2694))
+                            bad_name_3439
+                            (fun Unit_2563 (fun ScriptContext_2676 Bool_2527))
                           }
-                          (fun (con data) (fun (con data) Unit_2730))
+                          (fun (con data) (fun (con data) Unit_2563))
                         }
                         [
-                          { wrapMintingPolicy_3255 Unit_2730 }
-                          fUnsafeFromDataUnit_3737
+                          { wrapMintingPolicy_3088 Unit_2563 }
+                          fUnsafeFromDataUnit_3433
                         ]
                       ]
-                      [ [ mkPolicy_3696 oref_3746 ] tn_3747 ]
+                      [ [ mkPolicy_3392 oref_3442 ] tn_3443 ]
                     ]
                   )
                 )

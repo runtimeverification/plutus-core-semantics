@@ -57,9 +57,8 @@ library
     -Wincomplete-uni-patterns -Wincomplete-record-updates
     -Wredundant-constraints -Widentities -fobject-code
     -fno-ignore-interface-pragmas -fno-omit-interface-pragmas
---    -fplugin-opt PlutusTx.Plugin:no-simplifier-inline
---    -fplugin-opt PlutusTx.Plugin:no-simplifier-beta
     -fplugin-opt PlutusTx.Plugin:max-simplifier-iterations=0
+    -fmax-simplifier-iterations=0
     -fforce-recomp
 
   --------------------
