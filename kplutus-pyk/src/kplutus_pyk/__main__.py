@@ -1,11 +1,11 @@
-import argparse
+from argparse import ArgumentParser
 
 from pyk.cli_utils import dir_path, file_path
 
 from .kplutus import KPlutus
 
 
-def main():
+def main() -> None:
     parser = create_parser()
     args, remainder = parser.parse_known_args()
 
@@ -17,8 +17,8 @@ def main():
         raise AssertionError()
 
 
-def create_parser():
-    parser = argparse.ArgumentParser()
+def create_parser() -> ArgumentParser:
+    parser = ArgumentParser()
 
     command_parser = parser.add_subparsers(dest='command', required=True)
 
