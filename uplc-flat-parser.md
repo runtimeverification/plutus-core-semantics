@@ -370,7 +370,7 @@ They are used as parameters that describe constants or as parameters to builtin 
 
 #### Values for Builtin Names
 
-Tags for builtins use 8 bits allowing for a max of 256 builtin functions.
+Tags for builtins use 7 bits allowing for a max of 128 builtin functions.
 
 ```k
   syntax Int ::= "#builtinTagLength" [macro]
