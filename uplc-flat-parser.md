@@ -243,15 +243,15 @@ Parsing Constants
                          BitStream( I => I +Int #typeLength, Bs ), _
                        )
 
-  rule #readProgramTerm( #readConType UNIT, BitStream( I, Bs ), C ) =>
+  rule #readProgramTerm( #readConType UNIT_TYPE, BitStream( I, Bs ), C ) =>
     #resolveTerm( ( con unit () ), I, Bs, #getNextVarNum( C ) )
 
-  rule #readProgramTerm( #readConType BOOL, BitStream( I, Bs), C ) =>
+  rule #readProgramTerm( #readConType BOOL_TYPE, BitStream( I, Bs), C ) =>
     #resolveTerm( ( con bool #bit2boolval( #readNBits( #boolValLength, BitStream( I, Bs ) ) ) ),
                    I +Int #boolValLength, Bs, #getNextVarNum( C )
                 )
 
-  rule #readProgramTerm( #readConType INTEGER, BitStream( I, Bs), C ) =>
+  rule #readProgramTerm( #readConType INTEGER_TYPE, BitStream( I, Bs), C ) =>
     #let
       INT_VAL = #readIntegerValue( BitStream( I, Bs ) )
     #in
@@ -259,7 +259,7 @@ Parsing Constants
                     #getBitLength( {INT_VAL}:>VarLenDatum ) +Int I, Bs, #getNextVarNum( C )
                   )
 
-  rule #readProgramTerm( #readConType STRING, BitStream( I, Bs), C ) =>
+  rule #readProgramTerm( #readConType STRING_TYPE, BitStream( I, Bs), C ) =>
     #let
       STR_VAL = #readStringValue( BitStream( #nextByteBoundary(I), Bs ) )
     #in
@@ -267,11 +267,18 @@ Parsing Constants
                     #getBitLength( {STR_VAL}:>StringDatum ), Bs, #getNextVarNum( C )
                   )
 
-  rule #readProgramTerm( #readConType BYTESTRING, BitStream( I, Bs ), C ) =>
+  rule #readProgramTerm( #readConType BYTESTRING_TYPE, BitStream( I, Bs ), C ) =>
     #let
       BSTR_VAL = #readByteStringValue( BitStream( #nextByteBoundary(I), Bs ) )
     #in
       #resolveTerm( ( con bytestring String2ByteString( #getDatum( BSTR_VAL ) ) ),
+                    #getBitLength( {BSTR_VAL}:>StringDatum ), Bs, #getNextVarNum( C ) )
+
+  rule #readProgramTerm( #readConType DATA_TYPE, BitStream( I, Bs ), C ) =>
+    #let
+      BSTR_VAL = #readByteStringValue( BitStream( #nextByteBoundary(I), Bs ) )
+    #in
+      #resolveTerm( ( con data String2ByteString( #getDatum( BSTR_VAL ) ) ),
                     #getBitLength( {BSTR_VAL}:>StringDatum ), Bs, #getNextVarNum( C ) )
 ```
 
@@ -347,30 +354,30 @@ They are used as parameters that describe constants or as parameters to builtin 
 //------------------------------------
   rule #typeLength => 6
 
-  syntax Int ::= "INTEGER"    [macro]
-               | "BYTESTRING" [macro]
-               | "STRING"     [macro]
-               | "UNIT"       [macro]
-               | "BOOL"       [macro]
-               | "LIST"       [macro]
-               | "PAIR"       [macro]
-               | "TYPE_APP"   [macro]
-               | "DATA"       [macro]
-//-----------------------------------
-  rule INTEGER    => 0
-  rule BYTESTRING => 1
-  rule STRING     => 2
-  rule UNIT       => 3
-  rule BOOL       => 4
-  rule LIST       => 5
-  rule PAIR       => 6
-  rule TYPE_APP   => 7
-  rule DATA       => 8
+  syntax Int ::= "INTEGER_TYPE"    [macro]
+               | "BYTESTRING_TYPE" [macro]
+               | "STRING_TYPE"     [macro]
+               | "UNIT_TYPE"       [macro]
+               | "BOOL_TYPE"       [macro]
+               | "LIST_TYPE"       [macro]
+               | "PAIR_TYPE"       [macro]
+               | "TYPE_APP_TYPE"   [macro]
+               | "DATA_TYPE"       [macro]
+//----------------------------------------
+  rule INTEGER_TYPE    => 0
+  rule BYTESTRING_TYPE => 1
+  rule STRING_TYPE     => 2
+  rule UNIT_TYPE       => 3
+  rule BOOL_TYPE       => 4
+  rule LIST_TYPE       => 5
+  rule PAIR_TYPE       => 6
+  rule TYPE_APP_TYPE   => 7
+  rule DATA_TYPE       => 8
 ```
 
 #### Values for Builtin Names
 
-Tags for builtins use 8 bits allowing for a max of 256 builtin functions.
+Tags for builtins use 7 bits allowing for a max of 128 builtin functions.
 
 ```k
   syntax Int ::= "#builtinTagLength" [macro]
