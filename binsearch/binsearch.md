@@ -44,10 +44,10 @@ module BINSEARCH
         ( delay
           (force
             [ (force (builtin ifThenElse))
-              [ (force (builtin equalsInteger)) in_e [ HEAD in_list ] ]
+              [ (builtin equalsInteger) in_e [ HEAD in_list ] ]
               (delay (con bool True))
               [ (force (builtin ifThenElse))
-                [ (force (builtin lessThanInteger)) in_e HEAD ]
+                [ (builtin lessThanInteger) in_e [ HEAD in_list ] ]
                 (delay [ bin_search LEFT_TREE in_e ] )
                 (delay [ bin_search RIGHT_TREE in_e ] )
               ]
