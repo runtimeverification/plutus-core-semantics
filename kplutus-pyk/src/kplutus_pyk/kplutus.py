@@ -2,7 +2,7 @@ import json
 import sys
 from pathlib import Path
 from subprocess import CalledProcessError
-from typing import Iterable
+from typing import Iterable, Optional
 
 from pyk.cli_utils import run_process
 from pyk.cterm import CTerm, build_claim
@@ -24,6 +24,11 @@ from pyk.ktool import KPrint
 
 
 class KPlutus:
+    kplc_lib_prefix: Optional[Path]
+
+    def __init__(self, kplc_lib_prefix: Optional[Path] = None):
+        self.kplc_lib_prefix = kplc_lib_prefix
+
     @staticmethod
     def kompile(main_file: Path, args: Iterable[str] = ()) -> None:
         command = ['kompile', str(main_file)] + list(args)
