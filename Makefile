@@ -283,7 +283,7 @@ smallest_version := $(shell echo "$(bison_version)\n3.7.4" | sort -V | head -n1)
 
 ifeq ($(smallest_version), 3.7.4)
 	LLVM_KOMPILE_OPTS+=--gen-bison-parser
-endif 
+endif
 
 $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(libff_out) $(KPLUTUS_BIN)/kplc
 	$(KOMPILE) --backend llvm                 \
@@ -434,6 +434,12 @@ simple-proofs/%.md.prove: simple-proofs/%.md simple-proofs/verification/haskell/
 
 simple-proofs/verification/haskell/verification-kompiled/timestamp: simple-proofs/verification.md $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory simple-proofs/verification/haskell
+
+binsearch/%.md.prove: binsearch/%.md binsearch/verification/haskell/verification-kompiled/timestamp
+	$(KPLUTUS) prove --directory binsearch/verification/haskell $< $(KPROVE_OPTS)
+
+binsearch/verification/haskell/verification-kompiled/timestamp: binsearch/verification.md $(kplutus_includes)
+	$(KOMPILE) --backend haskell $< --directory binsearch/verification/haskell
 
 
 # Testing

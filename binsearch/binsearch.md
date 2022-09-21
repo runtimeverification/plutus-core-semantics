@@ -5,14 +5,14 @@ module REC
   imports UPLC-SYNTAX
   syntax Term ::= "REC" [alias]
   rule REC => (lam f_0
-                [ (lam s_0 [ s_0 s_0 ])
-                  (lam s_0 (lam x_0 [ [ f_0 [ s_0 s_0 ] ] x_0 ])) ])
+                [ (lam w_0 [ w_0 w_0 ])
+                  (lam w_0 (lam x_0 [ [ f_0 [ w_0 w_0 ] ] x_0 ])) ])
 endmodule
 
 module BINSEARCH
   imports REC
   imports UPLC-SYNTAX
-  
+
   syntax Term ::= "BINSEARCH" [alias]
   syntax Term ::= "BINSEARCH_REC" [alias]
   syntax Term ::= "BINSEARCH_BODY" [alias]

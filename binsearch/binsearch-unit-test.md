@@ -6,8 +6,8 @@ module BINSEARCH-UNIT-TEST
     claim <k> [ BINSEARCH_REC
                 (con list(integer)
                   [ 1 ,
-                    [ 2 , [ .ConstantList ] , [ .ConstantList ] , .ConstantList ],
-                    [ 3 , [ .ConstantList ] , [ .ConstantList ] , .ConstantList ],
+                    [ 2 , [ .ConstantList ] , [ .ConstantList ] ],
+                    [ 3 , [ .ConstantList ] , [ .ConstantList ] ],
                     .ConstantList
                   ]
                  )
@@ -15,30 +15,30 @@ module BINSEARCH-UNIT-TEST
           => (con bool True) ...
           </k>
     <env> .Map </env>
-    
+
     claim <k>
       [ ( force ( builtin tailList ) )
         ( con list ( integer )
           [ 1 ,
             [ 4 ,
-              [ 5 , [ .ConstantList ], [ .ConstantList ], .ConstantList ],
-              [ 6 , [ .ConstantList ], [ .ConstantList ], .ConstantList ],
+              [ 5 , [ .ConstantList ], [ .ConstantList ] ],
+              [ 6 , [ .ConstantList ], [ .ConstantList ] ],
               .ConstantList
             ],
-            [ 3 , [ .ConstantList ], [ .ConstantList ], .ConstantList ],
+            [ 3 , [ .ConstantList ], [ .ConstantList ] ],
             .ConstantList
           ]
         )
       ]
     =>
      < con list(integer)
-       [ 
+       [
          [ 4 ,
-           [ 5 , [ .ConstantList ] , [ .ConstantList ] , .ConstantList ] ,
-           [ 6 , [ .ConstantList ] , [ .ConstantList ] , .ConstantList ] ,
+           [ 5 , [ .ConstantList ] , [ .ConstantList ] ] ,
+           [ 6 , [ .ConstantList ] , [ .ConstantList ] ] ,
            .ConstantList
          ] ,
-         [ 3 , [ .ConstantList ] , [ .ConstantList ] , .ConstantList ] ,
+         [ 3 , [ .ConstantList ] , [ .ConstantList ] ] ,
          .ConstantList
        ]
      > ...
@@ -50,11 +50,11 @@ module BINSEARCH-UNIT-TEST
         ( con list ( integer )
           [ 1 ,
             [ 4 ,
-              [ 5 , [ .ConstantList ], [ .ConstantList ], .ConstantList ],
-              [ 6 , [ .ConstantList ], [ .ConstantList ], .ConstantList ],
+              [ 5 , [ .ConstantList ], [ .ConstantList ] ],
+              [ 6 , [ .ConstantList ], [ .ConstantList ] ],
               .ConstantList
             ],
-            [ 3 , [ .ConstantList ], [ .ConstantList ], .ConstantList ],
+            [ 3 , [ .ConstantList ], [ .ConstantList ] ],
             .ConstantList
           ]
         )
