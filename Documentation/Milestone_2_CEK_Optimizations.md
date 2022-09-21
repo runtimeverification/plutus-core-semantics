@@ -1,3 +1,17 @@
+---
+documentclass: article
+title: KPlutus Milestone 2 Optimizations
+author: |
+  Petar Maksimović \
+  Runtime Verification Inc. \
+  KPlutus Team
+date: Sep. 7th, 2022
+header-includes:
+  - \usepackage[T1]{fontenc}
+  - \usepackage{fourier}
+  - \usepackage{fullpage}
+---
+
 # Milestone 2 CEK Optimizations
 
 ## Environment cutting
