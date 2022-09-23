@@ -8,7 +8,7 @@
 **/#*
 *.sh
 /**/verification
-simple-proofs/uplc-to-k/*.k
+tests/specs/uplc-to-k/**/
 *.swo
 *.swn
 *.swp
