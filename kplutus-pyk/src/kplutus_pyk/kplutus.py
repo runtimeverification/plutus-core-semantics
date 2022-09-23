@@ -51,7 +51,8 @@ class KPlutus:
         d = read_kast_definition(definition_dir / 'compiled.json')
         empty_config = d.empty_config(KSort('GeneratedTopCell'))
 
-        # UplcId tokens clash with tokens in kprove, so we prefix them
+        # UplcId tokens without an underbar clash with tokens in kprove,
+        # so add a prefix with an underbar to them
         def prefix_uplcid(t: KToken) -> KToken:
             if t.sort.name == "UplcId":
                 return t.let(token="v_" + t.token)
