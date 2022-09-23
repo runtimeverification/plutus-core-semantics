@@ -419,22 +419,34 @@ KPROVE_OPTS :=
 
 test-prove: test-decoders-prove test-simple-prove test-uplc-to-k
 
-decoders_prove_tests := $(wildcard tests/specs/decoders/*.md)
-decoders_prove_tests := $(filter-out tests/specs/decoders/verification.md, $(decoders_prove_tests))
-test-decoders-prove: $(decoders_prove_tests:=.prove)
-
+# Simple proofs
+# -------------
 simple_prove_tests := $(wildcard tests/specs/simple/*.md)
 simple_prove_tests := $(filter-out tests/specs/simple/verification.md, $(simple_prove_tests))
 test-simple-prove: $(simple_prove_tests:=.prove)
 
-uplc_to_k_tests := $(wildcard tests/specs/uplc-to-k/*.uplc)
-test-uplc-to-k: $(uplc_to_k_tests:=.prove)
+tests/specs/simple/%.md.prove: tests/specs/simple/%.md tests/specs/simple/verification/haskell/verification-kompiled/timestamp
+	$(KPLUTUS) prove --directory tests/specs/simple/verification/haskell $< $(KPROVE_OPTS)
+
+tests/specs/simple/verification/haskell/verification-kompiled/timestamp: tests/specs/simple/verification.md $(kplutus_includes)
+	$(KOMPILE) --backend haskell $< --directory tests/specs/simple/verification/haskell
+
+# Decoder proofs
+# --------------
+decoders_prove_tests := $(wildcard tests/specs/decoders/*.md)
+decoders_prove_tests := $(filter-out tests/specs/decoders/verification.md, $(decoders_prove_tests))
+test-decoders-prove: $(decoders_prove_tests:=.prove)
 
 tests/specs/decoders/%.md.prove: tests/specs/decoders/%.md tests/specs/decoders/verification/haskell/verification-kompiled/timestamp
 	$(KPLUTUS) prove --directory tests/specs/decoders/verification/haskell $< $(KPROVE_OPTS)
 
 tests/specs/decoders/verification/haskell/verification-kompiled/timestamp: tests/specs/decoders/verification.md $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory tests/specs/decoders/verification/haskell
+
+# uplc-to-k proofs
+# ----------------
+uplc_to_k_tests := $(wildcard tests/specs/uplc-to-k/*.uplc)
+test-uplc-to-k: $(uplc_to_k_tests:=.prove)
 
 .SECONDEXPANSION:
 tests/specs/uplc-to-k/%.uplc.prove: tests/specs/uplc-to-k/$$*/$$*-spec.k tests/specs/uplc-to-k/$$*/verification/haskell/$$*-spec-kompiled/timestamp
@@ -447,12 +459,6 @@ tests/specs/uplc-to-k/%-spec.k: tests/specs/uplc-to-k/$$(*F).uplc $(VENV_DIR)/py
 
 tests/specs/uplc-to-k/%-spec-kompiled/timestamp: tests/specs/uplc-to-k/$$(*F)/$$(*F)-spec.k
 	$(KOMPILE) --backend haskell $< --directory $(dir $(@D)) --main-module VERIFICATION
-
-tests/specs/simple/%.md.prove: tests/specs/simple/%.md tests/specs/simple/verification/haskell/verification-kompiled/timestamp
-	$(KPLUTUS) prove --directory tests/specs/simple/verification/haskell $< $(KPROVE_OPTS)
-
-tests/specs/simple/verification/haskell/verification-kompiled/timestamp: tests/specs/simple/verification.md $(kplutus_includes)
-	$(KOMPILE) --backend haskell $< --directory tests/specs/simple/verification/haskell
 
 # Testing
 # -------
