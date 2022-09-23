@@ -117,7 +117,7 @@ export PLUGIN_SUBMODULE
         test-benchmark-validation-examples \
         test-nofib-exe-examples            \
         conformance-test update-results    \
-        test-prove test-unit-tests         \
+        test-prove test-decoders-prove      \
         test-simple-prove test-uplc-to-k   \
         fresh-test-coverage                \
         venv venv-clean kplutus-pyk
@@ -417,10 +417,11 @@ fresh-test-coverage:
 #------------
 KPROVE_OPTS :=
 
-test-prove: test-unit-tests test-simple-prove test-uplc-to-k
+test-prove: test-decoders-prove test-simple-prove test-uplc-to-k
 
-unit_tests := $(wildcard unit-tests/*.md)
-test-unit-tests: $(unit_tests:=.prove)
+decoders_prove_tests := $(wildcard tests/specs/decoders/*.md)
+decoders_prove_tests := $(filter-out tests/specs/decoders/verification.md, $(decoders_prove_tests))
+test-decoders-prove: $(decoders_prove_tests:=.prove)
 
 simple_prove_tests := $(wildcard tests/specs/simple/*.md)
 simple_prove_tests := $(filter-out tests/specs/simple/verification.md, $(simple_prove_tests))
@@ -430,11 +431,11 @@ uplc_to_k_tests := $(wildcard simple-proofs/uplc-to-k/*.uplc)
 test-simple-prove: $(simple_prove_tests:=.prove)
 test-uplc-to-k: $(uplc_to_k_tests:=.prove)
 
-unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verification-kompiled/timestamp
-	$(KPLUTUS) prove --directory unit-tests/verification/haskell $< $(KPROVE_OPTS)
+tests/specs/decoders/%.md.prove: tests/specs/decoders/%.md tests/specs/decoders/verification/haskell/verification-kompiled/timestamp
+	$(KPLUTUS) prove --directory tests/specs/decoders/verification/haskell $< $(KPROVE_OPTS)
 
-unit-tests/verification/haskell/verification-kompiled/timestamp: unit-tests/verification.k $(kplutus_includes)
-	$(KOMPILE) --backend haskell $< --directory unit-tests/verification/haskell
+tests/specs/decoders/verification/haskell/verification-kompiled/timestamp: tests/specs/decoders/verification.md $(kplutus_includes)
+	$(KOMPILE) --backend haskell $< --directory tests/specs/decoders/verification/haskell
 
 simple-proofs/verification/haskell/verification-kompiled/timestamp: simple-proofs/verification.md $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory simple-proofs/verification/haskell

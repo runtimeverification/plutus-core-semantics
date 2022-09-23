@@ -1,5 +1,5 @@
 ```k
-requires "verification.k"
+requires "verification.md"
 
 module CBOR-UNIT-TEST
   imports VERIFICATION

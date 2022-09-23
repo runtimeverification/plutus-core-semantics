@@ -1,5 +1,5 @@
 ```k
-requires "verification.k"
+requires "verification.md"
 
 module FLAT-UNIT-TEST
   imports VERIFICATION
