@@ -118,7 +118,7 @@ export PLUGIN_SUBMODULE
         test-nofib-exe-examples            \
         conformance-test update-results    \
         test-prove test-unit-tests         \
-        test-uplc-to-k                     \
+        test-simple-prove test-uplc-to-k   \
         fresh-test-coverage                \
         venv venv-clean kplutus-pyk
 
@@ -417,15 +417,17 @@ fresh-test-coverage:
 #------------
 KPROVE_OPTS :=
 
+test-prove: test-unit-tests test-simple-prove test-uplc-to-k
+
 unit_tests := $(wildcard unit-tests/*.md)
 test-unit-tests: $(unit_tests:=.prove)
 
-prove_tests := $(wildcard simple-proofs/*.md)
-prove_tests := $(filter-out simple-proofs/verification.md, $(prove_tests))
+simple_prove_tests := $(wildcard tests/specs/simple/*.md)
+simple_prove_tests := $(filter-out tests/specs/simple/verification.md, $(simple_prove_tests))
 
 uplc_to_k_tests := $(wildcard simple-proofs/uplc-to-k/*.uplc)
 
-test-prove: $(prove_tests:=.prove)
+test-simple-prove: $(simple_prove_tests:=.prove)
 test-uplc-to-k: $(uplc_to_k_tests:=.prove)
 
 unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verification-kompiled/timestamp
@@ -433,9 +435,6 @@ unit-tests/%.md.prove: unit-tests/%.md unit-tests/verification/haskell/verificat
 
 unit-tests/verification/haskell/verification-kompiled/timestamp: unit-tests/verification.k $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory unit-tests/verification/haskell
-
-simple-proofs/%.md.prove: simple-proofs/%.md simple-proofs/verification/haskell/verification-kompiled/timestamp
-	$(KPLUTUS) prove --directory simple-proofs/verification/haskell $< $(KPROVE_OPTS)
 
 simple-proofs/verification/haskell/verification-kompiled/timestamp: simple-proofs/verification.md $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory simple-proofs/verification/haskell
@@ -447,6 +446,12 @@ simple-proofs/uplc-to-k/%.uplc.prove: simple-proofs/uplc-to-k/%-spec.k simple-pr
 simple-proofs/uplc-to-k/%-spec.k: simple-proofs/uplc-to-k/%.uplc $(VENV_DIR)/pyvenv.cfg simple-proofs/verification/haskell/verification-kompiled/timestamp
 	. .build/venv/bin/activate \
 	    && $(KPLUTUS) uplc-to-k --directory simple-proofs/verification/haskell/verification-kompiled $< > $@
+
+tests/specs/simple/%.md.prove: tests/specs/simple/%.md tests/specs/simple/verification/haskell/verification-kompiled/timestamp
+	$(KPLUTUS) prove --directory tests/specs/simple/verification/haskell $< $(KPROVE_OPTS)
+
+tests/specs/simple/verification/haskell/verification-kompiled/timestamp: tests/specs/simple/verification.md $(kplutus_includes)
+	$(KOMPILE) --backend haskell $< --directory tests/specs/simple/verification/haskell
 
 # Testing
 # -------
