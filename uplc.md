@@ -7,7 +7,7 @@ module UPLC
   imports UPLC-SEMANTICS
 endmodule
 
-module UPLC-WITHOUT-GENV
+module UPLC-WITH-EMPTY-GENV
   imports UPLC
 
   rule #inKeysgEnv(_) => false

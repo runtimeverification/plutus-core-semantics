@@ -257,7 +257,7 @@ llvm_kompiled_dir  := $(llvm_dir)/$(llvm_main_filename)-kompiled/
 llvm_kompiled      := $(llvm_kompiled_dir)/interpreter
 
 haskell_dir            := haskell
-haskell_main_module    := UPLC-WITHOUT-GENV
+haskell_main_module    := UPLC-WITH-EMPTY-GENV
 haskell_syntax_module  := $(haskell_main_module)
 haskell_main_file      := uplc.md
 haskell_main_filename  := $(basename $(notdir $(haskell_main_file)))
