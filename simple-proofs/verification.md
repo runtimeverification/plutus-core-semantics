@@ -3,6 +3,7 @@
 ```k
 requires "uplc.md"
 requires "uplc-rw-helpers.md"
+requires "uplc-genvironment-instance.md"
 ```
 
 ## Recursive combinators
@@ -703,6 +704,7 @@ module VERIFICATION
   imports SIMPLIFICATIONS
   imports POLICIES
   imports UPLC
+  imports UPLC-GENVIRONMENT-INSTANCE
 
 endmodule
 ```

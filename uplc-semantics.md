@@ -6,7 +6,7 @@ require "uplc-discharge.md"
 ```
 
 ```symbolic
-require "uplc-genvironment-instance.md"
+require "uplc-genvironment.md"
 ```
 
 ```k
@@ -19,7 +19,7 @@ module UPLC-SEMANTICS
 ```
 
 ```symbolic
-  imports UPLC-GENVIRONMENT-INSTANCE
+  imports UPLC-GENVIRONMENT
 ```
 
 ```k
