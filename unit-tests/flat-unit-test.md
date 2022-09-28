@@ -136,6 +136,8 @@ module FLAT-UNIT-TEST
   claim <k> simplify( #readProgramTerm( #readTerm, BitStream( 0, String2Bytes( "\x20\x01\x00\x00" ) ), #emptyContext ) )
     => simplified( LeafTermContext ( ( lam v_0 v_0 ) , 16 , 1 ) ) ... </k>
 
+  claim <k> simplify( #bytes2program( String2Bytes( "\x00\x00\x00\x4c\x01\x03\xd8\x79\x80\x00\x01" ) ) )
+    => simplified( ( program 0.0.0 ( con data String2ByteString("#d87980") ) ) ) ... </k>
 
 endmodule
 ```
