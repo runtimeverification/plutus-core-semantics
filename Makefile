@@ -405,7 +405,13 @@ uninstall:
 	rm -rf $(DESTDIR)$(INSTALL_BIN)/kplutus
 	rm -rf $(DESTDIR)$(INSTALL_LIB)/kplutus
 
-procs := $(shell nproc)
+ifeq ($(UNAME_S),Linux)
+	procs := $(shell nproc)
+else ifeq ($(UNAME_S),Darwin)
+	procs := $(shell sysctl -n hw.logicalcpu)
+else
+	procs := 1
+endif
 
 fresh-test-coverage:
 	[ -d $(KPLUTUS_LIB)/$(llvm_kompiled_dir) ] && rm -r $(KPLUTUS_LIB)/$(llvm_kompiled_dir)
