@@ -1,3 +1,4 @@
+import sys
 from argparse import ArgumentParser, ArgumentTypeError
 from pathlib import Path
 
@@ -7,6 +8,8 @@ from .kplutus import KPlutus
 
 
 def main() -> None:
+    sys.setrecursionlimit(15000000)
+
     parser = create_parser()
     args, remainder = parser.parse_known_args()
 
