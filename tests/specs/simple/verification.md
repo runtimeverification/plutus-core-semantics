@@ -2,6 +2,7 @@
 
 ```k
 requires "../verification-common.md"
+requires "uplc-genvironment-instance.md"
 requires "uplc-rw-helpers.md"
 ```
 
@@ -665,6 +666,6 @@ module VERIFICATION
   imports AUXILIARIES
   imports LIST-ALGORITHMS-SYNTAX
   imports POLICIES
-
+  imports UPLC-GENVIRONMENT-INSTANCE
 endmodule
 ```

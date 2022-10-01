@@ -46,7 +46,6 @@ endmodule
 ```k
 module VERIFICATION-COMMON
   imports SIMPLIFICATIONS
-  imports UPLC
-
+  imports UPLC-WITH-LOCAL-GLOBAL-ENV
 endmodule
 ```

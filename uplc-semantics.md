@@ -3,10 +3,8 @@
 ```k
 require "uplc-builtins.md"
 require "uplc-discharge.md"
-```
-
-```symbolic
-require "uplc-genvironment-instance.md"
+require "uplc-abstract-environment.md"
+require "uplc-free-variables.md"
 ```
 
 ```k
@@ -16,57 +14,12 @@ module UPLC-SEMANTICS
   imports SET
   imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
-```
+  imports UPLC-FREE-VARIABLES
+  imports UPLC-ABSTRACT-ENVIRONMENT
 
-```symbolic
-  imports UPLC-GENVIRONMENT-INSTANCE
-```
-
-```k
   syntax Bindable ::= Value
 
   syntax FinalState ::= "[]" Term
-```
-
-## Free variables
-
-```k
-  syntax Set ::= #FV(Term) [function, functional, memo]
-```
-
-```concrete
-  rule #FV( X:UplcId ) => SetItem(X)
-```
-
-```symbolic
-  rule #FV( X:UplcId ) => SetItem(X) requires notBool(#inKeysgEnv(X))
-```
-
-```k
-  rule #FV( [ T TL ] ) => #FV(T) |Set #FVL(TL)
-  rule #FV( (lam X:UplcId T) ) => #FV(T) -Set SetItem(X)
-  rule #FV( (delay T) ) => #FV(T)
-  rule #FV( (force T) ) => #FV(T)
-  rule #FV( _ ) => .Set [owise]
-
-  syntax Set ::= #FVL(TermList) [function, functional]
-
-  rule #FVL(T:Term) => #FV(T)
-  rule #FVL(T:Term TL:TermList) => #FV(T) |Set #FVL(TL)
-```
-
-## Closed terms
-
-```k
-  syntax Bool ::= #closed(Term) [function, functional]
-  rule #closed(Term) => #FV(Term) ==K .Set
-```
-
-## Environment cutting
-
-```k
-  syntax Map ::= #cutEnv(Map, Term) [function, functional]
-  rule #cutEnv(RHO, T) => removeAll(RHO, keys(RHO) -Set #FV(T))
 ```
 
 ## Non-interactive application
@@ -75,53 +28,40 @@ module UPLC-SEMANTICS
   syntax K ::= #app(Term, TermList, Map) [function, functional]
   syntax K ::= #appAux(TermList, Map) [function, functional]
   rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
-  rule #appAux(N:Term, RHO) => [_ N #cutEnv(RHO, N) ]
-  rule #appAux(N:Term TL:TermList, RHO) => [_ N #cutEnv(RHO, N) ] ~> #appAux(TL, RHO)
+  rule #appAux(N:Term, RHO:Map) => [_ N cutEnv(RHO, N) ]
+  rule #appAux(N:Term TL:TermList, RHO:Map) => [_ N cutEnv(RHO, N) ] ~> #appAux(TL, RHO)
+```
+
+## Environment cutting
+
+```k
+  syntax Map ::= cutEnv(Map, Term) [function, functional]
+  rule cutEnv(RHO, T) => removeAll(RHO, keys(RHO) -Set #FV(T))
 ```
 
 ## CEK machine
 
 ```k
   rule <k> (program _V M) => M </k>
-```
-
-```concrete
-  rule <k> X:UplcId => #lookup(RHO, X) ... </k>
-       <env> RHO </env>
-  requires X in_keys(RHO)
-
-  rule <k> X:UplcId => (error) ... </k>
-       <env> RHO </env>
-  requires notBool(X in_keys(RHO))
-```
-
-```symbolic
-  rule <k> X:UplcId => gLookup(X) ... </k>
-       <env> _ => .Map </env>
-  requires #inKeysgEnv(X)
 
   rule <k> X:UplcId => #lookup(RHO, X) ... </k>
        <env> RHO => .Map </env>
-  requires notBool(#inKeysgEnv(X))
-   andBool X in_keys(RHO)
+  requires #def(RHO, X)
 
   rule <k> X:UplcId => (error) ... </k>
        <env> RHO </env>
-  requires notBool(#inKeysgEnv(X))
-   andBool notBool(X in_keys(RHO))
-```
+  requires notBool(#def(RHO, X))
 
-```k
   rule <k> (con T:TypeConstant C:Constant) => < con T:TypeConstant C:Constant > ... </k>
        <env> _ => .Map </env>
 
   rule <k> (builtin BN) => < builtin BN .List | #expectedArguments(BN) > ... </k>
        <env> _ => .Map </env>
 
-  rule <k> (lam X:UplcId M:Term) => < lam X M #cutEnv(RHO, (lam X M)) > ... </k>
+  rule <k> (lam X:UplcId M:Term) => < lam X M cutEnv(RHO, (lam X M)) > ... </k>
        <env> RHO => .Map </env>
 
-  rule <k> (delay M:Term) => < delay M #cutEnv(RHO, M) > ... </k>
+  rule <k> (delay M:Term) => < delay M cutEnv(RHO, M) > ... </k>
        <env> RHO => .Map </env>
 
   rule <k> (force M:Term) => (M ~> Force) ... </k>

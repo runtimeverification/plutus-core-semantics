@@ -230,6 +230,7 @@ kplutus_files := uplc.md \
                  uplc-semantics.md \
                  uplc-syntax.md \
                  uplc-bytestring.md \
+                 uplc-abstract-environment.md \
                  uplc-environment.md \
                  uplc-genvironment.md \
                  uplc-genvironment-instance.md \
@@ -240,7 +241,8 @@ kplutus_files := uplc.md \
                  uplc-polymorphic-builtins.md \
                  uplc-string.md \
                  uplc-data-builtins.md \
-                 uplc-discharge.md
+                 uplc-discharge.md \
+		 uplc-free-variables.md
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 
@@ -249,15 +251,15 @@ $(KPLUTUS_INCLUDE)/kframework/%.md: %.md
 	install $< $@
 
 llvm_dir           := llvm
-llvm_main_module   := UPLC
-llvm_syntax_module := UPLC-SYNTAX
+llvm_main_module   := UPLC-WITH-LOCAL-ENV
+llvm_syntax_module := $(llvm_main_module)
 llvm_main_file     := uplc.md
 llvm_main_filename := $(basename $(notdir $(llvm_main_file)))
 llvm_kompiled_dir  := $(llvm_dir)/$(llvm_main_filename)-kompiled/
 llvm_kompiled      := $(llvm_kompiled_dir)/interpreter
 
 haskell_dir            := haskell
-haskell_main_module    := UPLC
+haskell_main_module    := UPLC-WITH-LOCAL-GLOBAL-ENV
 haskell_syntax_module  := $(haskell_main_module)
 haskell_main_file      := uplc.md
 haskell_main_filename  := $(basename $(notdir $(haskell_main_file)))
@@ -405,7 +407,7 @@ uninstall:
 	rm -rf $(DESTDIR)$(INSTALL_BIN)/kplutus
 	rm -rf $(DESTDIR)$(INSTALL_LIB)/kplutus
 
-procs := $(shell nproc)
+procs := $(shell sysctl -n hw.logicalcpu)
 
 fresh-test-coverage:
 	[ -d $(KPLUTUS_LIB)/$(llvm_kompiled_dir) ] && rm -r $(KPLUTUS_LIB)/$(llvm_kompiled_dir)

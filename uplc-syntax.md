@@ -3,7 +3,6 @@
 ```k
 require "domains.md"
 require "uplc-bytestring.md"
-require "uplc-environment.md"
 
 module UPLC-ID
   imports STRING
@@ -14,15 +13,14 @@ module UPLC-ID
 endmodule
 
 module UPLC-SYNTAX
+  imports MAP
   imports LIST
   imports STRING
-  imports MAP
+  imports UPLC-ID
   imports INT-SYNTAX
   imports UPLC-BYTESTRING
-  imports UPLC-ID
 
-  syntax Program ::= ConcreteProgram
-                   | FlatProgram
+  syntax Program ::= ConcreteProgram | FlatProgram
 
   syntax ConcreteProgram ::= "(" "program" Version Term ")"
 
