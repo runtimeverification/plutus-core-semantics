@@ -4,7 +4,7 @@
 require "uplc-builtins.md"
 require "uplc-discharge.md"
 require "uplc-free-variables.md"
-require "uplc-environment.md"
+require "uplc-abstract-environment.md"
 ```
 
 ```k
@@ -15,23 +15,13 @@ module UPLC-SEMANTICS
   imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
   imports UPLC-FREE-VARIABLES
-  imports UPLC-ENVIRONMENT
+  imports UPLC-ABSTRACT-ENVIRONMENT
 ```
 
 ```k
   syntax Bindable ::= Value
 
   syntax FinalState ::= "[]" Term
-```
-
-## Free variables
-
-```concrete
-  rule #FV( X:UplcId ) => SetItem(X)
-```
-
-```symbolic
-  rule #FV( X:UplcId ) => SetItem(X) requires notBool(#inKeysgEnv(X))
 ```
 
 ## Environment cutting
