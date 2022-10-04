@@ -3,6 +3,7 @@
 ```k
 require "uplc-builtins.md"
 require "uplc-discharge.md"
+require "uplc-free-variables.md"
 ```
 
 ```symbolic
@@ -16,6 +17,7 @@ module UPLC-SEMANTICS
   imports SET
   imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
+  imports UPLC-FREE-VARIABLES
 ```
 
 ```symbolic
@@ -30,36 +32,12 @@ module UPLC-SEMANTICS
 
 ## Free variables
 
-```k
-  syntax Set ::= #FV(Term) [function, functional, memo]
-```
-
 ```concrete
   rule #FV( X:UplcId ) => SetItem(X)
 ```
 
 ```symbolic
   rule #FV( X:UplcId ) => SetItem(X) requires notBool(#inKeysgEnv(X))
-```
-
-```k
-  rule #FV( [ T TL ] ) => #FV(T) |Set #FVL(TL)
-  rule #FV( (lam X:UplcId T) ) => #FV(T) -Set SetItem(X)
-  rule #FV( (delay T) ) => #FV(T)
-  rule #FV( (force T) ) => #FV(T)
-  rule #FV( _ ) => .Set [owise]
-
-  syntax Set ::= #FVL(TermList) [function, functional]
-
-  rule #FVL(T:Term) => #FV(T)
-  rule #FVL(T:Term TL:TermList) => #FV(T) |Set #FVL(TL)
-```
-
-## Closed terms
-
-```k
-  syntax Bool ::= #closed(Term) [function, functional]
-  rule #closed(Term) => #FV(Term) ==K .Set
 ```
 
 ## Environment cutting
