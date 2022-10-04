@@ -252,7 +252,7 @@ $(KPLUTUS_INCLUDE)/kframework/%.md: %.md
 
 llvm_dir           := llvm
 llvm_main_module   := UPLC-WITH-LOCAL-ENV
-llvm_syntax_module := $(llvm_main_module)
+llvm_syntax_module := UPLC-SYNTAX
 llvm_main_file     := uplc.md
 llvm_main_filename := $(basename $(notdir $(llvm_main_file)))
 llvm_kompiled_dir  := $(llvm_dir)/$(llvm_main_filename)-kompiled/
