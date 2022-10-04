@@ -3,7 +3,14 @@
 ```k
 require "domains.md"
 require "uplc-syntax.md"
+require "uplc-abstract-environment.md"
+```
 
+```symbolic
+require "uplc-genvironment-instance.md"
+```
+
+```k
 module UPLC-MAP
   imports MAP
   imports MAP-SYMBOLIC
@@ -17,12 +24,30 @@ module UPLC-ENVIRONMENT
   imports UPLC-SYNTAX
   imports LIST
   imports K-EQUAL
+  imports UPLC-ABSTRACT-ENVIRONMENT
+```
 
-  syntax Value ::= #lookup(Map, UplcId) [function]
+```symbolic
+  imports UPLC-GENVIRONMENT-INSTANCE
+```
+
+```concrete
   rule #lookup(E:Map, X:UplcId) => { E[X] }:>Value
 
-  syntax Map ::= #push(Map, UplcId, Value) [function]
-  rule #push(E:Map, X:UplcId, V:Value) => E [X <- V]
+  rule #def(RHO, X) => X in_keys(RHO)
+```
 
+```symbolic
+  rule #lookup(_:Map, X:UplcId) => gLookup(X)
+  requires #inKeysgEnv(X)
+
+  rule #lookup(E:Map, X:UplcId) => { E[X] }:>Value
+  requires notBool #inKeysgEnv(X)
+   andBool X in_keys(E)
+
+  rule #def(RHO, X) => X in_keys(RHO) orBool #inKeysgEnv(X)
+```
+
+```k
 endmodule
 ```

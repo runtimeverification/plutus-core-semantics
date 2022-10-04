@@ -4,10 +4,7 @@
 require "uplc-builtins.md"
 require "uplc-discharge.md"
 require "uplc-free-variables.md"
-```
-
-```symbolic
-require "uplc-genvironment-instance.md"
+require "uplc-environment.md"
 ```
 
 ```k
@@ -18,10 +15,7 @@ module UPLC-SEMANTICS
   imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
   imports UPLC-FREE-VARIABLES
-```
-
-```symbolic
-  imports UPLC-GENVIRONMENT-INSTANCE
+  imports UPLC-ENVIRONMENT
 ```
 
 ```k
@@ -61,35 +55,15 @@ module UPLC-SEMANTICS
 
 ```k
   rule <k> (program _V M) => M </k>
-```
-
-```concrete
-  rule <k> X:UplcId => #lookup(RHO, X) ... </k>
-       <env> RHO </env>
-  requires X in_keys(RHO)
-
-  rule <k> X:UplcId => (error) ... </k>
-       <env> RHO </env>
-  requires notBool(X in_keys(RHO))
-```
-
-```symbolic
-  rule <k> X:UplcId => gLookup(X) ... </k>
-       <env> _ => .Map </env>
-  requires #inKeysgEnv(X)
 
   rule <k> X:UplcId => #lookup(RHO, X) ... </k>
        <env> RHO => .Map </env>
-  requires notBool(#inKeysgEnv(X))
-   andBool X in_keys(RHO)
+  requires #def(RHO, X)
 
   rule <k> X:UplcId => (error) ... </k>
        <env> RHO </env>
-  requires notBool(#inKeysgEnv(X))
-   andBool notBool(X in_keys(RHO))
-```
+  requires notBool(#def(RHO, X))
 
-```k
   rule <k> (con T:TypeConstant C:Constant) => < con T:TypeConstant C:Constant > ... </k>
        <env> _ => .Map </env>
 
