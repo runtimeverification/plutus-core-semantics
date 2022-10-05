@@ -16,9 +16,10 @@ def main() -> None:
     if args.command == 'kompile':
         KPlutus.kompile(args.main_file, remainder)
     if args.command == 'uplc-to-k':
+        kplutus = KPlutus(args.kplc_lib)
         if not args.definition:
             args.definition = kompiled_dir(".")
-        KPlutus.uplc_to_k(args.main_file, args.definition, remainder)
+        kplutus.uplc_to_k(args.main_file, args.definition, remainder)
     else:
         raise AssertionError()
 
