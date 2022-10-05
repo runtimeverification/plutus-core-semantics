@@ -3,7 +3,7 @@ requires "uplc.md"
 requires "domains.md"
 
 module VERIFICATION
-  imports UPLC
+  imports UPLC-WITH-LOCAL-ENV
   imports BYTES
 
   syntax KItem ::= simplify(KItem)

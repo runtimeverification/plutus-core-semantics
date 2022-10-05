@@ -1,28 +1,44 @@
 # UPLC Environment
 
 ```k
-require "domains.md"
 require "uplc-syntax.md"
+require "uplc-abstract-environment.md"
+require "uplc-genvironment.md"
+require "uplc-free-variables.md"
 
 module UPLC-MAP
   imports MAP
   imports MAP-SYMBOLIC
 endmodule
 
-module UPLC-ENVIRONMENT
-  imports UPLC-ID
-  imports BOOL
-  imports INT-SYNTAX
+module UPLC-ENVIRONMENT-LOCAL
   imports UPLC-MAP
   imports UPLC-SYNTAX
-  imports LIST
-  imports K-EQUAL
+  imports UPLC-ABSTRACT-ENVIRONMENT
+  imports UPLC-FREE-VARIABLES
 
-  syntax Value ::= #lookup(Map, UplcId) [function]
   rule #lookup(E:Map, X:UplcId) => { E[X] }:>Value
+  rule #def(E:Map, X:UplcId) => X in_keys(E)
 
-  syntax Map ::= #push(Map, UplcId, Value) [function]
-  rule #push(E:Map, X:UplcId, V:Value) => E [X <- V]
+  rule #FV(X:UplcId) => SetItem(X)
+endmodule
 
+module UPLC-ENVIRONMENT-LOCAL-GLOBAL
+  imports UPLC-MAP
+  imports UPLC-SYNTAX
+  imports UPLC-GENVIRONMENT
+  imports UPLC-ABSTRACT-ENVIRONMENT
+  imports UPLC-FREE-VARIABLES
+
+  rule #lookup(_:Map, X:UplcId) => gLookup(X)
+  requires #inKeysgEnv(X)
+
+  rule #lookup(E:Map, X:UplcId) => { E[X] }:>Value
+  requires notBool #inKeysgEnv(X)
+   andBool X in_keys(E)
+
+  rule #def(E:Map, X:UplcId) => #inKeysgEnv(X) orBool X in_keys(E)
+
+  rule #FV(X:UplcId) => SetItem(X) requires notBool #inKeysgEnv(X)
 endmodule
 ```
