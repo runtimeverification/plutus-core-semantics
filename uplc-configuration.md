@@ -4,7 +4,6 @@
 require "domains.md"
 require "uplc-syntax.md"
 require "uplc-cbor-parser.md"
-require "uplc-environment.md"
 require "uplc-flat-parser.md"
 
 module UPLC-CONFIGURATION
@@ -12,7 +11,6 @@ module UPLC-CONFIGURATION
   imports MAP
   imports LIST
   imports UPLC-CBOR-PARSER
-  imports UPLC-ENVIRONMENT
   imports UPLC-FLAT-PARSER
   imports UPLC-SYNTAX
 

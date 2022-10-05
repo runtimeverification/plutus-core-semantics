@@ -3,10 +3,8 @@
 ```k
 require "uplc-builtins.md"
 require "uplc-discharge.md"
-```
-
-```symbolic
-require "uplc-genvironment-instance.md"
+require "uplc-free-variables.md"
+require "uplc-abstract-environment.md"
 ```
 
 ```k
@@ -16,50 +14,14 @@ module UPLC-SEMANTICS
   imports SET
   imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
-```
-
-```symbolic
-  imports UPLC-GENVIRONMENT-INSTANCE
+  imports UPLC-FREE-VARIABLES
+  imports UPLC-ABSTRACT-ENVIRONMENT
 ```
 
 ```k
   syntax Bindable ::= Value
 
   syntax FinalState ::= "[]" Term
-```
-
-## Free variables
-
-```k
-  syntax Set ::= #FV(Term) [function, functional, memo]
-```
-
-```concrete
-  rule #FV( X:UplcId ) => SetItem(X)
-```
-
-```symbolic
-  rule #FV( X:UplcId ) => SetItem(X) requires notBool(#inKeysgEnv(X))
-```
-
-```k
-  rule #FV( [ T TL ] ) => #FV(T) |Set #FVL(TL)
-  rule #FV( (lam X:UplcId T) ) => #FV(T) -Set SetItem(X)
-  rule #FV( (delay T) ) => #FV(T)
-  rule #FV( (force T) ) => #FV(T)
-  rule #FV( _ ) => .Set [owise]
-
-  syntax Set ::= #FVL(TermList) [function, functional]
-
-  rule #FVL(T:Term) => #FV(T)
-  rule #FVL(T:Term TL:TermList) => #FV(T) |Set #FVL(TL)
-```
-
-## Closed terms
-
-```k
-  syntax Bool ::= #closed(Term) [function, functional]
-  rule #closed(Term) => #FV(Term) ==K .Set
 ```
 
 ## Environment cutting
@@ -83,35 +45,15 @@ module UPLC-SEMANTICS
 
 ```k
   rule <k> (program _V M) => M </k>
-```
-
-```concrete
-  rule <k> X:UplcId => #lookup(RHO, X) ... </k>
-       <env> RHO </env>
-  requires X in_keys(RHO)
-
-  rule <k> X:UplcId => (error) ... </k>
-       <env> RHO </env>
-  requires notBool(X in_keys(RHO))
-```
-
-```symbolic
-  rule <k> X:UplcId => gLookup(X) ... </k>
-       <env> _ => .Map </env>
-  requires #inKeysgEnv(X)
 
   rule <k> X:UplcId => #lookup(RHO, X) ... </k>
        <env> RHO => .Map </env>
-  requires notBool(#inKeysgEnv(X))
-   andBool X in_keys(RHO)
+  requires #def(RHO, X)
 
   rule <k> X:UplcId => (error) ... </k>
        <env> RHO </env>
-  requires notBool(#inKeysgEnv(X))
-   andBool notBool(X in_keys(RHO))
-```
+  requires notBool(#def(RHO, X))
 
-```k
   rule <k> (con T:TypeConstant C:Constant) => < con T:TypeConstant C:Constant > ... </k>
        <env> _ => .Map </env>
 

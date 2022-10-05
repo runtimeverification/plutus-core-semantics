@@ -76,7 +76,7 @@ class KPlutus:
         claim, _ = build_claim(module_name.lower(), init_cterm, final_cterm)
         claim_module = KFlatModule(module_name + '-SPEC', [claim], [KImport('VERIFICATION')])
 
-        verification_module = KFlatModule("VERIFICATION", [], [KImport("UPLC")])
+        verification_module = KFlatModule("VERIFICATION", [], [KImport("UPLC-WITH-LOCAL-ENV")])
 
         spec_definition = KDefinition(module_name + '-SPEC', [verification_module, claim_module], [KRequire('uplc.md')])
 
