@@ -109,7 +109,7 @@ run_prove() {
 }
 
 run_uplc_to_k() {
-    run_kplutus_pyk uplc-to-k --definition "${backend_dir}" "${run_file}" "$@"
+    run_kplutus_pyk uplc-to-k --directory "${backend_dir}" "${run_file}" "$@"
 }
 
 # Main
