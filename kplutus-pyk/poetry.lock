@@ -214,7 +214,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "pyk"
-version = "0.1.0"
+version = "0.1.18"
 description = ""
 category = "main"
 optional = false
@@ -227,8 +227,8 @@ graphviz = "^0.20.1"
 [package.source]
 type = "git"
 url = "https://github.com/runtimeverification/pyk.git"
-reference = "v0.1.0"
-resolved_reference = "ffc8bc2cbd58bba0828a2f9acb45eb899ff01d66"
+reference = "v0.1.18"
+resolved_reference = "a248e65df6c82b5dc7191889986411b7b7f8f73e"
 
 [[package]]
 name = "toml"
@@ -257,7 +257,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "df69ce9a5ec4b2ae43fc281af3982c750dd913c966459c8cea7bda054311b129"
+content-hash = "b886f2eece960cb0569f1630620c3ddbf7fa6933a811c68a20824bb6ec7db71f"
 
 [metadata.files]
 attrs = [
