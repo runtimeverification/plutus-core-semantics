@@ -54,8 +54,8 @@ class KPlutus:
         # UplcId tokens without an underbar clash with tokens in kprove,
         # so add a prefix with an underbar to them
         def prefix_uplcid(t: KToken) -> KToken:
-            if t.sort.name == "UplcId":
-                return t.let(token="v_" + t.token)
+            if t.sort.name == 'UplcId':
+                return t.let(token='v_' + t.token)
             return t
 
         contract = KInner.from_dict(json.loads(kast_out.stdout)['term'])
@@ -76,7 +76,7 @@ class KPlutus:
         claim, _ = build_claim(module_name.lower(), init_cterm, final_cterm)
         claim_module = KFlatModule(module_name + '-SPEC', [claim], [KImport('VERIFICATION')])
 
-        verification_module = KFlatModule("VERIFICATION", [], [KImport("UPLC-WITH-LOCAL-ENV")])
+        verification_module = KFlatModule('VERIFICATION', [], [KImport('UPLC-WITH-LOCAL-ENV')])
 
         spec_definition = KDefinition(module_name + '-SPEC', [verification_module, claim_module], [KRequire('uplc.md')])
 
