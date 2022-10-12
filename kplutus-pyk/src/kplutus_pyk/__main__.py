@@ -52,13 +52,12 @@ def create_parser() -> ArgumentParser:
 
 def kompiled_dir(s: str) -> Path:
     cwd = dir_path(s)
-    paths = list(filter(lambda x: x.is_dir(), cwd.glob('*-kompiled')))
-    if len(paths) == 0:
-        raise ArgumentTypeError('Could not find a compiled definition in current working directory: ' + str(cwd))
+    paths = [path for path in cwd.glob('*-kompiled') if path.is_dir()]
+    if not paths:
+        raise ArgumentTypeError(f'Could not find a compiled definition in current working directory: {cwd}')
     elif len(paths) > 1:
         raise ArgumentTypeError(
-            'Multiple compiled definitions found in the current working directory: '
-            + '\n'.join([str(x) for x in paths])
+            'Multiple compiled definitions found in the current working directory: ' + '\n'.join(str(x) for x in paths)
         )
     return paths.pop()
 
