@@ -27,13 +27,9 @@ def extract_genv(pgm: KInner, krun: KRun) -> Tuple[KInner, KInner]:
 
     # Recurse down the program and find where the global environment
     # definition ends, and the contract body begins
-    while True:
-        try:
-            args = current['args']
-            label = current['label']['name']
-        except KeyError:
-            # Break if the current term is a token
-            break
+    while current['node'] == 'KApply':
+        args = current['args']
+        label = current['label']['name']
         if label == _lam:
             nest.pop()
             current = args[1]
