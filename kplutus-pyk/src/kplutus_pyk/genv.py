@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple
+from typing import Any, Final, List, Tuple
 
 from pyk.kast import (
     KApply,
@@ -16,8 +16,8 @@ from pyk.kast import (
 )
 from pyk.ktool import KRun
 
-_lam = '(lam__)_UPLC-SYNTAX_Term_UplcId_Term'
-_app = '[__]_UPLC-SYNTAX_Term_Term_TermList'
+_LAM: Final = '(lam__)_UPLC-SYNTAX_Term_UplcId_Term'
+_APP: Final = '[__]_UPLC-SYNTAX_Term_Term_TermList'
 
 
 def extract_genv(pgm: KInner, krun: KRun) -> Tuple[KInner, KInner]:
@@ -30,11 +30,11 @@ def extract_genv(pgm: KInner, krun: KRun) -> Tuple[KInner, KInner]:
     while current['node'] == 'KApply':
         args = current['args']
         label = current['label']['name']
-        if label == _lam:
+        if label == _LAM:
             nest.pop()
             current = args[1]
             continue
-        if label == _app:
+        if label == _APP:
             nest.append(current)
             current = args[0]
             continue
@@ -52,7 +52,7 @@ def extract_genv(pgm: KInner, krun: KRun) -> Tuple[KInner, KInner]:
     # 2. Execute the program with the application of (error). It will stop at (error)
     # 3. The <env> cell after execution will contain the global environment
     err_term = KApply('(error)_UPLC-SYNTAX_Term')
-    err_app = KApply(_app, [err_term, contract_body])
+    err_app = KApply(_APP, [err_term, contract_body])
     current.update(err_app.to_dict())
     genv_cfg = krun.run(KInner.from_dict(run_node))
     genv = KInner.from_dict(genv_cfg.kast.to_dict()['args'][1]['args'][0])
