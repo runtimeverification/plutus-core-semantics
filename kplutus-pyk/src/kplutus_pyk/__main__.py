@@ -18,7 +18,7 @@ def main() -> None:
     if args.command == 'uplc-to-k':
         kplutus = KPlutus(args.kplc_lib)
         if not args.definition:
-            args.definition = kompiled_dir(".")
+            args.definition = kompiled_dir('.')
         kplutus.uplc_to_k(args.main_file, args.definition, remainder)
     else:
         raise AssertionError()
@@ -52,16 +52,16 @@ def create_parser() -> ArgumentParser:
 
 def kompiled_dir(s: str) -> Path:
     cwd = dir_path(s)
-    paths = list(filter(lambda x: x.is_dir(), cwd.glob("*-kompiled")))
+    paths = list(filter(lambda x: x.is_dir(), cwd.glob('*-kompiled')))
     if len(paths) == 0:
-        raise ArgumentTypeError("Could not find a compiled definition in current working directory: " + str(cwd))
+        raise ArgumentTypeError('Could not find a compiled definition in current working directory: ' + str(cwd))
     elif len(paths) > 1:
         raise ArgumentTypeError(
-            "Multiple compiled definitions found in the current working directory: "
-            + "\n".join([str(x) for x in paths])
+            'Multiple compiled definitions found in the current working directory: '
+            + '\n'.join([str(x) for x in paths])
         )
     return paths.pop()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

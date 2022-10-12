@@ -60,14 +60,14 @@ class KPlutus:
         # UplcId tokens without an underbar clash with tokens in kprove,
         # so add a prefix with an underbar to them
         def prefix_uplcid(t: KToken) -> KToken:
-            if t.sort.name == "UplcId":
-                return t.let(token="v_" + t.token)
+            if t.sort.name == 'UplcId':
+                return t.let(token='v_' + t.token)
             return t
 
         contract_pgm = KInner.from_dict(json.loads(kast_out.stdout)['term'])
         contract_pgm = bottom_up(if_ktype(KToken, prefix_uplcid), contract_pgm)
 
-        krun_definition = self.kplc_lib_prefix / "llvm" / "uplc-kompiled"
+        krun_definition = self.kplc_lib_prefix / 'llvm' / 'uplc-kompiled'
         krun = KRun(krun_definition)
 
         genv, contract = extract_genv(contract_pgm, krun)
@@ -91,12 +91,12 @@ class KPlutus:
         claim, _ = build_claim(contract_name.lower(), init_cterm, final_cterm)
         claim_module = KFlatModule(contract_name + '-SPEC', [claim], [KImport('VERIFICATION')])
 
-        verification_module = KFlatModule("VERIFICATION", [], [KImport(genv_module.name)])
+        verification_module = KFlatModule('VERIFICATION', [], [KImport(genv_module.name)])
 
         spec_definition = KDefinition(
             contract_name + '-SPEC', [genv_module, verification_module, claim_module], [KRequire('uplc.md')]
         )
 
         p = KPrint(definition_dir)
-        p.symbol_table["_Map_"] = lambda m1, m2: m1 + '\n' + m2
+        p.symbol_table['_Map_'] = lambda m1, m2: m1 + '\n' + m2
         print(p.pretty_print(spec_definition))
