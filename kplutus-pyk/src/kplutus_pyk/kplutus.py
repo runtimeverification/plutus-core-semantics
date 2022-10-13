@@ -20,10 +20,17 @@ from pyk.kast import (
     read_kast_definition,
 )
 from pyk.kastManip import if_ktype, substitute
-from pyk.ktool import KPrint
+from pyk.ktool import KPrint, KRun
+
+from .genv import extract_genv, make_genv_module
 
 
 class KPlutus:
+    kplc_lib_prefix: Path
+
+    def __init__(self, kplc_lib_prefix: Path):
+        self.kplc_lib_prefix = kplc_lib_prefix
+
     @staticmethod
     def kompile(main_file: Path, args: Iterable[str] = ()) -> None:
         command = ['kompile', str(main_file)] + list(args)
@@ -36,8 +43,7 @@ class KPlutus:
             sys.stderr.flush()
             raise
 
-    @staticmethod
-    def uplc_to_k(main_file: Path, definition_dir: Path, args: Iterable[str] = ()) -> None:
+    def uplc_to_k(self, main_file: Path, definition_dir: Path, args: Iterable[str] = ()) -> None:
         command = ['kplc', 'kast', str(main_file), '--output', 'json']
         try:
             kast_out = run_process(command)
@@ -58,27 +64,39 @@ class KPlutus:
                 return t.let(token='v_' + t.token)
             return t
 
-        contract = KInner.from_dict(json.loads(kast_out.stdout)['term'])
-        contract = bottom_up(if_ktype(KToken, prefix_uplcid), contract)
+        contract_pgm = KInner.from_dict(json.loads(kast_out.stdout)['term'])
+        contract_pgm = bottom_up(if_ktype(KToken, prefix_uplcid), contract_pgm)
 
+        krun_definition = self.kplc_lib_prefix / 'llvm' / 'uplc-kompiled'
+        krun = KRun(krun_definition)
+
+        genv, contract = extract_genv(contract_pgm, krun)
         true_val = KApply(
             '<con__>_UPLC-SYNTAX_Value_TypeConstant_Constant',
             [KApply('bool_UPLC-SYNTAX_TypeConstant'), KApply('True_UPLC-SYNTAX_Constant')],
         )
 
+        contract_name = main_file.stem.upper()
+
+        # Global environment module
+        genv_module = make_genv_module(genv, contract_name)
+
+        # Spec module
         init_subst = {'K_CELL': contract, 'ENV_CELL': KVariable('RHO')}
         final_subst = {'K_CELL': true_val, 'ENV_CELL': KApply('.Map')}
 
         init_cterm = CTerm(substitute(empty_config, init_subst))
         final_cterm = CTerm(substitute(empty_config, final_subst))
 
-        module_name = main_file.stem.upper()
-        claim, _ = build_claim(module_name.lower(), init_cterm, final_cterm)
-        claim_module = KFlatModule(module_name + '-SPEC', [claim], [KImport('VERIFICATION')])
+        claim, _ = build_claim(contract_name.lower(), init_cterm, final_cterm)
+        claim_module = KFlatModule(contract_name + '-SPEC', [claim], [KImport('VERIFICATION')])
 
-        verification_module = KFlatModule('VERIFICATION', [], [KImport('UPLC-WITH-LOCAL-ENV')])
+        verification_module = KFlatModule('VERIFICATION', [], [KImport(genv_module.name)])
 
-        spec_definition = KDefinition(module_name + '-SPEC', [verification_module, claim_module], [KRequire('uplc.md')])
+        spec_definition = KDefinition(
+            contract_name + '-SPEC', [genv_module, verification_module, claim_module], [KRequire('uplc.md')]
+        )
 
         p = KPrint(definition_dir)
+        p.symbol_table['_Map_'] = lambda m1, m2: m1 + '\n' + m2
         print(p.pretty_print(spec_definition))

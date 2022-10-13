@@ -457,7 +457,7 @@ tests/specs/uplc-to-k/%.uplc.prove: tests/specs/uplc-to-k/$$*/$$*-spec.k tests/s
 tests/specs/uplc-to-k/%-spec.k: tests/specs/uplc-to-k/$$(*F).uplc $(VENV_DIR)/pyvenv.cfg
 	@mkdir -p $(@D)
 	. .build/venv/bin/activate \
-	    && $(KPLUTUS) uplc-to-k --directory $(KPLUTUS_LIB)/haskell/uplc-kompiled $< > $@
+	    && $(KPLUTUS) uplc-to-k --directory $(KPLUTUS_LIB)/haskell $< > $@
 
 tests/specs/uplc-to-k/%-spec-kompiled/timestamp: tests/specs/uplc-to-k/$$(*F)/$$(*F)-spec.k
 	$(KOMPILE) --backend haskell $< --directory $(dir $(@D)) --main-module VERIFICATION

@@ -225,7 +225,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "pyk"
-version = "0.1.0"
+version = "0.1.18"
 description = ""
 category = "main"
 optional = false
@@ -238,8 +238,8 @@ graphviz = "^0.20.1"
 [package.source]
 type = "git"
 url = "https://github.com/runtimeverification/pyk.git"
-reference = "v0.1.0"
-resolved_reference = "ffc8bc2cbd58bba0828a2f9acb45eb899ff01d66"
+reference = "v0.1.18"
+resolved_reference = "a248e65df6c82b5dc7191889986411b7b7f8f73e"
 
 [[package]]
 name = "tomli"
