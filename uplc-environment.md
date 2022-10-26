@@ -4,6 +4,7 @@
 require "uplc-syntax.md"
 require "uplc-abstract-environment.md"
 require "uplc-genvironment.md"
+require "uplc-genvironment-instance.md"
 require "uplc-free-variables.md"
 
 module UPLC-MAP
@@ -27,6 +28,7 @@ module UPLC-ENVIRONMENT-LOCAL-GLOBAL
   imports UPLC-MAP
   imports UPLC-SYNTAX
   imports UPLC-GENVIRONMENT
+  imports UPLC-GENVIRONMENT-INSTANCE
   imports UPLC-ABSTRACT-ENVIRONMENT
   imports UPLC-FREE-VARIABLES
 
