@@ -11,6 +11,10 @@ inputs:
   distro:
     description: 'Distribution to setup Docker for.'
     required: true
+  z3-version:
+    description: 'Z3 version to use.'
+    required: false
+    default: 4.8.15
 runs:
   using: 'composite'
   steps:
@@ -20,10 +24,10 @@ runs:
       TAG_NAME: ${{ inputs.tag }}
       SUBDIR: ${{ inputs.subdir }}
       BASE_IMAGE: ${{ inputs.distro }}
+      Z3_VERSION: ${{ inputs.z3-version }}
     run: |
       set -euxo pipefail
 
-      Z3_VERSION=4.8.15
       K_VERSION=$(cat ${SUBDIR}deps/k_release)
 
       docker build . \
