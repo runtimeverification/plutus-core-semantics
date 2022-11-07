@@ -13,10 +13,3 @@ tests/specs/uplc-to-k/**/
 *.swn
 *.swp
 /tests/**/*.flat.hex
-IOG-contracts/native-tokens/dist-newstyle/
-IOG-contracts/native-tokens/native-tokens/out_scripts/
-IOG-contracts/stablecoin/dist-newstyle
-IOG-contracts/stablecoin/stablecoin/out_scripts/
-IOG-contracts/stablecoin/stablecoin/.pre-commit-config.yaml
-kplutus_pyk/src/kplutus_pyk.egg-info/
-kplutus_pyk/src/kplutus_pyk/__pycache__/
