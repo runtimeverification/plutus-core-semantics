@@ -30,7 +30,7 @@ jobs:
       - name: 'Test simple'
         run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-simple -j`nproc` --output-sync=recurse'
       - name: 'Test proofs'
-        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-prove -j`nproc` --output-sync=recurse'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'export KORE_EXEC_OPTS="--log-level error" && make test-prove -j`nproc` --output-sync=recurse'
       - name: 'Test uplc-examples'
         run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-uplc-examples -j`nproc` --output-sync=recurse'
       - name: 'Test benchmark-validation-examples'
