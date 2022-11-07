@@ -101,6 +101,7 @@ run_prove() {
 
     proof_args=(--directory "${backend_dir}" "${run_file}")
     proof_args+=( -I "${INSTALL_INCLUDE}/kframework" -I "${plugin_include}/kframework" )
+    proof_args+=( --md-selector "k | libcrypto-extra | symbolic"                       )
 
     ! ${bug_report} || proof_args+=(--haskell-backend-command "kore-exec --bug-report ${bug_report_name}")
     ! ${debugger}   || proof_args+=(--debugger)
