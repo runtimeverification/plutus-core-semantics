@@ -22,6 +22,7 @@ jobs:
         uses: ./.github/actions/with-docker
         with:
           tag: kplutus-ci-${{ github.sha }}
+          distro: jammy
       - name: 'Build'
         run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make build -j4'
       - name: 'Build kplutus-pyk'
