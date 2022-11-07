@@ -39,9 +39,26 @@ jobs:
           poetry --version
           pyk_version="$(cat deps/pyk_release)"
           sed -i 's!pyk = { git = "https://github.com/runtimeverification/pyk.git", tag="[v0-9\.]*" }!pyk = { git = "https://github.com/runtimeverification/pyk.git", tag="'${pyk_version}'" }!' kplutus-pyk/pyproject.toml
+          sed -i 's!    pyk.url = "github:runtimeverification/pyk/[v0-9\.]*"!    pyk.url = "github:runtimeverification/pyk/'"${pyk_version}"'"!' flake.nix
           cd kplutus-pyk
           poetry update
           cd -
           git add kplutus-pyk/ && git commit -m 'kplutus-pyk/: sync poetry files' || true
+      - name: 'Install Nix/Cachix'
+        uses: cachix/install-nix-action@v15
+        with:
+          extra_nix_config: |
+            substituters = http://cache.nixos.org https://cache.iog.io
+            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=
+      - uses: cachix/cachix-action@v10
+        with:
+          name: runtimeverification
+          extraPullNames: kore
+          signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+      - name: 'Update nix flake inputs'
+        run: |
+          nix run .#update-from-submodules
+          nix flake update
+          git add flake.nix flake.lock && git commit -m 'flake.{nix,lock}: update Nix derivations' || true
       - name: 'Push updates'
         run: git push
