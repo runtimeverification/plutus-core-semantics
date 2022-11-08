@@ -10,7 +10,7 @@ concurrency:
 jobs:
 
   test-pr:
-    name: 'Bulid and test KPlutus'
+    name: 'Build and test KPlutus'
     runs-on: [self-hosted, linux, normal]
     steps:
       - name: 'Check out code'
