@@ -52,9 +52,8 @@ jobs:
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=
       - uses: cachix/cachix-action@v10
         with:
-          name: runtimeverification
-          extraPullNames: kore
-          signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+          name: k-framework
+          authToken: '${{ secrets.CACHIX_PUBLIC_KEY }}'
       - name: 'Update nix flake inputs'
         run: |
           nix run .#update-from-submodules
