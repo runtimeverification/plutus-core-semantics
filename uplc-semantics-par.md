@@ -3,25 +3,52 @@
 ```k
 require "uplc-builtins.md"
 require "uplc-discharge.md"
-require "uplc-free-variables.md"
-require "uplc-abstract-environment.md"
-```
+require "uplc-environment.md"
 
-```k
-module UPLC-SEMANTICS
+module UPLC-SEMANTICS-PAR
   imports INT
   imports MAP
   imports SET
   imports UPLC-BUILTINS
   imports UPLC-DISCHARGE
-  imports UPLC-FREE-VARIABLES
-  imports UPLC-ABSTRACT-ENVIRONMENT
+  module UPLC-ENVIRONMENT
+
+  syntax Bindable ::= Value
+  syntax FinalState ::= "[]" Term
+```
+
+## Free variables
+
+```k
+  syntax Set ::= #FV(Term) [function, total, memo]
+```
+
+```concrete
+  rule #FV( X:UplcId ) => SetItem(X)
+```
+
+```symbolic
+  rule #FV( X:UplcId ) => SetItem(X) requires notBool(#inKeysgEnv(X))
 ```
 
 ```k
-  syntax Bindable ::= Value
+  rule #FV( [ T TL ] ) => #FV(T) |Set #FVL(TL)
+  rule #FV( (lam X:UplcId T) ) => #FV(T) -Set SetItem(X)
+  rule #FV( (delay T) ) => #FV(T)
+  rule #FV( (force T) ) => #FV(T)
+  rule #FV( _ ) => .Set [owise]
 
-  syntax FinalState ::= "[]" Term
+  syntax Set ::= #FVL(TermList) [function, total]
+
+  rule #FVL(T:Term) => #FV(T)
+  rule #FVL(T:Term TL:TermList) => #FV(T) |Set #FVL(TL)
+```
+
+## Closed terms
+
+```k
+  syntax Bool ::= #closed(Term) [function, total]
+  rule #closed(Term) => #FV(Term) ==K .Set
 ```
 
 ## Environment cutting
@@ -45,15 +72,35 @@ module UPLC-SEMANTICS
 
 ```k
   rule <k> (program _V M) => M </k>
+```
 
+```concrete
   rule <k> X:UplcId => #lookup(RHO, X) ... </k>
-       <env> RHO => .Map </env>
-  requires #def(RHO, X)
+       <env> RHO </env>
+  requires X in_keys(RHO)
 
   rule <k> X:UplcId => (error) ... </k>
        <env> RHO </env>
-  requires notBool(#def(RHO, X))
+  requires notBool(X in_keys(RHO))
+```
 
+```symbolic
+  rule <k> X:UplcId => gLookup(X) ... </k>
+       <env> _ => .Map </env>
+  requires #inKeysgEnv(X)
+
+  rule <k> X:UplcId => #lookup(RHO, X) ... </k>
+       <env> RHO => .Map </env>
+  requires notBool(#inKeysgEnv(X))
+   andBool X in_keys(RHO)
+
+  rule <k> X:UplcId => (error) ... </k>
+       <env> RHO </env>
+  requires notBool(#inKeysgEnv(X))
+   andBool notBool(X in_keys(RHO))
+```
+
+```k
   rule <k> (con T:TypeConstant C:Constant) => < con T:TypeConstant C:Constant > ... </k>
        <env> _ => .Map </env>
 
