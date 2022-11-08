@@ -232,7 +232,6 @@ kplutus_files := uplc.md \
                  uplc-bytestring.md \
                  uplc-environment.md \
                  uplc-genvironment.md \
-                 uplc-genvironment-instance.md \
                  uplc-rw-helpers.md \
                  uplc-string-builtins.md \
                  uplc-configuration.md \
@@ -243,6 +242,7 @@ kplutus_files := uplc.md \
                  uplc-discharge.md \
                  uplc-free-variables.md \
                  uplc-abstract-environment.md
+#                 uplc-genvironment-instance.md \
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 
@@ -429,8 +429,10 @@ test-prove: test-decoders-prove test-simple-prove test-uplc-to-k
 
 # Simple proofs
 # -------------
+verification_files := tests/specs/simple/verification.md \
+                      tests/specs/simple/uplc-genvironment-instance.md
 simple_prove_tests := $(wildcard tests/specs/simple/*.md)
-simple_prove_tests := $(filter-out tests/specs/simple/verification.md, $(simple_prove_tests))
+simple_prove_tests := $(filter-out $(verification_files), $(simple_prove_tests))
 test-simple-prove: $(simple_prove_tests:=.prove)
 
 # Decoder proofs
