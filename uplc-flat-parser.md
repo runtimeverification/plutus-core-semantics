@@ -311,7 +311,7 @@ Parsing Builtin Functions
 //------------------------------------------------
   rule #readType( BitStream( I, BYTES ) ) => #readNBits( 4, BitStream( I +Int 1, BYTES ) )
 
-  syntax Version ::= String2Version (String) [function, functional, hook(STRING.string2token)]
+  syntax Version ::= String2Version (String) [function, total, hook(STRING.string2token)]
 ```
 
 ### Values used to represent Terms and Types
