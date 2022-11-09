@@ -1,6 +1,7 @@
 # Verification Common
 
 ```k
+requires "domains.md"
 requires "uplc.md"
 ```
 
