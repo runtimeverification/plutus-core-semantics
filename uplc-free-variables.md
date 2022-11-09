@@ -7,7 +7,7 @@ module UPLC-FREE-VARIABLES
   imports SET
   imports UPLC-SYNTAX
 
-  syntax Set ::= #FV(Term) [function, functional, memo]
+  syntax Set ::= #FV(Term) [function, total, memo]
 ```
 
 The definition of `FV(_:UplcId)` depends on the structure of the
@@ -21,7 +21,7 @@ abstract environment in `UPLC-ENVIRONMENT`.
   rule #FV((force T)) => #FV(T)
   rule #FV(_) => .Set [owise]
 
-  syntax Set ::= #FVL(TermList) [function, functional]
+  syntax Set ::= #FVL(TermList) [function, total]
 
   rule #FVL(T:Term) => #FV(T)
   rule #FVL(T:Term TL:TermList) => #FV(T) |Set #FVL(TL)
@@ -30,7 +30,7 @@ abstract environment in `UPLC-ENVIRONMENT`.
 ## Closed terms
 
 ```k
-  syntax Bool ::= #closed(Term) [function, functional]
+  syntax Bool ::= #closed(Term) [function, total]
   rule #closed(Term) => #FV(Term) ==K .Set
 endmodule
 ```
