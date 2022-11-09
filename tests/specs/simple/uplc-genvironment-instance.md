@@ -1653,7 +1653,7 @@ rule gLookup(ID) => < con integer 0 >
   rule Credential(1, L:List) => ScriptCredential(L) [simplification]
 
   // Definedness
-  syntax Bool ::= CredentialDef(Int, List) [function, functional]
+  syntax Bool ::= CredentialDef(Int, List) [function, total]
   rule CredentialDef(0, L:List) => PubKeyCredentialDef(L)
   rule CredentialDef(1, L:List) => ScriptCredentialDef(L)
   rule CredentialDef(_, _) => false [owise]
@@ -1668,7 +1668,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_0 |-> < con bytestring BS >
     >
 
-  syntax Bool ::= PubKeyCredentialDef(List) [function, functional]
+  syntax Bool ::= PubKeyCredentialDef(List) [function, total]
   rule PubKeyCredentialDef(ListItem(_:ByteString)) => true
   rule PubKeyCredentialDef(_) => false [owise]
 
@@ -1682,7 +1682,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_0 |-> < con bytestring BS >
     >
 
-  syntax Bool ::= ScriptCredentialDef(List) [function, functional]
+  syntax Bool ::= ScriptCredentialDef(List) [function, total]
   rule ScriptCredentialDef(ListItem(_:ByteString)) => true
   rule ScriptCredentialDef(_) => false [owise]
 
@@ -1705,7 +1705,7 @@ rule gLookup(ID) => < con integer 0 >
   rule StakingCredential(1, L:List) => StakingPtr(L)
 
   // Definedness
-  syntax Bool ::= StakingCredentialDef(Int, List) [function, functional]
+  syntax Bool ::= StakingCredentialDef(Int, List) [function, total]
   rule StakingCredentialDef(0, L:List) => StakingHashDef(L)
   rule StakingCredentialDef(1, L:List) => StakingPtrDef(L)
   rule StakingCredentialDef(_, _) => false [owise]
@@ -1720,7 +1720,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_0 |-> Credential(C, PARAMS)
     >
 
-  syntax Bool ::= StakingHashDef(List) [function, functional]
+  syntax Bool ::= StakingHashDef(List) [function, total]
   rule StakingHashDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => CredentialDef(C, PARAMS)
   rule StakingHashDef(_) => false [owise]
 
@@ -1736,7 +1736,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_2 |-> < con integer I3 >
     >
 
-  syntax Bool ::= StakingPtrDef(List) [function, functional]
+  syntax Bool ::= StakingPtrDef(List) [function, total]
   rule StakingPtrDef(ListItem(_:Int) ListItem(_:Int) ListItem(_:Int)) => true
   rule StakingPtrDef(_) => false [owise]
 
@@ -1760,7 +1760,7 @@ rule gLookup(ID) => < con integer 0 >
   rule TxId(0, L:List) => TxOutIdConstr(L)
 
   // Definedness
-  syntax Bool ::= TxIdDef(Int, List) [function, functional]
+  syntax Bool ::= TxIdDef(Int, List) [function, total]
   rule TxIdDef(0, L:List) => TxOutIdConstrDef(L)
   rule TxIdDef(_, _) => false [owise]
 
@@ -1771,7 +1771,7 @@ rule gLookup(ID) => < con integer 0 >
   rule TxOutIdConstr(ListItem(BS:ByteString)) =>
     < con bytestring BS >
 
-  syntax Bool ::= TxOutIdConstrDef(List) [function, functional]
+  syntax Bool ::= TxOutIdConstrDef(List) [function, total]
   rule TxOutIdConstrDef(ListItem(_:ByteString)) => true
   rule TxOutIdConstrDef(_) => false [owise]
 
@@ -1793,7 +1793,7 @@ rule gLookup(ID) => < con integer 0 >
   rule TxOutRef(0, L:List) => TxOutRefConstr(L)
 
   // Definedness
-  syntax Bool ::= TxOutRefDef(Int, List) [function, functional]
+  syntax Bool ::= TxOutRefDef(Int, List) [function, total]
   rule TxOutRefDef(0, L:List) => TxOutRefConstrDef(L)
   rule TxOutRefDef(_, _) => false [owise]
 
@@ -1808,7 +1808,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_1 |-> < con integer I >
     >
 
-  syntax Bool ::= TxOutRefConstrDef(List) [function, functional]
+  syntax Bool ::= TxOutRefConstrDef(List) [function, total]
   rule TxOutRefConstrDef(ListItem(ListItem(C:Int) ListItem(PARAMS)) ListItem(_:Int)) => TxIdDef(C, PARAMS)
   rule TxOutRefConstrDef(_) => false [owise]
 
@@ -1834,7 +1834,7 @@ rule gLookup(ID) => < con integer 0 >
   rule DCert(6, L) => DCertMir(L)
 
   // Definedness
-  syntax Bool ::= DCertDef(Int, List) [function, functional]
+  syntax Bool ::= DCertDef(Int, List) [function, total]
   rule DCertDef(0, L) => DCertDelegRegKeyDef(L)
   rule DCertDef(1, L) => DCertDelegDeRegKeyDef(L)
   rule DCertDef(2, L) => DCertDelegDelegateDef(L)
@@ -1868,7 +1868,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_0 |-> StakingCredential(C, PARAMS)
     >
 
-  syntax Bool ::= DCertDelegRegKeyDef(List) [function, functional]
+  syntax Bool ::= DCertDelegRegKeyDef(List) [function, total]
   rule DCertDelegRegKeyDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => StakingCredentialDef(C, PARAMS)
   rule DCertDelegRegKeyDef(_) => false [owise]
 
@@ -1896,7 +1896,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_0 |-> StakingCredential(C, PARAMS)
     >
 
-  syntax Bool ::= DCertDelegDeRegKeyDef(List) [function, functional]
+  syntax Bool ::= DCertDelegDeRegKeyDef(List) [function, total]
   rule DCertDelegDeRegKeyDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => StakingCredentialDef(C, PARAMS)
   rule DCertDelegDeRegKeyDef(_) => false [owise]
 
@@ -1925,7 +1925,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_1 |-> < con bytestring BS >
     >
 
-  syntax Bool ::= DCertDelegDelegateDef(List) [function, functional]
+  syntax Bool ::= DCertDelegDelegateDef(List) [function, total]
   rule DCertDelegDelegateDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List)) ListItem(_:ByteString)) => StakingCredentialDef(C, PARAMS)
   rule DCertDelegDelegateDef(_) => false [owise]
 
@@ -1954,7 +1954,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_1 |-> < con bytestring BS2 >
     >
 
-  syntax Bool ::= DCertPoolRegisterDef(List) [function, functional]
+  syntax Bool ::= DCertPoolRegisterDef(List) [function, total]
   rule DCertPoolRegisterDef(ListItem(_:ByteString) ListItem(_:ByteString)) => true
   rule DCertPoolRegisterDef(_) => false [owise]
 
@@ -1983,7 +1983,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_1 |-> < con integer I >
     >
 
-  syntax Bool ::= DCertPoolRetireDef(List) [function, functional]
+  syntax Bool ::= DCertPoolRetireDef(List) [function, total]
   rule DCertPoolRetireDef(ListItem(_:ByteString) ListItem(_:Int)) => true
   rule DCertPoolRetireDef(_) => false [owise]
 
@@ -2011,7 +2011,7 @@ rule gLookup(ID) => < con integer 0 >
       .Map
     >
 
-  syntax Bool ::= DCertGenesisDef(List) [function, functional]
+  syntax Bool ::= DCertGenesisDef(List) [function, total]
   rule DCertGenesisDef(.List) => true
   rule DCertGenesisDef(_) => false [owise]
 
@@ -2039,7 +2039,7 @@ rule gLookup(ID) => < con integer 0 >
       .Map
     >
 
-  syntax Bool ::= DCertMirDef(List) [function, functional]
+  syntax Bool ::= DCertMirDef(List) [function, total]
   rule DCertMirDef(.List) => true
   rule DCertMirDef(_) => false [owise]
 
@@ -2074,7 +2074,7 @@ rule gLookup(ID) => < con integer 0 >
   rule ScriptPurpose(3, L:List) => ScriptPurposeCertifying(L)
 
   // Definedness
-  syntax Bool ::= ScriptPurposeDef(Int, List) [function, functional]
+  syntax Bool ::= ScriptPurposeDef(Int, List) [function, total]
   rule ScriptPurposeDef(0, L:List) => ScriptPurposeMintingDef(L)
   rule ScriptPurposeDef(1, L:List) => ScriptPurposeSpendingDef(L)
   rule ScriptPurposeDef(2, L:List) => ScriptPurposeRewardingDef(L)
@@ -2099,7 +2099,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_0 |-> < con bytestring BS >
     >
 
-  syntax Bool ::= ScriptPurposeMintingDef(List) [function, functional]
+  syntax Bool ::= ScriptPurposeMintingDef(List) [function, total]
   rule ScriptPurposeMintingDef(ListItem(_:ByteString)) => true
   rule ScriptPurposeMintingDef(_) => false [owise]
 
@@ -2121,7 +2121,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_0 |-> TxOutRef(C, PARAMS)
     >
 
-  syntax Bool ::= ScriptPurposeSpendingDef(List) [function, functional]
+  syntax Bool ::= ScriptPurposeSpendingDef(List) [function, total]
   rule ScriptPurposeSpendingDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => TxOutRefDef(C, PARAMS)
   rule ScriptPurposeSpendingDef(_) => false [owise]
 
@@ -2143,7 +2143,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_0 |-> StakingCredential(C, PARAMS)
     >
 
-  syntax Bool ::= ScriptPurposeRewardingDef(List) [function, functional]
+  syntax Bool ::= ScriptPurposeRewardingDef(List) [function, total]
   rule ScriptPurposeRewardingDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => StakingCredentialDef(C, PARAMS)
   rule ScriptPurposeRewardingDef(_) => false [owise]
 
@@ -2165,7 +2165,7 @@ rule gLookup(ID) => < con integer 0 >
       arg_0 |-> DCert(C, PARAMS)
     >
 
-  syntax Bool ::= ScriptPurposeCertifyingDef(List) [function, functional]
+  syntax Bool ::= ScriptPurposeCertifyingDef(List) [function, total]
   rule ScriptPurposeCertifyingDef(ListItem(ListItem(C:Int) ListItem(PARAMS:List))) => DCertDef(C, PARAMS)
   rule ScriptPurposeCertifyingDef(_) => false [owise]
 
@@ -2190,14 +2190,14 @@ rule gLookup(ID) => < con integer 0 >
   syntax Value ::= TxInfo(Int, List) [function, injective, no-evaluators]
 
   // Definedness
-  syntax Bool ::= TxInfoDef(Int, List) [function, functional, no-evaluators]
+  syntax Bool ::= TxInfoDef(Int, List) [function, total, no-evaluators]
 
   rule #Ceil(TxInfo(C, PARAMS)) => { true #Equals TxInfoDef(C, PARAMS) } [simplification]
 
   // Constructor 0: TxInfoConstr
   syntax Value ::= TxInfoConstr(List) [function, injective, no-evaluators]
 
-  syntax Bool ::= TxInfoConstrDef(List) [function, functional, no-evaluators]
+  syntax Bool ::= TxInfoConstrDef(List) [function, total, no-evaluators]
 
   rule #Ceil(TxInfoConstr(PARAMS)) => { true #Equals TxInfoConstrDef(PARAMS) } [simplification]
 
