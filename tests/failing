@@ -38,7 +38,6 @@ tests/textual/nofib-exe-examples/clausify-F7.uplc
 tests/textual/nofib-exe-examples/knights-500-500.uplc
 tests/textual/nofib-exe-examples/lastpiece.uplc
 tests/textual/nofib-exe-examples/prime-P200.uplc
-# tests/textual/nofib-exe-examples/primetest-large.uplc
 tests/textual/nofib-exe-examples/queens-6-bt.uplc
 #
 # Error examples
