@@ -1,6 +1,7 @@
 # Verification Common
 
 ```k
+requires "domains.md"
 requires "uplc.md"
 ```
 
@@ -11,6 +12,7 @@ module SIMPLIFICATIONS
   imports BOOL
   imports K-EQUAL
   imports MAP-SYMBOLIC
+  imports SET-SYMBOLIC
 ```
 
 ### Map Reasoning
@@ -46,7 +48,7 @@ endmodule
 ```k
 module VERIFICATION-COMMON
   imports SIMPLIFICATIONS
-  imports UPLC
+  imports UPLC-WITH-LOCAL-GLOBAL-ENV
 
 endmodule
 ```

@@ -15,6 +15,21 @@ sudo apt-get install build-essential m4 openjdk-11-jdk libgmp-dev libmpfr-dev pk
 pip install virtualenv poetry
 ```
 
+### MacOS (12.6 Monterey over Intel)
+
+Follow instructions for K's dependencies in MacOS from <https://github.com/kframework/k>. However, there are some remarks regarding:
+
+- llvm: make sure you install llvm@14, not llvm@15 or later, unless K supports it.
+- openssl: make sure you install openssl@3, or the version required by K. Your system may ship with openssl@1.1.
+- secp256k1: you may need to build it from
+  [source](https://github.com/bitcoin-core/secp256k1). For that you will
+  need to install GNU's autotools using homebrew.
+  * `brew install autoconf`
+  * `brew install automake`
+  While building secp256k1, make sure you run:
+  * `./configure  --enable-module-recovery`
+  in the appropriate step.
+
 Building
 --------
 
@@ -23,10 +38,24 @@ Building
 -   Build Haskell backend: `make build-haskell -j8`
 -   Build just KPlutus runner and includes: `make build-kplutus -j8`
 
-# A note about Crypto++
+### A note about Crypto++
 
 Due to a bug in the ubuntu bionic and focal packages for crypto++ that affects us here, we build a static library for it from source.
 If you're certain that you have a crypto++ package installed that doesn't have this bug, you can run the make commands with `NOBUILD_CRYPTOPP=true`
+
+### Update your `PATH` variable
+
+- You might want to update your shell resource file to extend `PATH`:
+  ```shell
+  export PATH=`<PATH-TO-PLUTUS-CORE-SEMANTICS>/plutus-core-semantics/.build/usr/bin:$PATH
+  ``
+
+- Optionally,
+  ```shell
+  export PATH=`<PATH-TO-PLUTUS-CORE-SEMANTICS>/plutus-core-semantics/.build/usr/lib/kplutus/kframework/bin
+  ```
+  to have direct access to the package's K tools, in case there is
+  something you need that the `kplc` command doesn't offer.
 
 Testing
 -------

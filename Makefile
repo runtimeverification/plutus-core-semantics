@@ -232,7 +232,6 @@ kplutus_files := uplc.md \
                  uplc-bytestring.md \
                  uplc-environment.md \
                  uplc-genvironment.md \
-                 uplc-genvironment-instance.md \
                  uplc-rw-helpers.md \
                  uplc-string-builtins.md \
                  uplc-configuration.md \
@@ -240,7 +239,9 @@ kplutus_files := uplc.md \
                  uplc-polymorphic-builtins.md \
                  uplc-string.md \
                  uplc-data-builtins.md \
-                 uplc-discharge.md
+                 uplc-discharge.md \
+                 uplc-free-variables.md \
+                 uplc-abstract-environment.md
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 
@@ -249,7 +250,7 @@ $(KPLUTUS_INCLUDE)/kframework/%.md: %.md
 	install $< $@
 
 llvm_dir           := llvm
-llvm_main_module   := UPLC
+llvm_main_module   := UPLC-WITH-LOCAL-ENV
 llvm_syntax_module := UPLC-SYNTAX
 llvm_main_file     := uplc.md
 llvm_main_filename := $(basename $(notdir $(llvm_main_file)))
@@ -257,7 +258,7 @@ llvm_kompiled_dir  := $(llvm_dir)/$(llvm_main_filename)-kompiled/
 llvm_kompiled      := $(llvm_kompiled_dir)/interpreter
 
 haskell_dir            := haskell
-haskell_main_module    := UPLC
+haskell_main_module    := UPLC-WITH-LOCAL-GLOBAL-ENV
 haskell_syntax_module  := $(haskell_main_module)
 haskell_main_file      := uplc.md
 haskell_main_filename  := $(basename $(notdir $(haskell_main_file)))
@@ -405,7 +406,13 @@ uninstall:
 	rm -rf $(DESTDIR)$(INSTALL_BIN)/kplutus
 	rm -rf $(DESTDIR)$(INSTALL_LIB)/kplutus
 
-procs := $(shell nproc)
+ifeq ($(UNAME_S),Linux)
+	procs := $(shell nproc)
+else ifeq ($(UNAME_S),Darwin)
+	procs := $(shell sysctl -n hw.logicalcpu)
+else
+	procs := 1
+endif
 
 fresh-test-coverage:
 	[ -d $(KPLUTUS_LIB)/$(llvm_kompiled_dir) ] && rm -r $(KPLUTUS_LIB)/$(llvm_kompiled_dir)
@@ -421,8 +428,10 @@ test-prove: test-decoders-prove test-simple-prove test-uplc-to-k
 
 # Simple proofs
 # -------------
+verification_files := tests/specs/simple/verification.md \
+                      tests/specs/simple/uplc-genvironment-instance.md
 simple_prove_tests := $(wildcard tests/specs/simple/*.md)
-simple_prove_tests := $(filter-out tests/specs/simple/verification.md, $(simple_prove_tests))
+simple_prove_tests := $(filter-out $(verification_files), $(simple_prove_tests))
 test-simple-prove: $(simple_prove_tests:=.prove)
 
 # Decoder proofs
@@ -449,7 +458,7 @@ tests/specs/uplc-to-k/%.uplc.prove: tests/specs/uplc-to-k/$$*/$$*-spec.k tests/s
 tests/specs/uplc-to-k/%-spec.k: tests/specs/uplc-to-k/$$(*F).uplc $(VENV_DIR)/pyvenv.cfg
 	@mkdir -p $(@D)
 	. .build/venv/bin/activate \
-	    && $(KPLUTUS) uplc-to-k --directory $(KPLUTUS_LIB)/haskell/uplc-kompiled $< > $@
+	    && $(KPLUTUS) uplc-to-k --directory $(KPLUTUS_LIB)/haskell $< > $@
 
 tests/specs/uplc-to-k/%-spec-kompiled/timestamp: tests/specs/uplc-to-k/$$(*F)/$$(*F)-spec.k
 	$(KOMPILE) --backend haskell $< --directory $(dir $(@D)) --main-module VERIFICATION
