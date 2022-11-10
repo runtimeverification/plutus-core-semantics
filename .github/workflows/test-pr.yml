@@ -1,0 +1,51 @@
+name: 'Test PR'
+on:
+  pull_request:
+    branches:
+      - 'master'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  test-pr:
+    name: 'Bulid and test KPlutus'
+    runs-on: [self-hosted, linux, normal]
+    steps:
+      - name: 'Check out code'
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - name: 'Set up Docker'
+        uses: ./.github/actions/with-docker
+        with:
+          tag: kplutus-ci-${{ github.sha }}
+          distro: jammy
+      - name: 'Build'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make build -j4'
+      - name: 'Build kplutus-pyk'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make kplutus-pyk'
+      - name: 'Test simple'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-simple -j`nproc` --output-sync=recurse'
+      - name: 'Test proofs'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'export KORE_EXEC_OPTS="--log-level error" && make test-prove -j`nproc` --output-sync=recurse'
+      - name: 'Test uplc-examples'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-uplc-examples -j`nproc` --output-sync=recurse'
+      - name: 'Test benchmark-validation-examples'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-benchmark-validation-examples -j`nproc` --output-sync=recurse'
+      - name: 'Test nofib-exec-examples'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-nofib-exe-examples -j`nproc` --output-sync=recurse'
+      - name: 'Test flat'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-flat -j`nproc` --output-sync=recurse'
+      - name: 'Test new-syntax'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-new-syntax -j`nproc` --output-sync=recurse'
+      - name: 'Test error'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'make test-error -j`nproc` --output-sync=recurse'
+      - name: 'Test interactive'
+        run: docker exec -t kplutus-ci-${GITHUB_SHA} /bin/bash -c 'export PATH=$(pwd)/.build/usr/bin:$PATH && kplc --help && kplc --version'
+      - name: 'Tear down Docker'
+        if: always()
+        run: |
+          docker stop --time=0 kplutus-ci-${GITHUB_SHA}

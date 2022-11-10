@@ -9,8 +9,8 @@ module UPLC-ABSTRACT-ENVIRONMENT
   imports UPLC-SYNTAX
 
   syntax Value ::= #lookup(Map, UplcId)      [function]
-  syntax Map   ::= #push(Map, UplcId, Value) [function, functional]
-  syntax Bool  ::= #def(Map, UplcId)         [function, functional]
+  syntax Map   ::= #push(Map, UplcId, Value) [function, total]
+  syntax Bool  ::= #def(Map, UplcId)         [function, total]
 
   rule #push(E:Map, X:UplcId, V:Value) => E [X <- V]
 endmodule

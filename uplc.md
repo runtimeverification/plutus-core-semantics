@@ -15,6 +15,5 @@ module UPLC-WITH-LOCAL-GLOBAL-ENV
   imports UPLC-ENVIRONMENT-LOCAL-GLOBAL
 
   rule #inKeysgEnv(_) => false [owise]
-  rule gLookup(_) => < delay (error) .Map > [owise]
 endmodule
 ```

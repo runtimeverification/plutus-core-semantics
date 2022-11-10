@@ -232,7 +232,6 @@ kplutus_files := uplc.md \
                  uplc-bytestring.md \
                  uplc-environment.md \
                  uplc-genvironment.md \
-                 uplc-genvironment-instance.md \
                  uplc-rw-helpers.md \
                  uplc-string-builtins.md \
                  uplc-configuration.md \
@@ -429,8 +428,10 @@ test-prove: test-decoders-prove test-simple-prove test-uplc-to-k
 
 # Simple proofs
 # -------------
+verification_files := tests/specs/simple/verification.md \
+                      tests/specs/simple/uplc-genvironment-instance.md
 simple_prove_tests := $(wildcard tests/specs/simple/*.md)
-simple_prove_tests := $(filter-out tests/specs/simple/verification.md, $(simple_prove_tests))
+simple_prove_tests := $(filter-out $(verification_files), $(simple_prove_tests))
 test-simple-prove: $(simple_prove_tests:=.prove)
 
 # Decoder proofs
@@ -457,7 +458,7 @@ tests/specs/uplc-to-k/%.uplc.prove: tests/specs/uplc-to-k/$$*/$$*-spec.k tests/s
 tests/specs/uplc-to-k/%-spec.k: tests/specs/uplc-to-k/$$(*F).uplc $(VENV_DIR)/pyvenv.cfg
 	@mkdir -p $(@D)
 	. .build/venv/bin/activate \
-	    && $(KPLUTUS) uplc-to-k --directory $(KPLUTUS_LIB)/haskell/uplc-kompiled $< > $@
+	    && $(KPLUTUS) uplc-to-k --directory $(KPLUTUS_LIB)/haskell $< > $@
 
 tests/specs/uplc-to-k/%-spec-kompiled/timestamp: tests/specs/uplc-to-k/$$(*F)/$$(*F)-spec.k
 	$(KOMPILE) --backend haskell $< --directory $(dir $(@D)) --main-module VERIFICATION

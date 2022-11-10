@@ -1,6 +1,7 @@
 # Verification Common
 
 ```k
+requires "domains.md"
 requires "uplc.md"
 ```
 
@@ -11,6 +12,7 @@ module SIMPLIFICATIONS
   imports BOOL
   imports K-EQUAL
   imports MAP-SYMBOLIC
+  imports SET-SYMBOLIC
 ```
 
 ### Map Reasoning
