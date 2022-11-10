@@ -9,9 +9,15 @@
 2. On emacs, `M-x load-file` and load `uplc-mode.el`.
 3. Run `M-x uplc-mode`.
 
+<<<<<<< HEAD
 4. Position the cursor near a `[` or `(`. Then press `C-c RET`. That
    "block" will be replaced by `...`. UPLC major mode uses `yafolding`
    which collapses thunks of text based on _indentation_. For example,
+=======
+4. Position the cursor near a a `[` or `(`. Then press `C-c RET`. That
+   "block" will be replaced by `...`. UPLC major mode uses `yafolding`
+   which collapses thunks of text based on indentation. For example,
+>>>>>>> 09a24f58e86c1753f0ad2bd44c636754d465bb76
    ```scheme
    (lam case_BankState_4
         [ [ [ [ case_BankState_4 arg_0_0 ] arg_1_1 ] arg_2_2 ] arg_3_3 ]

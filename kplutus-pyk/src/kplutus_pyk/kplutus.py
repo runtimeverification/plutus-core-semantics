@@ -6,8 +6,20 @@ from typing import Iterable
 
 from pyk.cli_utils import run_process
 from pyk.cterm import CTerm, build_claim
-from pyk.kast import KApply, KDefinition, KFlatModule, KImport, KInner, KRequire, KSort, KVariable, read_kast_definition
-from pyk.kastManip import substitute
+from pyk.kast import (
+    KApply,
+    KDefinition,
+    KFlatModule,
+    KImport,
+    KInner,
+    KRequire,
+    KSort,
+    KToken,
+    KVariable,
+    bottom_up,
+    read_kast_definition,
+)
+from pyk.kastManip import if_ktype, substitute
 from pyk.ktool import KPrint
 
 
@@ -39,7 +51,16 @@ class KPlutus:
         d = read_kast_definition(definition_dir / 'compiled.json')
         empty_config = d.empty_config(KSort('GeneratedTopCell'))
 
+        # UplcId tokens without an underbar clash with tokens in kprove,
+        # so add a prefix with an underbar to them
+        def prefix_uplcid(t: KToken) -> KToken:
+            if t.sort.name == "UplcId":
+                return t.let(token="v_" + t.token)
+            return t
+
         contract = KInner.from_dict(json.loads(kast_out.stdout)['term'])
+        contract = bottom_up(if_ktype(KToken, prefix_uplcid), contract)
+
         true_val = KApply(
             '<con__>_UPLC-SYNTAX_Value_TypeConstant_Constant',
             [KApply('bool_UPLC-SYNTAX_TypeConstant'), KApply('True_UPLC-SYNTAX_Constant')],
@@ -55,7 +76,9 @@ class KPlutus:
         claim, _ = build_claim(module_name.lower(), init_cterm, final_cterm)
         claim_module = KFlatModule(module_name + '-SPEC', [claim], [KImport('VERIFICATION')])
 
-        spec_definition = KDefinition(module_name + '-SPEC', [claim_module], [KRequire('verification.md')])
+        verification_module = KFlatModule("VERIFICATION", [], [KImport("UPLC-WITH-LOCAL-ENV")])
+
+        spec_definition = KDefinition(module_name + '-SPEC', [verification_module, claim_module], [KRequire('uplc.md')])
 
         p = KPrint(definition_dir)
         print(p.pretty_print(spec_definition))
