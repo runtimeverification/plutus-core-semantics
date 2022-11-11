@@ -7,8 +7,7 @@
     flake-utils.follows = "k-framework/flake-utils";
     rv-utils.url = "github:runtimeverification/rv-nix-tools";
     poetry2nix.follows = "pyk/poetry2nix";
-    blockchain-k-plugin.url =
-      "github:runtimeverification/blockchain-k-plugin/3010915ef37b0e614528821a7c8717c797a365a6";
+    blockchain-k-plugin.url = "github:runtimeverification/blockchain-k-plugin/3010915ef37b0e614528821a7c8717c797a365a7";
     blockchain-k-plugin.inputs.flake-utils.follows = "k-framework/flake-utils";
     blockchain-k-plugin.inputs.nixpkgs.follows = "k-framework/nixpkgs";
     haskell-backend.follows = "k-framework/haskell-backend";
@@ -17,7 +16,7 @@
     pyk.inputs.nixpkgs.follows = "k-framework/nixpkgs";
 
   };
-  outputs = { self, k-framework, haskell-backend, nixpkgs, flake-utils, poetry2nix , blockchain-k-plugin, rv-utils, pyk }:
+  outputs = { self, k-framework, haskell-backend, nixpkgs, flake-utils, poetry2nix, blockchain-k-plugin, rv-utils, pyk }:
     let
       buildInputs = pkgs: k:
         with pkgs;
