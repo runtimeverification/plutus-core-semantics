@@ -14,14 +14,11 @@ RUN    apt-get update            \
     && apt-get install --yes     \
             cmake                \
             curl                 \
-            debhelper            \
-            default-jdk-headless \
             libcrypto++-dev      \
             libprocps-dev        \
             libsecp256k1-dev     \
             libssl-dev           \
             libyaml-dev          \
-            maven                \
             pkg-config           \
             python3              \
             python3-pip          \
