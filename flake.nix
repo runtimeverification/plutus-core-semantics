@@ -76,8 +76,6 @@
             patches = [ ];
 
             postPatch = ''
-              substituteInPlace ./cmake/node/CMakeLists.txt \
-                --replace 'set(K_LIB ''${K_BIN}/../lib)' 'set(K_LIB ${k}/lib)'
               substituteInPlace ./bin/kplutus \
                 --replace 'execute python3 -m kplutus_pyk' 'execute ${final.kplutus-pyk}/bin/kplutus-pyk'
             '';
