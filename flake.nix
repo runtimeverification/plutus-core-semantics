@@ -23,10 +23,12 @@
           k
           llvm-backend
           autoconf
+          bison
           cmake
           clang
           llvmPackages.llvm
           cryptopp.dev
+          git
           gmp
           graphviz
           mpfr
@@ -38,6 +40,7 @@
           secp256k1
           time
           virtualenv
+          which
         ] ++ lib.optional (!stdenv.isDarwin) elfutils
         ++ lib.optionals stdenv.isDarwin [ automake libtool ];
 
@@ -66,19 +69,14 @@
                 mkdir $out
                 cp -rv $src/* $out
                 chmod -R u+w $out
-                mkdir -p $out/deps/plugin
-                cp -rv ${prev.blockchain-k-plugin-src}/* $out/deps/plugin/
+                mkdir -p $out/deps/blockchain-k-plugin
+                cp -rv ${prev.blockchain-k-plugin-src}/* $out/deps/blockchain-k-plugin/
               '';
             };
 
             dontUseCmakeConfigure = true;
 
             patches = [ ];
-
-            postPatch = ''
-              substituteInPlace ./bin/kplutus \
-                --replace 'execute python3 -m kplutus_pyk' 'execute ${final.kplutus-pyk}/bin/kplutus-pyk'
-            '';
 
             buildFlags =
               prev.lib.optional (prev.stdenv.isAarch64 && prev.stdenv.isDarwin)
@@ -92,7 +90,7 @@
             installPhase = ''
               mkdir -p $out
               mv .build/usr/* $out/
-              wrapProgram $out/bin/kplutus --prefix PATH : ${
+              wrapProgram $out/kplutus --prefix PATH : ${
                 prev.lib.makeBinPath [ prev.which k ]
               }
               ln -s ${k} $out/lib/kplutus/kframework
@@ -146,7 +144,7 @@
           update-from-submodules =
             rv-utils.lib.update-from-submodules pkgs ./flake.lock {
               k-framework.submodule = "deps/k";
-              blockchain-k-plugin.submodule = "deps/plugin";
+              blockchain-k-plugin.submodule = "deps/blockchain-k-plugin";
             };
         };
       }) // {
