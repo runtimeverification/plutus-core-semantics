@@ -37,7 +37,6 @@
           protobuf
           python39
           secp256k1
-          solc
           time
           virtualenv
         ] ++ lib.optional (!stdenv.isDarwin) elfutils
@@ -97,7 +96,7 @@
               mkdir -p $out
               mv .build/usr/* $out/
               wrapProgram $out/bin/kplutus --prefix PATH : ${
-                prev.lib.makeBinPath [ final.solc prev.which k ]
+                prev.lib.makeBinPath [ prev.which k ]
               }
               ln -s ${k} $out/lib/kplutus/kframework
             '';
