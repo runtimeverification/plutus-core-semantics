@@ -25,7 +25,7 @@ jobs:
       - run: |
           git config user.name devops
           git config user.email devops@runtimeverification.com
-      - name: 'Update K Release tag'
+      - name: 'Update K release tag'
         run: |
           cd deps/k
           git fetch --tags
@@ -33,7 +33,7 @@ jobs:
           K_VERSION="$(cd deps/k && git tag --points-at HEAD | cut --characters='2-')"
           echo "${K_VERSION}" > deps/k_release
           git add deps/k_release && git commit -m 'deps/k_release: update release file' || true
-      - name: 'Update pyk Release tag'
+      - name: 'Update pyk release tag'
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           poetry --version
@@ -44,6 +44,14 @@ jobs:
           poetry update
           cd -
           git add kplutus-pyk/ && git commit -m 'kplutus-pyk/: sync poetry files' || true
+      - name: 'Update plugin release tag'
+        run: |
+          cd deps/blockchain-k-plugin
+          rev=$(git rev-parse HEAD)
+          cd -
+          echo ${rev} > deps/blockchain-k-plugin_release
+          sed -i 's!    blockchain-k-plugin.url = "github:runtimeverification/blockchain-k-plugin/[0-9a-f]*"!    blockchain-k-plugin.url = "github:runtimeverification/blockchain-k-plugin/'"${rev}"'"!' flake.nix
+          git add deps/blockchain-k-plugin_release && git commit -m 'deps/blockchain-k-plugin_release: update release file' || true
       - name: 'Install Nix/Cachix'
         uses: cachix/install-nix-action@v15
         with:
