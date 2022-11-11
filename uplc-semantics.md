@@ -27,15 +27,15 @@ module UPLC-SEMANTICS
 ## Environment cutting
 
 ```k
-  syntax Map ::= #cutEnv(Map, Term) [function, functional]
+  syntax Map ::= #cutEnv(Map, Term) [function, total]
   rule #cutEnv(RHO, T) => removeAll(RHO, keys(RHO) -Set #FV(T))
 ```
 
 ## Non-interactive application
 
 ```k
-  syntax K ::= #app(Term, TermList, Map) [function, functional]
-  syntax K ::= #appAux(TermList, Map) [function, functional]
+  syntax K ::= #app(Term, TermList, Map) [function, total]
+  syntax K ::= #appAux(TermList, Map) [function, total]
   rule #app(M:Term, TL:TermList, RHO:Map) => M ~> #appAux(TL, RHO)
   rule #appAux(N:Term, RHO) => [_ N #cutEnv(RHO, N) ]
   rule #appAux(N:Term TL:TermList, RHO) => [_ N #cutEnv(RHO, N) ] ~> #appAux(TL, RHO)

@@ -16,11 +16,11 @@ module UPLC-DATA-BUILTINS
   rule #mkDataPairList( ( ( {T1:TextualData}, {T2:TextualData} ), L:ConstantList ) ) =>
        ((T1, T2) , #mkDataPairList(L))
 
-  syntax ConstantList ::= #mkConstantList(DataList) [function, functional]
+  syntax ConstantList ::= #mkConstantList(DataList) [function, total]
   rule #mkConstantList(.DataList) => .ConstantList
   rule #mkConstantList( (T:TextualData, L:DataList) ) => ({ T }, #mkConstantList(L))
 
-  syntax ConstantList ::= #mkConstantListFromDataPairList(DataPairList) [function, functional]
+  syntax ConstantList ::= #mkConstantListFromDataPairList(DataPairList) [function, total]
   rule #mkConstantListFromDataPairList(.DataPairList) => .ConstantList
   rule #mkConstantListFromDataPairList(
          ( (T1:TextualData, T2:TextualData), L:DataPairList ) ) =>

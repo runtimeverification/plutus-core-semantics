@@ -54,9 +54,9 @@ module UPLC-BYTESTRING
   imports BOOL
   imports BYTES
 
-  syntax String ::= ByteString2String (ByteString) [function, functional, hook(STRING.token2string)]
+  syntax String ::= ByteString2String (ByteString) [function, total, hook(STRING.token2string)]
   
-  syntax ByteString ::= String2ByteString (String) [function, functional, hook(STRING.string2token)]
+  syntax ByteString ::= String2ByteString (String) [function, total, hook(STRING.string2token)]
 
   syntax String ::= trimByteString(ByteString) [function]
   rule trimByteString(B) => substrString(ByteString2String(B), 1, lengthString(ByteString2String(B)))
