@@ -7,7 +7,8 @@
     flake-utils.follows = "k-framework/flake-utils";
     rv-utils.url = "github:runtimeverification/rv-nix-tools";
     poetry2nix.follows = "pyk/poetry2nix";
-    blockchain-k-plugin.url = "github:runtimeverification/blockchain-k-plugin/3010915ef37b0e614528821a7c8717c797a365a6";
+    blockchain-k-plugin.url =
+      "github:runtimeverification/blockchain-k-plugin/3010915ef37b0e614528821a7c8717c797a365a6";
     blockchain-k-plugin.inputs.flake-utils.follows = "k-framework/flake-utils";
     blockchain-k-plugin.inputs.nixpkgs.follows = "k-framework/nixpkgs";
     haskell-backend.follows = "k-framework/haskell-backend";
@@ -15,39 +16,40 @@
     pyk.inputs.flake-utils.follows = "k-framework/flake-utils";
     pyk.inputs.nixpkgs.follows = "k-framework/nixpkgs";
   };
-  outputs = { self, k-framework, haskell-backend, nixpkgs, flake-utils, poetry2nix, blockchain-k-plugin, rv-utils, pyk }:
+  outputs = { self, k-framework, haskell-backend, nixpkgs, flake-utils
+    , poetry2nix, blockchain-k-plugin, rv-utils, pyk }:
     let
-      buildInputs = pkgs: k:
-        with pkgs;
-        [
-          k
-          llvm-backend
-          autoconf
-          bison
-          cmake
-          llvmPackages.llvm
-          cryptopp.dev
-          git
-          gmp
-          graphviz
-          mpfr
-          openssl.dev
-          pkg-config
-          procps
-          protobuf
-          python39
-          secp256k1
-          time
-          virtualenv
-          which
-          automake libtool
-        ] ++ lib.optional (!stdenv.isDarwin) elfutils;
-      overlay = final: prev: {
-        kplutus = k:
-          prev.stdenv.mkDerivation {
+      overlay = final: prev:
+        let k = k-framework.packages.${prev.system}.k;
+        in {
+          kplutus = prev.stdenv.mkDerivation {
             pname = "kplutus";
             version = self.rev or "dirty";
-            buildInputs = buildInputs final k;
+            buildInputs = with final;
+              [
+                k
+                llvm-backend
+                autoconf
+                bison
+                cmake
+                llvmPackages.llvm
+                cryptopp.dev
+                git
+                gmp
+                graphviz
+                mpfr
+                openssl.dev
+                pkg-config
+                procps
+                protobuf
+                python39
+                secp256k1
+                time
+                virtualenv
+                which
+                automake
+                libtool
+              ] ++ lib.optional (!stdenv.isDarwin) elfutils;
             nativeBuildInputs = [ prev.makeWrapper ];
 
             src = prev.stdenv.mkDerivation {
@@ -92,17 +94,17 @@
             '';
           };
 
-        kplutus-pyk = prev.poetry2nix.mkPoetryApplication {
-          python = prev.python39;
-          projectDir = ./kplutus-pyk;
-          overrides = prev.poetry2nix.overrides.withDefaults
-            (finalPython: prevPython: { pyk = prev.pyk; });
-          groups = [];
-          # We remove `"dev"` from `checkGroups`, so that poetry2nix does not try to resolve dev dependencies.
-          checkGroups = [];
-        };
+          kplutus-pyk = prev.poetry2nix.mkPoetryApplication {
+            python = prev.python39;
+            projectDir = ./kplutus-pyk;
+            overrides = prev.poetry2nix.overrides.withDefaults
+              (finalPython: prevPython: { pyk = prev.pyk; });
+            groups = [ ];
+            # We remove `"dev"` from `checkGroups`, so that poetry2nix does not try to resolve dev dependencies.
+            checkGroups = [ ];
+          };
 
-      };
+        };
     in flake-utils.lib.eachSystem [
       "x86_64-linux"
       "x86_64-darwin"
@@ -121,16 +123,10 @@
             overlay
           ];
         };
-        kplutus = pkgs.kplutus k-framework.packages.${system}.k;
       in {
-        packages.default = kplutus;
-        devShell = pkgs.mkShell {
-          buildInputs = buildInputs pkgs k-framework.packages.${system}.k;
-        };
-
+        packages.default = pkgs.kplutus;
         packages = {
-          inherit (pkgs) kplutus-pyk;
-          inherit kplutus;
+          inherit (pkgs) kplutus kplutus-pyk;
 
           check-submodules = rv-utils.lib.check-submodules pkgs {
             inherit k-framework blockchain-k-plugin;
