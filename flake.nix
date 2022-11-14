@@ -25,7 +25,6 @@
           autoconf
           bison
           cmake
-          clang
           llvmPackages.llvm
           cryptopp.dev
           git
@@ -41,9 +40,8 @@
           time
           virtualenv
           which
-        ] ++ lib.optional (!stdenv.isDarwin) elfutils
-        ++ lib.optionals stdenv.isDarwin [ automake libtool ];
-
+          automake libtool
+        ] ++ lib.optional (!stdenv.isDarwin) elfutils;
       overlay = final: prev: {
         kplutus = k:
           prev.stdenv.mkDerivation {
@@ -90,9 +88,6 @@
             installPhase = ''
               mkdir -p $out
               mv .build/usr/* $out/
-              wrapProgram $out/kplutus --prefix PATH : ${
-                prev.lib.makeBinPath [ prev.which k ]
-              }
               ln -s ${k} $out/lib/kplutus/kframework
             '';
           };
