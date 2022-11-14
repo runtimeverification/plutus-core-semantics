@@ -74,7 +74,7 @@
 
             dontUseCmakeConfigure = true;
 
-            patches = [ ];
+            patches = [ ./nix/kplc.patch ];
 
             buildFlags =
               prev.lib.optional (prev.stdenv.isAarch64 && prev.stdenv.isDarwin)
