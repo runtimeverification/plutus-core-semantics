@@ -346,7 +346,7 @@ kplutus-pyk:
 # Installing
 # ----------
 
-install_bins := kplc kplutus-covr
+install_bins := kplc kplutus-covr contract-compile contract-prove
 
 install_libs := $(llvm_kompiled)    \
                 $(haskell_kompiled) \
@@ -362,6 +362,14 @@ $(KPLUTUS_BIN)/kplc: kplc
 	install $< $@
 
 $(KPLUTUS_BIN)/kplutus-covr: kplutus-covr
+	@mkdir -p $(dir $@)
+	install $< $@
+
+$(KPLUTUS_BIN)/contract-compile: contract-compile
+	@mkdir -p $(dir $@)
+	install $< $@
+
+$(KPLUTUS_BIN)/contract-prove: contract-prove
 	@mkdir -p $(dir $@)
 	install $< $@
 
