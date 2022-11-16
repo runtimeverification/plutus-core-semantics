@@ -72,6 +72,6 @@ jobs:
       - uses: cachix/cachix-action@v10
         with:
           name: k-framework
-          authToken: '${{ secrets.CACHIX_PUBLIC_KEY }}'
+          authToken: '${{ secrets.CACHIX_PUBLIC_TOKEN }}'
       - name: 'Build KPlutus'
         run: GC_DONT_GC=1 nix build .#kplutus
