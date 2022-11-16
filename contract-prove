@@ -1,0 +1,47 @@
+#!/bin/bash
+
+DEBUG_OPT=""
+KPLC=""
+KORE_PRINT=""
+
+KPLC=$(exec which kplc)
+
+if [ -z $KPLC ] ;
+then
+    echo -e "Executable \e[31mkplc\e[0m  was not found."
+    MSG="\e]8;;https://github.com/runtimeverification/plutus-core-semantics\a$1\e]8;;\a"
+    echo -e "Follow instructions at https://github.com/runtimeverification/plutus-core-semantics to properly install KPlutus."
+    exit 1
+fi
+
+if [ "$1" == "-i" ] ;
+then
+    KORE_PRINT=$(exec which kore-print)
+    
+    if [ "$KORE_PRINT" == "" ] ;
+    then
+        echo -e "Executable \e[31mkore-print\e[0m was not found."
+        MSG="\e]8;;https://github.com/runtimeverification/plutus-core-semantics\a$1\e]8;;\a"
+        echo -e "Follow instructions at https://github.com/runtimeverification/plutus-core-semantics to properly install KPlutus."
+        exit 1
+    fi
+    
+    if [ ! -f "print2" ] ;
+    then
+        echo -e "File \e[31mprint2\e[0m is not present."
+        echo "Generating it for you..."
+        echo "kore-print --directory verification/haskell /dev/stdin" > print2
+    fi
+
+    if [ ! -f "k-script" ] ;
+    then
+        echo -e "File \e[31mk-script\e[0m is not present."
+        echo "Generating it for you..."
+        echo "alias konfig = config | bash print2" > k-script
+    fi
+
+    DEBUG_OPT="--debugger --debug-script k-script"
+fi
+
+echo $DEBUG_OPT
+$KPLC prove --directory verification/haskell ./claims.md $DEBUG_OPT

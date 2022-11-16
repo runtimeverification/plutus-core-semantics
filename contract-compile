@@ -1,0 +1,13 @@
+#!/bin/bash
+KPLC=""
+KPLC=$(exec which kplc)
+
+if [ -z $KPLC ] ;
+then
+    echo -e "Executable \e[31mkplc\e[0m  was not found."
+    MSG="\e]8;;https://github.com/runtimeverification/plutus-core-semantics\a$1\e]8;;\a"
+    echo -e "Follow instructions at https://github.com/runtimeverification/plutus-core-semantics to properly install KPlutus."
+    exit 1
+fi
+
+$KPLC kompile --backend haskell verification.md --directory verification/haskell
