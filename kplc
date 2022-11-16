@@ -105,7 +105,8 @@ run_prove() {
 
     ! ${bug_report} || proof_args+=(--haskell-backend-command "kore-exec --bug-report ${bug_report_name}")
     ! ${debugger}   || proof_args+=(--debugger)
-
+    ! ${kscript}    || proof_args+=(--debug-script "k-script")
+    
     notif_exec kprove "${proof_args[@]}" "$@"
 }
 
@@ -158,6 +159,7 @@ pyk=false
 debug=false
 verbose=false
 flat_format=false
+kscript=false
 
 args=()
 while [[ $# -gt 0 ]]; do
@@ -179,6 +181,34 @@ if [[ "$run_command" == 'version' ]] || [[ "$run_command" == '--version' ]]; the
     notif 'KPlutus Version'
     cat $INSTALL_LIB/version
     exit 0
+fi
+
+if [[ "$run_command" == 'contract-compile' ]] || [[ "$run_command" == 'cc' ]]; then
+    backend="haskell"
+    backend_dir="verification/haskell"
+    run_file="verification.md"
+    run_kompile 
+    exit 
+fi
+
+if [[ "$run_command" == 'contract-prove' ]] || [[ "$run_command" == 'cp' ]]; then
+    backend_dir="verification/haskell"
+    run_file="claims.md"
+    if [[ ! "${#args[@]}" -eq 0 ]] && [[ "$args" == "-i" ]]; then
+        debugger=true
+        kscript=true
+        if [ ! -f "print2" ] ;
+        then
+            echo "kore-print --directory verification/haskell /dev/stdin" > print2
+        fi
+
+        if [ ! -f "k-script" ] ;
+        then
+            echo "alias konfig = config | bash print2" > k-script
+        fi
+    fi
+    run_prove 
+    exit 
 fi
 
 [[ "${#args[@]}" -le 0 ]] || set -- "${args[@]}"

@@ -346,7 +346,7 @@ kplutus-pyk:
 # Installing
 # ----------
 
-install_bins := kplc kplutus-covr
+install_bins := kplc kplutus-covr 
 
 install_libs := $(llvm_kompiled)    \
                 $(haskell_kompiled) \
