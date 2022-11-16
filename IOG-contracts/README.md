@@ -50,7 +50,7 @@ The preferred way is if the `cabal-install` package is installed in your environ
 ```
 $ cabal update
 $ cd dist-newstyle/src/plutus-ap_-348916df41c59834
-$ nix-shell
+$ nix-shell --extra-experimental-features flakes
 $ cd ../../..
 ```
 
@@ -59,7 +59,7 @@ Without `cabal-install`, you need to manually pull the dependency:
 $ git clone https://github.com/input-output-hk/plutus-apps
 $ cd plutus-apps
 $ git checkout 6866224e1aadca6a1fd29419fc75beb903a2ce0f
-$ nix-shell
+$ nix-shell --extra-experimental-features flakes
 $ cd ..
 ```
 
