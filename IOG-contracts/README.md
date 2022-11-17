@@ -44,7 +44,7 @@ The best way to work with these contracts is to use IOG's Nix development enviro
 See [how to build the projects artifacts](https://github.com/input-output-hk/plutus-apps/blob/main/README.adoc#how-to-build-the-projects-artifacts)
 from the plutus-apps readme for information on setting up nix.
 
-With nix set up, you need to enter the nix-shell. There are two ways to do this:
+With nix set up, you need to enter the nix-shell. There are two ways to do this, be sure to run these commands in the `IOG-contracts` directory:
 
 The preferred way is if the `cabal-install` package is installed in your environment:
 ```
