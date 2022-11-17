@@ -70,7 +70,7 @@ library
     , plutus-core
     , plutus-ledger
     , plutus-ledger-constraints
- --   , plutus-script-utils
+    , plutus-script-utils
 
   --------------------------
   -- Other IOG dependencies

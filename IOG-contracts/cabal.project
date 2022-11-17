@@ -1,7 +1,9 @@
 -- Bump this if you need newer packages.
 -- index-state: 2022-02-22T20:47:03Z
 
-packages: stablecoin
+packages:
+    stablecoin
+    native-tokens
           
 -- We never, ever, want this.
 write-ghc-environment-files: never

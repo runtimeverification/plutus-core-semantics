@@ -241,7 +241,8 @@ kplutus_files := uplc.md \
                  uplc-data-builtins.md \
                  uplc-discharge.md \
                  uplc-free-variables.md \
-                 uplc-abstract-environment.md
+                 uplc-abstract-environment.md \
+		 verification-common.md
 
 kplutus_includes := $(patsubst %, $(KPLUTUS_INCLUDE)/kframework/%, $(kplutus_files))
 

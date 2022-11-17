@@ -1,0 +1,15 @@
+diff --git a/kplc b/kplc
+index d5b2b11..00e513f 100755
+--- a/kplc
++++ b/kplc
+@@ -60,10 +60,6 @@ run_kompile() {
+                  kompile_opts+=( -ccopt -lff -ccopt -lcryptopp -ccopt -lsecp256k1 -ccopt -lssl -ccopt -lcrypto )
+                  if [[ "$(uname -s)" == 'Linux' ]]; then
+                      kompile_opts+=( -ccopt -lprocps )
+-                 elif [[ "$(uname -s)" == 'Darwin' ]]; then
+-                     openssl_root="$(brew --prefix openssl)"
+-                     brew_root="$(brew --prefix)"
+-                     kompile_opts+=( -ccopt -I${brew_root}/include -ccopt -L/${brew_root}/lib -ccopt -I${openssl_root}/include -ccopt -L${openssl_root}/lib )
+                  fi
+                  if [[ -d ${libcryptopp_dir} ]]; then
+                      kompile_opts+=( -ccopt -I${libcryptopp_dir}/include -ccopt -L/${libcryptopp_dir}/lib )

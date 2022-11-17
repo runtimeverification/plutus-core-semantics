@@ -6,20 +6,9 @@ from typing import Iterable
 
 from pyk.cli_utils import run_process
 from pyk.cterm import CTerm, build_claim
-from pyk.kast import (
-    KApply,
-    KDefinition,
-    KFlatModule,
-    KImport,
-    KInner,
-    KRequire,
-    KSort,
-    KToken,
-    KVariable,
-    bottom_up,
-    read_kast_definition,
-)
-from pyk.kastManip import if_ktype, substitute
+from pyk.kast.inner import KApply, KInner, KSort, KToken, KVariable, bottom_up
+from pyk.kast.manip import if_ktype, substitute
+from pyk.kast.outer import KDefinition, KFlatModule, KImport, KRequire, read_kast_definition
 from pyk.ktool import KPrint, KRun
 
 from .genv import extract_genv, make_genv_module
