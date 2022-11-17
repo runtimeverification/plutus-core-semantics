@@ -1,7 +1,7 @@
 # Example list algorithms: implementation
 
 ```k
-requires "../verification-common.md"
+requires "verification-common.md"
 requires "uplc-rw-helpers.md"
 requires "uplc-genvironment-instance.md"
 ```
@@ -415,7 +415,7 @@ module AUXILIARIES
 ### `allInts(XS)`: capturing that `XS` is a list of integers
 
 ```k
-  syntax Bool ::= allInts(ConstantList) [function, functional, no-evaluators]
+  syntax Bool ::= allInts(ConstantList) [function, total, no-evaluators]
 
   rule { true #Equals allInts(              .ConstantList) } => #Top [simplification]
   rule { true #Equals allInts(C:Constant, XS:ConstantList) } => #Exists I:Int. { C #Equals I } #And { true #Equals allInts(XS) }
@@ -436,7 +436,7 @@ module AUXILIARIES
 ### `length(XS)`: calculating the length of a given list `XS`
 
 ```k
-  syntax Int ::= length(ConstantList) [function, functional]
+  syntax Int ::= length(ConstantList) [function, total]
 
   rule length(     .ConstantList ) => 0
   rule length(_, XS:ConstantList ) => 1 +Int length(XS)
@@ -445,7 +445,7 @@ module AUXILIARIES
 ### `#max(X, Y)` and `#maxList(XS)`: calculating the max element of a given list `XS`
 
 ```k
-  syntax Int ::= #max( Int, Int ) [function, functional]
+  syntax Int ::= #max( Int, Int ) [function, total]
   rule #max( X, Y ) => X requires notBool X <Int Y
   rule #max( X, Y ) => Y requires         X <Int Y
 
@@ -467,7 +467,7 @@ module AUXILIARIES
 ### `longerList(XS, YS)`: capturing that the list `XS` is longer than the list `YS`
 
 ```k
-  syntax Constant ::= longer(ConstantList, ConstantList) [function, functional]
+  syntax Constant ::= longer(ConstantList, ConstantList) [function, total]
 
   rule longer(.ConstantList, _) => False
   rule longer(_, .ConstantList) => True
