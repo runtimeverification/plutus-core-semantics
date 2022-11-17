@@ -1,19 +1,7 @@
 from typing import Any, Final, List, Tuple
 
-from pyk.kast import (
-    KApply,
-    KAtt,
-    KFlatModule,
-    KImport,
-    KInner,
-    KLabel,
-    KProduction,
-    KRewrite,
-    KRule,
-    KTerminal,
-    KToken,
-    KVariable,
-)
+from pyk.kast.inner import KApply, KAtt, KInner, KLabel, KRewrite, KToken, KVariable
+from pyk.kast.outer import KFlatModule, KImport, KProduction, KRule, KTerminal
 from pyk.ktool import KRun
 
 _LAM: Final = '(lam__)_UPLC-SYNTAX_Term_UplcId_Term'
