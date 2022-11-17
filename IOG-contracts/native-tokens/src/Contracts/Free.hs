@@ -39,6 +39,8 @@ import PlutusTx
 import UntypedPlutusCore
 import PlutusCore.Quote
 import PlutusCore.Pretty
+import           Plutus.V1.Ledger.Scripts  (mkMintingPolicyScript)
+import Plutus.Script.Utils.V1.Scripts (scriptCurrencySymbol)
 -- KPLC
 
 {-# INLINABLE mkPolicyTrue #-}
@@ -54,26 +56,26 @@ mkPolicyFalse () _ = False
 -- KPLC the contract's minting policies.
 compiledPolicyTrue :: PlutusTx.CompiledCode (BuiltinData -> BuiltinData -> ())
 compiledPolicyTrue = $$(PlutusTx.compile
-  [|| Scripts.wrapMintingPolicy mkPolicyTrue ||])
+  [|| Scripts.mkUntypedMintingPolicy mkPolicyTrue ||])
 
 uplcTruePolicy :: String
 uplcTruePolicy =
-  either display displayPlcDebug $ runQuoteT $
-    unDeBruijnProgram @(QuoteT (Either FreeVariableError)) $
-    getPlc compiledPolicyTrue
+  either display displayPlcDebug $ unDeBruijnProgram $ getPlc compiledPolicyTrue
+  where
+    unDeBruijnProgram (Program ann ver term) = Program ann ver <$> (runQuoteT $ unDeBruijnTerm @(QuoteT (Either FreeVariableError)) $ term)
 
 pirTruePolicy =
   prettyClassicDebug $ getPir $ compiledPolicyTrue
-  
+
 compiledPolicyFalse :: PlutusTx.CompiledCode (BuiltinData -> BuiltinData -> ())
 compiledPolicyFalse = $$(PlutusTx.compile
-  [|| Scripts.wrapMintingPolicy mkPolicyFalse ||])
+  [|| Scripts.mkUntypedMintingPolicy mkPolicyFalse ||])
 
 uplcFalsePolicy :: String
 uplcFalsePolicy =
-  either display displayPlcDebug $ runQuoteT $
-    unDeBruijnProgram @(QuoteT (Either FreeVariableError)) $
-    getPlc compiledPolicyFalse
+  either display displayPlcDebug $ unDeBruijnProgram $ getPlc compiledPolicyFalse
+  where
+    unDeBruijnProgram (Program ann ver term) = Program ann ver <$> (runQuoteT $ unDeBruijnTerm @(QuoteT (Either FreeVariableError)) $ term)
 
 pirFalsePolicy =
   prettyClassicDebug $ getPir $ compiledPolicyFalse
@@ -81,7 +83,7 @@ pirFalsePolicy =
 
 policy :: Scripts.MintingPolicy
 policy = mkMintingPolicyScript $$(PlutusTx.compile
-  [|| Scripts.wrapMintingPolicy mkPolicyTrue ||])
+  [|| Scripts.mkUntypedMintingPolicy mkPolicyTrue ||])
 
 curSymbol :: CurrencySymbol
 curSymbol = scriptCurrencySymbol policy

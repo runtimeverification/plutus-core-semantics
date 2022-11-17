@@ -38,6 +38,31 @@ In the following, we describe the contracts, leaving to the
 `README.md` files in each subdirectory the responsibility to explain how to
 generate UPLC code from their associated contracts.
 
+### Nix-shell
+
+The best way to work with these contracts is to use IOG's Nix development environment from the plutus-apps dependency.
+See [how to build the projects artifacts](https://github.com/input-output-hk/plutus-apps/blob/main/README.adoc#how-to-build-the-projects-artifacts)
+from the plutus-apps readme for information on setting up nix.
+
+With nix set up, you need to enter the nix-shell. There are two ways to do this, be sure to run these commands in the `IOG-contracts` directory:
+
+The preferred way is if the `cabal-install` package is installed in your environment:
+```
+$ cabal update
+$ cd dist-newstyle/src/plutus-ap_-348916df41c59834
+$ nix-shell --extra-experimental-features flakes
+$ cd ../../..
+```
+
+Without `cabal-install`, you need to manually pull the dependency:
+```
+$ git clone https://github.com/input-output-hk/plutus-apps
+$ cd plutus-apps
+$ git checkout 6866224e1aadca6a1fd29419fc75beb903a2ce0f
+$ nix-shell --extra-experimental-features flakes
+$ cd ..
+```
+
 ## Native tokens
 
 [README.md](native-tokens/README.md)
@@ -95,12 +120,6 @@ variable is then pretty-printed to UPLC code by the associated
 There are some requirements for a contract to be executable by `kplc`,
 as follows.
 
-### Nix-shell
-
-Currently, before running any `cabal` command, it's necessary to start
-`nix-shell` _from `plutus-apps`_. This is very important. Only
-then can the cabal commands be executed from within the `nix-shell`.
-
 ### Compiler options
 
 The following options should either be added to the contract's Haskell
@@ -130,7 +149,7 @@ manually should any of the files change.
 ## Known problems
 
 ### Liblzma error
-   
+
 This error happened when we tried to run the code generation process
 using the nix-shell configuration in the `plutus` repo. When we
 switched to the one in the `plutus-apps` repo this problem did not
