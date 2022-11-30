@@ -77,8 +77,9 @@
 
             patches = [ ./nix/kplc.patch ];
 
-            buildFlags =
-              prev.lib.optional (prev.stdenv.isAarch64 && prev.stdenv.isDarwin)
+            buildFlags = [ "KPLUTUS_RELEASE_TAG=${self.rev or "dirty"}" ]
+              ++ prev.lib.optional
+              (prev.stdenv.isAarch64 && prev.stdenv.isDarwin)
               "APPLE_SILICON=true";
             enableParallelBuilding = true;
 
