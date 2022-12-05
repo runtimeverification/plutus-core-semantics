@@ -36,7 +36,7 @@ module TRIVIAL-POLICIES
 ```
   rule { true #Equals CredentialDef(C, PARAMS) } =>
        ({ C #Equals 0 } #And (#Exists BS:ByteString. { PARAMS #Equals ListItem(BS) }) ) #Or
-       ({ C #Equals 1 } #And (#Exists BS:ByteString. { PARAMS #Equals ListItem(BS) }) ) [simplification, unboundVariables(BS) ]
+       ({ C #Equals 1 } #And (#Exists BS:ByteString. { PARAMS #Equals ListItem(BS) }) ) [simplification]
 ```
 
 ```k

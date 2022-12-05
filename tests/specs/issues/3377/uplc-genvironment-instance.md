@@ -120,7 +120,7 @@ The datatypes used by the Oracle contract need to come with associated abstracti
   rule #Ceil(BoolData(C, PARAMS)) => { true #Equals BoolDef(C, PARAMS) } [simplification]
 ```
 
-### Credential
+### <a name="Credential"></a> Credential
 
 ```k
   // Datatype
@@ -290,7 +290,7 @@ The datatypes used by the Oracle contract need to come with associated abstracti
       { PARAMS #Equals [ ACC:Int, APC:ConstantList ], [ ACSC:Int, APSC:ConstantList ] }
       #And #Ceil(Credential(ACC, APC))
       #And #Ceil(Maybe("StakingCredential", ACSC, APSC))
-      [simplification, unboundVariables(ACC, APC, ACSC, APSC)]
+      [simplification]
 ```
 
 ### CustomTxOut
@@ -312,7 +312,7 @@ The datatypes used by the Oracle contract need to come with associated abstracti
   rule #Ceil(CustomTxOut(PARAMS)) =>
     #Exists PA:ConstantList. #Exists OV:TextualData. #Exists OMDH:TextualData.
       { PARAMS #Equals ([ PA:ConstantList ], { OV }, { OMDH }) }
-      #And #Ceil(AddressData(PA)) [simplification, unboundVariables(PA, OV, OMDH)]
+      #And #Ceil(AddressData(PA)) [simplification]
 
   // Textual Data
   syntax TextualData ::= CustomTxOutData(ConstantList) [function, injective]
@@ -338,7 +338,7 @@ The datatypes used by the Oracle contract need to come with associated abstracti
     #Exists PARAMS_OR:ConstantList. #Exists PARAMS_O:ConstantList.
       { PARAMS #Equals [ PARAMS_OR:ConstantList ], [ PARAMS_O:ConstantList ] }
       #And #Ceil(TxOutRef(PARAMS_OR))
-      #And #Ceil(CustomTxOut(PARAMS_O)) [simplification, unboundVariables(PARAMS_OR, PARAMS_O)]
+      #And #Ceil(CustomTxOut(PARAMS_O)) [simplification]
 
   // Textual Data
   syntax TextualData ::= CustomTxInInfoData(ConstantList) [function, injective]
@@ -383,12 +383,12 @@ The datatypes used by the Oracle contract need to come with associated abstracti
   rule #Ceil(Cons("Data", PARAMS)) =>
     #Exists TD:TextualData. #Exists CL:ConstantList.
       { PARAMS #Equals ({ TD }, CL) } #And #Ceil(DList("Data", CL))
-        [simplification, unboundVariables(TD, CL)]
+        [simplification]
 
   rule #Ceil(Cons("CustomTxInInfo", PARAMS)) =>
     #Exists PCX:ConstantList. #Exists CLX:ConstantList.
       { PARAMS #Equals [ PCX ], CLX } #And #Ceil(CustomTxInInfo(PCX)) #And #Ceil(DList("CustomTxInInfo", CLX))
-        [simplification, unboundVariables(PCX, CLX)]
+        [simplification]
 
   // Textual Data
   syntax TextualData ::= DListData(String, ConstantList) [function, injective]

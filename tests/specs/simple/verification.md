@@ -419,7 +419,7 @@ module AUXILIARIES
 
   rule { true #Equals allInts(              .ConstantList) } => #Top [simplification]
   rule { true #Equals allInts(C:Constant, XS:ConstantList) } => #Exists I:Int. { C #Equals I } #And { true #Equals allInts(XS) }
-    [simplification, unboundVariables(I)]
+    [simplification]
 ```
 
 ### `sum(XS)`: calculating the sum of a given list of integers `XS`
