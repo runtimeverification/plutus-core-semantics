@@ -1,2 +1,2 @@
-kore-print --directory simple-proofs/verification/haskell /dev/stdin
+kore-print --directory tests/specs/issues/3377/verification/haskell /dev/stdin
 echo

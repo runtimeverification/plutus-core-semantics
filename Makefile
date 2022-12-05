@@ -286,7 +286,7 @@ smallest_version := $(shell printf "$(bison_version)\n3.7.4" | sort -V | head -n
 
 ifeq ($(smallest_version), 3.7.4)
 	LLVM_KOMPILE_OPTS+=--gen-bison-parser
-endif 
+endif
 
 $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(libff_out) $(KPLUTUS_BIN)/kplc
 	$(KOMPILE) --backend llvm                 \
@@ -445,7 +445,7 @@ test-decoders-prove: $(decoders_prove_tests:=.prove)
 tests/specs/%.md.prove: tests/specs/%.md tests/specs/$$(*D)/verification/haskell/verification-kompiled/timestamp
 	$(KPLUTUS) prove --directory tests/specs/$(*D)/verification/haskell $< $(KPROVE_OPTS)
 
-tests/specs/%/verification/haskell/verification-kompiled/timestamp: tests/specs/%/verification.md $(kplutus_includes)
+tests/specs/%/verification/haskell/verification-kompiled/timestamp: tests/specs/%/verification.md tests/specs/%/uplc-genvironment-instance.md $(kplutus_includes)
 	$(KOMPILE) --backend haskell $< --directory tests/specs/$*/verification/haskell
 
 # uplc-to-k proofs
