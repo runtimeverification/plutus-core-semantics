@@ -35,7 +35,7 @@
                 cryptopp.dev
                 git
                 gmp
-                graphviz
+#                graphviz
                 mpfr
                 openssl.dev
                 pkg-config
