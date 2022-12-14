@@ -11,7 +11,7 @@ Dependencies
 ### Ubuntu (20.04 Focal, 22.04 Jammy)
 
 ```
-sudo apt-get install build-essential m4 openjdk-11-jdk libgmp-dev libmpfr-dev pkg-config flex bison z3 libsecp256k1-dev libz3-dev maven python3 python3-dev python3-pip cmake gcc clang-12 lld-12 llvm-12-tools zlib1g-dev libboost-test-dev libyaml-dev libjemalloc-dev libsecp256k1-dev libssl-dev xxd
+sudo apt-get install build-essential m4 openjdk-11-jdk libgmp-dev libmpfr-dev pkg-config flex bison z3 libsecp256k1-dev libz3-dev maven python3 python3-dev python3-pip cmake gcc clang-12 lld-12 llvm-12-tools zlib1g-dev libboost-test-dev libyaml-dev libjemalloc-dev libsecp256k1-dev libssl-dev xxd libprocps-dev 
 pip install virtualenv poetry
 ```
 
