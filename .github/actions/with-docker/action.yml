@@ -41,17 +41,18 @@ runs:
           --tag runtimeverification/${TAG_NAME}                      \
           --build-arg BASE_IMAGE=${BASE_IMAGE}                       \
           --build-arg Z3_VERSION=${Z3_VERSION}                       \
-          --build-arg K_VERSION=${K_VERSION}                         \
-          --build-arg USER=$(id -un) --build-arg USER_ID=$(id -u)    \
-          --build-arg GROUP=$(id -gn) --build-arg GROUP_ID=$(id -g)
+          --build-arg K_VERSION=${K_VERSION}                         
 
       docker run                             \
           --name ${TAG_NAME}                 \
-          --rm -it                           \
+          --rm                               \
+          --interactive                      \
+          --tty                              \
           --detach                           \
           --workdir /opt/workspace/${SUBDIR} \
-          --user $(id -un):$(id -gn)         \
-          -v "$(pwd):/opt/workspace"         \
-          -v "/etc/passwd:/etc/passwd:ro"    \
-          -v "/etc/group:/etc/group:ro"      \
+          --user root                        \
           runtimeverification/${TAG_NAME}
+
+      docker cp . ${TAG_NAME}:/opt/workspace/${SUBDIR}
+      docker exec ${TAG_NAME} chown -R user:user /opt/workspace/${SUBDIR}
+      

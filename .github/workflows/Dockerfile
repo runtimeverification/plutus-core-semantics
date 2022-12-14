@@ -31,7 +31,7 @@ RUN curl -sSL https://get.haskellstack.org/ | sh
 
 RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr python3 - && poetry --version
 
-ARG USER=github-user
+ARG USER=user
 ARG GROUP=$USER
 ARG USER_ID=1000
 ARG GROUP_ID=$USER_ID
