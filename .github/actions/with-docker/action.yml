@@ -56,5 +56,5 @@ runs:
           runtimeverification/${TAG_NAME}
 
       docker cp . ${TAG_NAME}:/opt/workspace/${SUBDIR}
-      docker exec ${TAG_NAME} chown -R user:user
+      docker exec ${TAG_NAME} chown -R user:user /opt/workspace/${SUBDIR}
       
