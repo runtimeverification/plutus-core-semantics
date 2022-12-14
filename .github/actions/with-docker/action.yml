@@ -47,11 +47,14 @@ runs:
 
       docker run                             \
           --name ${TAG_NAME}                 \
-          --rm -it                           \
+          --rm                               \
+          --interactive                      \
+          --tty                              \
           --detach                           \
           --workdir /opt/workspace/${SUBDIR} \
-          --user $(id -un):$(id -gn)         \
-          -v "$(pwd):/opt/workspace"         \
-          -v "/etc/passwd:/etc/passwd:ro"    \
-          -v "/etc/group:/etc/group:ro"      \
+          --user root                        \
           runtimeverification/${TAG_NAME}
+
+      docker cp . ${TAG_NAME}:/opt/workspace/${SUBDIR}
+      docker exec ${TAG_NAME} chown -R user:user
+      
