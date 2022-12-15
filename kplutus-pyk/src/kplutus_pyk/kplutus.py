@@ -6,8 +6,8 @@ from typing import Iterable
 
 from pyk.cli_utils import run_process
 from pyk.cterm import CTerm, build_claim
-from pyk.kast.inner import KApply, KInner, KSort, KToken, KVariable, bottom_up
-from pyk.kast.manip import if_ktype, substitute
+from pyk.kast.inner import KApply, KInner, KSort, KToken, KVariable, Subst, bottom_up
+from pyk.kast.manip import if_ktype
 from pyk.kast.outer import KDefinition, KFlatModule, KImport, KRequire, read_kast_definition
 from pyk.ktool import KPrint, KRun
 
@@ -74,8 +74,8 @@ class KPlutus:
         init_subst = {'K_CELL': contract, 'ENV_CELL': KVariable('RHO')}
         final_subst = {'K_CELL': true_val, 'ENV_CELL': KApply('.Map')}
 
-        init_cterm = CTerm(substitute(empty_config, init_subst))
-        final_cterm = CTerm(substitute(empty_config, final_subst))
+        init_cterm = CTerm(Subst(init_subst)(empty_config))
+        final_cterm = CTerm(Subst(final_subst)(empty_config))
 
         claim, _ = build_claim(contract_name.lower(), init_cterm, final_cterm)
         claim_module = KFlatModule(contract_name + '-SPEC', [claim], [KImport('VERIFICATION')])
