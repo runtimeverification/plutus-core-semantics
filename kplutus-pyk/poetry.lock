@@ -242,13 +242,13 @@ flake8 = ">=3.0,<3.2.0 || >3.2.0"
 
 [[package]]
 name = "flake8-quotes"
-version = "3.3.1"
+version = "3.3.2"
 description = "Flake8 lint for quotes."
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "flake8-quotes-3.3.1.tar.gz", hash = "sha256:633adca6fb8a08131536af0d750b44d6985b9aba46f498871e21588c3e6f525a"},
+    {file = "flake8-quotes-3.3.2.tar.gz", hash = "sha256:6e26892b632dacba517bf27219c459a8396dcfac0f5e8204904c5a4ba9b480e1"},
 ]
 
 [package.dependencies]
@@ -431,14 +431,14 @@ testing = ["flake8 (<5)", "flufl.flake8", "importlib-resources (>=1.3)", "packag
 
 [[package]]
 name = "isort"
-version = "5.11.2"
+version = "5.11.3"
 description = "A Python utility / library to sort Python imports."
 category = "dev"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "isort-5.11.2-py3-none-any.whl", hash = "sha256:e486966fba83f25b8045f8dd7455b0a0d1e4de481e1d7ce4669902d9fb85e622"},
-    {file = "isort-5.11.2.tar.gz", hash = "sha256:dd8bbc5c0990f2a095d754e50360915f73b4c26fc82733eb5bfc6b48396af4d2"},
+    {file = "isort-5.11.3-py3-none-any.whl", hash = "sha256:83155ffa936239d986b0f190347a3f2285f42a9b9e1725c89d865b27dd0627e5"},
+    {file = "isort-5.11.3.tar.gz", hash = "sha256:a8ca25fbfad0f7d5d8447a4314837298d9f6b23aed8618584c894574f626b64b"},
 ]
 
 [package.extras]
@@ -782,7 +782,7 @@ plugins = ["importlib-metadata"]
 
 [[package]]
 name = "pyk"
-version = "0.1.89"
+version = "0.1.91"
 description = ""
 category = "main"
 optional = false
@@ -803,8 +803,8 @@ tomli = "^2.0.1"
 [package.source]
 type = "git"
 url = "https://github.com/runtimeverification/pyk.git"
-reference = "v0.1.89"
-resolved_reference = "f5e0663e050a35436c0bb5f8b5a25ad2299bd776"
+reference = "v0.1.91"
+resolved_reference = "a7742b39f5dfc8419ce26be31e3c8ad230cae68f"
 
 [[package]]
 name = "pyperclip"
@@ -1085,4 +1085,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "c5c772d5a13f202fb8beea420eff0dad62b551f793f723e393a1e97156f56de6"
+content-hash = "95055d44a66cface3304818dce4be82fd3e328619b2815daa7762741ce426ec2"
