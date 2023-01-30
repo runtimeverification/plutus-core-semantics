@@ -117,16 +117,16 @@ export PLUGIN_SUBMODULE
         test-benchmark-validation-examples \
         test-nofib-exe-examples            \
         conformance-test update-results    \
-        test-prove test-decoders-prove      \
+        test-prove test-decoders-prove     \
         test-simple-prove test-uplc-to-k   \
         fresh-test-coverage                \
-        venv venv-clean kplutus-pyk
+        poetry-install kplutus-pyk
 
 .SECONDARY:
 
 all: build
 
-clean: venv-clean
+clean:
 	rm -rf $(KPLUTUS_BIN) $(KPLUTUS_LIB)
 
 distclean:
@@ -286,7 +286,7 @@ smallest_version := $(shell printf "$(bison_version)\n3.7.4" | sort -V | head -n
 
 ifeq ($(smallest_version), 3.7.4)
 	LLVM_KOMPILE_OPTS+=--gen-bison-parser
-endif 
+endif
 
 $(KPLUTUS_LIB)/$(llvm_kompiled): $(kplutus_includes) $(plugin_includes) $(plugin_c_includes) $(libff_out) $(KPLUTUS_BIN)/kplc
 	$(KOMPILE) --backend llvm                 \
@@ -326,19 +326,12 @@ coverage:
 # -----------
 
 KPLUTUS_PYK_DIR := ./kplutus-pyk
-VENV_DIR        := $(BUILD_DIR)/venv
-VENV_ACTIVATE   := . $(VENV_DIR)/bin/activate
+POETRY          := poetry -C $(KPLUTUS_PYK_DIR)
+POETRY_RUN      := $(POETRY) -- run
+POETRY_INSTALL  := $(POETRY) install
 
-$(VENV_DIR)/pyvenv.cfg:
-	   virtualenv $(VENV_DIR)              \
-	&& $(VENV_ACTIVATE)                    \
-	&& pip install --editable $(KPLUTUS_PYK_DIR)
-
-venv: $(VENV_DIR)/pyvenv.cfg
-	@echo $(VENV_ACTIVATE)
-
-venv-clean:
-	rm -rf $(VENV_DIR)
+poetry-install:
+	$(POETRY_INSTALL)
 
 kplutus-pyk:
 	$(MAKE) -C $(KPLUTUS_PYK_DIR)
@@ -456,10 +449,9 @@ test-uplc-to-k: $(uplc_to_k_tests:=.prove)
 tests/specs/uplc-to-k/%.uplc.prove: tests/specs/uplc-to-k/$$*/$$*-spec.k tests/specs/uplc-to-k/$$*/verification/haskell/$$*-spec-kompiled/timestamp
 	$(KPLUTUS) prove --directory tests/specs/uplc-to-k/$*/verification/haskell $< $(KPROVE_OPTS)
 
-tests/specs/uplc-to-k/%-spec.k: tests/specs/uplc-to-k/$$(*F).uplc $(VENV_DIR)/pyvenv.cfg
+tests/specs/uplc-to-k/%-spec.k: tests/specs/uplc-to-k/$$(*F).uplc poetry-install
 	@mkdir -p $(@D)
-	. .build/venv/bin/activate \
-	    && $(KPLUTUS) uplc-to-k --directory $(KPLUTUS_LIB)/haskell $< > $@
+	$(POETRY_RUN) $(KPLUTUS) uplc-to-k --directory $(KPLUTUS_LIB)/haskell $< > $@
 
 tests/specs/uplc-to-k/%-spec-kompiled/timestamp: tests/specs/uplc-to-k/$$(*F)/$$(*F)-spec.k
 	$(KOMPILE) --backend haskell $< --directory $(dir $(@D)) --main-module VERIFICATION
