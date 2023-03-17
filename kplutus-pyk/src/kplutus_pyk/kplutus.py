@@ -9,7 +9,8 @@ from pyk.cterm import CTerm, build_claim
 from pyk.kast.inner import KApply, KInner, KSort, KToken, KVariable, Subst, bottom_up
 from pyk.kast.manip import if_ktype
 from pyk.kast.outer import KDefinition, KFlatModule, KImport, KRequire, read_kast_definition
-from pyk.ktool import KPrint, KRun
+from pyk.ktool.kprint import KPrint
+from pyk.ktool.krun import KRun
 
 from .genv import extract_genv, make_genv_module
 
