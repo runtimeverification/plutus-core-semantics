@@ -2,7 +2,7 @@ from typing import Any, Final, List, Tuple
 
 from pyk.kast.inner import KApply, KAtt, KInner, KLabel, KRewrite, KToken, KVariable
 from pyk.kast.outer import KFlatModule, KImport, KProduction, KRule, KTerminal
-from pyk.ktool import KRun
+from pyk.ktool.krun import KRun
 
 _LAM: Final = '(lam__)_UPLC-SYNTAX_Term_UplcId_Term'
 _APP: Final = '[__]_UPLC-SYNTAX_Term_Term_TermList'
