@@ -611,11 +611,11 @@
         "rv-utils": "rv-utils"
       },
       "locked": {
-        "lastModified": 1679083380,
-        "narHash": "sha256-UKr+iCgAUsLOevgXxVCgERcmqAX/bSf7qkDbKrEPV24=",
+        "lastModified": 1679086961,
+        "narHash": "sha256-G0U8e4/fzLVKxjQCBLQ90ACWeNGod/L732PEmoqL/ZU=",
         "owner": "runtimeverification",
         "repo": "k",
-        "rev": "5e21d8a29f74a1ff0090cf62a3be31b5f824950d",
+        "rev": "aa2e0745705508bafe13643c11c9b56481da6ede",
         "type": "github"
       },
       "original": {
