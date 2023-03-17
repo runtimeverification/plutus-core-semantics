@@ -51,7 +51,7 @@ jobs:
           cd -
           echo ${rev} > deps/blockchain-k-plugin_release
           sed -i 's!    blockchain-k-plugin.url = "github:runtimeverification/blockchain-k-plugin/[0-9a-f]*"!    blockchain-k-plugin.url = "github:runtimeverification/blockchain-k-plugin/'"${rev}"'"!' flake.nix
-          git add deps/blockchain-k-plugin_release && git commit -m 'deps/blockchain-k-plugin_release: update release file' || true
+          git add deps/blockchain-k-plugin_release && git commit -m "deps/blockchain-k-plugin_release: update release file ${rev}" || true
       - name: 'Install Nix/Cachix'
         uses: cachix/install-nix-action@v19
         with:
