@@ -155,14 +155,14 @@ cron = ["capturer (>=2.4)"]
 
 [[package]]
 name = "filelock"
-version = "3.10.2"
+version = "3.10.4"
 description = "A platform independent file lock."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "filelock-3.10.2-py3-none-any.whl", hash = "sha256:eb8f0f2d37ed68223ea63e3bddf2fac99667e4362c88b3f762e434d160190d18"},
-    {file = "filelock-3.10.2.tar.gz", hash = "sha256:75997740323c5f12e18f10b494bc11c03e42843129f980f17c04352cc7b09d40"},
+    {file = "filelock-3.10.4-py3-none-any.whl", hash = "sha256:6d332dc5c896f18ba93a21d987155e97c434a96d3fe4042ca70d0b3b46e3b470"},
+    {file = "filelock-3.10.4.tar.gz", hash = "sha256:9fc1734dbddcdcd4aaa02c160dd94db5272b92dfa859b44ec8df28e160b751f0"},
 ]
 
 [package.extras]
@@ -562,7 +562,7 @@ plugins = ["importlib-metadata"]
 
 [[package]]
 name = "pyk"
-version = "0.1.194"
+version = "0.1.195"
 description = ""
 category = "main"
 optional = false
@@ -583,8 +583,8 @@ tomli = "^2.0.1"
 [package.source]
 type = "git"
 url = "https://github.com/runtimeverification/pyk.git"
-reference = "v0.1.194"
-resolved_reference = "769e59facd51b10e37545c4407662db005fad43f"
+reference = "v0.1.195"
+resolved_reference = "48b4ea9a92391852936fb4ca2d9fb1f1f0cdabc6"
 
 [[package]]
 name = "pyperclip"
@@ -705,4 +705,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "8f068fe90e3a6b26e3a452c0efeb9815f4f679fe703d3c450ebebc9ba873d399"
+content-hash = "0fd7ee71edd702a5aaa727bcb5eaa8c44162f367ee339fcf06290b65daf100a7"
