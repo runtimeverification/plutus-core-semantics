@@ -155,14 +155,14 @@ cron = ["capturer (>=2.4)"]
 
 [[package]]
 name = "filelock"
-version = "3.10.6"
+version = "3.10.7"
 description = "A platform independent file lock."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "filelock-3.10.6-py3-none-any.whl", hash = "sha256:52f119747b2b9c4730dac715a7b1ab34b8ee70fd9259cba158ee53da566387ff"},
-    {file = "filelock-3.10.6.tar.gz", hash = "sha256:409105becd604d6b176a483f855e7e8903c5cb2873e47f2c64f66a370c046aaf"},
+    {file = "filelock-3.10.7-py3-none-any.whl", hash = "sha256:bde48477b15fde2c7e5a0713cbe72721cb5a5ad32ee0b8f419907960b9d75536"},
+    {file = "filelock-3.10.7.tar.gz", hash = "sha256:892be14aa8efc01673b5ed6589dbccb95f9a8596f0507e232626155495c18105"},
 ]
 
 [package.extras]
@@ -562,7 +562,7 @@ plugins = ["importlib-metadata"]
 
 [[package]]
 name = "pyk"
-version = "0.1.198"
+version = "0.1.199"
 description = ""
 category = "main"
 optional = false
@@ -583,8 +583,8 @@ tomli = "^2.0.1"
 [package.source]
 type = "git"
 url = "https://github.com/runtimeverification/pyk.git"
-reference = "v0.1.198"
-resolved_reference = "199dcdfde2dc70988effefa6cf7c27c37a8603d5"
+reference = "v0.1.199"
+resolved_reference = "eb182056c0defa2235dbc4c94fdc396ed5be0ff5"
 
 [[package]]
 name = "pyperclip"
@@ -611,14 +611,14 @@ files = [
 
 [[package]]
 name = "rich"
-version = "13.3.2"
+version = "13.3.3"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "rich-13.3.2-py3-none-any.whl", hash = "sha256:a104f37270bf677148d8acb07d33be1569eeee87e2d1beb286a4e9113caf6f2f"},
-    {file = "rich-13.3.2.tar.gz", hash = "sha256:91954fe80cfb7985727a467ca98a7618e5dd15178cc2da10f553b36a93859001"},
+    {file = "rich-13.3.3-py3-none-any.whl", hash = "sha256:540c7d6d26a1178e8e8b37e9ba44573a3cd1464ff6348b99ee7061b95d1c6333"},
+    {file = "rich-13.3.3.tar.gz", hash = "sha256:dc84400a9d842b3a9c5ff74addd8eb798d155f36c1c91303888e0a66850d2a15"},
 ]
 
 [package.dependencies]
@@ -705,4 +705,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "3c1fc9c902cf370ecb7f24e2070eb7d469e3d2d9295c7296e2b2b462ed026ac9"
+content-hash = "cc218aa608265661f6f0db0f73b61c9252d42afdb037c0130bc2affb25aebbf4"
