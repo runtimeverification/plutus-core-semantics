@@ -48,7 +48,7 @@ If you're certain that you have a crypto++ package installed that doesn't have t
 - You might want to update your shell resource file to extend `PATH`:
   ```shell
   export PATH=`<PATH-TO-PLUTUS-CORE-SEMANTICS>/plutus-core-semantics/.build/usr/bin:$PATH
-  ``
+  ```
 
 - Optionally,
   ```shell
