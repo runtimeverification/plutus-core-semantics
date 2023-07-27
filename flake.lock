@@ -891,11 +891,11 @@
         "rv-utils": "rv-utils"
       },
       "locked": {
-        "lastModified": 1690392298,
-        "narHash": "sha256-iO5XAdVo7I3l7JbJVtZZFgST2Q95SmzsBM0iotW6+sY=",
+        "lastModified": 1690474331,
+        "narHash": "sha256-8m5Rt34kWrXNfoxr4KvuPdtxLkms6EVi/abMZYtXRxo=",
         "owner": "runtimeverification",
         "repo": "k",
-        "rev": "1815c7133fbfe7e307a48fceaa316ee747aafff4",
+        "rev": "8b0629a7143b639ae55c33184b62ade8699646fb",
         "type": "github"
       },
       "original": {
