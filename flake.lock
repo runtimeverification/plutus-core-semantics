@@ -217,11 +217,11 @@
         "rv-utils": "rv-utils"
       },
       "locked": {
-        "lastModified": 1703165295,
-        "narHash": "sha256-qVoARMSAGJF5S6abxq3ghStBXgx+3kmDQbY+GsUGrKw=",
+        "lastModified": 1703192636,
+        "narHash": "sha256-JwO+/FOUfIzhG7TcUR46UU/xvCSOg5GeM8U2FKy4pWQ=",
         "owner": "runtimeverification",
         "repo": "k",
-        "rev": "f03c3f4b5d76f12411b10ab8c86308bcee2a0764",
+        "rev": "481925e3a8054b53565c91eb154f0292537a6b27",
         "type": "github"
       },
       "original": {
@@ -265,11 +265,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1703157773,
-        "narHash": "sha256-L7cKuNtne9yQQ/BtKTmBW0tQB/lfZ8hEftbn5joCNAo=",
+        "lastModified": 1703183218,
+        "narHash": "sha256-29Zvh5E7QF6rVejQpdris8Q4p8PfrGsMRi9HKVqsYbs=",
         "owner": "runtimeverification",
         "repo": "llvm-backend",
-        "rev": "29645452f15f9871c94fc8b4698efd6f0dc0a1f9",
+        "rev": "83a5b3015ac8816076573d3c8ac266b448b78130",
         "type": "github"
       },
       "original": {
