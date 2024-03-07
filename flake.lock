@@ -240,11 +240,11 @@
         "rv-utils": "rv-utils_3"
       },
       "locked": {
-        "lastModified": 1709760184,
-        "narHash": "sha256-eBCgIYKuxF2NaGxeP5UipvvHaqMVy0e3vRUXU77BLb8=",
+        "lastModified": 1709827372,
+        "narHash": "sha256-/olarrcbIhIhcRlwRSMuAv7DyyO2YhtbSkucKN52nB0=",
         "owner": "runtimeverification",
         "repo": "k",
-        "rev": "dd93684d91c9be1d75ff95fa095787c29b6b884b",
+        "rev": "bea8cf38cf5963aa47bef31250edcfcadf2905c5",
         "type": "github"
       },
       "original": {
